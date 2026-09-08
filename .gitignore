@@ -1,0 +1,5 @@
+# Personal financial exports — not part of the catalog
+*.csv
+
+# Prompt logs — written every prompt by the UserPromptSubmit hook; local only
+.claude/_Prompts/logs/
