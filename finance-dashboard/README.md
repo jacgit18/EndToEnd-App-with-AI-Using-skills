@@ -60,12 +60,53 @@ frontend/         Vite + React + TypeScript + Tailwind
 compose.yaml      db + backend + frontend
 ```
 
-## Local dev without Docker
+## Run without Docker
 
-Backend needs `uv` (`pip install uv`), a running Postgres, and `DATABASE_URL` pointing at
-it; then `uv run alembic upgrade head && uv run uvicorn app.main:app --reload`.
-Frontend: `cd frontend && npm install && npm run dev` (proxy target in `vite.config.ts`
-assumes the compose network — change it to `localhost:8000` for host-only dev).
+The app runs natively; only the database needs Postgres. Two ways to get one:
+
+**A — Postgres in a single container** (works even if `docker compose build` can't reach
+the internet, as long as the `postgres:16` image is already pulled):
+
+```bash
+docker run -d --name fd-db \
+  -e POSTGRES_USER=finance -e POSTGRES_PASSWORD=finance -e POSTGRES_DB=finance \
+  -p 5432:5432 postgres:16
+```
+
+**B — no Postgres at all:** use the SQLite fallback by setting
+`DATABASE_URL=sqlite+pysqlite:///./finance.db` in the backend step below. Fine for a quick
+look; the real target is Postgres (ADR 0001).
+
+### Backend
+
+```bash
+cd backend
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+export DATABASE_URL="postgresql+psycopg://finance:finance@localhost:5432/finance"   # or the SQLite URL
+.venv/bin/alembic upgrade head
+.venv/bin/uvicorn app.main:app --reload --port 8000
+```
+
+API at http://localhost:8000 , docs at `/docs`. Run the tests with `.venv/bin/pytest -q`.
+
+### Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev      # http://localhost:5173, proxies /api and /health to localhost:8000
+```
+
+`vite.config.ts` proxies to `http://localhost:8000` by default; compose overrides that with
+`VITE_API_PROXY=http://backend:8000`.
+
+### Create an account so the form works
+
+```bash
+curl -X POST localhost:8000/api/accounts -H 'content-type: application/json' \
+  -d '{"name":"Checking","type":"checking","starting_balance":"1000.00"}'
+```
 
 ## Conventions
 
