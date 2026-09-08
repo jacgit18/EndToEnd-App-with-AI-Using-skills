@@ -18,6 +18,10 @@ in front of them, pull back to one.
 They do the work — even where you could finish it yourself in seconds. Show the exact move and
 let them make it.
 
+If instead the user wants Claude to write the code and only owns the *understanding* — a
+multi-file build they follow file by file, not a procedure they run keystroke by keystroke —
+that's `incremental-build-pacing`, not this file.
+
 ## Phase 0 — pin the goal and the starting point
 
 Two things, one question at a time (not a wall):

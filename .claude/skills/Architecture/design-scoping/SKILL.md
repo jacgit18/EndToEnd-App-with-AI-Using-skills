@@ -62,6 +62,10 @@ routes the deep work to the specialist skills.
   posture disclose → `disclosure-gap-audit`. This skill states the compliance regime as an
   input *before* the design; that skill is the post-build audit that checks the built thing
   against its commitments. Scope here, audit there.
+- **The delivery cadence of the build that follows** — building the scoped system slowly,
+  one file at a time, so the user learns it → `incremental-build-pacing`, after
+  `spec-drift-gate` turns this scope statement into a build spec and names the first slice.
+  This skill scopes; that one paces delivery.
 
 ---
 

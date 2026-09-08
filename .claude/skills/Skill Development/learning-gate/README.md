@@ -52,9 +52,12 @@ debugging, architecture decisions, and understanding checks. This skill does not
 ## Not built
 
 The doc sketches a larger tree (Practice Gates for code/test/database as siblings of
-problem-solving-gates). Not in scope here. If practice-oriented gating for implementation work
-starts needing its own rubric, that becomes a sibling skill this one points to from the Step 3
-table.
+problem-solving-gates). Not in scope here.
+
+One piece of that has since been built: `incremental-build-pacing` (Skill Development) owns
+comprehension-paced, file-by-file delivery of an already-scoped build. Step 3's "Following an
+already-specced build one increment at a time" row routes to it — distinct from
+`guided-walkthrough.md`, where the user performs every step rather than reads Claude's code.
 
 
 ## The anti-paternalism guardrails (per the doc's warnings)
