@@ -24,6 +24,7 @@ learning intent as already established and go straight to Step 1; don't bounce b
 | Situation | What to do |
 |---|---|
 | No spec, slice, or story yet — what to build isn't settled | `spec-drift-gate` (a multi-file / multi-session build with no written spec) or `design-scoping` (a whole system to scope). Come back once a concrete slice is named. |
+| The stack itself isn't chosen yet — the user wants to reason through the technology decisions | `tech-decision-walkthrough` first (it picks the stack and writes the ADRs); then it chains `→ spec-drift-gate → ` here. |
 | The user wants the build done, fast, with no learning goal | Doesn't apply. Normal execution — don't impose pacing on someone who didn't ask for it. |
 | A procedure the user will carry out end to end themselves — env setup, wiring two tools, a runbook they'll repeat | `learning-gate` → `guided-walkthrough.md`. The user makes every move there; here Claude may still write the code. |
 | A bug, a slow path, or an architecture choice surfaces mid-build | `problem-solving-gates` for that sub-problem, then resume the loop. |

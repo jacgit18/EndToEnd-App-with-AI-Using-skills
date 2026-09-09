@@ -102,6 +102,8 @@ Then stop. Writing the contract, the handlers, or the SDKs is a separate step th
 
 If the user has genuinely worked the decision — styles considered, consumer constraints named, tradeoffs weighed, a position held with reasons — and wants a second opinion or a tie broken rather than a Socratic pass, they can say so and you give a direct recommendation with reasoning. That is an opt-in mode switch, not a default you slide into because the gate is tedious.
 
+When `tech-decision-walkthrough` routes the API-style decision here mid-walkthrough, it hands over the build's assembled scope, the constraints already gathered (team, existing systems, ops, deadline, cost, compliance), and the user's lean. Take those as the gate inputs — surface them for confirmation, don't re-run items 1–8 from zero — then return the recommendation block for the walkthrough to fold into its ADR. Two full question rounds on one decision is the failure to avoid.
+
 ---
 
 ## Example invocations
