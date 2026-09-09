@@ -48,6 +48,8 @@ That's a valid precondition — a named hypothesis with reasoning behind it. Cla
 
 If the decision is specifically a coverage-target / CI-enforcement choice → `coverage-policy`; a test-levels / test-mix choice → `test-strategy`; how a branch's history folds into another (merge vs. squash vs. rebase vs. fast-forward) → `history-integration-strategy`. Those skills own the gate for their decision — hand off rather than also running Options Generator on top.
 
+If the user wants Claude to **lay out the candidate field and recommend one** — "walk me through the stack", "what are my options for X and which should I pick", "compare A/B/C for this build" — that is `tech-decision-walkthrough` (Architecture), a coached procedure that teaches the option space. Options Generator is the inverse stance: it applies only when the user brings their *own* candidates and a lean and wants the missed-alternative check. Don't run this gate to withhold a list the user asked to be taught.
+
 **Precondition check:** They need (a) unknowns or constraints named, and (b) an initial position — a leaning, even a tentative one. "What should I do?" with neither of these present is not valid input for this mode. If either is missing, ask for it and stop.
 
 **Once the precondition is met:**

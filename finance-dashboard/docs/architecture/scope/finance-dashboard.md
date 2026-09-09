@@ -49,27 +49,40 @@ credentials come from environment configuration.
 
 - **Team:** solo (the owner).
 - **Timeline:** none stated.
-- **Stack (fixed by the owner):** Python / FastAPI · React / Vite / TypeScript · PostgreSQL · Docker Compose · `uv` · Tailwind.
+- **Stack:** open — no technology is fixed. Every choice is being derived decision-by-decision
+  through `Architecture/tech-decision-walkthrough`, each recorded as an ADR under
+  `../decisions/`. The owner's earlier picks (Python / FastAPI · React / Vite · PostgreSQL ·
+  Docker Compose · `uv` · Tailwind) are archived at `../decisions/_archived/0001-…` as prior
+  input, not a constraint.
 - **Platforms:** desktop browser only.
 - **Compliance:** none — the owner's own data, self-hosted, no third-party data handled.
 
-## Deep-dive decisions (designed now)
+## Deep-dive decisions (to be derived)
 
-1. **Data model + money representation.** Whole-data-model blast radius: changing the
-   `amount` type or the account-balance approach later needs a migration and a data
-   rewrite. Decision recorded in `../decisions/0001-stack-and-money-representation.md`.
-   - `Numeric(14,2)` in Postgres, `Decimal` in Python end-to-end — never `float`.
-   - Account balance is **derived** (`starting_balance + sum(transactions)`), not stored.
-   - Transaction dedupe key: `sha256(date | amount(2dp) | lower(trim(description)))`.
+These are the choices worth reasoning through deliberately, in `tech-decision-walkthrough`;
+each ends in an ADR under `../decisions/`. The list is the *significance-filter output* — the
+answers are not decided here.
+
+1. **Data model + money representation** — load-bearing. Whole-data-model blast radius:
+   changing the money type or the account-balance approach later needs a migration and a data
+   rewrite. Sub-questions: how currency amounts are represented; whether an account balance is
+   stored or derived; the transaction dedupe key.
+2. **Datastore** — load-bearing (migration cost to change).
+3. **Auth approach** — single-user-from-env vs. a user table vs. a hosted IdP.
+4. Language / runtime, web framework, data-access layer, frontend approach, API style,
+   packaging, deployment target — structural or routine; walked at proportionate depth.
 
 ## Acknowledged, deferred (decide during implementation)
 
 CSV column-mapping UX · exact dedupe-hash field set · auth token lifetime / refresh ·
-chart library choice · dashboard aggregation queries (direct Postgres — no rollup layer
-needed at this scale).
+chart library choice · dashboard aggregation query approach.
 
 ## Sequence
 
 1. `Business/user-story-decomposition` on the in-scope list → `docs/backlog.md` ✅
 2. `Testing/test-strategy` on the mix → `docs/testing/finance-dashboard.md` ✅
-3. Build — walking skeleton first (see `docs/spec.md`), then the backlog in MoSCoW order.
+3. `Architecture/tech-decision-walkthrough` on the stack → an ADR per decision under
+   `../decisions/` (supersedes the archived `_archived/0001-…`).
+4. `Skill Development/spec-drift-gate` — fold the ADRs into `docs/spec.md`.
+5. Build — `Skill Development/incremental-build-pacing`, walking skeleton first (see
+   `docs/spec.md`), then the backlog in MoSCoW order.

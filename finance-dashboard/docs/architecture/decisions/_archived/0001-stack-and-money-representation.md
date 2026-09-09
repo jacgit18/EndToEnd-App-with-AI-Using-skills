@@ -1,6 +1,10 @@
 # ADR 0001 — Stack and money representation
 
-- **Status:** Accepted
+> **ARCHIVED 2026-09-09.** Superseded pending re-derivation via
+> `Architecture/tech-decision-walkthrough`. Kept for reference only — do not treat the
+> choices below as settled. Fresh ADRs from the walkthrough will replace this.
+
+- **Status:** Archived (was: Accepted)
 - **Date:** 2026-09-08
 - **Deciders:** the owner
 
