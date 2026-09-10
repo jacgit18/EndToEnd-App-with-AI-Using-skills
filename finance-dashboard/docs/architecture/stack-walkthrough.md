@@ -233,6 +233,34 @@ frontend (recovers some end-to-end type safety). Deferred: versioning scheme, au
 
 ---
 
+## Decision 7 — Frontend approach → **React + Vite (TypeScript)** ([ADR 0008](decisions/0008-frontend.md))
+
+**Owner context:** prior React experience; no Vite experience; frontend is the weaker area.
+
+**Candidates:** React + Vite · Vue + Vite · Svelte/SvelteKit. (Server-rendered + htmx — rejected,
+CSV wizard needs rich local state. Next/Remix — rejected, adds a second server.)
+
+**Axes:** (1) fit to interactive parts (CSV wizard, charts) · (2) transferability · (3) ecosystem
+(charts/tables/forms) · (4) concept load.
+
+**How it scored:** all three fit the interactive parts. React wins transferability (dominant
+skill + owner already knows it) and ecosystem (deepest chart/table/form selection). Vue and
+Svelte are gentler to learn and lower boilerplate — the axis React loses.
+
+**Call:** React + Vite + TanStack Query. Cost accepted: steepest of the three learning curves,
+softened by existing React exposure.
+
+**What Vite is:** a build tool + dev server replacing CRA/webpack. Dev = instant start + hot
+module replacement via native ES modules; prod = Rollup bundle to static files. Key config here:
+the dev proxy forwards `/api` to FastAPI so dev is single-origin (no CORS) — the "web-app → API
+path" the walking skeleton proves.
+
+**Feeds build-time decisions** (already deferred in the scope): a component/UI library (Mantine
+/ shadcn) and a charting library (Recharts) — both leaning "batteries included" given the
+weaker-frontend constraint. `incremental-build-pacing` expected to go slow on the frontend.
+
+---
+
 ## Summary
 
-_(filled in once decisions 7–11 are done)_
+_(filled in once decisions 8–11 are done)_
