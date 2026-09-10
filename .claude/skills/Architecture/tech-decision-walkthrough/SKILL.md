@@ -75,7 +75,15 @@ For each decision — full protocol and the axes libraries are in `decision-loop
 8. **Record it** — a short ADR (context / decision / alternatives considered + why they lost /
    consequences) to `docs/architecture/decisions/NNN-<slug>.md`, numbered as the next integer
    after the highest existing ADR. For a load-bearing decision, run the specialist Architecture
-   skill first and fold its output into the ADR.
+   skill first and fold its output into the ADR. **If the decision changes an upstream story or
+   stated requirement** (a backlog item, a spec line), log the amendment in the spec/backlog
+   drift log too — not just the ADR — so `spec-drift-gate` sees it.
+
+**Sub-decisions and emergent decisions.** If a decision has linked sub-parts (e.g. "money
+representation" = type + balance strategy + dedupe key), enumerate them at the top of the loop
+and land them into **one** ADR, walking each sub-part as its own mini frame→axes→recommend. If
+the walk surfaces a decision that isn't on the Step 1 list, **add it to the list** (with its
+depth class) rather than cramming it into the current decision's loop.
 
 ## Step 3 — Depth control
 
@@ -88,11 +96,28 @@ significance axis):
 | **Structural** | Shapes the code but swappable with contained effort — web framework, data-access layer, frontend library, test strategy | Full loop; inline ADR |
 | **Routine** | Easily reversible — formatter, test runner, a small utility lib, CI provider | Name the pick + a one-line because; no loop; batch several into one note |
 
-## Step 4 — Hand off to the build
+## Step 4 — Closeout
 
-When the decisions are made and the ADRs written, the stack is settled. Hand to `spec-drift-gate`
-to fold the ADRs into the build spec, then `incremental-build-pacing` for the paced,
-file-by-file build.
+When the last decision on the list has an ADR, don't just stop — run the closeout:
+
+1. **Summary table** — one row per decision: choice, ADR number, depth class. Put it where the
+   ADRs live (a `stack-walkthrough.md` log, or the spec).
+2. **Cross-cutting obligations** — collect every downstream requirement the decisions surfaced
+   that isn't itself an ADR (HTTPS, rate limiting, CSRF handling, a reconciliation job,
+   backups, CI, a domain name). These get lost otherwise — list them so they can be slotted
+   into the build, not discovered late.
+3. **Spec amendments** — list every upstream story/requirement a decision changed, cross-linked
+   to the ADR and the drift-log entry.
+4. **Missed-decision audit** — scan the axes-library headings and the build's shape for
+   decisions not walked: config & secrets, test tooling (front and back), CI provider,
+   date/time & timezone policy, container base images, i18n/a11y if relevant. Name each with a
+   one-line recommendation and whether it's ADR-worthy or a build-time detail.
+5. **Deferred list** — what was explicitly pushed to v2 / build-time, in one place.
+6. **Hand off** — to `spec-drift-gate` (fold the ADRs + amendments into the build spec), then
+   `incremental-build-pacing` for the paced build. A rough dependency-ordered build sketch is a
+   useful thing to hand over but isn't this skill's job to finalize.
+
+Don't wait to be asked for the closeout — it's part of finishing.
 
 ## Registers (summary — detail in `decision-loop.md`)
 

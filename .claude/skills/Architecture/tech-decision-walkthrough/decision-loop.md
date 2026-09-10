@@ -81,6 +81,11 @@ A compact table or a short per-candidate read. Rules:
   winner sweeps is either a strawman field or a missing axis.
 - Score for *this* build's constraints, not the general case ("Postgres' clustering story is
   weaker — irrelevant here, single node forever").
+- **For a load-bearing decision, add a "what do mature systems in this domain actually do, and
+  why might this build differ" beat.** (Real banks use append-only double-entry ledgers with
+  reconciliation — this app can too, for the learning, even though at its scale a derived
+  balance would do.) It's often the highest-value teaching in the whole loop and it keeps the
+  recommendation honest about where it's diverging from the industry norm.
 
 ### 6. Recommendation + because
 
