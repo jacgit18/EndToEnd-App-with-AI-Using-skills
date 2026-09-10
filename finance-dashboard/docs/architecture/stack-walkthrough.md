@@ -261,6 +261,29 @@ weaker-frontend constraint. `incremental-build-pacing` expected to go slow on th
 
 ---
 
+## Decision 7b — Frontend state management → **no dedicated global-state library** ([ADR 0009](decisions/0009-frontend-state-management.md))
+
+**Framing:** split state by category, decide per category — not one global store.
+- Server state / cache → **TanStack Query** (already chosen). ~80% of this app's state.
+- URL state (month, account filter, page) → **React Router** (URL is the state).
+- Local UI state (forms, modals, wizard step) → `useState` / `useReducer`.
+- Global client state (authed user, toasts, theme) → `useContext` + `useState` — and there's
+  very little of it.
+
+**Dedicated global-state lib?** Candidates: none · Zustand/Jotai (minimal) · Redux Toolkit
+(full). Axes: fit to actual global-client-state need · boilerplate/concept load · weight ·
+transferability.
+
+**Call:** none. TanStack Query already removed the classic reason to reach for Redux (server
+cache). Add **Zustand** only if a concrete global-client-state pain appears. Redux deferred on
+purpose — bolting it onto an app without the problem teaches boilerplate, not judgement.
+
+**Backend aside:** no equivalent decision — a well-built API keeps handlers stateless, pushes
+durable state to the DB; a server-side session store (if auth picks it, ADR-0010) is the one
+deliberate piece of backend state.
+
+---
+
 ## Summary
 
 _(filled in once decisions 8–11 are done)_
