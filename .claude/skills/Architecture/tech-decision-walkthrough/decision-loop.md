@@ -186,6 +186,27 @@ a meta-framework (Next, Remix, SvelteKit), or none (API only).
 Axes: interactivity level actually needed · SEO / first-paint · team skills · build & deploy
 complexity · one client or many.
 
+### Frontend state management
+First split state by *category* — the decision is per category, not one global store for
+everything:
+- **Server state / cache** (data fetched from the API) — usually the bulk of a CRUD app's
+  state. Candidates: TanStack Query / SWR / RTK Query / Apollo (GraphQL). This is what removed
+  the historical reason to reach for Redux.
+- **URL state** (filters, selected date, current page) — the router owns it; putting it in the
+  URL keeps views shareable and back-button-correct.
+- **Local UI state** (form fields, open modal, wizard step) — framework built-ins
+  (`useState` / `useReducer`, Vue `ref`, Svelte stores).
+- **Global client state** (authed user, toast queue, theme) — Context + a hook, or a small
+  store.
+Only *then* decide whether a **dedicated global-state library** is needed: none (Context +
+built-ins + a server-cache lib) · a minimal store (Zustand, Jotai, Nano Stores) · a full
+framework (Redux Toolkit, MobX, NgRx).
+Axes: how much genuinely-global non-server state exists (often very little) · boilerplate &
+concept load · bundle weight · devtools / middleware needs · transferability (Redux is the
+résumé one). Default for a small/medium app: none — add the minimal store only when Context
+demonstrably hurts. Adopting a full framework on an app without the problem teaches the
+boilerplate, not the judgement.
+
 ### API style
 Defer to `api-interface-style` for anything non-trivial. Quick axes if handling inline: number of
 distinct client query shapes · request/response vs. push vs. streaming · public vs. internal ·
