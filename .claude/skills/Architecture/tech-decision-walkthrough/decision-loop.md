@@ -59,6 +59,13 @@ competent engineer would actually shortlist given Step 2. One line each:
 If the user named a candidate that shouldn't be on the list, say why once and drop it — don't
 score a strawman through the whole table.
 
+**If the user flags unfamiliarity** with a candidate, a concept, or the whole domain ("not
+familiar with X", "explain this one", "no idea what that means"), expand that item to
+teach-it depth *before* scoring or asking for a decision — how it works, why it exists, a
+concrete example, what real systems do. Don't stay at one-line-each depth and don't make them
+choose blind. This is `learning-gate` S0 inside the loop; it holds for the rest of the
+walkthrough once they've said it, not just that one turn.
+
 ### 4. Deciding axes
 
 The 2–4 dimensions that actually discriminate *here*. Name them before scoring so the reasoning
@@ -74,6 +81,11 @@ A compact table or a short per-candidate read. Rules:
   winner sweeps is either a strawman field or a missing axis.
 - Score for *this* build's constraints, not the general case ("Postgres' clustering story is
   weaker — irrelevant here, single node forever").
+- **For a load-bearing decision, add a "what do mature systems in this domain actually do, and
+  why might this build differ" beat.** (Real banks use append-only double-entry ledgers with
+  reconciliation — this app can too, for the learning, even though at its scale a derived
+  balance would do.) It's often the highest-value teaching in the whole loop and it keeps the
+  recommendation honest about where it's diverging from the industry norm.
 
 ### 6. Recommendation + because
 
@@ -122,6 +134,29 @@ front-door gate from zero — a second wall of questions on one decision is the 
 
 ---
 
+## When cost is a deciding axis
+
+If a decision carries a real recurring price — compute, storage, database instances, a
+managed-service premium, egress / CDN, per-request or per-token API charges, background-job
+minutes, log / telemetry ingestion — give **two reads**, not one:
+
+1. **The user's actual plan.** Size the cost for their stated scale and hosting (from the scope:
+   users, RPS, GB, budget cap). Invoke `technical-cost-decision` for the Cost Surface when the
+   arithmetic is non-trivial; name the dominant line. At hobby / single-user / self-hosted
+   scale the honest answer is often "no meaningful difference between the candidates" — say that
+   plainly; don't manufacture one.
+2. **A realistic-scale example, for learning.** One short paragraph: pick a plausible production
+   scale, state the cost driver explicitly ("50k MAU", "500 RPS peak", "2 TB egress/mo", "10M
+   API calls/mo", "300M rows"), and give ballpark monthly figures for each candidate with the
+   dominant line called out. A few lines — a teaching aid, not a second full Cost Surface.
+
+This applies to every cost-bearing domain, not just infra: API request volume, web traffic and
+CDN egress, LLM token spend, job minutes, telemetry ingestion.
+
+If a decision genuinely has no cost dimension — a data-type choice, a code-structure choice,
+two options that are the same byte on disk — say so and cut the axis. Don't invent numbers to
+fill a table cell.
+
 ## Axes libraries
 
 Starting axes for common build decisions. Not exhaustive; drop the ones that don't discriminate,
@@ -156,6 +191,27 @@ a meta-framework (Next, Remix, SvelteKit), or none (API only).
 Axes: interactivity level actually needed · SEO / first-paint · team skills · build & deploy
 complexity · one client or many.
 
+### Frontend state management
+First split state by *category* — the decision is per category, not one global store for
+everything:
+- **Server state / cache** (data fetched from the API) — usually the bulk of a CRUD app's
+  state. Candidates: TanStack Query / SWR / RTK Query / Apollo (GraphQL). This is what removed
+  the historical reason to reach for Redux.
+- **URL state** (filters, selected date, current page) — the router owns it; putting it in the
+  URL keeps views shareable and back-button-correct.
+- **Local UI state** (form fields, open modal, wizard step) — framework built-ins
+  (`useState` / `useReducer`, Vue `ref`, Svelte stores).
+- **Global client state** (authed user, toast queue, theme) — Context + a hook, or a small
+  store.
+Only *then* decide whether a **dedicated global-state library** is needed: none (Context +
+built-ins + a server-cache lib) · a minimal store (Zustand, Jotai, Nano Stores) · a full
+framework (Redux Toolkit, MobX, NgRx).
+Axes: how much genuinely-global non-server state exists (often very little) · boilerplate &
+concept load · bundle weight · devtools / middleware needs · transferability (Redux is the
+résumé one). Default for a small/medium app: none — add the minimal store only when Context
+demonstrably hurts. Adopting a full framework on an app without the problem teaches the
+boilerplate, not the judgement.
+
 ### API style
 Defer to `api-interface-style` for anything non-trivial. Quick axes if handling inline: number of
 distinct client query shapes · request/response vs. push vs. streaming · public vs. internal ·
@@ -183,6 +239,14 @@ integration. Usually **structural or routine** — don't over-walk it.
 Defer to `deployment-strategy` / `serverless-execution-model` for anything non-trivial. Quick
 axes: who operates it · scale-to-zero vs. always-on · container vs. function vs. VM vs. PaaS ·
 cost model · existing infra.
+
+### Pulling in a library / dependency
+When a decision's shape is "which package for X" (validation lib, HTTP client, date lib, chart
+lib, CLI parser) — see **`library-vetting.md`**. The entries above cover *fit*; adding a
+dependency also needs the axes about what you now carry — weight & transitive deps, maintenance
+health & bus factor, license (transitive too), security patch latency, API churn, exit cost —
+plus how to check each. Depth-tiered: one line for a util, full table for a subsystem-shaping
+lib, specialist entry + a supply-chain paragraph for a load-bearing one.
 
 ---
 

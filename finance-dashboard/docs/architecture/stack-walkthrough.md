@@ -1,0 +1,400 @@
+# Stack walkthrough — reasoning log
+
+> Companion to the ADRs in `decisions/`. The ADRs are the terse decision records; this file
+> keeps the fuller reasoning, the option comparisons, and the teaching notes from the
+> `Architecture/tech-decision-walkthrough` session (started 2026-09-09). Running log — appended
+> per decision. A summary sits at the bottom once all decisions are made.
+
+Register: collaborative. Prior input (not a constraint): archived `decisions/_archived/0001-…`.
+
+Decision list, dependency order: 1 language · 2 web framework · 3 datastore · 4 money
+representation · 5 data-access layer + migrations · 6 API style · 7 frontend · 8 auth ·
+9 packaging · 10 deployment · 11 observability.
+
+---
+
+## Decision 1 — Language / runtime → **Python ≥3.13** ([ADR 0002](decisions/0002-language-runtime.md))
+
+**Candidates:** Python · Node/TypeScript · Go.
+
+**Axes:** (1) the maintainer's fluency / learning runway · (2) money + migration ecosystem fit
+· (3) deployment footprint · (4) type safety at the money boundary. Dropped concurrency —
+1–2 users, decides nothing.
+
+**How it scored:** Python strong on 1 (most prior exposure) and 2 (`decimal.Decimal` in the
+stdlib, Alembic is the most battle-tested migration tool). Node's real win: one language +
+shared types across backend and a JS frontend. Go's real win: a tiny static-binary container
+and the simplest deploy.
+
+**Call:** Python — on learning runway + money/migration maturity. Cost accepted: heaviest
+container image (Go wins outright), two languages in the codebase (Node wins the one-toolchain
+point).
+
+**Objective-best aside (learning held out):** language is a near-tie between Python and
+TypeScript; the deciding axis is "separate JS frontend?" — yes here, so TS-everywhere (one
+language, shared types) is what many would pick. Python stays a co-best on money correctness.
+The *framework* pick below is unaffected by the learning consideration.
+
+**Python version:** annual releases, ~5-yr support each. 3.11 brought a big speedup + better
+tracebacks; 3.12 better errors; 3.13 experimental no-GIL; 3.14 (Oct 2025) continues. Floor
+`>=3.13`, run 3.13/3.14. Ecosystem has long since caught up to 3.14.
+
+---
+
+## Decision 2 — Web framework → **FastAPI** ([ADR 0003](decisions/0003-web-framework.md))
+
+**Candidates:** FastAPI · Django + DRF · Flask.
+
+**Axes:** (1) validation at the money/CSV boundary · (2) "see how it fits together" learning
+value · (3) batteries included (ORM/migrations/auth/admin) · (4) concept load now.
+
+**How it scored:** FastAPI strong on 1 (typed Pydantic request/response models) and 4 (small,
+though `async` arrives early). Django's real win: built-in admin CRUD UI + built-in auth +
+one framework does everything — weakened here by the separate-SPA architecture and its large
+learning surface. Flask's real win: the most direct "wire every piece yourself" learning; loses
+on 1 (no built-in validation).
+
+**Call:** FastAPI — typed money-input validation for free + small enough to understand whole +
+natural fit for a separate frontend. Cost accepted: no admin UI, no built-in auth (decision 8
+becomes real work), meet `async` before strictly needed. This is also the learning-neutral pick
+for "Python behind an SPA" — the learning thumb only pressed on decision 1.
+
+---
+
+## Decision 3 — Datastore → **PostgreSQL, containerised** ([ADR 0004](decisions/0004-datastore.md))
+
+**Candidates:** PostgreSQL · SQLite · (document store — ruled out, wrong shape).
+
+**`database-architecture` lens:** app owns its data outright, no other consumers · read-heavy
+dashboard + modest writes · transactions matter only for atomic CSV import.
+
+**Axes:** (1) money-type fidelity · (2) dashboard query power (joins, group-by, rollups) ·
+(3) operational simplicity · (4) fit to data shape.
+
+**How it scored:** Postgres strong on 1 (native `NUMERIC`), 2, 4. SQLite's real win: zero
+operational surface — one file, backup by copying it, no server; loses on 1 (no true decimal —
+precision becomes app code's job) and slightly on 2.
+
+**Cost — two reads:**
+- *This plan:* a wash. Both fit the same ~$5/mo 1 GB VPS; container Postgres vs in-process
+  SQLite is ~30–50 MB RAM, not a tier change. The real difference is ~2–4 hrs more one-time
+  setup for Postgres (compose service, volume, `pg_dump` job) — offset by dev/prod image parity
+  and avoiding a future migration.
+- *Realistic scale (50k MAU, ~300M transaction rows, 60–120 GB):* self-hosted Postgres
+  primary+replica ≈ $250–500/mo compute + storage/backups, plus operator time; managed (RDS /
+  Cloud SQL Multi-AZ) ≈ $350–650/mo, buys back the ops time; Aurora Serverless v2 / Neon scale
+  ≈ $150–450/mo, flexes with load. SQLite: not viable past ~1 writer — the deferred cost is a
+  data migration (days–weeks of eng time, ~$10k–50k loaded, plus cutover risk). Dominant line
+  at scale: the DB instance pair + (if self-hosting) operator time.
+
+**Call:** PostgreSQL, run as its own container/service, same image dev and deploy. Cost
+accepted: a service to run and back up. Reason: exact money type in the DB + the dashboard is
+exactly Postgres's join-and-aggregate strength; and the container setup is itself worthwhile
+learning that transfers to bigger projects.
+
+---
+
+## Decision 4 — Money representation → [ADR 0005](decisions/0005-money-representation.md)
+
+Three sub-questions: (a) type · (b) balance stored/derived/hybrid · (c) CSV dedupe key.
+
+### (a) Type → **`NUMERIC(14,2)` in Postgres + Python `Decimal` end-to-end, never `float`**
+
+**Candidates:** exact decimal (`NUMERIC`+`Decimal`) · integer minor units (`BIGINT` cents +
+`int`) · float — ruled out (binary float can't represent 0.10 exactly; cents drift on sums).
+
+**Axes:** (1) correctness/rounding safety · (2) boundary ergonomics (DB/JSON/CSV/display) ·
+(3) arithmetic control (splits, %) · (4) stack fit.
+
+**How it scored:** exact decimal strong on 2–4 (reads like money, `Decimal` rounding contexts,
+clean `NUMERIC`↔`Decimal` driver mapping). Integer cents strongest on 1 — a representation
+error is *structurally impossible*, not just avoided by discipline (why payment processors use
+it) — but every boundary does ÷100/×100 and sub-cent needs (interest, FX) force a rescale.
+
+**Cost axis:** none. Both are an 8-byte column; identical at every scale. Axis cut.
+
+**Call:** exact decimal. `NUMERIC(14,2)` (max ±999,999,999,999.99, 2 dp), serialize to JSON as
+a string, explicit `Decimal(str(x))` at the JSON/CSV edges, a lint rule + a unit test that
+fails on any `float` in the money path. Matches archived ADR-0001 — re-derived, same result.
+
+### (b) Account balance → **hybrid** (maintained column + reconciliation)
+
+**Candidates:** derived (`SUM` on read, no column) · stored (column, no verification) · hybrid
+(maintained column + periodic reconciliation job).
+
+**Axes:** (1) drift risk · (2) read performance · (3) write complexity · (4) simplicity.
+
+**Teaching note — what real banks do:** core-banking systems use a *stored, incrementally
+maintained* balance, never derived-on-read — decades of rows, millisecond auth decisions. Key
+enabler: the ledger is **immutable** (mistakes are fixed with reversing entries, never edits),
+so a stored balance can't silently drift. They keep a running balance per row, split *ledger*
+vs *available* balance, and run end-of-day reconciliation ("proof") — i.e. stored **+
+verified** = hybrid. Event-sourced ledgers (TigerBeetle, Kafka-based) do the same: balance is
+an incrementally-maintained projection of the transaction log.
+
+**Why hybrid over derived here:** at this app's scale derived is fine and free of drift, and
+was the initial recommendation. The user chose hybrid deliberately — to build the pattern real
+systems use and get the reps (maintained column + reconciliation job). Accepted as a
+learning-motivated call, not a performance need.
+
+**Partner decision → append-only ledger.** Transactions are immutable; corrections are new
+reversing entries. Real-world banking is append-only without exception — double-entry
+bookkeeping, immutable audit trail for regulators/disputes, downstream-system consistency, and
+point-in-time balances all depend on it; posted vs pending is the only "mutable" state, and it
+resolves by settling into an immutable posting. Consumer PFM apps (Mint, YNAB) allow free
+edit/delete because they're a *view*, not a system of record. Chosen here on the **learning
+axis**: append-only teaches immutable/event-log data modeling (transfers to event sourcing,
+CQRS, audit logs), reversing-entry mechanics, pending-vs-posted state, and reconciliation —
+all transferable to fintech and systems design. Editable would only teach the narrower
+stored-aggregate-consistency-under-mutation lesson. Cost: backlog **S4** amended from
+"add/edit/delete" to **add + void**; `type` + `reverses_transaction_id` columns; the
+transactions UI shows reversals rather than removing rows. The balance-maintenance logic gets
+*simpler* — it only ever adds. Double-entry (two accounts per transaction) deferred to a later
+ADR; v1 stays single-sided but immutable.
+
+### (c) CSV dedupe key → **content hash**, bank-ID as an opt-in upgrade
+
+**Candidates:** content hash (`sha256` of normalized date|amount|description) · bank-provided
+txn ID · composite natural key · no dedupe.
+
+**Axes:** (1) reliability (false negatives vs false positives) · (2) dependence on CSV format ·
+(3) implementation cost.
+
+**How it scored:** content hash independent of CSV format (every export has date/amount/
+description); genuine same-day identical charges collide (rare, usually the wanted behavior).
+Bank txn ID is strongest *when present* but many exports lack a stable one.
+
+**Call:** `sha256(date_iso + "|" + amount(2dp) + "|" + lower(trim(collapse_ws(description))))`,
+stored on the row, unique per `(account_id, hash)`; import skips + counts conflicts. Keep the
+normalization in one unit-tested function (the test plan flags it as a priority unit). Prefer a
+bank's stable ID for that import path when the CSV carries one. Exact field set stays tunable.
+
+---
+
+---
+
+## Decision 5 — Data-access layer + migrations → **SQLAlchemy 2.0 ORM + Alembic** ([ADR 0006](decisions/0006-data-access-and-migrations.md))
+
+**Candidates:** SQLAlchemy 2.0 ORM + Alembic · SQLAlchemy Core + Alembic (no ORM) · SQLModel +
+Alembic. (Raw `psycopg` + hand-rolled migrations — noted and dismissed: re-solves migration
+versioning.)
+
+**Concept primer:** *ORM* = Python classes ↔ SQL, rows become objects (convenient, hides SQL,
+own concepts: session/unit-of-work, lazy loading). *Core* = compose SQL in Python, get rows
+(still think in SQL, get pooling/param-binding/dialects free). *Migrations* = every schema
+change is a versioned, ordered, reversible script so dev/prod stay in lockstep and data
+survives changes.
+
+**Axes:** (1) learning value (SQL fluency vs ORM patterns) · (2) query power for the hard parts
+(dashboard aggregations, maintained/reconciled balance, partial indexes, append-only
+constraints) · (3) what real projects use · (4) boilerplate · (5) FastAPI/Pydantic fit.
+
+**How it scored:** ORM+Alembic strong on 1 (if raw SQL is used deliberately for the hard
+queries), 2 (full escape hatch to SQL), 3 (the default). Core-only is the sharpest for SQL
+fluency specifically but less common alone and more row-mapping boilerplate. SQLModel is the
+least code + tightest FastAPI fit but hides the most and fights triggers/constraints.
+
+**Call:** SQLAlchemy 2.0 ORM + Alembic, with dashboard aggregations and ledger-maintenance
+logic written in raw SQL / Core on purpose (learn both). Cost accepted: the ORM's own concept
+load. Core-only is a valid override if pure SQL fluency were the single priority.
+
+**Migrations — needed here?** Yes. You'll have real imported data that "drop and recreate"
+would destroy; migrations are a core professional skill being relearned; the append-only
+ledger's triggers/constraints/partial-indexes want versioned reversible scripts; cost is tiny
+(~20 lines config + autogenerate drafts). Used from the first commit — the walking skeleton
+ships the full model as the initial Alembic migration.
+
+**Knex.js note:** Knex bundles query-builder + migrations in one lib. Python splits them:
+SQLAlchemy (query layer) + Alembic (migrations), designed together. One-library analogues:
+Piccolo, Peewee + playhouse, Tortoise + Aerich, Django ORM + Django migrations. Non-ORM
+migration tools: yoyo, dbmate, Atlas (declarative diffing).
+
+---
+
+## Decision 6 — API style → **REST / HTTP-JSON + OpenAPI** ([ADR 0007](decisions/0007-api-style.md))
+
+**`api-interface-style` lens (inputs confirmed, gate not re-run):** one surface (browser SPA ↔
+FastAPI); one consumer, same repo, internal, free to churn; request→response only; fixed
+resources + computed dashboard reads; no real-time need; browser must speak it over HTTP.
+
+**Candidates:** REST/HTTP-JSON · GraphQL · gRPC-web. (WebSocket/SSE dismissed — no real-time.)
+
+**Axes:** (1) fit to the consumer · (2) query-variability payoff · (3) framework fit · (4) operational weight.
+
+**How it scored:** REST strong on all — native FastAPI + auto OpenAPI docs, browser speaks it
+trivially, lowest weight. GraphQL's client-shaped-query flexibility is dead weight with one
+known client and adds a resolver layer + N+1/depth-limiting + a second schema. gRPC needs a
+browser proxy — wrong tool for a browser edge.
+
+**Call:** REST/HTTP-JSON. Resource endpoints + a few computed dashboard read-model endpoints
+(a view, not a resource — fine in REST). OpenAPI spec → generated typed TS client for the
+frontend (recovers some end-to-end type safety). Deferred: versioning scheme, auth scheme
+(decision 8), pagination conventions.
+
+---
+
+## Decision 7 — Frontend approach → **React + Vite (TypeScript)** ([ADR 0008](decisions/0008-frontend.md))
+
+**Owner context:** prior React experience; no Vite experience; frontend is the weaker area.
+
+**Candidates:** React + Vite · Vue + Vite · Svelte/SvelteKit. (Server-rendered + htmx — rejected,
+CSV wizard needs rich local state. Next/Remix — rejected, adds a second server.)
+
+**Axes:** (1) fit to interactive parts (CSV wizard, charts) · (2) transferability · (3) ecosystem
+(charts/tables/forms) · (4) concept load.
+
+**How it scored:** all three fit the interactive parts. React wins transferability (dominant
+skill + owner already knows it) and ecosystem (deepest chart/table/form selection). Vue and
+Svelte are gentler to learn and lower boilerplate — the axis React loses.
+
+**Call:** React + Vite + TanStack Query. Cost accepted: steepest of the three learning curves,
+softened by existing React exposure.
+
+**What Vite is:** a build tool + dev server replacing CRA/webpack. Dev = instant start + hot
+module replacement via native ES modules; prod = Rollup bundle to static files. Key config here:
+the dev proxy forwards `/api` to FastAPI so dev is single-origin (no CORS) — the "web-app → API
+path" the walking skeleton proves.
+
+**Feeds build-time decisions** (already deferred in the scope): a component/UI library (Mantine
+/ shadcn) and a charting library (Recharts) — both leaning "batteries included" given the
+weaker-frontend constraint. `incremental-build-pacing` expected to go slow on the frontend.
+
+---
+
+## Decision 7b — Frontend state management → **no dedicated global-state library** ([ADR 0009](decisions/0009-frontend-state-management.md))
+
+**Framing:** split state by category, decide per category — not one global store.
+- Server state / cache → **TanStack Query** (already chosen). ~80% of this app's state.
+- URL state (month, account filter, page) → **React Router** (URL is the state).
+- Local UI state (forms, modals, wizard step) → `useState` / `useReducer`.
+- Global client state (authed user, toasts, theme) → `useContext` + `useState` — and there's
+  very little of it.
+
+**Dedicated global-state lib?** Candidates: none · Zustand/Jotai (minimal) · Redux Toolkit
+(full). Axes: fit to actual global-client-state need · boilerplate/concept load · weight ·
+transferability.
+
+**Call:** none. TanStack Query already removed the classic reason to reach for Redux (server
+cache). Add **Zustand** only if a concrete global-client-state pain appears. Redux deferred on
+purpose — bolting it onto an app without the problem teaches boilerplate, not judgement.
+
+**Backend aside:** no equivalent decision — a well-built API keeps handlers stateless, pushes
+durable state to the DB; a server-side session store (if auth picks it, ADR-0010) is the one
+deliberate piece of backend state.
+
+---
+
+## Decision 8 — Auth approach → **server-side session + HttpOnly cookie** ([ADR 0010](decisions/0010-auth.md))
+
+**Inputs:** one user, env-configured creds, **public URL over HTTPS**, SPA + REST API, goal =
+learn auth. S1's JWT assumption reopened. `access-control-modeling` near-degenerate (one actor,
+full access) — decision is purely the mechanism.
+
+**Concept:** auth = authentication (login) + carrying the proof afterward. Login is the same
+everywhere; the decision is **stateless token vs server-side session**.
+
+**Candidates:** stateless JWT (Bearer + localStorage) · JWT in HttpOnly cookie · server session
++ HttpOnly cookie. (Basic Auth / reverse-proxy auth — set aside, conflict with the learning
+goal.)
+
+**Axes:** (1) revocation · (2) XSS exposure of the credential · (3) CSRF surface · (4) learning
+value · (5) fit to one-user/public-URL/SPA+API · (6) statelessness *(the only reason JWT exists
+— worth nothing at 1 user on 1 box)*.
+
+**How it scored:** JWT-in-localStorage loses on revocation (valid till expiry) and XSS (any JS
+reads localStorage). JWT-in-cookie fixes XSS but is "sessions with a signed blob" — still no
+revocation, still needs CSRF defense. Server sessions win revocation (delete the row),
+HttpOnly-cookie safety, and learning value (sessions table + cookie flags + CSRF + real
+logout).
+
+**Call:** server-side session + `HttpOnly; Secure; SameSite=Lax` cookie; SPA + API under one
+origin; password stored as `AUTH_PASSWORD_HASH` (argon2/bcrypt); CSRF token on state-changing
+requests. **Forces later:** login rate-limiting + HTTPS/Let's Encrypt into the deployment ADRs.
+**Amends S1** (JWT → session cookie).
+
+---
+
+## Decision 9 — Packaging / dependency management → **`uv`** (routine) ([ADR 0011](decisions/0011-packaging.md))
+
+**Candidates:** `uv` · Poetry · pip + requirements (+ pip-tools).
+**Axes:** reproducibility (lockfile) · speed · single-tool-vs-several · currency/commonness.
+**Call:** `uv` — one fast tool for venv + install + lock + Python version; de facto modern
+default; least ceremony. Cost: newer than Poetry (past "risky"). `pyproject.toml` stays
+standard PEP 621, so reversible.
+
+---
+
+## Decision 10 — Deployment target → **single VPS + Docker Compose + Caddy** ([ADR 0012](decisions/0012-deployment.md))
+
+**Inputs:** self-hosted, ~$0, restart-OK (scope) + public HTTPS + login rate-limiting (ADR-0010)
++ goal = do deployment hands-on.
+
+**Candidates:** VPS + Compose + Caddy · PaaS (Render/Railway/Fly) · serverless · bare-metal systemd.
+
+**Axes:** (1) fit to scope · (2) learning value for "the whole process" · (3) ops burden ·
+(4) dev/prod parity · (5) cost.
+
+**How it scored:** VPS+Compose+Caddy strong on 1, 2, 4, 5 (~$5–7/mo + ~$12/yr domain); medium
+on 3 (Caddy automates TLS; you own updates/backups/disk). PaaS wins ops burden but abstracts
+the mechanics the owner wants to learn. Serverless fails "self-hosted". Bare-metal loses parity.
+
+**Call:** VPS + Compose + Caddy. Caddy = auto Let's Encrypt + serves the React static files +
+proxies `/api` (one origin, which cookie auth needs). `pg_dump` cron backups; rolling
+`compose pull && up`. Cost accepted: you operate the box.
+
+**Scale note (~50k MAU):** re-platform to PaaS or ECS/K8s + managed Postgres + LB + CDN;
+dominant lines DB $250–600/mo, compute $50–200/mo, CDN/egress $20–100/mo.
+
+---
+
+## Decision 11 — Observability → **structured logs + Sentry free tier** (routine) ([ADR 0013](decisions/0013-observability.md))
+
+**Candidates:** stdout logging only · logging + Loki/Grafana · logging + Sentry free · full
+Prometheus/Grafana/Loki/Tempo.
+**Axes:** fit to 1-user scale · signal actually needed (errors, not metrics) · ops burden · cost.
+**Call:** JSON logs to stdout (captured by the container runtime) + Caddy access logs + **Sentry
+free tier** for exceptions (~5 lines, $0, off-box) + `/health` liveness + an uptime ping.
+Prometheus/Grafana deferred — nothing to chart at one user; add later as a learning exercise.
+**Scale note (~50k MAU):** add Prometheus+Grafana (SLOs), Loki, tracing; Sentry → ~$26+/mo.
+
+---
+
+## Summary — the full stack
+
+| # | Decision | Choice | ADR | Tier |
+|---|---|---|---|---|
+| 1 | Language / runtime | Python ≥3.13 | 0002 | structural |
+| 2 | Web framework | FastAPI | 0003 | structural |
+| 3 | Datastore | PostgreSQL (containerised) | 0004 | load-bearing |
+| 4a | Money type | `NUMERIC(14,2)` + `Decimal`, never float | 0005 | load-bearing |
+| 4b | Account balance | Hybrid (maintained column + reconciliation) on an **append-only ledger** | 0005 | load-bearing |
+| 4c | CSV dedupe key | Content hash (bank-ID opt-in) | 0005 | load-bearing |
+| 5 | Data-access + migrations | SQLAlchemy 2.0 ORM + Alembic (raw SQL for hard queries) | 0006 | structural |
+| 6 | API style | REST / HTTP-JSON + OpenAPI | 0007 | structural |
+| 7 | Frontend | React + Vite + TypeScript + TanStack Query | 0008 | structural |
+| 7b | Frontend state mgmt | No global-state library (Context + Query + Router) | 0009 | structural |
+| 8 | Auth | Server-side session + `HttpOnly` cookie, same-origin, `AUTH_PASSWORD_HASH` | 0010 | load-bearing |
+| 9 | Packaging | `uv` | 0011 | routine |
+| 10 | Deployment | Single VPS + Docker Compose + Caddy (auto-HTTPS) | 0012 | routine |
+| 11 | Observability | Structured logs + Sentry free tier | 0013 | routine |
+| 12 | Config & secrets | Gitignored `.env` on the VPS + `.env.example` | 0014 | routine |
+| 13 | Frontend test tooling | Vitest + React Testing Library; Playwright for E2E | 0015 | structural |
+| 14 | CI provider | GitHub Actions | 0016 | routine |
+
+**Spec amendments made during the walkthrough:** S4 (edit/delete → add + void, ADR-0005);
+S1 (JWT → session cookie, ADR-0010). Both in the `docs/spec.md` drift log.
+
+**Cross-cutting requirements surfaced:** HTTPS/Let's Encrypt + login rate-limiting (from auth,
+land with deployment); CSRF token on state-changing requests; the reconciliation job; `pg_dump`
+backups; Sentry wiring; a domain name.
+
+**Deferred to build-time (on the scope's "decide during implementation" list):** component/UI
+library (lean Mantine/shadcn), charting library (lean Recharts), CSV column-mapping UX, exact
+dedupe-hash field set, session expiry value, transactions-list pagination, dashboard
+aggregation query shapes. **From the closeout audit:** date/time & timezone policy (transaction
+`date` as SQL `DATE`; audit timestamps `timestamptz` UTC; frontend formats with `Intl`) —
+capture in the data-model migration; container base images (`python:3.13-slim` backend;
+multi-stage node build → static files served by Caddy).
+
+**Deferred to a future v2 (out of scope now):** multi-user + a real `users` table, double-entry
+bookkeeping, the scale re-platform (managed Postgres, CDN, metrics stack).

@@ -32,6 +32,7 @@ incremental-build-pacing  →  build it slowly, file by file
 |---|---|
 | `SKILL.md` | Preconditions, decision ordering, the per-decision loop, depth control, registers, Never list, escape hatch, examples. |
 | `decision-loop.md` | The loop in detail, the two registers, axes libraries for the common build decisions (runtime, framework, datastore, data-access, frontend, API style, auth, async, packaging, deployment), the ADR shape, anti-patterns. |
+| `library-vetting.md` | Axes + how-to-check for a "which package for X" decision — the supply-chain read (weight, transitive deps, maintenance, bus factor, license, security patch latency, API churn, exit cost) the generic axes libraries don't carry. Depth-tiered. |
 
 ## Design choices
 

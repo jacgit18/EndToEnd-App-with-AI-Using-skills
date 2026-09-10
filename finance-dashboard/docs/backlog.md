@@ -23,6 +23,11 @@
 
 **Explicitly not covered:** signup, password reset, multiple users, refresh tokens.
 
+> **Amended 2026-09-10 (ADR-0010):** auth is a **server-side session + `HttpOnly` cookie**, not
+> a JWT. `AUTH_PASSWORD` → `AUTH_PASSWORD_HASH` (argon2/bcrypt); `JWT_EXPIRE_MINUTES` →
+> `SESSION_EXPIRE_MINUTES`. Adds a `sessions` table + login rate-limiting; requires HTTPS. AC
+> and story text reworded at build time.
+
 ---
 
 ## S2 — Manage accounts (Must)
@@ -72,6 +77,10 @@
 **Explicitly not covered:** split transactions, attachments/receipts, bulk edit.
 
 *Skeleton delivers add + list; edit/delete + filtering remain.*
+
+> **Amended 2026-09-10 (ADR-0005):** the ledger is append-only. "Edit and delete" becomes
+> **add + void** — a void posts a reversing entry; there is no in-place edit or hard delete.
+> AC and this story text to be reworded at build time.
 
 ---
 
