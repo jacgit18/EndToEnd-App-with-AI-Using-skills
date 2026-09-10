@@ -211,6 +211,28 @@ migration tools: yoyo, dbmate, Atlas (declarative diffing).
 
 ---
 
+## Decision 6 — API style → **REST / HTTP-JSON + OpenAPI** ([ADR 0007](decisions/0007-api-style.md))
+
+**`api-interface-style` lens (inputs confirmed, gate not re-run):** one surface (browser SPA ↔
+FastAPI); one consumer, same repo, internal, free to churn; request→response only; fixed
+resources + computed dashboard reads; no real-time need; browser must speak it over HTTP.
+
+**Candidates:** REST/HTTP-JSON · GraphQL · gRPC-web. (WebSocket/SSE dismissed — no real-time.)
+
+**Axes:** (1) fit to the consumer · (2) query-variability payoff · (3) framework fit · (4) operational weight.
+
+**How it scored:** REST strong on all — native FastAPI + auto OpenAPI docs, browser speaks it
+trivially, lowest weight. GraphQL's client-shaped-query flexibility is dead weight with one
+known client and adds a resolver layer + N+1/depth-limiting + a second schema. gRPC needs a
+browser proxy — wrong tool for a browser edge.
+
+**Call:** REST/HTTP-JSON. Resource endpoints + a few computed dashboard read-model endpoints
+(a view, not a resource — fine in REST). OpenAPI spec → generated typed TS client for the
+frontend (recovers some end-to-end type safety). Deferred: versioning scheme, auth scheme
+(decision 8), pagination conventions.
+
+---
+
 ## Summary
 
-_(filled in once decisions 6–11 are done)_
+_(filled in once decisions 7–11 are done)_
