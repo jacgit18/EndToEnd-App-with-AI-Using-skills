@@ -324,6 +324,71 @@ standard PEP 621, so reversible.
 
 ---
 
-## Summary
+## Decision 10 — Deployment target → **single VPS + Docker Compose + Caddy** ([ADR 0012](decisions/0012-deployment.md))
 
-_(filled in once decisions 10–11 are done)_
+**Inputs:** self-hosted, ~$0, restart-OK (scope) + public HTTPS + login rate-limiting (ADR-0010)
++ goal = do deployment hands-on.
+
+**Candidates:** VPS + Compose + Caddy · PaaS (Render/Railway/Fly) · serverless · bare-metal systemd.
+
+**Axes:** (1) fit to scope · (2) learning value for "the whole process" · (3) ops burden ·
+(4) dev/prod parity · (5) cost.
+
+**How it scored:** VPS+Compose+Caddy strong on 1, 2, 4, 5 (~$5–7/mo + ~$12/yr domain); medium
+on 3 (Caddy automates TLS; you own updates/backups/disk). PaaS wins ops burden but abstracts
+the mechanics the owner wants to learn. Serverless fails "self-hosted". Bare-metal loses parity.
+
+**Call:** VPS + Compose + Caddy. Caddy = auto Let's Encrypt + serves the React static files +
+proxies `/api` (one origin, which cookie auth needs). `pg_dump` cron backups; rolling
+`compose pull && up`. Cost accepted: you operate the box.
+
+**Scale note (~50k MAU):** re-platform to PaaS or ECS/K8s + managed Postgres + LB + CDN;
+dominant lines DB $250–600/mo, compute $50–200/mo, CDN/egress $20–100/mo.
+
+---
+
+## Decision 11 — Observability → **structured logs + Sentry free tier** (routine) ([ADR 0013](decisions/0013-observability.md))
+
+**Candidates:** stdout logging only · logging + Loki/Grafana · logging + Sentry free · full
+Prometheus/Grafana/Loki/Tempo.
+**Axes:** fit to 1-user scale · signal actually needed (errors, not metrics) · ops burden · cost.
+**Call:** JSON logs to stdout (captured by the container runtime) + Caddy access logs + **Sentry
+free tier** for exceptions (~5 lines, $0, off-box) + `/health` liveness + an uptime ping.
+Prometheus/Grafana deferred — nothing to chart at one user; add later as a learning exercise.
+**Scale note (~50k MAU):** add Prometheus+Grafana (SLOs), Loki, tracing; Sentry → ~$26+/mo.
+
+---
+
+## Summary — the full stack
+
+| # | Decision | Choice | ADR | Tier |
+|---|---|---|---|---|
+| 1 | Language / runtime | Python ≥3.13 | 0002 | structural |
+| 2 | Web framework | FastAPI | 0003 | structural |
+| 3 | Datastore | PostgreSQL (containerised) | 0004 | load-bearing |
+| 4a | Money type | `NUMERIC(14,2)` + `Decimal`, never float | 0005 | load-bearing |
+| 4b | Account balance | Hybrid (maintained column + reconciliation) on an **append-only ledger** | 0005 | load-bearing |
+| 4c | CSV dedupe key | Content hash (bank-ID opt-in) | 0005 | load-bearing |
+| 5 | Data-access + migrations | SQLAlchemy 2.0 ORM + Alembic (raw SQL for hard queries) | 0006 | structural |
+| 6 | API style | REST / HTTP-JSON + OpenAPI | 0007 | structural |
+| 7 | Frontend | React + Vite + TypeScript + TanStack Query | 0008 | structural |
+| 7b | Frontend state mgmt | No global-state library (Context + Query + Router) | 0009 | structural |
+| 8 | Auth | Server-side session + `HttpOnly` cookie, same-origin, `AUTH_PASSWORD_HASH` | 0010 | load-bearing |
+| 9 | Packaging | `uv` | 0011 | routine |
+| 10 | Deployment | Single VPS + Docker Compose + Caddy (auto-HTTPS) | 0012 | routine |
+| 11 | Observability | Structured logs + Sentry free tier | 0013 | routine |
+
+**Spec amendments made during the walkthrough:** S4 (edit/delete → add + void, ADR-0005);
+S1 (JWT → session cookie, ADR-0010). Both in the `docs/spec.md` drift log.
+
+**Cross-cutting requirements surfaced:** HTTPS/Let's Encrypt + login rate-limiting (from auth,
+land with deployment); CSRF token on state-changing requests; the reconciliation job; `pg_dump`
+backups; Sentry wiring; a domain name.
+
+**Deferred to build-time (on the scope's "decide during implementation" list):** component/UI
+library (lean Mantine/shadcn), charting library (lean Recharts), CSV column-mapping UX, exact
+dedupe-hash field set, session expiry value, transactions-list pagination, dashboard
+aggregation query shapes.
+
+**Deferred to a future v2 (out of scope now):** multi-user + a real `users` table, double-entry
+bookkeeping, the scale re-platform (managed Postgres, CDN, metrics stack).
