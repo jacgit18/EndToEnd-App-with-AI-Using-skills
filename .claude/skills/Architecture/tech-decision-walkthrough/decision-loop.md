@@ -214,6 +214,14 @@ Defer to `deployment-strategy` / `serverless-execution-model` for anything non-t
 axes: who operates it · scale-to-zero vs. always-on · container vs. function vs. VM vs. PaaS ·
 cost model · existing infra.
 
+### Pulling in a library / dependency
+When a decision's shape is "which package for X" (validation lib, HTTP client, date lib, chart
+lib, CLI parser) — see **`library-vetting.md`**. The entries above cover *fit*; adding a
+dependency also needs the axes about what you now carry — weight & transitive deps, maintenance
+health & bus factor, license (transitive too), security patch latency, API churn, exit cost —
+plus how to check each. Depth-tiered: one line for a util, full table for a subsystem-shaping
+lib, specialist entry + a supply-chain paragraph for a load-bearing one.
+
 ---
 
 ## Anti-patterns

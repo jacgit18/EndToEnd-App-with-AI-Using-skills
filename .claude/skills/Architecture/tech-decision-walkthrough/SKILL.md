@@ -60,7 +60,9 @@ For each decision — full protocol and the axes libraries are in `decision-loop
 3. **Candidate set** — 2–4 realistic options for *this* build, not a survey of the field. One
    line each: what it is, where it shines, where it hurts.
 4. **Deciding axes** — the 2–4 dimensions that actually discriminate here. Name them *before*
-   scoring. This is the interview move: make the evaluation criteria explicit.
+   scoring. This is the interview move: make the evaluation criteria explicit. When the
+   decision is "which library/package for X", use `library-vetting.md` for the supply-chain
+   axes (weight, maintenance, license, security, exit cost) an improvised list skips.
 5. **Score against the axes** — a compact comparison. Be honest where a rejected option is
    genuinely better; a comparison with no cost to the winner isn't finished. When one axis is
    **recurring cost**, give two reads — the user's actual plan *and* a short realistic-scale
