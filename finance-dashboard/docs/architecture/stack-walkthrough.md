@@ -314,6 +314,16 @@ requests. **Forces later:** login rate-limiting + HTTPS/Let's Encrypt into the d
 
 ---
 
+## Decision 9 — Packaging / dependency management → **`uv`** (routine) ([ADR 0011](decisions/0011-packaging.md))
+
+**Candidates:** `uv` · Poetry · pip + requirements (+ pip-tools).
+**Axes:** reproducibility (lockfile) · speed · single-tool-vs-several · currency/commonness.
+**Call:** `uv` — one fast tool for venv + install + lock + Python version; de facto modern
+default; least ceremony. Cost: newer than Poetry (past "risky"). `pyproject.toml` stays
+standard PEP 621, so reversible.
+
+---
+
 ## Summary
 
-_(filled in once decisions 9–11 are done)_
+_(filled in once decisions 10–11 are done)_
