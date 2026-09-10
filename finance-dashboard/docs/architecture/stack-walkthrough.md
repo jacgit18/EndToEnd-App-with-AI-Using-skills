@@ -171,6 +171,46 @@ bank's stable ID for that import path when the CSV carries one. Exact field set 
 
 ---
 
+---
+
+## Decision 5 — Data-access layer + migrations → **SQLAlchemy 2.0 ORM + Alembic** ([ADR 0006](decisions/0006-data-access-and-migrations.md))
+
+**Candidates:** SQLAlchemy 2.0 ORM + Alembic · SQLAlchemy Core + Alembic (no ORM) · SQLModel +
+Alembic. (Raw `psycopg` + hand-rolled migrations — noted and dismissed: re-solves migration
+versioning.)
+
+**Concept primer:** *ORM* = Python classes ↔ SQL, rows become objects (convenient, hides SQL,
+own concepts: session/unit-of-work, lazy loading). *Core* = compose SQL in Python, get rows
+(still think in SQL, get pooling/param-binding/dialects free). *Migrations* = every schema
+change is a versioned, ordered, reversible script so dev/prod stay in lockstep and data
+survives changes.
+
+**Axes:** (1) learning value (SQL fluency vs ORM patterns) · (2) query power for the hard parts
+(dashboard aggregations, maintained/reconciled balance, partial indexes, append-only
+constraints) · (3) what real projects use · (4) boilerplate · (5) FastAPI/Pydantic fit.
+
+**How it scored:** ORM+Alembic strong on 1 (if raw SQL is used deliberately for the hard
+queries), 2 (full escape hatch to SQL), 3 (the default). Core-only is the sharpest for SQL
+fluency specifically but less common alone and more row-mapping boilerplate. SQLModel is the
+least code + tightest FastAPI fit but hides the most and fights triggers/constraints.
+
+**Call:** SQLAlchemy 2.0 ORM + Alembic, with dashboard aggregations and ledger-maintenance
+logic written in raw SQL / Core on purpose (learn both). Cost accepted: the ORM's own concept
+load. Core-only is a valid override if pure SQL fluency were the single priority.
+
+**Migrations — needed here?** Yes. You'll have real imported data that "drop and recreate"
+would destroy; migrations are a core professional skill being relearned; the append-only
+ledger's triggers/constraints/partial-indexes want versioned reversible scripts; cost is tiny
+(~20 lines config + autogenerate drafts). Used from the first commit — the walking skeleton
+ships the full model as the initial Alembic migration.
+
+**Knex.js note:** Knex bundles query-builder + migrations in one lib. Python splits them:
+SQLAlchemy (query layer) + Alembic (migrations), designed together. One-library analogues:
+Piccolo, Peewee + playhouse, Tortoise + Aerich, Django ORM + Django migrations. Non-ORM
+migration tools: yoyo, dbmate, Atlas (declarative diffing).
+
+---
+
 ## Summary
 
-_(filled in once decisions 5–11 are done)_
+_(filled in once decisions 6–11 are done)_
