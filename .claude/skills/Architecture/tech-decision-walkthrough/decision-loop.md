@@ -59,6 +59,13 @@ competent engineer would actually shortlist given Step 2. One line each:
 If the user named a candidate that shouldn't be on the list, say why once and drop it — don't
 score a strawman through the whole table.
 
+**If the user flags unfamiliarity** with a candidate, a concept, or the whole domain ("not
+familiar with X", "explain this one", "no idea what that means"), expand that item to
+teach-it depth *before* scoring or asking for a decision — how it works, why it exists, a
+concrete example, what real systems do. Don't stay at one-line-each depth and don't make them
+choose blind. This is `learning-gate` S0 inside the loop; it holds for the rest of the
+walkthrough once they've said it, not just that one turn.
+
 ### 4. Deciding axes
 
 The 2–4 dimensions that actually discriminate *here*. Name them before scoring so the reasoning
