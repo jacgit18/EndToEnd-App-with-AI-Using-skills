@@ -73,6 +73,10 @@
 
 *Skeleton delivers add + list; edit/delete + filtering remain.*
 
+> **Amended 2026-09-10 (ADR-0005):** the ledger is append-only. "Edit and delete" becomes
+> **add + void** — a void posts a reversing entry; there is no in-place edit or hard delete.
+> AC and this story text to be reworded at build time.
+
 ---
 
 ## S5 — CSV import (Must) — large, splittable

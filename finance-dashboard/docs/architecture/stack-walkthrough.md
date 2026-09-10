@@ -94,7 +94,7 @@ learning that transfers to bigger projects.
 
 ---
 
-## Decision 4 — Money representation ([ADR 0005](decisions/0005-money-representation.md) — in progress)
+## Decision 4 — Money representation → [ADR 0005](decisions/0005-money-representation.md)
 
 Three sub-questions: (a) type · (b) balance stored/derived/hybrid · (c) CSV dedupe key.
 
@@ -137,9 +137,20 @@ was the initial recommendation. The user chose hybrid deliberately — to build 
 systems use and get the reps (maintained column + reconciliation job). Accepted as a
 learning-motivated call, not a performance need.
 
-**Open partner decision:** transactions **editable** (maintenance logic handles edit/delete)
-vs **append-only ledger** (reversing entries; changes backlog S4's edit/delete UX but is the
-real banking pattern). — *pending*
+**Partner decision → append-only ledger.** Transactions are immutable; corrections are new
+reversing entries. Real-world banking is append-only without exception — double-entry
+bookkeeping, immutable audit trail for regulators/disputes, downstream-system consistency, and
+point-in-time balances all depend on it; posted vs pending is the only "mutable" state, and it
+resolves by settling into an immutable posting. Consumer PFM apps (Mint, YNAB) allow free
+edit/delete because they're a *view*, not a system of record. Chosen here on the **learning
+axis**: append-only teaches immutable/event-log data modeling (transfers to event sourcing,
+CQRS, audit logs), reversing-entry mechanics, pending-vs-posted state, and reconciliation —
+all transferable to fintech and systems design. Editable would only teach the narrower
+stored-aggregate-consistency-under-mutation lesson. Cost: backlog **S4** amended from
+"add/edit/delete" to **add + void**; `type` + `reverses_transaction_id` columns; the
+transactions UI shows reversals rather than removing rows. The balance-maintenance logic gets
+*simpler* — it only ever adds. Double-entry (two accounts per transaction) deferred to a later
+ADR; v1 stays single-sided but immutable.
 
 ### (c) CSV dedupe key → **content hash**, bank-ID as an opt-in upgrade
 
