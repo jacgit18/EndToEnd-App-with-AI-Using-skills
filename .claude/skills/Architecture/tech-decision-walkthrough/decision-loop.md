@@ -122,6 +122,29 @@ front-door gate from zero — a second wall of questions on one decision is the 
 
 ---
 
+## When cost is a deciding axis
+
+If a decision carries a real recurring price — compute, storage, database instances, a
+managed-service premium, egress / CDN, per-request or per-token API charges, background-job
+minutes, log / telemetry ingestion — give **two reads**, not one:
+
+1. **The user's actual plan.** Size the cost for their stated scale and hosting (from the scope:
+   users, RPS, GB, budget cap). Invoke `technical-cost-decision` for the Cost Surface when the
+   arithmetic is non-trivial; name the dominant line. At hobby / single-user / self-hosted
+   scale the honest answer is often "no meaningful difference between the candidates" — say that
+   plainly; don't manufacture one.
+2. **A realistic-scale example, for learning.** One short paragraph: pick a plausible production
+   scale, state the cost driver explicitly ("50k MAU", "500 RPS peak", "2 TB egress/mo", "10M
+   API calls/mo", "300M rows"), and give ballpark monthly figures for each candidate with the
+   dominant line called out. A few lines — a teaching aid, not a second full Cost Surface.
+
+This applies to every cost-bearing domain, not just infra: API request volume, web traffic and
+CDN egress, LLM token spend, job minutes, telemetry ingestion.
+
+If a decision genuinely has no cost dimension — a data-type choice, a code-structure choice,
+two options that are the same byte on disk — say so and cut the axis. Don't invent numbers to
+fill a table cell.
+
 ## Axes libraries
 
 Starting axes for common build decisions. Not exhaustive; drop the ones that don't discriminate,

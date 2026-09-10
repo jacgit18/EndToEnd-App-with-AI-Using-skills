@@ -62,7 +62,10 @@ For each decision — full protocol and the axes libraries are in `decision-loop
 4. **Deciding axes** — the 2–4 dimensions that actually discriminate here. Name them *before*
    scoring. This is the interview move: make the evaluation criteria explicit.
 5. **Score against the axes** — a compact comparison. Be honest where a rejected option is
-   genuinely better; a comparison with no cost to the winner isn't finished.
+   genuinely better; a comparison with no cost to the winner isn't finished. When one axis is
+   **recurring cost**, give two reads — the user's actual plan *and* a short realistic-scale
+   example naming the cost driver — per `decision-loop.md` "When cost is a deciding axis". If
+   the candidates cost the same at every scale, cut the axis; don't invent numbers.
 6. **Recommendation + because** — one clear lean, tied to a named axis and the stated
    constraints. Not hedged, not a menu handed back.
 7. **User decides** — agree, override, or ask for another round. An override with a stated
