@@ -23,6 +23,11 @@
 
 **Explicitly not covered:** signup, password reset, multiple users, refresh tokens.
 
+> **Amended 2026-09-10 (ADR-0010):** auth is a **server-side session + `HttpOnly` cookie**, not
+> a JWT. `AUTH_PASSWORD` → `AUTH_PASSWORD_HASH` (argon2/bcrypt); `JWT_EXPIRE_MINUTES` →
+> `SESSION_EXPIRE_MINUTES`. Adds a `sessions` table + login rate-limiting; requires HTTPS. AC
+> and story text reworded at build time.
+
 ---
 
 ## S2 — Manage accounts (Must)

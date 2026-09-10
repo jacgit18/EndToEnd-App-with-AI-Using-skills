@@ -284,6 +284,36 @@ deliberate piece of backend state.
 
 ---
 
+## Decision 8 — Auth approach → **server-side session + HttpOnly cookie** ([ADR 0010](decisions/0010-auth.md))
+
+**Inputs:** one user, env-configured creds, **public URL over HTTPS**, SPA + REST API, goal =
+learn auth. S1's JWT assumption reopened. `access-control-modeling` near-degenerate (one actor,
+full access) — decision is purely the mechanism.
+
+**Concept:** auth = authentication (login) + carrying the proof afterward. Login is the same
+everywhere; the decision is **stateless token vs server-side session**.
+
+**Candidates:** stateless JWT (Bearer + localStorage) · JWT in HttpOnly cookie · server session
++ HttpOnly cookie. (Basic Auth / reverse-proxy auth — set aside, conflict with the learning
+goal.)
+
+**Axes:** (1) revocation · (2) XSS exposure of the credential · (3) CSRF surface · (4) learning
+value · (5) fit to one-user/public-URL/SPA+API · (6) statelessness *(the only reason JWT exists
+— worth nothing at 1 user on 1 box)*.
+
+**How it scored:** JWT-in-localStorage loses on revocation (valid till expiry) and XSS (any JS
+reads localStorage). JWT-in-cookie fixes XSS but is "sessions with a signed blob" — still no
+revocation, still needs CSRF defense. Server sessions win revocation (delete the row),
+HttpOnly-cookie safety, and learning value (sessions table + cookie flags + CSRF + real
+logout).
+
+**Call:** server-side session + `HttpOnly; Secure; SameSite=Lax` cookie; SPA + API under one
+origin; password stored as `AUTH_PASSWORD_HASH` (argon2/bcrypt); CSRF token on state-changing
+requests. **Forces later:** login rate-limiting + HTTPS/Let's Encrypt into the deployment ADRs.
+**Amends S1** (JWT → session cookie).
+
+---
+
 ## Summary
 
-_(filled in once decisions 8–11 are done)_
+_(filled in once decisions 9–11 are done)_
