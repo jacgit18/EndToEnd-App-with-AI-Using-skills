@@ -62,6 +62,7 @@ From `consistency-and-transactions.md`:
   - **Transactional outbox + events** — the default for "update my data and tell others". Local transaction writes the row and an outbox record; a relay publishes the event; consumers converge. Eventual consistency, no distributed lock.
   - **Saga** — a sequence of local transactions with compensating actions on failure. For multi-step workflows (order → payment → shipment) that can tolerate visible intermediate states and need explicit rollback logic.
   - **2PC** — strong atomicity across participants, at the cost of coupling their availability (a slow or down participant blocks the commit). Only when a partial outcome is genuinely unacceptable and the participants are few and reliable.
+- **Change propagation to non-transactional consumers** — keeping a search index, cache, read model, or warehouse in sync. **Never a dual write** (write the DB, then write the other system in the request path — no atomicity, silent drift). Use the **transactional outbox** when you own the writing app and need a few business events; use **change data capture** (Debezium / logical replication / DMS) when the write side is off-limits or every column change matters. Both are at-least-once — consumers must be idempotent.
 
 Record the choice and the anomaly / failure it accepts.
 

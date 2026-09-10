@@ -30,7 +30,12 @@ Engines like Postgres use multi-version concurrency control: readers don't block
 
 ## Distributed transactions — cross-shard or cross-service writes
 
-Pick the weakest one that meets the requirement.
+Pick the weakest one that meets the requirement. The same ladder covers *change propagation* —
+keeping a search index, cache, read model, warehouse, or downstream service in sync with a
+source database. The anti-pattern there is the **dual write**: the app writes the database and
+then writes the other system in the same request path. The two writes are not atomic — a crash
+or error between them leaves the systems permanently diverged with no reconciliation. Use the
+outbox or CDC below instead.
 
 ### None
 
@@ -63,6 +68,14 @@ A coordinator runs a prepare phase (every participant votes and durably promises
 ### Eventual consistency (accept it explicitly)
 
 No transaction — each side writes independently and a reconciliation / repair process converges them. Only when the data genuinely tolerates being divergent for a while and there's a converging mechanism (idempotent replay, periodic reconciliation job).
+
+### Change data capture (CDC) — propagate committed changes, don't dual-write
+
+Read the database's own change log — the Postgres WAL via logical replication, the MySQL binlog — and stream every committed row change to consumers (a search index, a cache, a warehouse, another service). Tools: Debezium (onto Kafka), native logical replication, managed pipes (AWS DMS, Fivetran).
+
+- **Guarantees** — every consumer sees exactly the changes that committed, in commit order, at-least-once; the writing application is untouched and unaware.
+- **Accepts** — eventual consistency (a lag window); an extra moving part (the connector, its offsets, its schema-change handling); initial-snapshot + catch-up complexity; consumers must be idempotent.
+- **Fits** — you *can't* modify the writing app, or many consumers want the same stream, or you need a faithful historical change feed. Prefer the **transactional outbox** (above) instead when you own the writing app and only need a handful of business events — it puts the event shape under your control and needs no log-decoding infrastructure. Prefer **CDC** when the write side is off-limits or every column change matters.
 
 ## Replication lag and read-your-writes
 

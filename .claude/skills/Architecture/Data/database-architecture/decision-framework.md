@@ -33,6 +33,8 @@ Ask the one question that matters: **where should the authoritative definition o
 
 "Code-first" does not mean "ORM". It also covers query builders (Knex, Kysely, SQLAlchemy Core) and schema libraries (Zod, Yup, io-ts) with hand-written SQL, and codegen-from-SQL (sqlc, pgtyped) which is code-first in ergonomics but database-first in truth — call that out if it fits.
 
+**The extreme database-first shape: no hand-written application tier at all.** PostgREST, Hasura, PostGraphile, and Supabase generate a REST or GraphQL API directly from the schema, with authorization expressed as Postgres row-level security policies and business logic as database functions. The database schema *is* the public API. This fits internal tools, admin panels, and MVPs whose data needs are "query my tables with filters and pagination" — it deletes the entire CRUD backend. The cost it accepts: logic and authz live in RLS policies and PL/pgSQL, which are harder to unit-test, review, and version than application code, and any non-trivial workflow still needs a real service beside the generated API. If the user is weighing "write a backend vs generate one from the DB", that is this decision (database-first, taken to its limit) plus an API-surface question — the generated tool's wire protocol is fixed (PostgREST → REST, Hasura/PostGraphile → GraphQL), so `api-interface-style` has little left to decide once this is chosen. The choice of how *hand-written* code talks to the DB when there is a hand-written tier is `data-access-layer`, not this skill.
+
 ## 4. Weigh against this project's stage
 
 The gate captured evolution/stage. Apply it:

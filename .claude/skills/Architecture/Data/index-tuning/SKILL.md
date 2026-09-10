@@ -51,6 +51,10 @@ inputs get asked for.
 - **A schema-level problem the tuning surfaces** — a missing column forcing every query to
   filter on a computed expression, an over-normalized model forcing a six-table join on a
   hot path → `relational-modeling`.
+- **A whole *class* of queries that should leave the ORM** — not one slow query, not one
+  index, but "the entire reporting/analytics module fights the ORM and should be hand-written
+  SQL" → `data-access-layer` (the primary/secondary access-style decision). This skill tunes
+  one query at a time; the access-layer split is a different call.
 - **Rolling out the index change** in stages, or checking whether dropping an index breaks a
   query you didn't know about → `deployment-strategy` (expand/contract) and
   `change-surface-audit` (a drop is a removal — audit its hidden dependents).
