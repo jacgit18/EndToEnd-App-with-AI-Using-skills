@@ -377,6 +377,9 @@ Prometheus/Grafana deferred — nothing to chart at one user; add later as a lea
 | 9 | Packaging | `uv` | 0011 | routine |
 | 10 | Deployment | Single VPS + Docker Compose + Caddy (auto-HTTPS) | 0012 | routine |
 | 11 | Observability | Structured logs + Sentry free tier | 0013 | routine |
+| 12 | Config & secrets | Gitignored `.env` on the VPS + `.env.example` | 0014 | routine |
+| 13 | Frontend test tooling | Vitest + React Testing Library; Playwright for E2E | 0015 | structural |
+| 14 | CI provider | GitHub Actions | 0016 | routine |
 
 **Spec amendments made during the walkthrough:** S4 (edit/delete → add + void, ADR-0005);
 S1 (JWT → session cookie, ADR-0010). Both in the `docs/spec.md` drift log.
@@ -388,7 +391,10 @@ backups; Sentry wiring; a domain name.
 **Deferred to build-time (on the scope's "decide during implementation" list):** component/UI
 library (lean Mantine/shadcn), charting library (lean Recharts), CSV column-mapping UX, exact
 dedupe-hash field set, session expiry value, transactions-list pagination, dashboard
-aggregation query shapes.
+aggregation query shapes. **From the closeout audit:** date/time & timezone policy (transaction
+`date` as SQL `DATE`; audit timestamps `timestamptz` UTC; frontend formats with `Intl`) —
+capture in the data-model migration; container base images (`python:3.13-slim` backend;
+multi-stage node build → static files served by Caddy).
 
 **Deferred to a future v2 (out of scope now):** multi-user + a real `users` table, double-entry
 bookkeeping, the scale re-platform (managed Postgres, CDN, metrics stack).
