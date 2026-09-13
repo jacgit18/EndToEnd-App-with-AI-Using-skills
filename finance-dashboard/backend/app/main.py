@@ -9,8 +9,12 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from app.db import get_db
+from app.routers import accounts, transactions
 
 app = FastAPI(title="Finance Dashboard API")
+
+app.include_router(accounts.router, prefix="/api/accounts", tags=["accounts"])
+app.include_router(transactions.router, prefix="/api/transactions", tags=["transactions"])
 
 
 @app.get("/health")
@@ -26,9 +30,3 @@ def health(db: Session = Depends(get_db)) -> dict[str, str]:
     except Exception:
         db_status = "unreachable"
     return {"status": "ok", "db": db_status}
-
-
-# Routers are added here as each story ships, e.g.:
-#   from app.routers import accounts, transactions
-#   app.include_router(accounts.router, prefix="/api/accounts", tags=["accounts"])
-#   app.include_router(transactions.router, prefix="/api/transactions", tags=["transactions"])

@@ -29,3 +29,10 @@ dev = [
 # No [build-system] table on purpose: this is an application, not a library.
 # uv manages the virtualenv and dependencies; it never builds/installs this project
 # as a package. (ADR-0011)
+
+# There's no [build-system], so `app/` is never installed as a package — pytest
+# needs to be told where it lives. `pythonpath = ["."]` puts backend/ (this
+# file's directory) on sys.path so `import app.config` etc. resolves when
+# pytest is run from here, same as it does when uvicorn runs the app itself.
+[tool.pytest.ini_options]
+pythonpath = ["."]
