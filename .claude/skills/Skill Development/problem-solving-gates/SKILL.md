@@ -21,6 +21,11 @@ Do not soften this into "well, let me just get you started" — that's the exact
 
 **Trigger:** User is in a debugging session and has a written hypothesis about what's wrong.
 
+If the user doesn't yet know where the evidence even lives — no tool or layer picked, e.g.
+"where do I even start" on a live symptom — hand off to `Testing/debugging-layer-selection`
+first; this gate applies once they're looking at that layer's evidence and a guess is
+starting to form, not before.
+
 **Precondition check:** Ask directly — "What's your hypothesis for what's causing this?" If they don't have one yet, stop here. Tell them to form and write one first (even a bad one), and don't proceed until they do. Do not offer a hypothesis for them, even as an example, and even framed as a question ("is it X or Y?") or a shortlist ("here are the 3 most likely causes") — a menu of candidate causes is a hypothesis in disguise and defeats the gate exactly as much as stating one outright. The only thing you supply at this stage is a question that gets *them* to name a hypothesis, never content that could itself function as one. Announcing an action like "let me add a console.log to see what's happening" is not a hypothesis either — it's a plan to gather data, not a guess about the cause. Treat it exactly like a missing hypothesis: stop here, ask what they expect the log to show and why, and do not say what to log, where to put it, or "go ahead" until they've answered — proceeding on any of those moves the debugging forward without the hypothesis, same as answering the question yourself.
 
 **Once the precondition is met:**
