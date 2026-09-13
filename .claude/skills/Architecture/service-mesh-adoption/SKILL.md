@@ -91,6 +91,7 @@ Achievable without a mesh:  <what the platform/libraries already provide, and wh
 Recommendation:              <no mesh | lightweight/partial mesh (name the tool) | full-featured mesh (name the tool)>
 Discovery mechanism:         <self-registration to a registry | third-party/orchestrator-managed | DNS-native | mesh-integrated>
 Owner:                       <named team, or UNASSIGNED>
+Agent-drivable:              <does the mesh's control plane expose a CLI/API an agent could use to inspect routing/mTLS state (istioctl, the linkerd CLI) — a real maturity difference between mesh options, or "n/a — no mesh">
 Tradeoffs accepted:          <2-4 concrete costs: per-hop latency, control-plane operational burden, sidecar resource overhead, or — if no mesh — manual per-service TLS/retry maintenance>
 Not chosen because:          <one line per rejected option>
 Follow-ups:                  <resilience-strategy for exact mechanism placement; cloud-iam-boundary for the authorization policy once identity exists; observability-strategy for the instrumentation strategy; technical-cost-decision for control-plane infra cost>

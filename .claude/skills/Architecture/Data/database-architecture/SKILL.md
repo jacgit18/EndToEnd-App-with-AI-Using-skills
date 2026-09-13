@@ -102,6 +102,7 @@ Database modeling:   <how the DB schema is defined — SQL migrations, ORM schem
 Application access:  <ORM / query builder / generated client>
 Validation:          <where runtime validation comes from>
 Mapping:             <the translation boundary, e.g. DB row → domain model → API DTO>
+Agent tooling note:  <does this engine/contract have mature agent-facing tooling worth knowing about — an MCP database server for schema introspection, a codegen path from the contract to a tool schema — named here, not decided here; whether an agent should actually be wired to it is `api-tooling-selection`'s call>
 Tradeoffs accepted:  <2–4 concrete costs of this choice>
 Not chosen because:  <one line per rejected approach>
 ```

@@ -98,6 +98,7 @@ Cross-boundary writes: <2PC | Saga | outbox | CDC | eventual | none> — <why>
 Change propagation:  <how a search index / cache / warehouse / downstream stays in sync: outbox | CDC | none needed> — <why, and never dual-write>
 Failover / backups:  <automatic promotion? backup cadence? — meeting RPO <x> / RTO <y>>
 Connection pooling:  <pooler + placement>
+Agent-drivable:      <can an agent check pool saturation, replica lag, or failover status directly — pooler admin console, cloud provider API — for agent-assisted on-call/debugging, or is this console/dashboard-only>
 Tradeoffs accepted:  <2–4 concrete costs: operational load, lag windows, resharding debt, lost cross-entity atomicity>
 Not chosen because:  <one line per rejected topology>
 Cost follow-up:      <hand to technical-cost-decision: which line items to price>

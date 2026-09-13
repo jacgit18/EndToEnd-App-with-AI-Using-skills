@@ -97,6 +97,7 @@ Eviction / size:     <LRU | LFU | TinyLFU | FIFO>, memory budget <x + headroom>,
 Failure handling:    stampede: <lock / coalesce / early-recompute> | penetration: <negative cache / bloom> | avalanche: <TTL jitter / staggered warmup> | cache-down: <origin sized for it? fallback?>
 HA posture:          <optimization → single node + hit-rate alarm | load-bearing → replicated, multi-node, failover>
 Metrics:             <hit rate target, eviction rate, p99 with/without, origin load delta>
+Agent-drivable:      <can an agent inspect this cache directly for debugging/on-call — e.g. redis-cli/RESP commands, Memcached stats — or is it opaque behind the app with no live query surface>
 Tradeoffs accepted:  <2–4 concrete costs: stale window per data class, invalidation complexity, new operational tier, memory spend>
 Not chosen because:  <one line per rejected placement / pattern>
 Cost follow-up:      <hand to technical-cost-decision: cache instance-hours, memory tier, cross-AZ, CDN requests/egress>
