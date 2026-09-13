@@ -32,6 +32,10 @@ const backendUrl = process.env.BACKEND_URL ?? "http://localhost:8000";
 export default defineConfig({
   plugins: [react()],
   server: {
+    // Lets the Docker MCP Playwright container reach this dev server via
+    // Docker's host-gateway DNS name — Vite's DNS-rebinding check otherwise
+    // rejects any Host header it doesn't recognize.
+    allowedHosts: ["host.docker.internal"],
     proxy: {
       "/api": {
         target: backendUrl,
