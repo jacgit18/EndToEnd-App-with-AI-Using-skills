@@ -1,0 +1,31 @@
+[project]
+name = "finance-dashboard-backend"
+version = "0.1.0"
+description = "Personal finance dashboard — FastAPI backend"
+requires-python = ">=3.13"
+
+# Runtime dependencies. Each maps to a decision ADR under docs/architecture/decisions/.
+dependencies = [
+    "fastapi>=0.115",          # web framework (ADR-0003)
+    "uvicorn[standard]>=0.30",  # ASGI server that runs FastAPI
+    "sqlalchemy>=2.0.30",       # ORM / query layer, 2.0 API (ADR-0006)
+    "alembic>=1.13",            # database migrations (ADR-0006)
+    "psycopg[binary]>=3.2",     # PostgreSQL driver, psycopg 3 (ADR-0004)
+    "pydantic-settings>=2.2",   # load + validate config from env vars (ADR-0002, ADR-0014)
+]
+
+# Dev-only: installed locally and in CI, never in the runtime image.
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "httpx>=0.27",   # required by FastAPI's TestClient (ADR-0016 integration tests)
+]
+
+# Added in later phases, not needed for the Phase 0 walking skeleton:
+#   argon2-cffi        — password hashing for session auth  (Phase 1, ADR-0010)
+#   python-multipart   — file upload for CSV import          (Phase 5, S5)
+#   sentry-sdk         — error tracking                       (Phase 1, ADR-0013)
+
+# No [build-system] table on purpose: this is an application, not a library.
+# uv manages the virtualenv and dependencies; it never builds/installs this project
+# as a package. (ADR-0011)
