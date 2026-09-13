@@ -2,10 +2,10 @@
 
 Reference for the "When persistence isn't decided yet" section of `SKILL.md`. The paradigm
 list there (relational / document / key-value / wide-column / graph / time-series / ledger /
-search) answers "what kind of database". It does **not** answer "where do the large binary
-blobs go" — files, media, documents, exports, backups. That is a separate store choice, and
-getting it wrong (multi-MB blobs in database rows) is a common early mistake that is
-expensive to undo.
+search / vector) answers "what kind of database". It does **not** answer "where do the large
+binary blobs go" — files, media, documents, exports, backups. That is a separate store
+choice, and getting it wrong (multi-MB blobs in database rows) is a common early mistake that
+is expensive to undo.
 
 Ported from `Architecture/02. Backing Service Options/File System Storage.md`.
 
@@ -115,6 +115,7 @@ decided yet"):
 | Graph | Neptune |
 | Time-series | Timestream |
 | Ledger (append-only, cryptographically verifiable history) | QLDB |
+| Vector / similarity (embeddings) | Aurora/RDS PostgreSQL + `pgvector`, or OpenSearch k-NN — usually a secondary index beside a relational/document system of record, not a standalone store; a dedicated engine (Pinecone, Qdrant, Weaviate) is the escape hatch when scale/recall/latency outgrows the extension |
 
 The IaaS-vs-managed axis is orthogonal to the paradigm choice: any of the relational engines
 above can be self-run on an EC2 instance (full control, full operational burden) or consumed

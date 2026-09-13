@@ -1,0 +1,34 @@
+"""FastAPI application entrypoint.
+
+Dev: `uvicorn app.main:app --reload` (from backend/, with the venv active).
+The Docker image runs the same `app.main:app` target without --reload.
+"""
+
+from fastapi import Depends, FastAPI
+from sqlalchemy import text
+from sqlalchemy.orm import Session
+
+from app.db import get_db
+
+app = FastAPI(title="Finance Dashboard API")
+
+
+@app.get("/health")
+def health(db: Session = Depends(get_db)) -> dict[str, str]:
+    """Liveness + DB connectivity check (ADR-0013).
+
+    Hit by uptime monitoring in prod, and by the Phase 0 frontend badge — the
+    first real end-to-end round trip: browser -> Vite proxy -> FastAPI -> Postgres.
+    """
+    try:
+        db.execute(text("SELECT 1"))
+        db_status = "connected"
+    except Exception:
+        db_status = "unreachable"
+    return {"status": "ok", "db": db_status}
+
+
+# Routers are added here as each story ships, e.g.:
+#   from app.routers import accounts, transactions
+#   app.include_router(accounts.router, prefix="/api/accounts", tags=["accounts"])
+#   app.include_router(transactions.router, prefix="/api/transactions", tags=["transactions"])

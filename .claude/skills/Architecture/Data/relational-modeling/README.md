@@ -51,7 +51,8 @@ Stops before migrations and ORM wiring.
   list (step 7); `index-tuning` revises it once real plans and stats exist.
 - Analytical / dimensional modeling (star, snowflake, fact/dimension, grain, warehouses,
   marts, reporting materialized views) → a future skill; this one is OLTP only.
-- ORM / query-builder choice and migration tooling.
+- ORM / query-builder / raw-SQL / typed-codegen choice → `data-access-layer` (parallel sibling
+  off the same ADR; run both for a build, one gate at a time). Migration tooling stays out too.
 
 ## Using it in another repo
 
