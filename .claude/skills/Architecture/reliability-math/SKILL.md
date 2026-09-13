@@ -36,6 +36,11 @@ front of it.
   the raw dashboard numbers are what's in front of you.
 - **The dollar cost of the headroom or the observability stack itself** → `technical-cost-
   decision`.
+- **Multiplying independent per-component reliabilities to get a request path's aggregate
+  success probability before the system has live traffic to read** → the "Chain
+  compounding" note in `failure-mode-analysis`'s `scoring-and-register.md`. That's the
+  design-time version of this same compounding-probability idea; this skill only reads it
+  off telemetry once the system is live.
 
 ---
 
