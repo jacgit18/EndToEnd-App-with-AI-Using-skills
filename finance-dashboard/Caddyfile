@@ -1,0 +1,16 @@
+# Phase 0: config present per docs/spec.md, but no TLS yet — that's why this
+# binds ":80" rather than a real domain name. Caddy only attempts automatic
+# HTTPS for an actual domain; a bare port like this one is treated as
+# HTTP-only on purpose, so nothing here waits on a certificate. TLS becomes
+# real in Phase 1 (ADR-0012), once there's a domain to issue one for.
+:80 {
+	handle /api/* {
+		reverse_proxy backend:8000
+	}
+	handle /health {
+		reverse_proxy backend:8000
+	}
+	handle {
+		reverse_proxy frontend:5173
+	}
+}

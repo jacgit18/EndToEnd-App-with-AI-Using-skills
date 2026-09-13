@@ -1,0 +1,66 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-finance}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-finance}
+      POSTGRES_DB: ${POSTGRES_DB:-finance}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-finance}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      # Only the other containers need this (via the "db" service name, not
+      # this mapping) — this publishes it to the host too, so a GUI client
+      # like Beekeeper Studio can connect the same way regardless of which
+      # option (native or Compose) is currently running.
+      - "5432:5432"
+
+  backend:
+    build: ./backend
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      # "db" here is the Compose service name above, not "localhost" —
+      # inside this container, localhost is the backend container itself,
+      # where nothing is listening on 5432. Compose's built-in DNS resolves
+      # service names to the right container on the shared network it
+      # creates automatically. backend/.env (used for native runs, outside
+      # Compose) points at localhost:5432 instead, because in that case the
+      # backend process and Postgres really are both on the host.
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-finance}:${POSTGRES_PASSWORD:-finance}@db:5432/${POSTGRES_DB:-finance}
+      ENV: dev
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build: ./frontend
+    depends_on:
+      - backend
+    environment:
+      # Same rule, one hop further out: vite.config.ts's dev proxy needs
+      # "backend" (this container's neighbor on the Compose network), not
+      # "localhost" — which here would mean the frontend container itself.
+      # Native (non-Compose) dev has no BACKEND_URL set, so vite.config.ts
+      # falls back to localhost:8000, correctly, since both processes are on
+      # the host there.
+      BACKEND_URL: http://backend:8000
+    ports:
+      - "5173:5173"
+
+  caddy:
+    image: caddy:2-alpine
+    depends_on:
+      - backend
+      - frontend
+    ports:
+      - "80:80"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+
+volumes:
+  db-data:
