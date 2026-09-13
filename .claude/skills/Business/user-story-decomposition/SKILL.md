@@ -1,6 +1,6 @@
 ---
 name: user-story-decomposition
-description: Use when a feature, epic, or requirement needs to become concrete backlog items — "write user stories for X", "break this epic down", "what's the acceptance criteria for X", "should this be a use case or a user story", "turn these requirements into a backlog", or a named actor + action that needs a proper As-a/I-want/so-that with acceptance criteria. Decides the artifact format first — a user story (single actor, straightforward flow, negotiable in conversation) versus a use case (multiple actors/systems, meaningful alternate or error paths, a need for formal traceability) — then walks epic → user story → acceptance criteria, holding each story to the INVEST-style quality bar (cohesive, complete, consistent, correct, modifiable, unambiguous, feasible, testable) and a Definition-of-Ready checklist before calling it ready. This is downstream of `design-scoping`, whose functional/in-scope list is exactly the input this skill decomposes — that skill states a system's purpose, audience, non-functional targets, and constraints; it does not break the functional list into stories, and this skill does not re-scope the system, size non-functional targets, or pick the 1–2 deep-dive architecture decisions. It is upstream of `ticket-evaluation`, which judges whether an already-written, already-scoped ticket belongs in the sprint — this skill authors the story, that skill judges it once written; a bare feature name with no breakdown routes here if the ask is "turn this into stories," or to `design-scoping` first if the ask is to scope a whole system around it. Does not run the stakeholder interview/elicitation conversation that produces the raw requirement in the first place (unowned), and does not draw the UML diagrams the source material mentions — its output is textual backlog items, not diagrams.
+description: Use when a feature, epic, or requirement needs to become concrete backlog items — "write user stories for X", "break this epic down", "what's the acceptance criteria for X", "should this be a use case or a user story", "turn these requirements into a backlog", or a named actor + action that needs a proper As-a/I-want/so-that with acceptance criteria. Decides the artifact format first — a user story (single actor, straightforward flow, negotiable in conversation) versus a use case (multiple actors/systems, meaningful alternate or error paths, a need for formal traceability) — then walks epic → user story → acceptance criteria, holding each story to the INVEST-style quality bar (cohesive, complete, consistent, correct, modifiable, unambiguous, feasible, testable) and a Definition-of-Ready checklist before calling it ready. This is downstream of `design-scoping`, whose functional/in-scope list is exactly the input this skill decomposes — that skill states a system's purpose, audience, non-functional targets, and constraints; it does not break the functional list into stories, and this skill does not re-scope the system, size non-functional targets, or pick the 1–2 deep-dive architecture decisions. It is upstream of `ticket-evaluation`, which judges whether an already-written, already-scoped ticket belongs in the sprint — this skill authors the story, that skill judges it once written; a bare feature name with no breakdown routes here if the ask is "turn this into stories," or to `design-scoping` first if the ask is to scope a whole system around it. Does not run the stakeholder interview/elicitation conversation that produces the raw requirement in the first place (unowned), and does not draw the UML diagrams the source material mentions — its output is textual backlog items, not diagrams. Also handles "break this into stories I can document as I ship them" / "size these so I can post about each one" by adding a documentation-cadence lens to the split plus an optional per-story documentation-candidate flag — it does not draft the actual writeup, decide when to publish, or date it; that is `explaining-my-work`, invoked only once a story is actually closed, never while it's still backlog.
 ---
 
 # User Story Decomposition
@@ -36,6 +36,12 @@ criteria that would have made them testable. This skill forces both steps in ord
   would help and stops there.
 - **A vague ask with no established feature** — "help me with my backlog," "make this
   better" → `ambiguity-gate` first, to resolve what's actually being asked.
+- **Drafting, dating, or publishing the actual writeup.** Once a story is closed, turning it
+  into a LinkedIn post or talking points is `explaining-my-work` — its Evidence Block records
+  when the work actually shipped, not when the draft was written — with `software-carpentier-
+  brand` handling voice and career-wide honesty on top of that. This skill's reach stops at
+  sizing stories so each is tellable on its own and flagging which ones are worth documenting;
+  never at drafting the post, and never before the story is actually done.
 
 ---
 
@@ -148,6 +154,24 @@ aren't:
 A story that fails this check is written as two or more stories, not one story with a longer
 list of acceptance criteria.
 
+### Splitting for a documentation cadence (optional lens)
+
+When the epic's stories are going to be documented and shared as they ship — a build log, a
+LinkedIn series, months of dated posts instead of one dump — apply one more test on top of the
+checks above: **does this story stand alone as one tellable unit** (a stated problem, what got
+built, a real before/after), or is it really a sub-step of a bigger reveal that won't make sense
+told by itself?
+
+A story can pass the sprint-sized checks above and still fail this one. "Build the CSV import
+pipeline" might be a single valid sprint-sized story and still the wrong unit to document — split
+it at the seams a reader would actually care about (upload + column mapping · dedupe logic ·
+categorization) so each piece ships, closes, and earns its own dated writeup, instead of one
+feature landing as a single post that reads like a status update.
+
+This is a tiebreaker, not a new scope-in rule. A story still has to pass the drop/defer checks
+above and the **Cohesive** quality-bar row below — don't carve a cohesive story into artificially
+small pieces just to manufacture more posts.
+
 ---
 
 ## Quality bar — run this against every story before calling it done
@@ -172,6 +196,32 @@ Business value stated · acceptance criteria + any needed data sets written · d
 risks, and constraints named · priority set · a rough size/estimate given · testability
 confirmed. A story sitting in the backlog missing several of these isn't ready regardless of
 how well-written its prose is — name the gaps rather than rounding up.
+
+---
+
+## Marking a story documentable (optional pass)
+
+Not every story is worth a public writeup, and settling that for good belongs to whoever closes
+the story, not to this skill at authoring time — the honest signal (was there a real
+before/after, did anything notable happen building it) only exists once the work is actually
+done. What this skill can do now is flag the candidates, so "was this worth posting" doesn't
+have to be reconstructed from memory three sprints later:
+
+- **Likely worth it**: a load-bearing decision got made, a real before/after exists (a number, a
+  broken thing now working, a manual process now automated), or the story stands alone as one
+  tellable unit (the documentation-cadence lens above).
+- **Probably not**: pure plumbing, a one-line config change, a story whose only content is "did
+  what the ticket said" with nothing a reader outside the team would want to read.
+
+Record it as one line: `Documentation candidate: y/n — <reason>`. That is a prediction, not a
+commitment — re-confirm it when the story closes.
+
+**Do not hand off to `explaining-my-work` from here.** That skill's whole basis is that every
+claim traces to something that already happened; a story still in the backlog has nothing to
+trace yet. The hand-off happens later, when the story is actually closed, and whoever closes it
+should record the real completion date at that point — a post is only honestly dated if
+something wrote down when the work actually finished, not when someone got around to drafting
+about it.
 
 ---
 
@@ -201,6 +251,7 @@ Epic/Feature:      <name, one sentence>
 Actor(s):          <stated, not invented>
 Format:            User Story | Use Case — <one-line reason>
 Sizing signal:      XS/S/M/L/XL — <split needed? y/n>
+Documentation candidate: y/n — <one-line reason, optional pass>
 
 [User Story format, one block per story:]
 Story N: As a <actor>, I want <action>, so that <benefit>.
@@ -243,6 +294,9 @@ Handoffs:             <specialist Architecture skill, if a story surfaced a load
   written as a single sprint-sized item — it failed the splitting check; go back to it.
 - The output redrafts or re-scopes the epic instead of decomposing what was stated —
   re-scoping is `design-scoping`'s job.
+- A large feature kept as one giant story "so it makes one good post" — split it the same as any
+  oversized story. A documentation cadence comes from several small, honestly dated posts over
+  time, not one big one.
 
 ---
 
