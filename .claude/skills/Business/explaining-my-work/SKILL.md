@@ -14,6 +14,7 @@ The fix is not to write three things. It is to build **one evidence base** and r
 - **Publishing.** This skill drafts. It never posts, sends, or submits anything anywhere. The draft goes to the user; distribution is their call.
 - **Self-understanding / psychology framing.** A different concern with a different standard.
 - **Personal-brand voice and career-wide honesty constraints.** This skill's Evidence Block is scoped to *this piece of work* — it has no notion of the user's total years of experience, which environments were pre-prod vs. production, or a fixed brand device. When the LinkedIn Draft or resume line is going out under the user's personal brand, run it through `software-carpentier-brand` afterward for the voice pass and those career-wide checks.
+- **Deciding which backlog work is worth writing up in the first place.** If a story was sized and flagged upstream by `user-story-decomposition`'s optional documentation-candidate pass, that flag is a pointer to go look, not evidence — the Evidence Block still gets rebuilt from the repo/session per the hard rule above, `<reason>` text included.
 
 ---
 
@@ -28,6 +29,7 @@ Not "roughly happened." Not "would plausibly have happened for work like this." 
 - No borrowed benchmarks. What that pattern typically yields is not what this work yielded.
 - No rounding a qualitative outcome into a quantitative one.
 - If a number does not exist, use the **named risk reduced** form instead (below). Do not manufacture one to fill the slot.
+- No undated claim. If the Evidence Block's "When it shipped" cell is empty, or is standing in for "today," fix that before drafting — a reader has no way to tell recent work from six-month-old work otherwise.
 
 Unverifiable claims get **cut**, not softened. A softened invention is still an invention.
 
@@ -67,9 +69,13 @@ Then fill this table. **One row per shippable unit** — the thing the user woul
 
 **Plus one final row for the set as a whole.** Cross-cutting facts — the shared pattern across the pieces, the total count, what holds them together — are usually the strongest material and belong to no single row. Without this row they end up homeless and get dropped or, worse, invented later.
 
-| What was built | Mechanism (technical register) | What it's worth (business register) | Outcome: number or named risk | Source |
-|---|---|---|---|---|
+| What was built | When it shipped | Mechanism (technical register) | What it's worth (business register) | Outcome: number or named risk | Source |
+|---|---|---|---|---|---|
 
+- **When it shipped** — the real date the work finished: a commit date, a PR merge date, or a
+  story's recorded completion date if it came from `user-story-decomposition`'s optional
+  documentation-candidate pass. Not the date this draft is being written. A month is usually
+  precise enough — don't manufacture a day you don't have.
 - **Mechanism** — the actual system, workflow, or failure mode. Named precisely enough that an engineer could ask a sensible follow-up.
 - **What it's worth** — cost, time, risk, or the customer. Answers "so what, for the business," not "so what, for the codebase."
 - **Outcome** — exactly one of two legal forms:
@@ -122,6 +128,9 @@ LinkedIn is mixed audience, public, and permanent. Engineers and recruiters read
 - **First two lines carry the whole post.** Everything after them is behind a "see more" click. Lead with what changed or what it's worth — never with setup, never with "I'm excited to share."
 - **Middle: 2–4 lines of concrete specifics.** This is where the dash-clause content lives — the actual thing built, in plain words. This section is why the post is worth reading; without it the post is a status update about having been busy.
 - **The outcome**, in one of the two legal forms.
+- **A real date or timeframe** — the month the work actually shipped, from the Evidence Block's
+  "When it shipped" column. Not "recently," not silence. An undated post reads as freshly done
+  even when it wasn't; that's exactly the kind of invention this skill exists to prevent.
 - **One line of consequence** — what it means for someone other than the author.
 - **Optional:** one genuine question or invitation. Only if there is a real one.
 
@@ -179,6 +188,7 @@ The second column is *also* the business framing. Naming the specific failure a 
 - A LinkedIn draft that would read identically for a completely different project
 - The technical branch and the business branch make claims that are not the same claim
 - A row in the Evidence Block with an empty Source cell
+- A row with an empty "When it shipped" cell, or a LinkedIn Draft with no real date in it
 - Reaching for what work like this "typically" achieves
 
 **All of these mean: go back to what actually happened and write from that.**
