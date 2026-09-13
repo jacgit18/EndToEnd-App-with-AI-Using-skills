@@ -61,6 +61,14 @@ Then:
   varied between calls, nothing revealed until they submit.
 - **If shaky, stay on this increment.** Take a smaller sub-piece, or re-explain plainly. One
   increment understood beats five delivered.
+- **If the user isn't attempting the explain-back at all** — "next" / "next step" with nothing
+  said back, repeatedly — that's a different case from shaky, and the loop has no default for
+  it: continuing to run the full loop is offering a check nobody is taking, but silently
+  dropping it isn't a call to make unilaterally either. After a few increments of this, say so
+  once, plainly, and let the user choose: keep the full loop, or lighten it (shorter
+  explanations, bigger batches) without dropping pacing entirely. Don't just keep re-offering
+  the same unconfirmed explanation forever, and don't stop offering it without saying you're
+  doing that.
 - **Close it.** Tick it on the map, add a one-line note of what the user learned, and only now
   move to the next.
 
@@ -83,6 +91,15 @@ Prose style itself — sentence length, banned words, no "not X but Y" reframes 
 
 Write the increment map to a file when you can (named for the slice, updated live); otherwise
 keep it in chat and repaste the updated version as increments close.
+
+If `Prompts/session-handoff` fires mid-build (a context-length nudge, or the user ending the
+session), that handoff file *is* your persisted map going forward — capture the increment list
+in the checklist format below, not a prose "next steps" paragraph, so a fresh session can lift
+it verbatim. And on the resuming side: treat that file's list as canonical. Don't reconstruct
+the map from memory of the pattern the build has been following — a plausible-sounding guess at
+"what's probably next" is exactly how a real ordering slip happens (confirmed the hard way:
+misnaming the next file after a reset, because the general shape of the build was remembered but
+the literal list wasn't re-read).
 
 ```
 # Slice: [name] — from [spec / backlog ref]
