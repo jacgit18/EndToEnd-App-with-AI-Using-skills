@@ -97,6 +97,12 @@ mean you're done vs. need to descend further**. Then stop — actually reading t
 output and reasoning about it is the debugging itself (or `problem-solving-gates` Rubber
 Duck, if a hypothesis is already forming), not this procedure.
 
+**If the investigator is an agent rather than a person**, name whether the chosen layer's
+tool is itself agent-drivable (Chrome DevTools MCP for the browser/application layer, a
+`tshark`-wrapping tool for the network layer — both scriptable) versus requiring a human at
+a GUI — see `layer-reference.md`'s AI-agent-grounded section for the "ground every step in a
+real tool call, not inference from a raw capture" rule this implies.
+
 ---
 
 ## Example invocations

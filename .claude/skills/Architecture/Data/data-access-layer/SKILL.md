@@ -166,6 +166,7 @@ Query-shape fit:      <how the primary handles CRUD / variable lists / analytica
 Refactor safety:      <build-time type checking | generate-time | runtime + tests only — and how schema drift is caught>
 Migration tooling:    <what this choice largely picks — name it, defer the workflow detail>
 Mapping boundary:     <DB row -> domain -> DTO, or "none — single internal consumer" — carried from the database-architecture ADR>
+Agent legibility:     <does this choice leave an artifact an agent editing this codebase can read directly — generated types from typed codegen, a versioned migration history — or does an agent have to run the ORM to observe what it actually does>
 Tradeoffs accepted:   <2-4 concrete costs of this choice>
 Not chosen because:   <one line per rejected style>
 ```

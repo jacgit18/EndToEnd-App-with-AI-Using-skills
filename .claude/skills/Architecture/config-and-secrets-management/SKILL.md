@@ -93,6 +93,7 @@ Platform:              <Kubernetes | cloud-native (name provider) | neither>
 Mechanism:             <plain env var | orchestrator-native secret | dedicated secrets manager (name it) | dynamic config/feature-flag service (name it)>
 Rotation path:         <how a rotated value reaches every consumer without a coordinated redeploy, or "not needed">
 Audit:                 <who can see access/change history, or "not needed for this value">
+Agent access surface:  <does the mechanism have a scriptable read/rotate API an agent could use (most dedicated secrets managers do) vs. a plain env var an agent only sees via the process environment — named here; whether an agent *should* get that access is cloud-iam-boundary / access-control-modeling's call>
 Tradeoffs accepted:    <2-4 concrete costs: operational burden of running a secrets manager, no-audit-trail risk of plain env vars, a new SPOF from a dynamic config service without a fallback>
 Not chosen because:    <one line per rejected mechanism>
 Follow-ups:            <cloud-iam-boundary for the access grant to read this value; data-tier-operations if this is a datastore credential with managed rotation; observability-strategy for audit-log alerting>

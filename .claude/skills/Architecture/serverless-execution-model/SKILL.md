@@ -246,6 +246,7 @@ Messaging technology: <queue (competing workers) | pub/sub (fan-out) | stream/lo
 Retry & catch:       <per step/state: max attempts, backoff, which error types retried vs caught vs left terminal>
 DLQ / failure dest.: <where exhausted attempts go, who's notified, and the idempotency requirement this imposes>
 Concurrency & scaling: <max concurrent executions, cold-start tolerance, provisioned concurrency if needed>
+Agent-drivable:      <can an agent invoke/inspect this primitive locally via CLI for testing or debugging — e.g. AWS CLI/SAM local for Lambda, an ECS CLI for Fargate — or does it require console-only access>
 Tradeoffs accepted:  <2–4 concrete costs: orchestration overhead, choreography's lost central visibility, cold starts, cost-per-invocation vs always-on>
 Not chosen because:  <one line per rejected primitive/mechanism>
 Follow-ups:          <execution role → cloud-iam-boundary; overload/retry-budget on a live path → resilience-strategy; dollar cost → technical-cost-decision; concurrency numbers → capacity-estimation; execution-failure alerting → observability-strategy>
