@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { api } from "./api/client";
+import Transactions from "./Transactions";
 
 // Phase 0's actual proof: this component is the first thing that exercises
 // the whole chain end to end — browser -> Vite proxy -> FastAPI -> Postgres
@@ -25,6 +26,7 @@ export default function App() {
           {status}
         </strong>
       </p>
+      <Transactions />
     </main>
   );
 }

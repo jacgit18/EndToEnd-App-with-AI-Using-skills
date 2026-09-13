@@ -14,6 +14,16 @@ See `docs/spec.md` and `docs/architecture/decisions/` for the full design.
 
 ## Running locally
 
+Two ways to run this, same app either way:
+
+- **Option 1** — Postgres in Docker, backend and frontend on the host. Faster edit-reload
+  loop (native `--reload`/HMR), what you want day to day.
+- **Option 2** — the whole stack in Docker via Compose. Closer to how it'll actually deploy
+  (ADR-0012), and how `docs/spec.md`'s Phase 0 walking skeleton is defined — use this to
+  sanity-check that a change works outside your one dev machine's native setup.
+
+## Option 1: Native (Postgres in Docker, backend/frontend on the host)
+
 ### 1. Postgres (Docker)
 
 First time:
@@ -67,6 +77,54 @@ npm run dev
 
 Opens on `http://localhost:5173` (Vite's default). The dev server proxies `/api/*` and
 `/health` to `localhost:8000`, so the backend must already be running (see `vite.config.ts`).
+
+## Option 2: Full stack in Docker (Compose)
+
+Four services (`db`, `backend`, `frontend`, `caddy`) defined in `compose.yaml`. If Option 1's
+containers/processes are already running, stop them first — both options claim ports
+5432/8000/5173:
+
+```bash
+docker stop finance-dashboard-db   # if you'd been running Option 1's standalone container
+```
+
+From `finance-dashboard/` (this directory):
+
+```bash
+docker compose up -d --build
+```
+
+First time (and after any new migration), run it against this stack's database — **not** the
+same container Option 1 uses, even though the port number looks familiar:
+
+```bash
+docker compose exec backend uv run alembic upgrade head
+```
+
+No `PYTHONPATH=.` needed here, unlike Option 1's native command — the backend image sets
+`PYTHONPATH=/app` itself (see `backend/Dockerfile`), since Alembic doesn't get uvicorn's
+trick of adding the working directory to `sys.path` automatically.
+
+Three equivalent ways to reach the running app, all backed by the same containers:
+
+| URL | What answers |
+|---|---|
+| `http://localhost:8000/health` | the backend container directly |
+| `http://localhost:5173` | the frontend container's own Vite dev server + proxy |
+| `http://localhost` | Caddy (`Caddyfile`) — the single-origin path production will actually use, reverse-proxying `/api/*` and `/health` to `backend:8000` and everything else to `frontend:5173` |
+
+Inside this network, containers reach each other by **service name**, not `localhost` —
+`compose.yaml` sets `DATABASE_URL` to `db:5432` and the frontend's `BACKEND_URL` to
+`http://backend:8000` for exactly this reason (`localhost` inside a container means that
+container itself). Customize the Postgres credentials via `finance-dashboard/.env` (copy from
+`.env.example`) if you want; the compose file's defaults match Option 1's either way.
+
+Logs and teardown:
+
+```bash
+docker compose logs -f [service]   # tail one service, or omit for all
+docker compose down                # stop and remove containers (add -v to also drop the db volume)
+```
 
 ## Connecting with Beekeeper Studio (or any Postgres client)
 
