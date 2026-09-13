@@ -3,3 +3,6 @@
 
 # Prompt logs — written every prompt by the UserPromptSubmit hook; local only
 .claude/_Prompts/logs/
+
+# Session handoff files — written at the context-watch threshold; local working docs
+.claude/handoffs/
