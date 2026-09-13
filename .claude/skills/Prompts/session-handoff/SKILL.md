@@ -22,7 +22,7 @@ A one-line offer is enough: "Want me to write a handoff file before we stop, so 
 Before writing, pull together — from the conversation, not from guessing:
 
 1. **Goal** — what the user is actually trying to accomplish, in their words if possible. Distinguish the overall goal from today's specific sub-task.
-2. **Current state** — where things stand right now. What's working, what's broken, what's mid-change.
+2. **Current state** — where things stand right now. What's working, what's broken, what's mid-change. If it names branch, PR, or merge status, say plainly that this is a snapshot, not a guarantee — on an active repo those facts can be stale within hours (a PR opened this session can merge before the next one starts). Don't let a resuming session take a stated "PR #N is still open" as ground truth; a quick `gh pr view` costs little next to building on a wrong assumption.
 3. **Files touched** — every file created, edited, or centrally discussed. Include path and a one-line note on its role.
 4. **What changed** — a concrete list of the actual changes made this session (not a narrative of the conversation — the deltas).
 5. **Open decisions / constraints** — anything the user decided on, ruled out, or specified as a requirement. These are easy to silently drop on a fresh start.
@@ -31,6 +31,11 @@ Before writing, pull together — from the conversation, not from guessing:
 If any of these is genuinely unclear or missing (e.g., you don't know if a change is finished or half-done), ask rather than guessing — a wrong guess here is worse than a short pause, since the whole point is accuracy for someone with zero other context.
 
 If a `spec-drift-gate` spec document already exists for this build, **link to it** for items 1 and 5 (Goal, Open decisions / constraints) rather than re-deriving them from the conversation — the spec is the source of truth for problem framing and scope; duplicating it here risks the copy drifting from the original.
+
+If `Skill Development/incremental-build-pacing` is mid-flight, item 6 (Next steps) **is** the
+increment map — write it in that skill's checklist format (`- [x]` / `- [ ]`, current place
+marked), not a generic action list, so the resuming session can lift it verbatim instead of
+reconstructing it from memory of the build's pattern.
 
 ## Output format
 

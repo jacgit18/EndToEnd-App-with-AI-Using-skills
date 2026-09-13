@@ -16,6 +16,7 @@ withholds each next increment until the current one is understood.
 | Whether the user wants to learn at all; the assistance-level ceiling | `learning-gate` | `learning-gate` classifies intent and routes here from its Step 3 table when intent is learning and the rep is "understand a build as it's assembled". This skill runs the delivery once routed. |
 | A procedure the user performs with their own hands | `learning-gate` → `guided-walkthrough.md` | There the user makes every move (env setup, tool wiring, a runbook). Here Claude may write the code; the user owns the understanding, checked per increment. |
 | A bug, a slow path, an architecture choice mid-build | `problem-solving-gates` | Those get their own prior-effort rep. Resume this loop after. |
+| Persisting the increment map across a context reset or session end | `Prompts/session-handoff` | Not this skill's job to trigger, but when it fires mid-build, its handoff file is where the live increment map should land — see `increment-delivery.md`'s "Keeping the map visible". Read that file's list as canonical on resume, not from memory of the build's pattern. |
 | Prose style of the explanations | `delete-ai-words` | Not this skill's job. |
 
 ## Files
