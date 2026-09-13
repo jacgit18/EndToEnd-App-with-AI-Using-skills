@@ -126,6 +126,29 @@ is not "won't happen", and detection can regress. The watchlist is reviewed on i
 
 ---
 
+## Chain compounding — the register read as a path, not just rows
+
+Per-row RPN/band scores each mode in isolation. A real request usually crosses many of the
+walked components in sequence (browser → LB → API → business logic → DB → a downstream
+dependency), and if each has an independent probability of *not* failing, the path's
+aggregate success probability is the **product**, not the average:
+
+`P(path succeeds) = P₁ × P₂ × ... × Pₙ`
+
+Twelve components each individually "fine" at 99.5% reliability compound to ≈94% for the
+path that touches all twelve — worse than any single row's number suggests, and worth
+stating explicitly when a design reads as low-risk because every row is green. This is a
+cross-check to run *after* the walk, not a per-row score: pick the end-to-end path a real
+request takes through the register's components, estimate or ask for each one's reliability,
+and multiply. Use the result to argue for shortening a request path (fewer hops means fewer
+independent probabilities to multiply) or for a stricter target on the weakest link — it
+doesn't replace RPN ranking; RPN says which link to fix first, this says how reliable the
+whole chain actually is.
+
+This is the design-time version, done from register rows before the system has traffic to
+read. Once it's live, reading percentiles and utilization off real telemetry is
+`reliability-math`, not this.
+
 ## How many rows is a register
 
 A rough anchor so the walk doesn't get cut short or padded: expect on the order of **2–3
