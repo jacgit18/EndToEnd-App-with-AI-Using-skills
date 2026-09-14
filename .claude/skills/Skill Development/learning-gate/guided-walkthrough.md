@@ -64,8 +64,15 @@ Do this:
 1. [exact action]
 2. [exact action, with any text to paste in a code block]
 You'll know it worked when: [what they should see]
+Docs: [link to the primary documentation for the tool/API/flag this step uses, if one exists]
 When that's done, come back and [show me X / paste Y].
 ```
+
+If the step introduces a tool, API, CLI flag, or config option the user hasn't used before, link its
+official documentation page — not a tutorial, blog post, or Stack Overflow thread, the primary
+source. This is for material they're implementing by hand and may need to come back to later;
+skip the line on steps that are pure repetition of something already linked, or where no official
+doc exists (an internal script, a one-off shell command).
 
 Then the loop:
 

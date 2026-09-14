@@ -44,7 +44,15 @@ What it does:   [plain-language, 2–4 sentences]
 Why this shape: [the decision this file embodies, tied back to the spec / ADR if there is one]
 Connects to:    [what already exists that this uses or is used by]
 Watch out for:  [the one thing that usually goes wrong on this kind of file]
+Docs:           [link to the primary documentation for the framework primitive this increment
+                introduces, if one exists — skip on plumbing or a primitive already linked]
 ```
+
+The `Docs:` line matters most when the contract has the user typing the increment themselves, or
+the increment is tagged load-bearing because it introduces a framework primitive they haven't met
+yet (Step 3's tie-breaker) — that's the moment they're most likely to need the primary source
+later, not a tutorial or blog post. Skip it on plumbing and on a primitive already linked earlier
+in this slice.
 
 Then:
 

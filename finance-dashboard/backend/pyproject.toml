@@ -12,6 +12,11 @@ dependencies = [
     "alembic>=1.13",            # database migrations (ADR-0006)
     "psycopg[binary]>=3.2",     # PostgreSQL driver, psycopg 3 (ADR-0004)
     "pydantic-settings>=2.2",   # load + validate config from env vars (ADR-0002, ADR-0014)
+    "argon2-cffi>=23.1",        # hash + verify AUTH_PASSWORD_HASH (Phase 1, ADR-0010)
+    "itsdangerous>=2.2",        # sign the session-id cookie value (Phase 1, ADR-0014's
+                                 # "session signing secret") — the session id itself stays an
+                                 # opaque DB lookup key either way; this only stops a tampered
+                                 # or guessed cookie value from reaching that lookup at all
 ]
 
 # Dev-only: installed locally and in CI, never in the runtime image.
@@ -21,8 +26,8 @@ dev = [
     "httpx>=0.27",   # required by FastAPI's TestClient (ADR-0016 integration tests)
 ]
 
-# Added in later phases, not needed for the Phase 0 walking skeleton:
-#   argon2-cffi        — password hashing for session auth  (Phase 1, ADR-0010)
+# Added in later phases, not needed yet:
+#   a rate-limiting library (or a hand-rolled limiter) — login rate limiting (Phase 1, ADR-0010)
 #   python-multipart   — file upload for CSV import          (Phase 5, S5)
 #   sentry-sdk         — error tracking                       (Phase 1, ADR-0013)
 
