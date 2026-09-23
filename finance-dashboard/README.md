@@ -81,8 +81,10 @@ Opens on `http://localhost:5173` (Vite's default). The dev server proxies `/api/
 ## Option 2: Full stack in Docker (Compose)
 
 Four services (`db`, `backend`, `frontend`, `caddy`) defined in `compose.yaml`. If Option 1's
-containers/processes are already running, stop them first — both options claim ports
-5432/8000/5173:
+containers/processes are already running, stop them first. All three host ports differ
+between the options, so other local containers don't collide with either one: Option 1 is
+`db`→`5432`, `backend`→`8000`, `frontend`→`5173`; Option 2 (this one) is `db`→`5433`,
+`backend`→`8001`, `frontend`→`5174`.
 
 ```bash
 docker stop finance-dashboard-db   # if you'd been running Option 1's standalone container
@@ -109,9 +111,9 @@ Three equivalent ways to reach the running app, all backed by the same container
 
 | URL | What answers |
 |---|---|
-| `http://localhost:8000/health` | the backend container directly |
-| `http://localhost:5173` | the frontend container's own Vite dev server + proxy |
-| `http://localhost` | Caddy (`Caddyfile`) — the single-origin path production will actually use, reverse-proxying `/api/*` and `/health` to `backend:8000` and everything else to `frontend:5173` |
+| `http://localhost:8001/health` | the backend container directly |
+| `http://localhost:5174` | the frontend container's own Vite dev server + proxy |
+| `http://localhost` | Caddy (`Caddyfile`) — the single-origin path production will actually use, reverse-proxying `/api/*` and `/health` to `backend:8000` and everything else to `frontend:5173` (these are the containers' internal ports, unaffected by the host-side remaps above) |
 
 Inside this network, containers reach each other by **service name**, not `localhost` —
 `compose.yaml` sets `DATABASE_URL` to `db:5432` and the frontend's `BACKEND_URL` to
@@ -132,7 +134,7 @@ docker compose down                # stop and remove containers (add -v to also 
 |---|---|
 | Connection type | PostgreSQL |
 | Host | `localhost` |
-| Port | `5432` |
+| Port | `5432` (Option 1's standalone container) or `5433` (Option 2's Compose stack) |
 | User | `finance` |
 | Password | `finance` |
 | Database | `finance` |

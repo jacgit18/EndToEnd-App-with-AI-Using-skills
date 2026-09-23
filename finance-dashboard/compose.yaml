@@ -16,14 +16,31 @@ services:
       # Only the other containers need this (via the "db" service name, not
       # this mapping) — this publishes it to the host too, so a GUI client
       # like Beekeeper Studio can connect the same way regardless of which
-      # option (native or Compose) is currently running.
-      - "5432:5432"
+      # option (native or Compose) is currently running. Host-side port
+      # bumped off 5432 for the same reason as backend's 8000->8001: another
+      # project's container was already bound to it locally.
+      - "5433:5432"
 
   backend:
     build: ./backend
     depends_on:
       db:
         condition: service_healthy
+    # AUTH_EMAIL / AUTH_PASSWORD_HASH / SESSION_SECRET load from here, not
+    # `environment:` below — worked out the hard way, by actually running
+    # it, not just reading the docs: Compose's ${VAR} interpolation pass
+    # applies to *every* environment value that ends up on a service,
+    # env_file-sourced ones included — an unescaped argon2 hash's
+    # "$"-delimited segments get read as undefined variable references and
+    # silently stripped ("$argon2id$v=19..." -> "=19...", confirmed via
+    # `docker compose config` and the "variable is not set" warnings it
+    # printed for each stripped piece). The fix isn't switching mechanisms
+    # again, it's Compose's own documented escape: every literal "$" in
+    # backend/.env.docker must be written "$$". Copy
+    # backend/.env.docker.example to make that file — its comment has the
+    # full explanation and generation commands.
+    env_file:
+      - ./backend/.env.docker
     environment:
       # "db" here is the Compose service name above, not "localhost" —
       # inside this container, localhost is the backend container itself,
@@ -31,11 +48,26 @@ services:
       # service names to the right container on the shared network it
       # creates automatically. backend/.env (used for native runs, outside
       # Compose) points at localhost:5432 instead, because in that case the
-      # backend process and Postgres really are both on the host.
+      # backend process and Postgres really are both on the host. No "$"
+      # problem here — a plain connection string, nothing to mis-interpolate.
       DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-finance}:${POSTGRES_PASSWORD:-finance}@db:5432/${POSTGRES_DB:-finance}
       ENV: dev
     ports:
-      - "8000:8000"
+      # Host-side port only — bumped off 8000 because another project's
+      # container was already squatting on it locally. The container-to-
+      # container traffic (Caddy, the frontend's BACKEND_URL) still targets
+      # "backend:8000" on Compose's internal network, unaffected by this.
+      - "8001:8000"
+    # Bind-mount the source over the image's built-in copy so an edit on the
+    # host is visible inside the container immediately — no rebuild. Only
+    # `app` and `migrations` are mounted (not the whole `./backend`), so the
+    # image's own pyproject.toml/uv.lock/.venv stay the ones `uv sync` built
+    # at image-build time; a host checkout with no `.venv` can't shadow them.
+    # --reload makes uvicorn actually watch and restart on those changes.
+    volumes:
+      - ./backend/app:/app/app
+      - ./backend/migrations:/app/migrations
+    command: uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
   frontend:
     build: ./frontend
@@ -50,7 +82,20 @@ services:
       # the host there.
       BACKEND_URL: http://backend:8000
     ports:
-      - "5173:5173"
+      # Host-side port bumped off 5173 for the same reason as the other two
+      # services: another project's container already had it.
+      - "5174:5173"
+    # Same live-reload approach as `backend`, one line different: Vite's dev
+    # server (already the CMD, per frontend/Dockerfile) picks up bind-mounted
+    # changes and HMRs on its own, no --reload equivalent needed. The bare
+    # `/app/node_modules` entry is an anonymous volume that shadows whatever
+    # the `./frontend:/app` mount underneath it would otherwise put there —
+    # without it, the host's `node_modules` (missing, or built for a
+    # different OS/arch than node:20-slim) would overwrite the image's own
+    # `npm ci` install.
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
 
   caddy:
     image: caddy:2-alpine
