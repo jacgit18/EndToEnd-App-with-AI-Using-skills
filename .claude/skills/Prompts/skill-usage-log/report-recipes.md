@@ -70,3 +70,28 @@ comm -23 \
 
 Caveat every "never used" result: the log only starts when the `PreToolUse` hook was added,
 so it means "not invoked since logging began," not "never."
+
+### Fires followed by an override phrase (feedback signal)
+
+For each skill fire, take the user's next prompt in the same session (joined on the 8-char
+session id in `<date>-skills.md` and `<date>.md`) and test it against override phrases. Run from
+the project root. A skill fire with no later prompt in its session is omitted.
+
+```bash
+OVR='just tell me|just do it|skip (the|this)|no,? i meant|ignore (the|that)|don.t (ask|gate)|stop asking|not what i (asked|meant)|why (are|did) you (ask|use)|wrong skill'
+for sf in .claude/_Prompts/logs/*-skills.md; do
+  d=$(basename "$sf" -skills.md); pf=".claude/_Prompts/logs/$d.md"
+  [ -f "$pf" ] || continue
+  awk -v D="$d" -v OVR="$OVR" '
+    FNR==NR { if ($0 ~ /^## [0-9:]+  ·  session /) { t=$2; s=$NF; n++; T[n]=t; S[n]=s; B[n]="" } else if (n) B[n]=B[n] " " $0; next }
+    /^- [0-9:]+  `/ { t=$2; sk=$3; gsub(/`/,"",sk); s=$4 " " $5; gsub(/[()]/,"",s); sub(/^session /,"",s)
+      for (i=1;i<=n;i++) if (S[i]==s && T[i]>t) { fire[sk]++; if (tolower(B[i]) ~ OVR) { ovr[sk]++; ex[sk]=substr(B[i],1,90) } ; break } }
+    END { for (k in fire) printf "%s  %-28s follow-ups=%d overrides=%d  %s\n", D, k, fire[k], ovr[k]+0, ex[k] }
+  ' "$pf" "$sf"
+done | sort
+```
+
+Read it as a signal, not a verdict: two skills firing before one follow-up both get the credit
+or blame, and the phrase list is a heuristic — tune `OVR` as real overrides turn up. It needs
+the prompt log for the same date, so a day with a skills log but no `<date>.md` (hook not
+running) yields nothing for that day.
