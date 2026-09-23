@@ -57,7 +57,7 @@ Before recommending any mechanism, limit, or placement, these must be answered.
 
 ## Challenge a proposed approach
 
-If the user opens with the mechanism already chosen, put their reasoning under the gate, then test the specific claim against `mechanisms-and-tradeoffs.md`:
+If the user opens with the mechanism already chosen, put their reasoning under the gate, then test the specific claim against `mechanisms-and-tradeoffs.md`. (This challenge owns the resilience mechanisms below; `ambiguity-gate`'s premise check defers to it here and covers solution-phrased requests outside this domain.)
 
 - **"add rate limiting"** — at what value, and derived from what (item 5's ceiling, with margin)? Per client or global (item 7)? What does a limited request get — a 429 to retry (item 9), a queue slot, or a degraded response? A global limit set above your breaking point does nothing; one set blindly low sheds good traffic. Where does it run — edge, gateway, in-app?
 - **"circuit breaker on everything"** — which downstream, and what does an *open* breaker return (item 8's fallback)? A breaker with no fallback just converts "slow" into "fast failure" — sometimes that's the point (fail fast, free the thread), but if there's no degraded path the user still gets an error. What are the open threshold, the half-open probe, and the reset? Breakers on calls that have no fallback and are hard-required need a different answer (capacity, or shed at the front door).

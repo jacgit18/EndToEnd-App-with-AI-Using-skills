@@ -59,6 +59,9 @@ say anything useful.
   `config-and-secrets-management`.
 - **Who is allowed to do what**, if the change touches permissions/roles/tenancy →
   `access-control-modeling`.
+- **Whether the requested fix targets the right cause at all** — a solution-phrased request
+  whose premise is in doubt → `ambiguity-gate` (premise check). This skill starts once the
+  change is decided; it audits what that change breaks, not whether it was the right change.
 - **A bare conceptual question** — "what's expand-contract", "what counts as a breaking
   change" — answered directly, no audit.
 

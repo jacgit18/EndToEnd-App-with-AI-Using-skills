@@ -23,6 +23,8 @@ Do not soften this into "well, let me just get you started" — that's the exact
 
 **Trigger:** User is in a debugging session and has a written hypothesis about what's wrong.
 
+If the user asks for a **specific fix** to be made ("add a retry loop here", "change X to return Y") and Claude can see from the code that it likely targets the wrong cause, that is `Prompts/ambiguity-gate`'s premise check, not this gate — Rubber Duck applies when the user is diagnosing (symptom in hand, wants help finding the cause), and this gate never asks for a diagnosis to justify a change already specified. If they *do* state a hypothesis alongside the fix request, run Rubber Duck on it.
+
 If the user doesn't yet know where the evidence even lives — no tool or layer picked, e.g.
 "where do I even start" on a live symptom — hand off to `Testing/debugging-layer-selection`
 first; this gate applies once they're looking at that layer's evidence and a guess is
