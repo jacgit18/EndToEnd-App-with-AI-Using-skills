@@ -7,10 +7,14 @@
 #
 # What it does, in order:
 #   1. Stages exactly the pathspecs you name — never a blanket `git add -A`
-#      (see .claude/rules/conventions.md).
+#      (see .claude/rules/conventions.md). Aborts if `git add` fails, and if the
+#      index already holds files outside the named paths (a plain `git commit`
+#      would sweep them in).
 #   2. Runs a sanity pass over the staged set: refuses on .env files, obvious
-#      key/cert files, files larger than 1 MiB (override with ALLOW_BIG=1),
-#      and staged merge-conflict markers.
+#      key/cert files (`.env.example`/`.sample`/`.template` are allowed), files
+#      larger than 1 MiB (override with ALLOW_BIG=1), and staged merge-conflict
+#      markers (an opening `<<<<<<<` and a closing `>>>>>>>` line — a bare
+#      `=======` is ordinary markdown).
 #   3. Appends a trailer unless a -m already carries it. The trailer resolves
 #      as: the COMMIT_TRAILER env var if set (empty = append nothing), else
 #      `git config commit-helper.trailer` if that key exists (empty = none).
@@ -42,10 +46,12 @@ resolve_trailer() {
     return
   fi
   # 3. Unconfigured — seed the key once, visibly. Prefer the Co-Authored-By line
-  #    the repo's own recent history uses; fall back to the built-in default.
+  #    the repo's own recent history uses — but only a <noreply@…> (bot/AI) line,
+  #    so a human collaborator's trailer is never adopted as the permanent default;
+  #    otherwise fall back to the built-in default.
   local seed
   seed="$(git log -30 --pretty=%B 2>/dev/null \
-          | grep -iE '^Co-authored-by: .+ <.+>$' \
+          | grep -iE '^Co-authored-by: .+ <noreply@[^>]+>$' \
           | sort | uniq -c | sort -rn | head -1 \
           | sed -E 's/^ *[0-9]+ +//')"
   [ -n "$seed" ] || seed="$DEFAULT_TRAILER"
@@ -80,7 +86,10 @@ done
 [ "${#paths[@]}" -gt 0 ] || { echo "commit.sh: name at least one pathspec (never blanket-add)" >&2; exit 2; }
 
 # 1. Stage the named pathspecs.
-git add -- "${paths[@]}"
+if ! git add -- "${paths[@]}"; then
+  echo "commit.sh: git add failed for the named paths — nothing committed." >&2
+  exit 1
+fi
 
 # Nothing staged? Stop.
 if git diff --cached --quiet; then
@@ -88,27 +97,43 @@ if git diff --cached --quiet; then
   exit 1
 fi
 
-# 2. Sanity pass over the staged set.
+# Refuse if the index holds anything outside the named paths: `git commit`
+# takes the whole index, so files staged earlier would ride along silently.
+outside="$(comm -23 \
+  <(git diff --cached --name-only | sort) \
+  <(git diff --cached --name-only -- "${paths[@]}" | sort))"
+if [ -n "$outside" ]; then
+  echo "commit.sh: the index already holds files outside the named paths:" >&2
+  printf '%s\n' "$outside" | sed 's/^/  /' >&2
+  echo "commit.sh: unstage them (git restore --staged <file>) or name them too, then retry." >&2
+  exit 1
+fi
+
+# 2. Sanity pass over the staged set. NUL-delimited so paths with spaces,
+#    quotes or non-ASCII characters are seen exactly; checks read the staged
+#    blob (what will actually be committed), not the working-tree copy.
 problems=""
-staged_files="$(git diff --cached --name-only)"
-while IFS= read -r f; do
-  [ -z "$f" ] && continue
+while IFS= read -r -d '' f; do
   case "$f" in
+    .env.example|*/.env.example|.env.sample|*/.env.sample|.env.template|*/.env.template) ;;
     .env|*/.env|.env.*|*/.env.*)              problems="${problems}  env file staged: ${f}"$'\n' ;;
-    *id_rsa|*id_ed25519|*.pem|*.p12|*.pfx)    problems="${problems}  key/cert staged: ${f}"$'\n' ;;
+    *id_rsa|*id_ed25519|*id_ecdsa|*id_dsa|*.pem|*.p12|*.pfx|*.p8|*.key|*credentials.json)
+                                              problems="${problems}  key/cert staged: ${f}"$'\n' ;;
   esac
-  if [ -f "$f" ]; then
-    sz="$(wc -c < "$f" 2>/dev/null || echo 0)"
+  if git cat-file -e ":$f" 2>/dev/null; then   # skip staged deletions (no blob)
+    sz="$(git cat-file -s ":$f" 2>/dev/null || echo 0)"
     if [ "${ALLOW_BIG:-0}" != "1" ] && [ "$sz" -gt 1048576 ]; then
       problems="${problems}  large file >1MiB staged: ${f} (${sz} bytes) — set ALLOW_BIG=1 to allow"$'\n'
     fi
-    if git show ":$f" 2>/dev/null | grep -qE '^(<<<<<<<|>>>>>>>|=======)([[:space:]]|$)'; then
+    # A conflict needs both an opening and a closing marker; a bare `=======`
+    # is ordinary markdown/rst (setext heading underline, a rule).
+    blob="$(git show ":$f" 2>/dev/null)"
+    if printf '%s\n' "$blob" | grep -qE '^<<<<<<<([[:space:]]|$)' \
+       && printf '%s\n' "$blob" | grep -qE '^>>>>>>>([[:space:]]|$)'; then
       problems="${problems}  merge-conflict markers in: ${f}"$'\n'
     fi
   fi
-done <<EOF
-$staged_files
-EOF
+done < <(git diff --cached --name-only -z)
 
 if [ -n "$problems" ]; then
   echo "commit.sh: pre-commit checks flagged the staged set:" >&2
@@ -120,7 +145,9 @@ fi
 # 3. Assemble -m args, appending the trailer if set and not already present.
 commit_args=()
 for m in "${msgs[@]}"; do commit_args+=(-m "$m"); done
+add_trailer=0
 if [ -n "$TRAILER" ] && ! printf '%s\n' "${msgs[@]}" | grep -qF -- "$TRAILER"; then
+  add_trailer=1
   commit_args+=(-m "$TRAILER")
 fi
 
@@ -129,6 +156,6 @@ echo "── staged ────────────────────
 git diff --cached --stat
 echo "── message ────────────────────────────"
 for m in "${msgs[@]}"; do printf '%s\n\n' "$m"; done
-[ -n "$TRAILER" ] && printf '%s\n' "$TRAILER"
+[ "$add_trailer" = 1 ] && printf '%s\n' "$TRAILER"
 echo "───────────────────────────────────────"
 git commit "${commit_args[@]}"

@@ -19,9 +19,11 @@
 #
 # After a successful merge it deletes the PR's remote branch, checks out the
 # base branch, fast-forwards it to the just-merged state, prunes stale
-# remote-tracking refs, and deletes the local head branch. Anything it can't
-# do cleanly (dirty tree, base checkout fails) it skips with a note rather
-# than forcing.
+# remote-tracking refs, and deletes the PR's local head branch with a safe
+# `git branch -d` (never the branch you happened to start on; kept, with a
+# note, if git can't tell it is fully merged — e.g. after --squash). Anything
+# it can't do cleanly (dirty tree, base checkout fails) it skips with a note
+# rather than forcing.
 #
 # Requires the `gh` CLI, authenticated (`gh auth status`).
 
@@ -66,11 +68,18 @@ fi
 
 echo "land.sh: merging PR #$prnum (${head} → ${base}) with ${method} ..."
 if ! gh pr merge "$prnum" "$method" --delete-branch; then
-  echo >&2
-  echo "land.sh: merge did not go through — checks pending, branch protection, or a conflict." >&2
-  echo "land.sh: to have GitHub merge it automatically once checks pass:" >&2
-  echo "         gh pr merge $prnum $method --auto --delete-branch" >&2
-  exit 1
+  # gh can merge on GitHub and then fail on its own local step (checkout of the
+  # base, deleting the local branch). Re-check before calling it a failed merge.
+  newstate="$(gh pr view "$prnum" --json state -q .state 2>/dev/null || true)"
+  if [ "$newstate" = "MERGED" ]; then
+    echo "land.sh: gh reported an error, but PR #$prnum is MERGED on GitHub — continuing with the local resync." >&2
+  else
+    echo >&2
+    echo "land.sh: merge did not go through — checks pending, branch protection, or a conflict." >&2
+    echo "land.sh: to have GitHub merge it automatically once checks pass:" >&2
+    echo "         gh pr merge $prnum $method --auto --delete-branch" >&2
+    exit 1
+  fi
 fi
 
 echo "land.sh: PR #$prnum merged."
@@ -89,17 +98,25 @@ if ! git checkout "$base" >/dev/null 2>&1; then
   exit 0
 fi
 
-git fetch --prune origin >/dev/null 2>&1 || true
-if git merge --ff-only "origin/${base}" >/dev/null 2>&1; then
+# Use the remote the base branch actually tracks (fork checkouts use `upstream`).
+remote="$(git config --get "branch.${base}.remote" 2>/dev/null || true)"
+[ -n "$remote" ] || remote=origin
+git fetch --prune "$remote" >/dev/null 2>&1 || true
+if git merge --ff-only "${remote}/${base}" >/dev/null 2>&1; then
   echo "land.sh: ${base} fast-forwarded to $(git rev-parse --short HEAD)."
 else
   echo "land.sh: could not fast-forward ${base} (local commits?) — run 'git pull' yourself."
 fi
 
-# Drop the merged local head branch.
-if [ "$cur" != "$base" ] && git show-ref --verify --quiet "refs/heads/${cur}"; then
-  if git branch -D "$cur" >/dev/null 2>&1; then
-    echo "land.sh: deleted local branch '${cur}'."
+# Drop the merged PR's local head branch — never whichever branch happened to be
+# checked out. Safe delete (-d): if the branch isn't fully merged into the base
+# (a squash/rebase merge leaves it looking unmerged, or it has extra commits),
+# keep it and say so rather than force-deleting work.
+if [ -n "$head" ] && [ "$head" != "$base" ] && git show-ref --verify --quiet "refs/heads/${head}"; then
+  if git branch -d "$head" >/dev/null 2>&1; then
+    echo "land.sh: deleted local branch '${head}'."
+  else
+    echo "land.sh: kept local branch '${head}' (not fully merged into ${base} as far as git can tell) — delete with 'git branch -D ${head}' if it is done."
   fi
 fi
 

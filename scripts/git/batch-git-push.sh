@@ -1,15 +1,20 @@
 #!/usr/bin/env bash
 #
-# chunked-push.sh — stage, commit, and push changes in small batches
+# batch-git-push.sh — stage, commit, and push changes in small batches
 # so that no single push contains more than a set number of files.
 #
+# Each batch is committed with commit.sh (named-path staging, the sanity
+# checks, the repo's Co-Authored-By trailer) and pushed with push.sh (timeout,
+# HTTP/1.1 fallback, no retry on a rejection). It refuses to run if the index
+# already holds staged files, and only pushes the branch that is checked out.
+#
 # Usage:
-#   scripts/chunked-push.sh [batch_size] [branch] [commit_prefix]
+#   scripts/git/batch-git-push.sh [batch_size] [branch] [commit_prefix]
 #
 # Examples:
-#   scripts/chunked-push.sh                 # 90 files/batch, current branch
-#   scripts/chunked-push.sh 50              # 50 files/batch
-#   scripts/chunked-push.sh 90 main "Add notes"
+#   scripts/git/batch-git-push.sh                 # 90 files/batch, current branch
+#   scripts/git/batch-git-push.sh 50              # 50 files/batch
+#   scripts/git/batch-git-push.sh 90 main "Add notes"
 #
 # Env:
 #   DRY_RUN=1   show what would happen without committing/pushing
@@ -25,12 +30,30 @@ DRY_RUN="${DRY_RUN:-0}"
 INCLUDE_MODIFIED="${INCLUDE_MODIFIED:-0}"
 
 cd "$(git rev-parse --show-toplevel)"
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+CURRENT="$(git rev-parse --abbrev-ref HEAD)"
+if [[ "$BRANCH" != "$CURRENT" ]]; then
+  echo "batch-git-push.sh: '$BRANCH' is not the checked-out branch ('$CURRENT') —" >&2
+  echo "  commits would land on '$CURRENT' and pushing '$BRANCH' would publish nothing new." >&2
+  echo "  check out '$BRANCH' first." >&2
+  exit 1
+fi
+if [[ "$DRY_RUN" != "1" ]] && ! git diff --cached --quiet; then
+  echo "batch-git-push.sh: the index already holds staged files — commit or unstage them first," >&2
+  echo "  otherwise they would be swept into batch 1." >&2
+  exit 1
+fi
 
 # Collect the list of paths to process (NUL-separated for safe filenames).
 if [[ "$INCLUDE_MODIFIED" == "1" ]]; then
   # Untracked + modified + deleted, path only.
   mapfile -d '' FILES < <(git -c core.quotepath=off status --porcelain -z -uall \
-    | while IFS= read -r -d '' entry; do printf '%s\0' "${entry:3}"; done)
+    | while IFS= read -r -d '' entry; do
+        printf '%s\0' "${entry:3}"
+        # A rename/copy is followed by a bare entry holding the old path — skip it.
+        case "${entry:0:2}" in *R* | *C*) IFS= read -r -d '' _old ;; esac
+      done)
 else
   mapfile -d '' FILES < <(git ls-files --others --exclude-standard -z)
 fi
@@ -58,10 +81,9 @@ while (( i < TOTAL )); do
   if [[ "$DRY_RUN" == "1" ]]; then
     echo "[dry-run] batch ${batch_num}: ${count} files -> \"${msg}\""
   else
-    printf '%s\0' "${chunk[@]}" | git add --pathspec-from-file=- --pathspec-file-nul
-    git commit -q -m "$msg"
+    "$HERE/commit.sh" -m "$msg" -- "${chunk[@]}"
     echo "Committed batch ${batch_num}: ${count} files"
-    git push -q origin "$BRANCH"
+    "$HERE/push.sh" origin "$BRANCH"
     echo "Pushed batch ${batch_num}"
   fi
 

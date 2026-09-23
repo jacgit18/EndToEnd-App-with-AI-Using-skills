@@ -7,6 +7,10 @@
 # push (no lingering "Publish Branch" prompt in editors); re-setting an
 # already-correct upstream is a harmless no-op.
 #
+# Only a stall (timeout, exit 124) or a connection failure (git exit 128) is
+# retried. A rejection — non-fast-forward, protected branch, a hook — exits
+# immediately: retrying it cannot succeed and it needs a human.
+#
 #   scripts/git/push.sh [remote=origin] [branch=current]
 #
 # Env:
@@ -21,6 +25,11 @@ remote="${1:-origin}"
 branch="${2:-$(git rev-parse --abbrev-ref HEAD)}"
 t="${PUSH_TIMEOUT:-90}"
 
+if [ "$branch" = "HEAD" ]; then
+  echo "push.sh: detached HEAD — pass a branch name." >&2
+  exit 1
+fi
+
 # `timeout` is GNU coreutils; macOS ships it as `gtimeout` (brew coreutils) or
 # not at all. Without it, push without a per-attempt cap rather than failing —
 # the HTTP/1.1 fallback and retry still apply, just not the hang guard.
@@ -33,26 +42,34 @@ else
   cap() { "$@"; }
 fi
 
+# Runs one push attempt. Exits 0 on success and exits 1 straight away on a
+# non-transient failure (a rejection); returns 1 only for a stall/connection
+# failure, which the caller may retry.
 attempt() {
-  local label="$1"; shift
+  local label="$1" rc; shift
   echo "push.sh: ${label} ..."
-  if cap "$@"; then
+  cap "$@"
+  rc=$?
+  if [ "$rc" -eq 0 ]; then
     echo "push.sh: ${label} — ok"
-    return 0
+    exit 0
   fi
-  local rc=$?
   if [ "$rc" -eq 124 ]; then
     echo "push.sh: ${label} — timed out after ${t}s"
-  else
-    echo "push.sh: ${label} — failed (exit ${rc})"
+    return 1
   fi
-  return 1
+  if [ "$rc" -eq 128 ]; then
+    echo "push.sh: ${label} — connection failure (exit 128)"
+    return 1
+  fi
+  echo "push.sh: ${label} — rejected or failed (exit ${rc}); not a transient stall, so not retrying." >&2
+  exit 1
 }
 
-attempt "push"                git push -u "$remote" "$branch" && exit 0
-attempt "push (HTTP/1.1)"     git -c http.version=HTTP/1.1 push -u "$remote" "$branch" && exit 0
+attempt "push"                git push -u "$remote" "$branch"
+attempt "push (HTTP/1.1)"     git -c http.version=HTTP/1.1 push -u "$remote" "$branch"
 sleep 3
-attempt "push (retry, HTTP/1.1)" git -c http.version=HTTP/1.1 push -u "$remote" "$branch" && exit 0
+attempt "push (retry, HTTP/1.1)" git -c http.version=HTTP/1.1 push -u "$remote" "$branch"
 
 echo "push.sh: all attempts failed — the remote may be having trouble; retry shortly." >&2
 exit 1

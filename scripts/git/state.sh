@@ -27,9 +27,10 @@ else
   printf 'branch: %s   (no upstream)\n' "$branch"
 fi
 
-staged="$(git diff --cached --name-status)"
-unstaged="$(git diff --name-status)"
-untracked="$(git ls-files --others --exclude-standard)"
+# core.quotepath=off keeps non-ASCII names readable and copy-pasteable.
+staged="$(git -c core.quotepath=off diff --cached --name-status)"
+unstaged="$(git -c core.quotepath=off diff --name-status)"
+untracked="$(git -c core.quotepath=off ls-files --others --exclude-standard)"
 
 echo
 if [ -n "$staged" ]; then
@@ -59,4 +60,8 @@ fi
 
 echo
 echo "recent commits:"
-git log --oneline -n "$n" | sed 's/^/  /'
+if git rev-parse --verify -q HEAD >/dev/null 2>&1; then
+  git log --oneline -n "$n" | sed 's/^/  /'
+else
+  echo "  (no commits yet)"
+fi
