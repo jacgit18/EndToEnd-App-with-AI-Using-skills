@@ -11,6 +11,10 @@ Not "is it hard to write" (lines of code, number of fields, CRUD-shaped). Ask ho
 - A field name is reversible, so the stakes are low.
 - An FK structure that other tables build on is load-bearing, so the stakes are high.
 
+
+> "I'd first figure out how many real decision points are in this — is the schema shape basically dictated by the data, or are there tradeoffs baked in, like whether this table needs to support queries we haven't built yet. If it's the former, I might have AI draft the first pass and just review it, since there's one defensible answer. If it's the latter — say, modeling a relationship other tables will depend on — that's not something I'd hand off, because the cost of getting it wrong compounds. I'd work through it myself, possibly using AI to stress-test edge cases, but I'm the one making the call."
+
+
 ## The delegation ladder
 
 | Decision density | Test | AI's role |
