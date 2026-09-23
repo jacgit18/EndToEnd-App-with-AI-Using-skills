@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 #
-# commit.sh — commit with a repo's staging + message conventions baked in.
+# commit.sh — commit with explicit-pathspec staging, a sanity pass and an optional trailer.
 #
 #   scripts/git/commit.sh -m "Subject line" [-m "body paragraph" ...] \
 #       [--] <pathspec> [<pathspec> ...]
 #
 # What it does, in order:
 #   1. Stages exactly the pathspecs you name — never a blanket `git add -A`
-#      (see .claude/rules/conventions.md). Aborts if `git add` fails, and if the
+#      (a habit worth keeping in any repo). Aborts if `git add` fails, and if the
 #      index already holds files outside the named paths (a plain `git commit`
 #      would sweep them in).
 #   2. Runs a sanity pass over the staged set: refuses on .env files, obvious
@@ -18,11 +18,13 @@
 #   3. Appends a trailer unless a -m already carries it. The trailer resolves
 #      as: the COMMIT_TRAILER env var if set (empty = append nothing), else
 #      `git config commit-helper.trailer` if that key exists (empty = none).
-#      If NEITHER is set, first run auto-initialises the git-config key once —
-#      to the Co-Authored-By line the repo's recent history already uses, or
-#      the built-in default if there is none — prints what it set, and uses
-#      that. So a fresh repo needs no manual `git config`; to change it later,
-#      `git config commit-helper.trailer "…"` (or "" to stop appending one).
+#      If NEITHER is set, it looks at the repo's recent history for a
+#      Co-Authored-By line with a <noreply@…> address (a bot/AI trailer); if it
+#      finds one it saves it to the git-config key once, prints what it set,
+#      and uses it. If history has none, NO trailer is appended — nothing is
+#      invented for a repo that doesn't already use one. To set one:
+#      `git config commit-helper.trailer "Co-Authored-By: Name <email>"`
+#      (or "" to stop appending one).
 #   4. Prints `git diff --cached --stat` and the assembled message, then commits.
 #
 # It does NOT push and does NOT open PRs. Use scripts/git/push.sh to push.
@@ -31,8 +33,6 @@ set -uo pipefail
 
 top="$(git rev-parse --show-toplevel 2>/dev/null)" || { echo "commit.sh: not a git repo" >&2; exit 1; }
 cd "$top" || exit 1
-
-DEFAULT_TRAILER="Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>"
 
 resolve_trailer() {
   # 1. Ephemeral override — COMMIT_TRAILER set (even to empty) wins, no config touched.
@@ -47,14 +47,14 @@ resolve_trailer() {
   fi
   # 3. Unconfigured — seed the key once, visibly. Prefer the Co-Authored-By line
   #    the repo's own recent history uses — but only a <noreply@…> (bot/AI) line,
-  #    so a human collaborator's trailer is never adopted as the permanent default;
-  #    otherwise fall back to the built-in default.
+  #    so a human collaborator's trailer is never adopted as the permanent default.
+  #    Nothing in history -> no trailer, and nothing is written to config.
   local seed
   seed="$(git log -30 --pretty=%B 2>/dev/null \
           | grep -iE '^Co-authored-by: .+ <noreply@[^>]+>$' \
           | sort | uniq -c | sort -rn | head -1 \
           | sed -E 's/^ *[0-9]+ +//')"
-  [ -n "$seed" ] || seed="$DEFAULT_TRAILER"
+  [ -n "$seed" ] || return 0
   if git config --local commit-helper.trailer "$seed" 2>/dev/null; then
     echo "commit.sh: initialised  commit-helper.trailer = \"$seed\"" >&2
     echo "commit.sh:   change:  git config commit-helper.trailer \"…\"   ( \"\" = append no trailer )" >&2

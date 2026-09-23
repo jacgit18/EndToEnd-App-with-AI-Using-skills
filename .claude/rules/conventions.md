@@ -37,9 +37,12 @@ thin resilience wrapper — a rejected push (non-fast-forward, protected branch)
 for a human. `land.sh` goes through GitHub, so a merge the web UI would block is blocked
 here too; its local-resync steps are best-effort and skip (with a note) rather than force.
 
-The scripts carry no hard dependency on this repo. Portability knobs: `commit.sh` takes the
-commit trailer from `COMMIT_TRAILER` (empty = none), else `git config commit-helper.trailer`
-— and if neither is set, its first run writes that git-config key once (to the
-`Co-Authored-By` line the repo's recent history already uses, or the built-in default) and
-says so, so a fresh clone needs no manual setup. `push.sh` runs without the stall guard if
-neither `timeout` nor `gtimeout` is on `PATH`.
+The scripts carry no hard dependency on this repo — copy the whole `scripts/git/` folder
+(`batch-git-push.sh` calls its siblings). Portability knobs: `commit.sh` takes the commit
+trailer from `COMMIT_TRAILER` (empty = none), else `git config commit-helper.trailer` — and
+if neither is set, its first run writes that git-config key once, from a `<noreply@…>`
+`Co-Authored-By` line the repo's recent history already uses, and says so (a fresh clone of
+this repo needs no manual setup). If history has no such line, **no trailer is appended** —
+set one with `git config commit-helper.trailer "…"`. `push.sh` runs without the stall guard
+if neither `timeout` nor `gtimeout` is on `PATH`. `land.sh` is GitHub-only (needs `gh`); the
+others are plain git and need bash (batch-git-push.sh no longer needs bash 4.4).
