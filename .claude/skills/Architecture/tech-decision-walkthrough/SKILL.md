@@ -96,6 +96,13 @@ significance axis):
 | **Structural** | Shapes the code but swappable with contained effort — web framework, data-access layer, frontend library, test strategy | Full loop; inline ADR — but the **data-access layer** has a specialist (`data-access-layer`): route to it once the datastore ADR exists, hand it the assembled scope + constraints + lean, and fold its one block back (it won't re-gate) |
 | **Routine** | Easily reversible — formatter, test runner, a small utility lib, CI provider | Name the pick + a one-line because; no loop; batch several into one note |
 
+The classes are the **reversible ↔ load-bearing** axis. When tagging a decision, write the test
+in those terms — "what would undoing this in six months cost, and what builds on it?" A
+decision that *looks* routine but is a proxy for an undecided business definition ("how does the
+business define X?") is load-bearing; tag it that way. Say who holds the call: Claude may own a
+routine pick, drafts a structural one for the user's review, and only recommends on a
+load-bearing one. (Human-facing recall card: `Artifact/delegation-decision-density.md`.)
+
 ## Step 4 — Closeout
 
 When the last decision on the list has an ADR, don't just stop — run the closeout:

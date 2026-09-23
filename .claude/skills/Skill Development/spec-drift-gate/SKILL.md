@@ -44,6 +44,13 @@ Feed the answers straight into the Step 2 spec block, confirm it, then continue.
 
 Once the spec is settled, the next instruction should be scoped to one slice of it — the next concrete step on the map, not "now build all of it." A spec describes the destination; a precision instruction is the next move toward it.
 
+**Name the tripwires with the slice.** Decision density often only shows up mid-build, so state
+up front what discovery should stop the work and go back to the user instead of getting a
+default picked silently — a schema or key other things build on, a nullable/required or
+lifecycle choice the spec's rules don't settle, retention / audit / PII handling, a term the
+business hasn't defined. Two or three lines; they ride along in the slice brief (including a
+`spec-executor` brief, Step 3a), and a tripped one is a Step 4 amend-or-pull-back decision.
+
 ## Step 3a — Execution handoff, when the slice warrants running unattended
 
 Most slices just get built inline, in the same conversation — that's still the default. Consider handing a slice to the `spec-executor` subagent (background, worktree-isolated) instead when the slice is substantial enough to run unattended and doesn't need turn-by-turn judgment calls: a well-bounded chunk of a multi-phase build, a controlled-experiment slice from Step 2 item 4, or a slice starting after the user has stepped away and won't be available to answer questions mid-build.
