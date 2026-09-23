@@ -16,7 +16,7 @@ hint pass when the user is explicitly learning to write skills.
 | Does a new/changed skill collide with its neighbors? | `skill-interaction-testing` | That one *runs* realistic prompts (stacking, contradiction, silent override, chaining). This one only *reads*. Natural order: audit the text, fix it, then interaction-test. A description edit that widens or narrows scope hands back to interaction testing. |
 | Whole-catalog rot (stale markers, missing README rows, dead pointers) | `catalog-drift-audit` | Periodic, mechanical, no target skill. This is on demand, one skill, deep on content. Its "Catalog wiring" step is a per-skill slice of the same ideas; it never writes the audit log. |
 | Creating a skill, measuring triggering, description optimization | `anthropic-skills:skill-creator` | It builds and runs evals. This gives a reading-based critique and measures nothing. |
-| Applying the fixes | `/new-skill` step 4 | This skill reports; reciprocal sibling edits are applied there or by hand. |
+| Applying the fixes | `/new-skill` step 5 | This skill reports; reciprocal sibling edits are applied there or by hand. |
 | Which skills actually got invoked / "why doesn't it fire" from usage data | `skill-usage-log` | That reads the invocation log. This reads one skill's text and can flag trigger *risk* only. |
 | Learning to write skills (coaching level) | `learning-gate` | Has a Step 3 row pointing here; on explicit learning intent this skill's escape hatch allows a hint pass instead of the full report. |
 | Review request that looks like a debug/design gate | `problem-solving-gates` | Its description carves out skill-file review; this is a critique, not a gate. |
