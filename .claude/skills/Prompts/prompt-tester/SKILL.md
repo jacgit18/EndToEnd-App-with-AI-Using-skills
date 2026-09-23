@@ -1,6 +1,6 @@
 ---
 name: prompt-tester
-description: This skill should be used when the user asks to "test this prompt", "does this prompt work", "try my prompt on a few examples", "check if this prompt does what it's supposed to", or pastes a prompt and asks whether it's any good. Not for writing a new prompt from scratch (that is `prompt-authoring`), and not for editing or fixing a prompt directly -- this skill reports findings, it does not rewrite. Not for merely filing or logging a prompt (that is prompt-archive) -- only use this when the ask is about whether the prompt works. It includes a built-in assessment phase that surfaces gaps and evaluates whether the prompt should stay as-is, be refined, or move to a skill/agent container.
+description: This skill should be used when the user asks to "test this prompt", "does this prompt work", "try my prompt on a few examples", "check if this prompt does what it's supposed to", or pastes a prompt and asks whether it's any good. Not for writing a new prompt from scratch (that is `prompt-authoring`), and not for editing or fixing a prompt directly -- this skill reports findings, it does not rewrite. Not for merely filing or logging a prompt (that is prompt-archive) -- only use this when the ask is about whether the prompt works. Also use for "should this prompt be a skill or an agent?" once there is a concrete prompt to judge. Not for a skill's `description:` frontmatter, a pasted `Use when…` trigger-description block, or SKILL.md text under `.claude/skills/`, and not for debugging a skill (including this one) itself -- reviewing a skill as a document is `skill-static-audit`; if it is unclear whether a pasted block is a prompt or a skill description, ask one question.
 ---
 
 # Prompt Tester
@@ -22,6 +22,9 @@ the prompt itself needs refinement or should be packaged as a skill or agent.
 - Do not invent success criteria the user never stated — if intent is genuinely ambiguous, ask
   before testing rather than guessing.
 - Do not run tests with real destructive or irreversible side effects; use safe, simulated inputs.
+- If the prompt needs tools, files or context the test sub-instance won't have (e.g. "read the
+  attached spreadsheet"), say which parts are untestable, test only the rest, and don't score the
+  untestable parts as pass or fail.
 
 ## Full Workflow (4 + 4 Steps)
 
@@ -30,16 +33,21 @@ the prompt itself needs refinement or should be packaged as a skill or agent.
 **Step 1 — Clarify intent and context**
 
 Identify the target prompt's apparent intent: role/persona, task, expected inputs, output format,
-and any implied success criteria. State this back briefly before testing.
+and any implied success criteria. State this back briefly before testing. Label criteria you
+inferred as *inferred* — they are what the prompt's own text implies, not criteria you made up —
+and ask for confirmation only where the intent is genuinely ambiguous (see Out of scope).
 
 **Critical**: If the prompt doesn't specify required inputs but expects them (e.g., "the situation
 where I'm deliberating"), ask: "Should this prompt ask for context if the user hasn't provided it,
 or assume the user will always supply it?" This determines whether the prompt is self-sufficient
-or dependent on good user hygiene.
+or dependent on good user hygiene. Don't stall on it: if the user doesn't answer, or the run is
+non-interactive, state the assumption you're proceeding on ("assuming the prompt should ask for
+missing context") and test both behaviors with the minimal-input case in Step 2.
 
 **Step 2 — Secure sample inputs**
 
-If the user didn't supply sample inputs, generate 2–3 representative ones:
+If the user didn't supply sample inputs, generate 2–3 distinct representative ones (Step 3 runs
+the straightforward one twice, so expect up to four runs):
 - At least one straightforward case exercising core purpose
 - At least one edge case likely to expose a gap
 - One "minimal input" case if the prompt has context dependencies (to test robustness)
@@ -47,12 +55,27 @@ If the user didn't supply sample inputs, generate 2–3 representative ones:
 **Step 3 — Run tests**
 
 For each sample input, dispatch a fresh sub-instance using the target prompt verbatim plus that
-input. Capture raw output.
+input — with the Agent tool (a general-purpose subagent whose task is the prompt text followed by
+the input, nothing else) — and capture the raw output. Run the straightforward case **twice**, so
+Step 5's Consistency check has data; one run per input is enough for the rest.
+
+If no subagent tool is available, run each case in this conversation instead and say so in the
+report: the results are *simulated in the same context* and may be contaminated by what you
+already know about the prompt, so downgrade the Consistency finding to "not assessable".
 
 **Step 4 — Report test results**
 
-For each test case: input, output, verdict (pass/partial/fail), and why. Close with an overall
-verdict and the 1–3 most concrete gaps.
+For each test case: input, output, verdict, and why. Close with an overall verdict and the 1–3
+most concrete gaps. Verdicts, judged against the stated or inferred criteria from Step 1:
+
+| Verdict | Meaning |
+|---|---|
+| **Pass** | Core purpose met, output format followed, no criterion missed. |
+| **Partial** | Core purpose met, but a criterion, the format, or an edge behavior was missed. |
+| **Fail** | Core purpose missed, or the output is unusable for the stated task. |
+
+The overall verdict is the worst verdict among the cases unless a case is plainly unrepresentative
+(say why).
 
 ---
 
@@ -75,7 +98,9 @@ List 1–3 weak spots found. Be specific: "Prompt doesn't specify output format"
 
 **Step 6 — Generate targeted improvement questions**
 
-For each weak spot from Step 5, ask *one specific question*, not generic feedback.
+For each weak spot from Step 5, ask *one specific question*, not generic feedback. Cap the total
+at two questions: if there are three weak spots, ask about the two that most change the prompt's
+behavior and list the third without a question.
 
 **Examples:**
 - Weak spot: "No output format specified" → Question: "Should output be prose paragraphs, a
@@ -85,7 +110,7 @@ For each weak spot from Step 5, ask *one specific question*, not generic feedbac
 - Weak spot: "Role boundaries vague" → Question: "When should the persona acknowledge limitations
   in-character vs. break frame to escalate?"
 
-One or two questions per assessment. These are *for the user to answer*, not fixes to apply.
+These are *for the user to answer*, not fixes to apply.
 
 **Step 7 — Evaluate container fit**
 
@@ -105,7 +130,9 @@ pattern matches their intended use going forward.
 **Step 8 — Recommend without implementing**
 
 State the assessment (weak spots, targeted questions, container recommendation) and reasoning.
-Stop there. No conversion or rewrite happens unless the user explicitly asks.
+Stop there. No conversion or rewrite happens unless the user explicitly asks — and then it isn't
+done here: refining the prompt text is `prompt-authoring`; packaging it as a skill is `/new-skill`
+(or `template/spec-system/agent-spec-template.md` for an agent, where that template exists).
 
 ---
 
@@ -117,8 +144,8 @@ Structure your report as:
 2. **Test Results Table** — Test case | Input | Output (tightly summarized) | Verdict | Why
 3. **Overall Verdict** — Pass/partial/fail with summary
 4. **Assessment & Recommendations** (Steps 5–8):
-   - Weak spots identified (2–3, specific)
-   - Targeted questions (1–2 for user to answer)
+   - Weak spots identified (1–3, specific)
+   - Targeted questions (at most 2, for the user to answer)
    - Container analysis (one-off vs. skill vs. agent, with reasoning)
    - Recommendation (e.g., "Refine as prompt" or "Escalate to agent if iterative use emerges")
 
@@ -128,9 +155,31 @@ Structure your report as:
 
 - **Input dependency**: Does output quality drop sharply if context is minimal? If yes, the prompt
   needs to specify fallback behavior.
-- **Role fidelity**: Does the persona hold across runs, or does it drift/break? Test by running
-  twice on the same input and comparing tone/voice.
+- **Role fidelity**: Does the persona hold across runs, or does it drift/break? Compare tone/voice
+  across the two Step 3 runs of the straightforward case.
 - **Format inconsistency**: Do multiple runs produce the same structure (e.g., always a table, or
   always prose), or does it vary? Inconsistency signals underspecified output format.
 - **Scope creep**: Does the prompt's stated goal match what it actually delivers, or does it
   deliver more/less? Misalignment is a signal the intent is unclear.
+
+---
+
+## Example invocations
+
+> "Here's my prompt: 'You are a terse code reviewer. Review the diff I paste.' Does it work?"
+
+Applies. State intent, generate a straightforward diff, an edge case (empty diff) and a
+minimal-input case, run each in a fresh subagent (the straightforward one twice), report per-case
+verdicts, then the assessment. Stop after recommending.
+
+> "Test `.claude/_Prompts/weekly-review.md`."
+
+Applies. Read the file first, then proceed as above.
+
+> "Rewrite this prompt so it's better."
+
+Does not apply — that is `prompt-authoring`. Offer to test the rewritten prompt afterward.
+
+> "Is this SKILL.md description any good?"
+
+Does not apply — that is `skill-static-audit`.

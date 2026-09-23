@@ -1,5 +1,5 @@
 ---
-description: Build a new skill end-to-end per .claude/rules/adding-a-skill.md — scaffold, isolation screen, interaction test, reciprocal edits, bookkeeping, commit.
+description: Build a new skill end-to-end per .claude/rules/adding-a-skill.md — scaffold, static audit, isolation screen, interaction test, reciprocal edits, bookkeeping, commit.
 argument-hint: "<Group>/<name>  (e.g. Prompts/foo, Architecture/Data/bar)"
 ---
 
@@ -22,15 +22,17 @@ Execution notes for running this well:
   carries every carve-out against siblings — literal trigger phrases plus explicit
   "NOT for X — that's `sibling`". A weak description is the usual reason a skill misfires or
   never fires.
-- **Isolation screen (step 2).** One realistic prompt, baseline vs. skill, ideally a
+- **Static audit (step 2).** Run `skill-static-audit` on the draft and fix blockers and
+  should-fixes before spending agent runs on the next two steps. Read-only.
+- **Isolation screen (step 3).** One realistic prompt, baseline vs. skill, ideally a
   worktree-isolated agent. Record PASS / MIXED / FAIL with the reasoning — record MIXED/FAIL
   honestly, don't inflate a weak result.
-- **Interaction test (step 3).** Invoke the `skill-interaction-testing` skill; scope the pool
+- **Interaction test (step 4).** Invoke the `skill-interaction-testing` skill; scope the pool
   per its Step 1 (own group + the four cross-cutting gates + any outsider sharing a concrete
   concept). Run scenarios via a worktree agent. Fixes are one-line description edits.
-- **Reciprocal edits (step 4).** Apply sibling pointer edits **both directions** — a
+- **Reciprocal edits (step 5).** Apply sibling pointer edits **both directions** — a
   one-directional pointer is the single most common finding.
-- **Bookkeeping (step 5).** `README.md` row; `SKILL-BACKLOG.md` `[x] Built <date>` with the
+- **Bookkeeping (step 6).** `README.md` row; `SKILL-BACKLOG.md` `[x] Built <date>` with the
   isolation + interaction results inline; `memory/skill-added-<name>.md` + its `MEMORY.md`
   index line.
 - **Then** open a PR to `main` if the user wants one — this command does not push to `main`

@@ -4,7 +4,7 @@ description: Read-only catalog consistency check — README rows, unreferenced s
 
 Read-only health check on the skill catalog. **Change nothing.** To apply fixes, that is the
 `catalog-drift-audit` skill (heavier, periodic, writes `.claude/_Prompts/catalog-audit-log.md`).
-This is the quick pre-commit glance — see @.claude/rules/adding-a-skill.md step 5 for what
+This is the quick pre-commit glance — see @.claude/rules/adding-a-skill.md step 6 for what
 each skill is supposed to have.
 
 Skills on disk with no `README.md` row:
