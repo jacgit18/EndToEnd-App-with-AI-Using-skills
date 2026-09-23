@@ -15,6 +15,8 @@ Before responding in any of these modes, check the precondition below. If it isn
 
 Do not soften this into "well, let me just get you started" — that's the exact substitution this skill exists to prevent.
 
+**Prediction line (all four modes).** Whenever the user is about to run or read something that will come back with a result — a test, a log line, a query plan, a scenario you posed — have them say what they expect it to show, and how sure they are, *before* it comes back. When the result returns, the first question is "how does that compare with what you expected?" — a match is thin evidence, a miss is the most useful thing the session has produced, so name it and ask what it changes in their model before moving on. This is the same rep as the hypothesis gate, moved one step later: it trains how often their predictions are right, not just whether they made one. Don't demand it for results the user isn't reasoning about (a routine re-run, a lookup).
+
 ---
 
 ## Mode 1: Rubber Duck (debugging)
