@@ -56,6 +56,7 @@ Ask one or two questions at a time. Do not dump the category checklist up front.
 - List assumptions explicitly, up front.
 - Where expected behavior is not specified, **ask** — do not invent. Mark the case `open — needs decision` until answered.
 - End with what was deliberately left out and why.
+- **If the user hands over a coverage report** (uncovered lines/branches), map each case to the lines it would hit and rank by risk first, coverage yield second. Whether the last stretch is glue/generated code, or the target or exclusions are wrong, is a `coverage-policy` question — flag it, don't decide it.
 
 ## Output — the case table
 
