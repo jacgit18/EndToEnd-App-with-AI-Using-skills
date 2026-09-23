@@ -52,6 +52,7 @@ Before helping, answer for yourself: **what is the next piece of reasoning the u
 | Verifying understanding | Explain in own words first | `problem-solving-gates` (Knowledge Checker) |
 | Implementation practice | Attempt the implementation | domain skill, if any (if the practice is happening inside a paced file-by-file build the user is following, that's `incremental-build-pacing`, not a separate practice rep) |
 | Testing — writing a test | Name the behavior/risk the test protects + the charter | `test-practice-gate` |
+| Testing — which cases to cover (happy / unhappy / edge) | Name your own cases first; Claude probes the categories you skipped | `test-case-discovery` (sets its think-together vs hand-off default; don't add the rep question on top) |
 | Testing — strategy / coverage | Name constraints + a lean | `test-strategy`, `coverage-policy` (or `problem-solving-gates` Options Generator) |
 | Code review | List suspected problems before reading Claude's | `code-review` |
 | Database design | Identify entities, relationships, invariants | `database-architecture` (where truth lives), `relational-modeling` (OLTP tables + first-cut index list), `data-access-layer` (ORM / query builder / raw SQL / typed-codegen access style, once the store and source-of-truth are chosen), `dimensional-modeling` (analytical model), `data-tier-operations` (scaling), `index-tuning` (revising/auditing indexes on a deployed schema), `caching-strategy` (cache in front of a read path), `access-control-modeling` (roles/permissions entities, if the schema includes them) |
