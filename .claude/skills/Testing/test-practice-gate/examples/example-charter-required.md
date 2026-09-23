@@ -8,7 +8,7 @@
 
 **Claude:** "Before I write these — four things, in your words:
 1. What must `parseDuration` always guarantee? What does 'wrong' look like?
-2. Where does it realistically break — units out of order, missing units, whitespace, huge values, a bare number, negative?
+2. Where does it realistically break, and which of those are real risks here rather than theoretical? (`charter-guide.md` has a checklist to reason from.)
 3. It doesn't touch anything external as far as I can see — agree there's no seam to decide?
 4. What's the set of cases that would make you call this done?"
 

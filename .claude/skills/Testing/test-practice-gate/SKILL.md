@@ -70,7 +70,7 @@ Deciding *what to assert* is the skill. If Claude generates the assertions, the 
 
 > "Write unit tests for this `applyDiscount` function."
 
-Charter absent. Response: "Before I write these — four quick things in your words: (1) what must `applyDiscount` always guarantee, and what would 'wrong' look like? (2) where does it realistically break — negative inputs, discount over 100%, rounding, a null price? (3) it reads the current date for time-limited codes — do you want that stubbed or real? (4) what's the set of cases that would make you call this done?" Then stop until answered.
+Charter absent. Response: "Before I write these — four quick things in your words: (1) what must `applyDiscount` always guarantee, and what would 'wrong' look like? (2) where does it realistically break, and which of those are real risks here rather than theoretical ones? (`charter-guide.md` has a checklist to reason from) (3) it reads the current date for time-limited codes — do you want that stubbed or real? (4) what's the set of cases that would make you call this done?" Then stop until answered.
 
 > "Tests for `applyDiscount`. It must never return a price below zero, and a percentage discount applies to the pre-tax amount. Break points: discount > 100%, negative base price, and the rounding when the discount produces fractional cents. It reads `today()` for expiry — stub that, I'm not testing expiry here. Done when those three break points plus the happy path plus a zero-discount case are covered."
 
