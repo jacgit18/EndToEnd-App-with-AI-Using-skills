@@ -1,6 +1,6 @@
 ---
 name: prompt-tester
-description: This skill should be used when the user asks to "test this prompt", "does this prompt work", "try my prompt on a few examples", "check if this prompt does what it's supposed to", or pastes a prompt and asks whether it's any good. Not for writing a new prompt from scratch (that is `prompt-authoring`), and not for editing or fixing a prompt directly -- this skill reports findings, it does not rewrite. Not for merely filing or logging a prompt (that is prompt-archive) -- only use this when the ask is about whether the prompt works. Also use for "should this prompt be a skill or an agent?" once there is a concrete prompt to judge. Not for a skill's `description:` frontmatter or SKILL.md text under `.claude/skills/` -- reviewing a skill as a document is `skill-static-audit`.
+description: This skill should be used when the user asks to "test this prompt", "does this prompt work", "try my prompt on a few examples", "check if this prompt does what it's supposed to", or pastes a prompt and asks whether it's any good. Not for writing a new prompt from scratch (that is `prompt-authoring`), and not for editing or fixing a prompt directly -- this skill reports findings, it does not rewrite. Not for merely filing or logging a prompt (that is prompt-archive) -- only use this when the ask is about whether the prompt works. Also use for "should this prompt be a skill or an agent?" once there is a concrete prompt to judge. Not for a skill's `description:` frontmatter, a pasted `Use when…` trigger-description block, or SKILL.md text under `.claude/skills/`, and not for debugging a skill (including this one) itself -- reviewing a skill as a document is `skill-static-audit`; if it is unclear whether a pasted block is a prompt or a skill description, ask one question.
 ---
 
 # Prompt Tester
@@ -46,7 +46,8 @@ missing context") and test both behaviors with the minimal-input case in Step 2.
 
 **Step 2 — Secure sample inputs**
 
-If the user didn't supply sample inputs, generate 2–3 representative ones:
+If the user didn't supply sample inputs, generate 2–3 distinct representative ones (Step 3 runs
+the straightforward one twice, so expect up to four runs):
 - At least one straightforward case exercising core purpose
 - At least one edge case likely to expose a gap
 - One "minimal input" case if the prompt has context dependencies (to test robustness)
