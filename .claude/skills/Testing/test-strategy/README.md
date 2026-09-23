@@ -23,6 +23,7 @@ test-strategy      →  which test levels exist, their effort split, their pipel
                       non-functional scope, TDD/BDD workflow   (this skill)   → plan + ADR
 coverage-policy    →  the coverage % target and whether CI blocks on it     → policy doc
 test-practice-gate →  the rep before writing one specific test              → gate, no artifact
+test-case-discovery → which happy/unhappy/edge cases exist for a behavior    → case table
 ```
 
 `test-strategy` and `coverage-policy` are the two halves of "decide how we test": this one
@@ -51,6 +52,7 @@ Stops before framework choice, test code, and CI wiring.
 ## Deliberately out of scope
 
 - Coverage percentage and CI enforcement → `coverage-policy`.
+- Enumerating the individual test cases for a behavior → `test-case-discovery` (runs after this skill when both are asked in one message).
 - The rep of writing one specific test → `test-practice-gate`.
 - Framework / tool selection (Jest, Playwright, k6, mocking libs) — named, deferred.
 - Writing tests, fixtures, or CI config.
@@ -80,6 +82,7 @@ boundaries to hold:
   tests for this function"); this skill decides the *portfolio*. A request naming a
   specific unit under test routes there; a request about the approach for a surface routes
   here.
+- **vs `test-case-discovery`** — this skill decides levels and the pipeline; discovery lists the cases and only suggests a level per case in one word. "How should we test it, and what cases" → strategy's gate first, case table after; don't run both question rounds in one turn.
 - **vs `learning-gate`** — the Step 3 "Testing" row defers to `test-practice-gate` for the
   writing rep; strategy questions are an architecture decision and come here (or through
   `problem-solving-gates` Options Generator). Classify intent, then hand off — don't stack

@@ -90,6 +90,7 @@ Stops before designing the mitigations, the alerts, or the tests.
   and the top failure modes"). Reciprocal note added there.
 - **Feeds `test-strategy`** — the ranked register is its fault-injection / chaos target
   list, and its "cost of failure per area" gate input. Reciprocal note added there.
+- **Distinct from `test-case-discovery`** — that skill lists happy/unhappy/edge test cases for one feature and routes "which faults to inject in chaos" here; this skill's register can feed its dependency-failure category. Reciprocal note in its description.
 - **Distinct from `problem-solving-gates` (Rubber Duck)** — that is one bug, one hypothesis,
   happening now. This is proactive and exhaustive, run when nothing is on fire.
 - **Hands the threshold to `capacity-estimation`** — when a mode's trigger is "load exceeds

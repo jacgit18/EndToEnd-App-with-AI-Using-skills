@@ -71,5 +71,6 @@ boundaries to hold:
 - **vs `test-strategy`** — that skill decides the portfolio for a surface; this gates
   writing one test within it. "How should we test this service" → there. "Write tests for
   this function" → here.
+- **vs `test-case-discovery`** — "write tests for this function" from someone building skill → this gate (charter first). "What cases am I missing for this feature / plan" → discovery. Never stack the charter questions on discovery's probes.
 - **vs `coverage-policy`** — "get this file to 90%" that's really "write these tests" routes
   here; the number itself is that skill.
