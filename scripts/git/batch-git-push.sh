@@ -45,17 +45,25 @@ if [[ "$DRY_RUN" != "1" ]] && ! git diff --cached --quiet; then
   exit 1
 fi
 
+# Read NUL-separated paths from stdin into FILES. A read loop instead of
+# `mapfile -d`, which needs bash 4.4+ (macOS ships 3.2).
+FILES=()
+read_files() {
+  local f
+  while IFS= read -r -d '' f; do FILES+=("$f"); done
+}
+
 # Collect the list of paths to process (NUL-separated for safe filenames).
 if [[ "$INCLUDE_MODIFIED" == "1" ]]; then
   # Untracked + modified + deleted, path only.
-  mapfile -d '' FILES < <(git -c core.quotepath=off status --porcelain -z -uall \
+  read_files < <(git -c core.quotepath=off status --porcelain -z -uall \
     | while IFS= read -r -d '' entry; do
         printf '%s\0' "${entry:3}"
         # A rename/copy is followed by a bare entry holding the old path — skip it.
         case "${entry:0:2}" in *R* | *C*) IFS= read -r -d '' _old ;; esac
       done)
 else
-  mapfile -d '' FILES < <(git ls-files --others --exclude-standard -z)
+  read_files < <(git ls-files --others --exclude-standard -z)
 fi
 
 TOTAL=${#FILES[@]}

@@ -14,8 +14,10 @@
 #   scripts/git/land.sh 17 --squash     # squash-merge instead
 #   scripts/git/land.sh my-feature      # the PR whose head is branch my-feature
 #
-# Default method is --merge (a merge commit), matching this repo's history;
-# see the `history-integration-strategy` skill for when --squash/--rebase fit.
+# Default method is --merge (a merge commit, which keeps the PR's commits and
+# the merge point in history); pass --squash or --rebase for a linear history.
+#
+# GitHub only: it drives `gh`. On GitLab/Bitbucket/other forges it will not work.
 #
 # After a successful merge it deletes the PR's remote branch, checks out the
 # base branch, fast-forwards it to the just-merged state, prunes stale
