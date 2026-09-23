@@ -1,6 +1,6 @@
 ---
 name: ambiguity-gate
-description: Use when a request could reasonably be read more than one way and acting on the wrong reading would waste real work — vague verbs ("clean up", "fix this", "make it better", "shorter", "more professional"), or an unstated scope, format, audience, time frame, or level of detail. Applies to code, specs, plans, schemas, and written deliverables. It deliberately does NOT apply to reference lookups, factual questions, or casual conversation, where it stays out of the way and the answer is simply given. Also use when a reply is about to open with a list of clarifying questions, a menu of options the user never asked for, or a request to pick between framings Claude supplied rather than words the user used.
+description: Use when a request could reasonably be read more than one way and acting on the wrong reading would waste real work — vague verbs ("clean up", "fix this", "make it better", "shorter", "more professional"), or an unstated scope, format, audience, time frame, or level of detail. Applies to code, specs, plans, schemas, and written deliverables. It deliberately does NOT apply to reference lookups, factual questions, or casual conversation, where it stays out of the way and the answer is simply given. Also use when the request is phrased as a solution ("add a retry loop here", "change this to return X") and reading the code suggests the stated fix may not address the cause — the premise, not the wording, is what's in doubt. It does NOT ask the user to supply a diagnosis (that's `problem-solving-gates`) and does not audit a settled change's blast radius (that's `change-surface-audit`). Also use when a reply is about to open with a list of clarifying questions, a menu of options the user never asked for, or a request to pick between framings Claude supplied rather than words the user used.
 ---
 
 # Ambiguity Gate
@@ -16,6 +16,7 @@ interrogation. The gate is cheap and it is bounded: it produces at most one ques
 | The request is clearly to **design, architect, or redesign a system or feature** (intent settled; scope not) | **Hand to `design-scoping`.** It owns the functional / non-functional / scale-target / deep-dive decomposition — don't ask a framing question on top of its gate. (Same precedent as `test-practice-gate`.) **Unless** the ask already names a backlog artifact — "write user stories/use cases for the X redesign" routes to `user-story-decomposition` instead, which owns that gate. |
 | The request is clearly to **write, rewrite, or improve a prompt** (intent settled; which prompt / what's wrong with it not) | **Hand to `prompt-authoring`.** It runs its own targeted-question step before producing the finished prompt — don't ask a prompt-shaping question on top of its gate. |
 | Code, specs, plans, schemas, migrations, written deliverables — anything where a wrong reading means work gets **redone** | Continue to Step 2. |
+| A request **phrased as a solution** ("add a retry loop", "change this to return X") — the change itself has one clear reading, but its premise may be wrong | Continue to Step 2, and run **"Solution-phrased requests: check the premise"**. Having only one reading of the *change* is not a reason to skip: the gate is for the cause, not the wording. **Unless** a domain skill already challenges that mechanism (e.g. `resilience-strategy` on retries/timeouts/circuit breakers) — let it run the challenge and don't add a second one on top. |
 
 ## Step 2: Missing information is not ambiguity
 
@@ -29,6 +30,29 @@ Separate the two. They have different fixes:
 
 Conflating them is what produces four-question replies: one real question about intent, padded with
 three lookups that were never the user's job to answer.
+
+### Solution-phrased requests: check the premise
+
+A request worded as a fix ("add a retry loop", "make this return X") is unambiguous about the
+*change* but may rest on a wrong assumption about the *cause*. This is a lookup, not a question for
+the user: before implementing, read enough to trace the symptom to where it originates, and see what
+depends on the current behavior. Then:
+
+- **Evidence supports the stated fix** → **Answer.** Do the work; don't narrate the check.
+- **Evidence points elsewhere** — including when the stated fix would break another caller or
+  consumer, and including when the requested edit is not at the origin of the symptom — the mismatch is the thing to surface, and it goes first, never
+  after the change is built. Redoing a fix aimed at the wrong thing is a **redo**, so take the
+  **Ask** exit with the mismatch as the one question (a single short alternative may ride along,
+  since it is part of the same question; a menu of options is not): *"The retries won't help — the timeout is
+  set upstream in `client.py`, so the loop would never fire. Fix there instead?"* Don't silently
+  comply, and don't silently substitute your own fix.
+- **Cause can't be determined by reading** (needs a repro, logs, or runtime data) → take **Assume**:
+  one line naming the cause you're taking, then the requested change. Assume is only for this case;
+  it never covers quietly editing a file the user didn't name to make the stated fix work.
+
+Skip this for genuinely trivial single-line edits with no real diagnostic question. It never asks
+the user to produce a diagnosis — if they are debugging and haven't formed a hypothesis, that gate
+belongs to `problem-solving-gates` (Rubber Duck).
 
 ## Step 3: The contract
 
@@ -84,4 +108,6 @@ Each of these means you are on the wrong exit:
 - Offering an alternative mode of working ("or I can just look first and report back") on top of an
   existing question.
 - Asking something you could have learned by reading a file.
+- Building a solution-phrased request as stated and noting afterward that the cause looks
+  elsewhere — the mismatch belongs before the work, not in a closing note.
 - A closing paragraph explaining assumptions the work already depends on.
