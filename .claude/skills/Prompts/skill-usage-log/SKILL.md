@@ -1,6 +1,6 @@
 ---
 name: skill-usage-log
-description: Reports on which skills have actually been invoked in this project, from the automatic skill-usage log. Every `Skill` tool call is captured by the PreToolUse hook in .claude/settings.json (scripts/hooks/log-skill.sh), which appends a timestamped line to .claude/_Prompts/logs/YYYY-MM-DD-skills.md. Use this skill when the user asks "which skills have I used", "skill usage log / report", "how often do I use <skill>", "what skills got used today / this week", "which skills have never fired", "is the skill logging working", or wants usage tallied over a date range or per session. NOT for logging or archiving prompts (that is `prompt-archive`, which owns the sibling YYYY-MM-DD.md prompt logs), NOT for checking the README/catalog is consistent with the skills tree (that is `sync-catalog` / `catalog-drift-audit`), NOT for testing whether a new skill collides with its siblings (that is `skill-interaction-testing`), and NOT for summarizing session state for a handoff (that is `session-handoff`).
+description: Reports on which skills have actually been invoked in this project, from the automatic skill-usage log. Every `Skill` tool call is captured by the PreToolUse hook in .claude/settings.json (scripts/hooks/log-skill.sh), which appends a timestamped line to .claude/_Prompts/logs/YYYY-MM-DD-skills.md. Use this skill when the user asks "which skills have I used", "skill usage log / report", "how often do I use <skill>", "what skills got used today / this week", "which skills have never fired", "is the skill logging working", or wants usage tallied over a date range or per session. Also the feedback view: "which skills get overridden", "which gates annoy me", "are my skills actually helping", "skill feedback / retro" — joins each fire to the user's next prompt in that session and flags override phrases. NOT for logging or archiving prompts (that is `prompt-archive`, which owns the sibling YYYY-MM-DD.md prompt logs), NOT for checking the README/catalog is consistent with the skills tree (that is `sync-catalog` / `catalog-drift-audit`, which also owns acting on the findings this skill's feedback mode logs), NOT for testing whether a new skill collides with its siblings (that is `skill-interaction-testing`), and NOT for summarizing session state for a handoff (that is `session-handoff`).
 ---
 
 # Skill Usage Log
@@ -58,3 +58,23 @@ Use for any "which / how often / when" question about skill usage.
    - first-seen / last-seen date per skill for a "when" question
 4. **Never-used, when asked.** Cross-reference the tally against the skills tree: `find ".claude/skills" -mindepth 2 -maxdepth 2 -type d` gives every catalogued skill as `<Group>/<name>`; the log records bare `<name>`. List catalogued skills with zero recorded invocations. Caveat the result: the log only goes back to when the hook was added, so "never used" means "not since logging started".
 5. **Report** as a short markdown table plus a one-line takeaway (most-used, and anything conspicuously unused). Don't paste raw log lines unless the user asks for the detail.
+
+---
+
+## Mode: overrides and ignored fires (feedback report)
+
+Use when the user asks whether skills are helping — "which skills get overridden", "which gates
+annoy me", "is <skill> firing when it shouldn't", "skill feedback / retro".
+
+1. **Overrides.** Run the "Fires followed by an override phrase" recipe in `report-recipes.md`.
+   For each skill with `overrides > 0`, read the matching prompt in the prompt log before
+   judging — a "just tell me" after a gate can be the gate working as intended (Escape Hatch)
+   or a firing that shouldn't have happened.
+2. **Ignored / dead.** Cross-reference with the never-used recipe. Skills that fire often with
+   zero follow-up, or never fire despite a live trigger list, are description-tuning candidates.
+3. **Record.** Append a dated entry to `.claude/_Prompts/catalog-audit-log.md` — skills flagged,
+   the evidence (session id + prompt excerpt), and a suggested one-line description edit. Don't
+   edit the skill here; hand each proposed edit to `skill-interaction-testing` Step 2 onward.
+4. **Say what the data can't show.** Both logs are local and gitignored, cover only sessions
+   where the hooks ran, and start when the hooks were added. If the prompt log is missing for
+   the dates the skill log covers, report that instead of "no overrides."
