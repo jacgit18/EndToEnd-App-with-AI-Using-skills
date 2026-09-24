@@ -1,6 +1,6 @@
 ---
 name: prompt-archive
-description: Saves prompts to this vault: archives a keeper prompt into the .claude/_Prompts/ library as formatted markdown, or logs the current session's prompts to a dated log. Use when "save this prompt", "archive this prompt", "add this to my prompt library", "keep this prompt", "dump my prompts". The UserPromptSubmit hook also logs every prompt automatically. NOT `prompt-tester` (does it work), NOT `prompt-authoring` (write a new one), NOT `problem-journal` (resolved bugs), NOT `session-handoff` or `skill-usage-log`.
+description: Saves prompts to this vault: archives a keeper prompt into the .claude/_Prompts/ library as formatted markdown, or logs the session's prompts to a dated log. Use when "save this prompt", "archive this prompt", "add this to my prompt library". The UserPromptSubmit hook also logs prompts automatically. NOT `prompt-tester` (does it work), NOT `prompt-authoring` (write a new one), NOT `problem-journal`.
 ---
 
 # Prompt Archive

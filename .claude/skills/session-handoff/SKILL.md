@@ -1,6 +1,6 @@
 ---
 name: session-handoff
-description: Writes a structured handoff file (goals, state, files touched, next steps) when a session is ending, long, or resuming later. Trigger proactively on "let's pick this up later", "new chat", "wrap up", "save my progress", "handoff", or "context dump". Not for a resolved-bug post-mortem (`problem-journal`), saving prompts (`prompt-archive`), logging a judgment call (`decision-journal`), or replacing a build spec (`spec-drift-gate`).
+description: Writes a structured handoff file (goals, state, files touched, next steps) when a session is ending, long, or resuming later. Trigger proactively on "let's pick this up later", "new chat", "wrap up", "handoff". Not for a bug post-mortem (`problem-journal`), saving prompts (`prompt-archive`), or replacing a build spec (`spec-drift-gate`).
 ---
 
 # Session Handoff

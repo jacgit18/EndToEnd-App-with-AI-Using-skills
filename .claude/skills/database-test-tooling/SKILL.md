@@ -1,6 +1,6 @@
 ---
 name: database-test-tooling
-description: Gated decision for what backs a database-touching test once `test-strategy` says a DB-seam test exists: ephemeral real DB (Testcontainers), shared test DB, in-memory substitute, mocked repository, or GUI client. Triggers: "should we mock the database in our tests", "in-memory DB vs a real one for tests", "Testcontainers vs SQLite", "how do I test my repository/DAO layer". Not `test-strategy`, `test-case-discovery`, `data-access-layer`, or `api-tooling-selection`.
+description: Gated decision for what backs a database-touching test once `test-strategy` says a DB-seam test exists: ephemeral real DB (Testcontainers), shared test DB, in-memory substitute, mocked repository, or GUI client. Triggers: "should we mock the database in our tests", "Testcontainers vs SQLite", "how do I test my repository/DAO layer". Not `test-strategy` or `data-access-layer`.
 ---
 
 # Database Test Tooling

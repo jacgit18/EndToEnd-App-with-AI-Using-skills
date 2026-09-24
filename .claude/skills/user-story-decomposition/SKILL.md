@@ -1,6 +1,6 @@
 ---
 name: user-story-decomposition
-description: Turns a feature, epic, or requirement into backlog items: picks user story vs use case, then epic, story, acceptance criteria, with an INVEST-style bar and Definition of Ready. Use for "write user stories for X", "break this epic down", "what's the acceptance criteria for X", "turn these requirements into a backlog". Not `design-scoping` (scoping a whole system), not `ticket-evaluation` (sprint verdict on a written ticket), not `explaining-my-work` (writeups), not `entry-point-first`.
+description: Turns a feature, epic, or requirement into backlog items: picks user story vs use case, then epic, story, acceptance criteria, with an INVEST-style bar and Definition of Ready. Use for "write user stories for X", "break this epic down", "what's the acceptance criteria for X". Not `design-scoping` (scoping a whole system), not `ticket-evaluation` (sprint verdict on a written ticket).
 ---
 
 # User Story Decomposition

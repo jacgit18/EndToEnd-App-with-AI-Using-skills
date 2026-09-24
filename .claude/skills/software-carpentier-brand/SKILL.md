@@ -1,6 +1,6 @@
 ---
 name: software-carpentier-brand
-description: Writes and checks copy that represents the user under their personal brand: LinkedIn headline/About, feed posts, resume bullets, cover letters, pitches, portfolio copy, with a career-fact honesty layer. Use for "check my brand consistency". Not `explaining-my-work` (gathers evidence from work just done; hand off there first), not `delete-ai-words` (de-AI prose; run first, but its bans do not apply to the carpenter device), not job-search strategy or salary negotiation.
+description: Writes and checks copy that represents the user under their personal brand: LinkedIn headline/About, feed posts, resume bullets, cover letters, pitches, with a career-fact honesty layer. Use for "check my brand consistency". Not `explaining-my-work` (gathers evidence from work just done; hand off there first), not `delete-ai-words` (de-AI prose; run first, its bans do not apply to the carpenter device).
 ---
 
 # Software Carpentier Brand

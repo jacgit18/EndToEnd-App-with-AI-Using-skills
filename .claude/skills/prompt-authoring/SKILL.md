@@ -1,6 +1,6 @@
 ---
 name: prompt-authoring
-description: Produces one finished, copy-paste-ready prompt (single code block, no blanks) from a rough idea or draft. Use when "write me a prompt that…", "turn this into a prompt", "rewrite / improve / optimize this prompt", "help me prompt this", "I want to ask Claude to…". Authoring half of the Prompts pipeline. NOT `prompt-tester` (judges, does not rewrite), NOT `prompt-archive` (filing), NOT `skill-static-audit` (skill descriptions), NOT `ambiguity-gate` (which reading of a request to act on), not `claude-api` config.
+description: Produces one finished, copy-paste-ready prompt (single code block, no blanks) from a rough idea or draft. Use when "write me a prompt that…", "turn this into a prompt", "rewrite / improve / optimize this prompt". Authoring half of the Prompts pipeline. NOT `prompt-tester` (judges, does not rewrite), NOT `prompt-archive` (filing), NOT `ambiguity-gate` (which reading to act on), not `claude-api` config.
 ---
 
 # Prompt Authoring

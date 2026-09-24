@@ -1,6 +1,6 @@
 ---
 name: delete-ai-words
-description: Audit and rewrite text so it stops sounding like AI. Use when the user invokes /delete-ai-words or asks to "delete the AI words", "humanise this", "make this sound less like AI", "de-AI this"; never run unprompted. Not `software-carpentier-brand` (personal-brand voice, career-claim honesty), not `explaining-my-work` (turning finished work into sayable words), not the plugin `linkedin-humanizer` (LinkedIn-specific AI-slop audit).
+description: Audit and rewrite text so it stops sounding like AI. Use when the user invokes /delete-ai-words or asks to "delete the AI words", "humanise this", "make this sound less like AI"; never run unprompted. Not `software-carpentier-brand` (personal-brand voice, career-claim honesty), not `explaining-my-work` (turning finished work into sayable words).
 ---
 
 # Delete AI words

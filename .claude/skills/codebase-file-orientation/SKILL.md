@@ -1,11 +1,6 @@
 ---
 name: codebase-file-orientation
-description: >
-  Authors or reconciles a companion orientation doc (sidecar `.md`) for a source file just created or changed:
-  role, entry points, dependencies, gotchas. Use for "document the file(s) I just added", "write an
-  orientation doc for this file", "the doc for this file is stale", "check `foo.md` still matches `foo.ts`".
-  Needs a concrete file path. NOT `explaining-my-work` (words for a human audience), NOT
-  `system-design-communication`, NOT `document-page-check`, NOT `spec-drift-gate`.
+description: Authors or reconciles a companion orientation doc (sidecar `.md`) for a source file just created or changed: role, entry points, dependencies, gotchas. Use for "document the file(s) I just added", "write an orientation doc for this file", "the doc for this file is stale". Needs a concrete file path. NOT `explaining-my-work` (words for a human audience), NOT `system-design-communication`.
 ---
 
 # Codebase File Orientation

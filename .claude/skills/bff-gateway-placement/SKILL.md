@@ -1,6 +1,6 @@
 ---
 name: bff-gateway-placement
-description: Gated decision for what sits between clients and backend services: no intermediary, shared API gateway, BFF per client type, or hybrid. Triggers: "do we need a BFF", "should the frontend call the services directly or through a gateway", "our API gateway is doing too much", "should auth live at the gateway or in each service". Not for wire protocol — `api-interface-style`. Not for rate limiting — `resilience-strategy`. Not for auth scheme — `access-control-modeling`. Not for an unscoped system — `design-scoping`.
+description: Gated decision for what sits between clients and backend services: no intermediary, shared API gateway, BFF per client type, or hybrid. Triggers: "do we need a BFF", "our API gateway is doing too much", "should auth live at the gateway or in each service". Not for wire protocol — `api-interface-style`. Not for auth scheme — `access-control-modeling`.
 ---
 
 # BFF / API Gateway Placement

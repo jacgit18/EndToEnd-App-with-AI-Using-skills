@@ -1,6 +1,6 @@
 ---
 name: document-page-check
-description: Pre-flight integrity check for paginated documents (PDF, EPUB): verifies the page count matches, the file is not truncated, pages carry content, and "see page N" / TOC citations resolve to the right physical page. Use when "read this", "summarize this book / report / paper", "what does it say on page 40", "is this file complete", "the TOC doesn't match". Not for OCR, fact-checking, or choosing extraction tooling; not `codebase-file-orientation` (docs about code); runs before `anthropic-skills:pdf` and `anthropic-skills:docx`.
+description: Pre-flight integrity check for paginated documents (PDF, EPUB): verifies page count, truncation, empty pages, and that "see page N" / TOC citations resolve to the right physical page. Use when "read this", "summarize this book / report / paper", "is this file complete". Not for OCR or fact-checking; not `codebase-file-orientation` (docs about code); runs before `anthropic-skills:pdf` and `anthropic-skills:docx`.
 ---
 
 # Document Page Check

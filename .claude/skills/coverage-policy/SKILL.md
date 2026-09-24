@@ -1,6 +1,6 @@
 ---
 name: coverage-policy
-description: Gated decision for a codebase's code-coverage policy: metric, target number, exclusions, whether CI blocks, overall vs new-code vs delta. Triggers: "what coverage should we require", "should we enforce 80% in CI", "do we need 100% coverage", "the build failed on a coverage drop — is that right". Not test levels or effort split (`test-strategy`), writing one test (`test-practice-gate`), or finding cases (`test-case-discovery`).
+description: Gated decision for a codebase's code-coverage policy: metric, target number, exclusions, whether CI blocks, overall vs new-code vs delta. Triggers: "what coverage should we require", "should we enforce 80% in CI", "do we need 100% coverage". Not test levels or effort split (`test-strategy`), writing one test (`test-practice-gate`), or finding cases (`test-case-discovery`).
 ---
 
 # Coverage Policy

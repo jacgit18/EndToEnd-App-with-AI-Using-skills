@@ -1,6 +1,6 @@
 ---
 name: reliability-math
-description: Procedure for interpreting live production telemetry with actual arithmetic: percentiles vs averages, Little's Law (L=λ×W), SLO-to-downtime and error-budget burn, utilization against the queueing curve, misleading dashboards. Use for a fine-looking average while users complain, or "is this CPU number dangerous". Not for a-priori sizing (`capacity-estimation`), choosing SLOs to instrument (`observability-strategy`), picking a protection mechanism (`resilience-strategy`), or which layer to check (`debugging-layer-selection`).
+description: Procedure for interpreting live production telemetry with actual arithmetic: percentiles vs averages, Little's Law (L=λ×W), SLO-to-downtime and error-budget burn, utilization vs the queueing curve, misleading dashboards. Use for a fine-looking average while users complain, or "is this CPU number dangerous". Not for a-priori sizing (`capacity-estimation`) or choosing SLOs to instrument (`observability-strategy`).
 ---
 
 # Reliability Math

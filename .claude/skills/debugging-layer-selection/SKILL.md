@@ -1,6 +1,6 @@
 ---
 name: debugging-layer-selection
-description: Procedure for triaging a live, reproducible symptom to the right observation layer: browser DevTools, backend logs/traces/metrics, or packet capture (Wireshark). Triggers: "should I use DevTools or Wireshark for this", "how do I debug this network issue", "is this a browser bug or a network problem", "why is this connection dropping/resetting". Not hypothesis testing (`problem-solving-gates`), long-term signals (`observability-strategy`), or `failure-mode-analysis`.
+description: Triages a live, reproducible symptom to the right observation layer: browser DevTools, backend logs/traces/metrics, or packet capture (Wireshark). Triggers: "should I use DevTools or Wireshark for this", "how do I debug this network issue", "why is this connection dropping/resetting". Not hypothesis testing (`problem-solving-gates`) or long-term signals (`observability-strategy`).
 ---
 
 # Debugging Layer Selection

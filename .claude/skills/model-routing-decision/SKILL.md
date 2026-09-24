@@ -1,6 +1,6 @@
 ---
 name: model-routing-decision
-description: Gated decision for routing LLM calls across more than one model: tiering by task, choosing across providers, adopting a routing proxy, or in-session model/agent choice. Triggers: "when should I use Haiku vs. Sonnet vs. Opus", "should I build a model router", "is a routing proxy worth it", "switch models". Not for retry/failover, ticket triage, or sub-agent delegation. Not for pricing tiers — `technical-cost-decision`. Not for volume sizing — `capacity-estimation`. Not for framework choice — `problem-solving-gates`.
+description: Gated decision for routing LLM calls across more than one model: tiering by task, choosing across providers, adopting a routing proxy, or in-session model choice. Triggers: "when should I use Haiku vs. Sonnet vs. Opus", "should I build a model router", "is a routing proxy worth it". Not for pricing tiers — `technical-cost-decision`. Not for volume sizing — `capacity-estimation`.
 ---
 
 # Model Routing Decision

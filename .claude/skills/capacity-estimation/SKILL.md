@@ -1,6 +1,6 @@
 ---
 name: capacity-estimation
-description: A-priori back-of-the-envelope capacity estimate for a not-yet-built system: QPS, bandwidth, storage, cache memory, server count, and what binds first, from user-stated assumptions. Triggers: "how much storage will we need", "estimate the QPS / throughput", "how many servers", "napkin math for this design". Not for dollar cost — `technical-cost-decision`. Not for shard/replica topology — `data-tier-operations`. Not for live telemetry — `reliability-math`. Not for an unscoped ask — `design-scoping`.
+description: A-priori back-of-the-envelope capacity estimate for a not-yet-built system: QPS, bandwidth, storage, cache memory, server count, what binds first, from user-stated assumptions. Triggers: "how much storage will we need", "estimate the QPS / throughput", "how many servers". Not for dollar cost — `technical-cost-decision`. Not for live telemetry — `reliability-math`.
 ---
 
 # Capacity Estimation

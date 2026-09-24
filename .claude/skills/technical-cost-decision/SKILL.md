@@ -1,6 +1,6 @@
 ---
 name: technical-cost-decision
-description: Sizes the recurring bill of a technical decision and finds the dominant line item, with labelled unit prices; usage drivers come from the user. Use for infrastructure or managed-service choices, cutting a cloud bill, build-versus-buy, or a stated monthly budget. Not `capacity-estimation` (usage to QPS/GB/servers; "how many servers/QPS at 10M DAU"), not `observability-strategy` (telemetry cost), not `serverless-execution-model` (compute primitive fit), not `ticket-evaluation`.
+description: Sizes the recurring bill of a technical decision and finds the dominant line item, with labelled unit prices; usage drivers come from the user. Use for infrastructure or managed-service choices, cutting a cloud bill, build-versus-buy, a monthly budget. Not `capacity-estimation` (usage to QPS/GB/servers), not `observability-strategy` (telemetry cost), not `serverless-execution-model`.
 ---
 
 # Technical Cost Decision

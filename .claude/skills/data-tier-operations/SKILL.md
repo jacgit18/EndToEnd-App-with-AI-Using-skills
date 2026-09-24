@@ -1,6 +1,6 @@
 ---
 name: data-tier-operations
-description: Gated decision for scaling and distributing an existing database: replicas, partitioning vs sharding, isolation level, distributed-transaction / change-propagation pattern (2PC / Saga / outbox / CDC), failover, connection pooling. Use when someone says "we need to shard", "the database is the bottleneck", "should we add read replicas", "dual-write or outbox or CDC". Not for `index-tuning`, `caching-strategy`, `migration-cutover`, `resilience-strategy`, or `dimensional-modeling`.
+description: Gated decision for scaling and distributing an existing database: replicas, partitioning vs sharding, isolation level, distributed-transaction / change-propagation (2PC / Saga / outbox / CDC), failover, pooling. Use when someone says "we need to shard", "the database is the bottleneck", "should we add read replicas". Not for `index-tuning`, `caching-strategy`, or `migration-cutover`.
 ---
 
 # Data-Tier Operations

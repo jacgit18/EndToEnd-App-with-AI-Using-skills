@@ -1,6 +1,6 @@
 ---
 name: service-mesh-adoption
-description: Gated decision for whether to adopt a service mesh (Istio, Linkerd, Consul Connect) versus lighter alternatives, which capability is being bought, and the service-discovery mechanism. Use when someone says "should we adopt a service mesh", "do we need Istio or Linkerd", "how do our services find each other", "do we need mTLS between services". Not for `microservices-decision`, `resilience-strategy`, `cloud-iam-boundary`, `bff-gateway-placement` (east-west only here), or `serverless-execution-model`.
+description: Gated decision for whether to adopt a service mesh (Istio, Linkerd, Consul Connect) versus lighter alternatives, which capability is being bought, and service discovery. Use when someone says "should we adopt a service mesh", "do we need Istio or Linkerd", "do we need mTLS between services". Not for `microservices-decision`, `resilience-strategy`, or `bff-gateway-placement` (east-west only here).
 ---
 
 # Service Mesh Adoption

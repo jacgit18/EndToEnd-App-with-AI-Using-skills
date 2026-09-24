@@ -1,6 +1,6 @@
 ---
 name: dimensional-modeling
-description: Designs an analytical (OLAP) data model: fact-table grain, dimensions, measures, star vs snowflake shape, slowly-changing-dimension strategy, and rollups. Use when someone says "star or snowflake", "what's the grain", "how do I handle a dimension that changes over time / SCD", "fact and dimension tables for X". Not for `relational-modeling` (OLTP tables), `database-architecture` (where the warehouse lives), `index-tuning`, or `data-tier-operations` (physical warehouse tuning).
+description: Designs an analytical (OLAP) data model: fact-table grain, dimensions, measures, star vs snowflake, slowly-changing-dimension strategy, rollups. Use when someone says "star or snowflake", "what's the grain", "fact and dimension tables for X". Not for `relational-modeling` (OLTP tables), `database-architecture` (where the warehouse lives), or `index-tuning`.
 ---
 
 # Dimensional Modeling

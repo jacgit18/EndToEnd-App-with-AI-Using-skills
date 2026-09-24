@@ -1,6 +1,6 @@
 ---
 name: resilience-strategy
-description: Gated decision for how a service or request path protects itself under overload and dependency failure: load shedding, rate limiting, backpressure, circuit breakers, timeout/retry budgets, bulkheads, graceful degradation, and where each control sits. Use when someone says "we need rate limiting", "add a circuit breaker", "the service falls over under load", "a slow dependency took everything down". Not for alerting (`observability-strategy`), scaling the datastore (`data-tier-operations`), cache stampede (`caching-strategy`), or live utilization reading (`reliability-math`).
+description: Gated decision for how a service protects itself under overload and dependency failure: load shedding, rate limiting, backpressure, circuit breakers, timeout/retry budgets, bulkheads, graceful degradation. Use for "we need rate limiting", "add a circuit breaker", "a slow dependency took everything down". Not for alerting (`observability-strategy`) or live utilization reading (`reliability-math`).
 ---
 
 # Resilience Strategy

@@ -1,6 +1,6 @@
 ---
 name: microservices-decision
-description: Gate for whether to adopt microservices, split a monolith, add a service, or set service boundaries, plus repo layout, monorepo tooling and micro-frontend splits; also applies when the decision is presented as already made. Use when someone says "our CTO decided", "we've made the call", "don't relitigate it", "just tell me how to split it", "should we split the frontend into micro-frontends". Not for cutover mechanics (`migration-cutover`) or diagnosing why a specific endpoint is slow (`problem-solving-gates`).
+description: Gate for whether to adopt microservices, split a monolith, add a service, or set service boundaries, plus repo layout, monorepo tooling and micro-frontends; also applies when the decision is presented as already made. Use for "our CTO decided", "don't relitigate it", "just tell me how to split it". Not for cutover mechanics (`migration-cutover`) or a slow endpoint (`problem-solving-gates`).
 ---
 
 # Microservices Decision

@@ -1,6 +1,6 @@
 ---
 name: skill-usage-log
-description: Reports which skills were actually invoked in this project from the automatic skill-usage log, plus a feedback view of overridden skills. Use for "which skills have I used", "skill usage log / report", "which skills have never fired", "which skills get overridden", or "skill feedback / retro". Not for prompt logs (`prompt-archive`), catalog consistency (`sync-catalog`, `catalog-drift-audit`), collision tests (`skill-interaction-testing`), or reading a skill (`skill-static-audit`).
+description: Reports which skills were actually invoked in this project from the automatic skill-usage log, plus a feedback view of overridden skills. Use for "which skills have I used", "which skills have never fired", "which skills get overridden". Not for prompt logs (`prompt-archive`), catalog consistency (`sync-catalog`), or collision tests (`skill-interaction-testing`).
 ---
 
 # Skill Usage Log

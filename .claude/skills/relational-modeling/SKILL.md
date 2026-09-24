@@ -1,6 +1,6 @@
 ---
 name: relational-modeling
-description: Turns a settled relational-database choice into a table design: normal form, keys, constraints, index plan, audit columns, junction tables. Use for "model the schema for X", "how should I normalize this", "surrogate or natural key", "how do I handle soft deletes". Not `database-architecture` (where the schema lives), not `index-tuning` (deployed schema, real EXPLAIN plans), not `dimensional-modeling` (warehouse/star schema), not `data-access-layer` (ORM choice).
+description: Turns a settled relational-database choice into a table design: normal form, keys, constraints, index plan, audit columns. Use for "model the schema for X", "how should I normalize this", "surrogate or natural key". Not `database-architecture` (where the schema lives), not `index-tuning` (deployed schema, real EXPLAIN plans), not `dimensional-modeling` (warehouse/star schema).
 ---
 
 # Relational Modeling

@@ -1,6 +1,6 @@
 ---
 name: deployment-strategy
-description: Gated decision for how a new version of one deployable unit reaches production: rollout mechanism, environment progression, expand/contract schema discipline, abort/rollback trigger, release cadence. Use when someone says "we need zero-downtime deploys", "should we do blue-green or canary", "our deploys cause an outage", "rollbacks take too long". Not for moving a workload between systems (`migration-cutover`), one failed release (`problem-solving-gates`), the health signal design (`observability-strategy`), or whether a change is breaking (`change-surface-audit`).
+description: Gated decision for how a new version of one deployable unit reaches production: rollout mechanism, environment progression, expand/contract schema, rollback trigger. Use when "we need zero-downtime deploys", "should we do blue-green or canary", "rollbacks take too long". Not for moving a workload between systems (`migration-cutover`) or whether a change is breaking (`change-surface-audit`).
 ---
 
 # Deployment Strategy

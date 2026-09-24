@@ -1,6 +1,6 @@
 ---
 name: api-interface-style
-description: Gated decision for the interaction style of one API surface: REST, GraphQL, gRPC, WebSocket, SSE, webhooks, or async messaging, plus sync-vs-async and push-vs-pull. Triggers: "REST or GraphQL", "should we use gRPC", "webhooks vs polling", "is our API over-fetching". Not for where the API contract lives — `database-architecture`. Not for service boundaries — `microservices-decision`. Not for gateway/BFF topology — `bff-gateway-placement`. Not for agent API tooling — `api-tooling-selection`.
+description: Gated decision for the interaction style of one API surface: REST, GraphQL, gRPC, WebSocket, SSE, webhooks, or async messaging, plus sync-vs-async and push-vs-pull. Triggers: "REST or GraphQL", "should we use gRPC", "webhooks vs polling". Not for where the API contract lives — `database-architecture`. Not for gateway/BFF topology — `bff-gateway-placement`.
 ---
 
 # API Interface Style
