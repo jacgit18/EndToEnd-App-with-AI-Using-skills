@@ -64,6 +64,7 @@ Groups are labels only — this file is the mapping. Add new skills here.
 
 - `ambiguity-gate`
 - `catalog-drift-audit`
+- `context-promotion`
 - `decision-journal`
 - `problem-journal`
 - `prompt-archive`

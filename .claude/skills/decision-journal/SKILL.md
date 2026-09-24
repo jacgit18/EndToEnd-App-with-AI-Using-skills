@@ -134,3 +134,4 @@ Repo-agnostic. Assumes only `.claude/_Prompts/` (also used by `problem-journal` 
 - NOT a live gate and NOT on every decision: it fires only when the user wants a decision recorded or reviewed, or a logged review-by has come due; it never interrupts a decision in progress.
 - NOT `problem-solving-gates` Options Generator (making the decision) and NOT `learning-gate`.
 - NOT `prompt-archive` (raw prompt logs).
+- A standing rule or preference the user wants written down once (not a judgment call to check later) is `context-promotion`; a decision worth a confidence and a review-by date stays here.
