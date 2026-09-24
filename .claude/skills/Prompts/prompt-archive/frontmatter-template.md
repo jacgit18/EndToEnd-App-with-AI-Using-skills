@@ -1,7 +1,8 @@
 # Prompt file frontmatter
 
-The convention used by files already in `.claude/_Prompts/` (e.g. `Linux Terminal.md`,
-`Database/DataBase Prompts.md`). Match it when archiving a new prompt.
+The convention used by prompt files in `.claude/_Prompts/` (in the vault these are files such as
+`Linux Terminal.md` and `Database/DataBase Prompts.md`; this checkout has only the dated logs and
+the audit log). Match it when archiving a new prompt.
 
 ```markdown
 ---
