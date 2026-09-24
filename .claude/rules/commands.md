@@ -35,6 +35,12 @@ warnings are description length over 1536 chars (the official skill-listing trun
 files, and a count of one-way description pointers (`--pairs` lists them; many are legitimate hub
 fan-out). `--strict` exits 1 on errors. The `SessionStart` hook surfaces errors only.
 
+Skill profile (personal, `.claude/settings.local.json`, gitignored): `scripts/skills/profile.sh core|all|status`.
+`core` keeps the skills named in `.claude/skills/CORE.txt` fully listed and sets every other catalog
+skill to `"name-only"` in `skillOverrides` (name listed to Claude, no description, still in the `/`
+menu) to cut listing noise and budget; `all` removes those overrides. Other settings keys and
+non-catalog overrides are preserved. Edit `CORE.txt` to change the set.
+
 Two hooks run automatically (wired in `.claude/settings.json`), both defensive by design —
 always exit 0, never block, only touch their own output:
 

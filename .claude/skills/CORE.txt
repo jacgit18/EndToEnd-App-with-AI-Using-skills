@@ -1,0 +1,13 @@
+# Core skills: the set kept fully listed (name + description) by `scripts/skills/profile.sh core`.
+# One skill name per line; everything else becomes "name-only". Edit freely, then re-run the profile.
+ambiguity-gate
+design-scoping
+spec-drift-gate
+incremental-build-pacing
+debugging-layer-selection
+problem-solving-gates
+test-strategy
+commit-and-push
+session-handoff
+entry-point-first
+context-promotion
