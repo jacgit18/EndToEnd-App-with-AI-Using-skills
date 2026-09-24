@@ -185,7 +185,7 @@ default.
 ## Example invocations
 
 > "Postgres 15. This query got slow as the table grew to 40M rows: `SELECT id, total,
-> created_at FROM orders WHERE customer_id = $1 AND status = 'open' ORDER BY created_at DESC
+> created_at FROM orders WHERE customer_id = ? AND status = 'open' ORDER BY created_at DESC
 > LIMIT 20`. `EXPLAIN ANALYZE` shows a bitmap heap scan on `orders_customer_id_idx` then a
 > sort. `customer_id` has ~2M distinct values; `status` is 6 values, ~3% are `open`. The
 > table takes ~5k inserts/min and `status` is updated once or twice per row's life. Existing

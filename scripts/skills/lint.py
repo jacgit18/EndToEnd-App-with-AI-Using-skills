@@ -4,6 +4,7 @@
 Errors (exit 1 with --strict):
   - SKILL.md frontmatter: line 1 '---', line 2 'name: <dir>', 'description:' on line 3, closing '---'
   - a backticked skill-like name in a description that is not a skill directory (dead pointer)
+  - `$<digit>` / `$ARGUMENTS` in a SKILL.md body (the Skill tool substitutes these with the invocation args)
 Warnings:
   - description length over --desc-warn chars (default 1536)
   - SKILL.md longer than --lines-warn lines (default 250)
@@ -80,6 +81,8 @@ def main():
             warns.append(f"{rel}: description {len(desc)} chars (> {a.desc_warn})")
         if nlines > a.lines_warn:
             warns.append(f"{rel}: {nlines} lines (> {a.lines_warn}) — split candidate")
+        if re.search(r"\$(?:\d|ARGUMENTS\b|\{)", body[n]):
+            errors.append(f"{rel}: '$<digit>' / $ARGUMENTS in SKILL.md body — the Skill tool substitutes these with the invocation arguments")
         for t in TOKEN.findall(desc):
             if t not in skills and t not in EXTERNAL:
                 errors.append(f"{rel}: description names `{t}`, which is not a skill directory")
