@@ -1,5 +1,5 @@
 # Production-style stack: run it ALONE, not layered on compose.yaml —
-#   docker compose -f compose.prod.yaml up -d --build
+#   scripts/prod.sh up -d --build     (wrapper: passes --env-file .env.prod)
 # (compose.yaml is the dev stack: bind mounts, --reload, Vite, published db/backend
 # ports. Nothing of that belongs here, so this is a standalone file instead of an
 # overlay that would need to un-set half of it.)
@@ -32,7 +32,7 @@ services:
       POSTGRES_USER: finance
       # No default on purpose: `:?` makes Compose refuse to start if it's unset,
       # instead of quietly booting with a guessable password like dev's "finance".
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in finance-dashboard/.env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in finance-dashboard/.env.prod (run via scripts/prod.sh)}
       POSTGRES_DB: finance
     volumes:
       - db-data:/var/lib/postgresql/data
@@ -98,7 +98,7 @@ services:
     depends_on:
       - web
     # Quick tunnel: prints a https://<random>.trycloudflare.com URL in its logs —
-    #   docker compose -f compose.prod.yaml logs cloudflared | grep trycloudflare
+    #   scripts/prod.sh logs cloudflared | grep trycloudflare
     # Cloudflare documents quick tunnels as for testing/dev, with no uptime
     # guarantee — fine for a personal tool, not for anything you depend on.
     command: tunnel --no-autoupdate --url http://web:80
