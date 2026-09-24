@@ -135,14 +135,7 @@ Repo-agnostic. Reads and writes `docs/architecture/decisions/` alongside `databa
 
 ## Routing boundaries (full)
 
-- A gated decision process for introducing or changing a cache in front of a data source — where the cache sits (client / HTTP / CDN / reverse-proxy / in-process / distributed Redis-Memcached / database query cache), the read/write pattern (cache-aside, read-through, write-through, write-behind, refresh-ahead), the freshness mechanism (explicit invalidation vs TTL vs both), the eviction policy and sizing (LRU / LFU / TinyLFU / FIFO), and the failure-mode handling (stampede, penetration, avalanche, cache-down).
 - Use this skill when someone says "we should add a cache", "let's put Redis in front of X", "the product page is slow, cache it", "what TTL should we use", "cache-aside or write-through", "our cache keeps serving stale data", "how do we stop the thundering herd when a hot key expires", "should we cache at the CDN", or proposes a caching approach and wants it checked.
-- It forces the user to state the measured pressure, the current numbers, the per-data-class staleness tolerance, and whether the cache is an optimization or load-bearing, before any cache layer or pattern is recommended, then records the outcome as an ADR.
-- It exists to stop a cache being added to paper over a missing index, and to stop the wrong consistency window being discovered in production.
-- Not for scaling the database itself — replicas, partitioning, sharding, isolation levels — that is `data-tier-operations` (which walks past caching as one of its cheaper options and hands the decision here).
-- Not for the dollar sizing of the cache tier or CDN egress — that is `technical-cost-decision`.
-- Not for query or index tuning of one slow query — that is `index-tuning` (revising/adding/auditing indexes on a deployed, populated schema), `relational-modeling` (schema-design-time index/key choice), or `problem-solving-gates` (Rubber Duck to find the cause, or Optimization if a profile / query plan is already in hand).
 - Not for whether the hit-rate (or any cache) metric is correctly measured or alerted — that is `observability-strategy`.
-- Not for whether an API pushes or is polled — that is `api-interface-style`.
-- Not for request-path overload protection — rate limiting, load shedding, circuit breakers on the calls a cache miss falls through to — that is `resilience-strategy`, for which "serve a stale / cached response" is one degradation fallback whose cache this skill designs.
 - Not for who is allowed to see a cached record or how per-user/per-tenant data is kept from leaking across cache keys as an authorization matter -- the permission model is `access-control-modeling`, which hands this skill the staleness requirement.
+- Not for request-path overload protection — rate limiting, load shedding, circuit breakers on the calls a cache miss falls through to — that is `resilience-strategy`, for which "serve a stale / cached response" is one degradation fallback whose cache this skill designs.

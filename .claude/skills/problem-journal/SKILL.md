@@ -197,20 +197,15 @@ back into chat on top of the output block already shown.
 
 Repo-agnostic, but assumes `.claude/_Prompts/logs/` (`prompt-archive`'s automatic hook). Capture
 files go in `Finance/Error Log/` if the vault has it, otherwise `.claude/_Prompts/problem-journal/`
-(see "Error-log directory" above). The template is the inline one in the Capture section; a
-backup copy is in this skill's `references/Language Error.md`. Copy the `problem-journal/`
+(see "Error-log directory" above). The canonical template is this skill's
+`references/capture-template.md`. Copy the `problem-journal/`
 directory into another repo's `.claude/skills/` to use it there, alongside `prompt-archive`, or
 point the skill at wherever that repo's equivalent error-log convention lives.
 
 ## Routing boundaries (full)
 
-- Two modes, picked by what's being asked for.
 - Mode Capture — the moment an error/exception/stack trace appears, whether or not it's resolved yet, save it verbatim as its own file in `Finance/Error Log/` (or `.claude/_Prompts/problem-journal/` if that folder is absent) using the template in this skill's Capture section — "log this error", "save this error", "capture this".
 - Mode Journal — after a coding problem is resolved and the user wants a learning-worthiness read — "log this problem", "was that worth learning from", "have I hit this before" — write a curated entry to `.claude/_Prompts/problems-log.md`: symptom/cause/fix, a recurrence count grepped from BOTH the prompt-archive logs (`.claude/_Prompts/logs/*.md`) and the `Finance/Error Log/` files (a far more precise signal, since it holds the actual error text, not just what the user typed), a classification (recurring pattern vs. one-off; fundamental concept vs. environmental fluke), and a worth-learning verdict tied to that count — never asserted without it, the same discipline `technical-cost-decision` forces for dollar figures.
 - Neither mode is a live gate: Capture is mechanical recording (like `prompt-archive`'s Log mode, for errors instead of prompts), and Journal is a retrospective procedure that runs *after* a problem is already resolved.
-- Neither replaces `learning-gate` (which sets how much help Claude gives on the *current, live* request) or `problem-solving-gates`' Rubber Duck (which forces the hypothesis *during* the debugging itself — this skill assumes that already happened, however it happened, and records the before/after).
-- Once a Journal entry's verdict is "worth learning," this skill names the next step and hands it off — it does not teach the concept itself; that's `learning-gate` (S0, teach the minimum) or `problem-solving-gates`' Knowledge Checker (verify after self-study).
-- Not for archiving a reusable prompt or logging a session's raw prompts verbatim — that's `prompt-archive`, whose dated logs this skill's Journal mode reads as one recurrence-search corpus but never writes into.
-- Not for evaluating whether a prompt performs well — that's `prompt-tester`.
 - Not for recording a judgment call with a confidence, a prediction and a review-by date, or for reviewing one later — that's `decision-journal`; a bug caused by a past decision can chain to it (this skill keeps the symptom / cause / fix, that one records the call and what its reasoning assumed).
 - Not for preserving in-progress session state so work can resume (that is `session-handoff`); a handoff may link to a Capture file, but never replaces it.

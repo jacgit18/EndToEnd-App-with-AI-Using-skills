@@ -54,14 +54,4 @@ Concrete tool names, versions and per-engine caveats for each mechanism are in `
 
 ## Routing boundaries (full)
 
-The frontmatter `description` is kept short for the skill listing budget; the full original description is preserved here.
-- A gated decision for how a test that touches a database actually gets one — once `test-strategy` has already decided an integration- or contract-level test exists at the DB seam.
-- Covers picking between a real ephemeral database instance per run (Testcontainers, a docker-compose service), a shared persistent test/staging database, an in-memory or embedded substitute engine (SQLite standing in for Postgres/MySQL), mocking or stubbing the repository/driver layer, and a GUI database client (Beekeeper Studio, DBeaver, TablePlus, pgAdmin, psql) for a human's manual/exploratory checking.
 - Use when someone asks "can Beekeeper be used for testing a database", "should we mock the database in our tests", "in-memory DB vs a real one for tests", "our integration tests hit a shared DB and it's flaky", "how do I test my repository/DAO layer", "Testcontainers vs SQLite", "is Beekeeper part of a testing workflow", or proposes a mechanism and wants it checked.
-- It forces the test level this is for, what production code actually does at the DB (raw SQL, DB-specific features, or a portable subset an ORM hides), the CI environment's ability to run a real database, and the isolation/flakiness cost of a shared instance to be named before a mechanism is recommended.
-- Not for which test levels exist or how much effort each gets (unit/integration/contract/E2E mix) — that's `test-strategy`, this skill's prerequisite; a unit test that mocks the DB entirely is that skill's tier, not a case this skill needs to adjudicate.
-- Not for writing a specific DB test from a stated charter — `test-practice-gate` (this skill only picks what backs the test).
-- Not for which cases a DB-touching feature needs (happy/unhappy/edge) — `test-case-discovery`.
-- Not for a coverage percentage — `coverage-policy`.
-- Not for how production application code reads and writes rows (ORM/query builder/raw SQL/codegen) — `data-access-layer`, though its answer constrains what a substitute engine or a mock can faithfully replicate here.
-- Not for whether an agent should be handed a database GUI/MCP tool to explore or debug a database as part of its own live job — that's `api-tooling-selection`'s plain-tool-vs-MCP call; this skill is about what an automated test *suite* uses as its database, not a tool an agent drives interactively.

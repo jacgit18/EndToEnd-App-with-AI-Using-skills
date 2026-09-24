@@ -138,8 +138,6 @@ The value in all four modes is location of effort: the hypothesis, the option-sc
 
 ## Routing boundaries (full)
 
-- Four gated modes for software engineering problem-solving that force independent reasoning before Claude helps — Rubber Duck (debugging), Options Generator (architecture decisions), Knowledge Checker (verifying understanding after reading docs/code), and Optimization (making code, a query, or a system faster or cheaper).
-- Each mode has a precondition that must already be satisfied by the user's own work before Claude engages; if the precondition isn't met, Claude states what's missing and stops instead of doing the thinking for them.
 - Use this skill whenever the user is debugging, making an architecture/design decision, trying to verify they understood something they just read, or trying to make something faster — especially if they ask "what's wrong with my code," "what should I do," "am I right that X," "how do I speed this up," or similar, without having shown their own attempt first (or, for optimization, a measurement of where the time actually goes).
 - This skill exists specifically to counteract reaching for AI before reasoning through a problem independently, so err toward invoking the gate check rather than skipping straight to helping.
 - Not for a request to review a skill file (`SKILL.md`, its description) as a document -- that is `skill-static-audit`, a read-only critique, not a debugging or design gate.

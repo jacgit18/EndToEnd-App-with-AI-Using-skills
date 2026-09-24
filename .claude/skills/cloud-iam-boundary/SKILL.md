@@ -134,26 +134,7 @@ Repo-agnostic. Reads and writes `docs/architecture/decisions/` alongside the oth
 
 The frontmatter `description` is truncated in the skill listing, so the full boundary rules live here (moved verbatim from the original description):
 
-- Not for the compute primitive or orchestration a workload runs on (Lambda vs Fargate vs Step Functions, retries, DLQs) — that is `serverless-execution-model`, which consumes the role this skill designs.
-- Not for rate limiting, circuit breakers, or edge/DDoS mitigation placement (WAF, Shield) — that is `resilience-strategy`.
-- Not for general encryption-at-rest of a datastore's disk, unrelated to config/secrets specifically — still unowned, name it and defer.
 - Not for where a secret or config value lives and how it's rotated — that is `config-and-secrets-management`; this skill designs the grant authorizing a principal to read a secret once that skill has decided where it's stored.
 - Not for whether encrypted, mutually-authenticated transport (mTLS) between services exists at all — that is `service-mesh-adoption`, which this skill's authorization policy can reference once that transport/identity exists.
-- Not for scanning code for injection/XSS/auth bugs on a diff — that is `security-review`, a different altitude (code-level vulnerabilities, not the identity/network boundary a resource lives inside).
-- Not for the alerting on IAM/config-drift events beyond naming the requirement — that is `observability-strategy`, which this skill hands the audit trigger to.
-- Not for an unscoped, not-yet-designed system with no named resource or principal yet ("what roles should our new admin tool have") — that is `design-scoping` first.
-- Not for application-level roles and permissions — which end user can view/edit/delete which resource inside the app, RBAC/ABAC/ACL model choice, or multi-tenant data isolation — that is `access-control-modeling`; this skill's principal is a service, pipeline, or cross-account caller reaching a cloud resource, not an application end user reaching an app resource.
-- Not for whether a gateway/BFF fronts the clients or where auth is terminated in the request path — that is `bff-gateway-placement`, which routes the internet-facing/network-exposure question here.
-- Not for auditing an existing product's policy against its practice — that is `disclosure-gap-audit`, which hands over-permissive-grant findings here.
-- Gated decision for who or what gets access to a cloud resource and where it sits on the network — identity, least-privilege permission set, trust boundary (assume-role, cross-account, STS vs long-lived keys), permissions boundary / SCP, and network placement (public vs private subnet, security groups, NAT).
 - Use when someone says "what permissions does this Lambda/service need", "create an IAM role for X", "can this cross-account", "should this be public or private subnet", "we're locked down to AdministratorAccess and need to fix it", "an audit flagged an over-permissive role", "how do we let service A talk to service B", "does this need to be internet-facing", or proposes an access grant to check.
-- Forces the need, principal, specific resources/actions, credential lifetime and network exposure before recommending; records an ADR.
-- Not for the compute primitive — `serverless-execution-model`.
-- Not for rate limiting or DDoS — `resilience-strategy`.
-- Not for where a secret lives — `config-and-secrets-management`.
-- Not for mTLS between services — `service-mesh-adoption`.
-- Not for code vulnerabilities — `security-review`.
-- Not for IAM drift alerting — `observability-strategy`.
-- Not for an unscoped system ("what roles should our new admin tool have") — `design-scoping`.
-- Not for app roles / RBAC / tenant isolation — `access-control-modeling`.
-- Not for `bff-gateway-placement` or `disclosure-gap-audit`.
+- Not for an unscoped, not-yet-designed system with no named resource or principal yet ("what roles should our new admin tool have") — that is `design-scoping` first.

@@ -132,11 +132,8 @@ Where the Surface shows the spend is immaterial, say that plainly and stop. "Rou
 
 ## Routing boundaries (full)
 
-The frontmatter `description` is truncated in the skill listing, so the full boundary rules live here (moved verbatim from the original description):
-
 - Covers AWS/GCP/Azure bills, egress and data transfer, per-request and per-token API pricing, storage growth, and managed-service premiums.
 - Sizes the bill and finds the dominant line item; deciding which signals, sampling rates, or retention tiers to change on a telemetry/observability stack to bring its cost down is `observability-strategy`.
-- Turning a usage volume into the physical quantities that get priced — QPS, GB/day, peak Gbps, server count, cache working-set memory, and what binds first — is `capacity-estimation`, which hands those numbers back here; this skill assumes and labels the *unit prices* ($/GB-month, instance $/hr, egress $/GB, engineer $/week), not the *usage drivers* (DAU, actions/user/day, payload sizes), which come from the user when `capacity-estimation` is in play.
 - Planning the move itself when a cloud-cost or datacentre-exit is the migration driver — cutover pattern, data move, rollback window — is `migration-cutover` (it hands the target's steady-state bill sizing back here).
 - Deciding whether to shed load or add priority tiers instead of scaling capacity — the shed-vs-scale mechanism choice — is `resilience-strategy` (it hands the autoscaling/headroom bill sizing back here).
 - Choosing the repo layout and monorepo build tooling (Nx/Turborepo/Bazel, remote-cache hosting) is `microservices-decision`; this skill sizes the CI-minutes and remote-cache dollar cost once that choice is made.

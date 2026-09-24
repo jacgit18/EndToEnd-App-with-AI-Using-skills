@@ -190,27 +190,10 @@ skills.
 
 The frontmatter `description` is truncated in the skill listing, so the full boundary rules live here (moved verbatim from the original description):
 
-- For each decision it frames what forces the choice, takes the user's lean and known constraints, lays out 2–4 realistic candidates, names the axes that actually discriminate for THIS build, scores them honestly (including where the rejected option is better), gives a recommendation with a "because" tied to an axis, lets the user make the call, and records a short ADR.
-- Depth scales with blast radius; load-bearing decisions route into the specialist Architecture skill and come back as an ADR.
-- Two registers — collaborative (Claude presents and recommends, default) and interviewer (user proposes and defends, Claude probes) — set by `learning-gate`'s assistance level.
-- NOT `problem-solving-gates` Options Generator, which withholds Claude's option list until the user brings their own candidates + a lean — that gate makes the user generate; this skill teaches the option space.
-- If the user wants to be forced to produce options first, hand to Options Generator.
-- NOT `design-scoping`, which states a system's purpose / audience / non-functional targets and picks which 1–2 decisions deserve deep design — it does not run the candidate-by-candidate tradeoff conversation; this skill is downstream and walks its decision list, and a whole-system one-liner with no scope goes to `design-scoping` first.
-- NOT the specialist Architecture decision skills used alone (`api-interface-style`, `microservices-decision`, `database-architecture`, `data-access-layer`, `deployment-strategy`, `access-control-modeling`, `bff-gateway-placement`, `serverless-execution-model`, `migration-cutover`, `config-and-secrets-management`, `cloud-iam-boundary`, `capacity-estimation`) — those are the deep gates for one decision each; this skill is the learning-mode conversation across the whole set that routes into them and collects the ADRs.
-- A single already-isolated decision with its inputs ready goes straight to the specialist.
+- NOT the specialist Architecture decision skills used alone (`api-interface-style`, `microservices-decision`, `database-architecture`, `data-access-layer`, `deployment-strategy`, `access-control-modeling`, `bff-gateway-placement`, `serverless-execution-model`, `migration-cutover`, `config-and-secrets-management`, `cloud-iam-boundary`, `capacity-estimation`) — those are the deep gates for one decision each; this skill is the learning-mode conversation across the whole set that routes into them and collects the ADRs. A single already-isolated decision with its inputs ready goes straight to the specialist.
 - NOT `technical-cost-decision`, which owns the recurring-cost axis for one decision — this skill invokes it as one axis among several.
-- NOT `incremental-build-pacing`, which delivers already-chosen technology file by file — this chooses it; they chain.
 - NOT a full mock-interview drill (requirements → estimation → high-level design → deep dive → wrap).
 - NOT `system-design-communication` Mode 3 (Tradeoff Defense): if the user wants a choice they have *already made* stress-tested with no recommendation wanted ("don't tell me the answer", "just poke holes", "help me defend X"), that is Mode 3 — this skill always lands a recommendation and writes an ADR, Mode 3 never declares a winner and records nothing.
-- NOT for a decision already settled in a live ADR the user is not reopening.
 - Once an ADR is written, a user who wants the call checked later ("log this decision", "I'm 80% sure — review it in Q4") is `decision-journal`, which links the ADR and adds a confidence, prediction and review-by; this skill does not track outcomes.
 - Not for gating a multi-file build behind a written spec or drift checks (`spec-drift-gate`, which runs after this skill settles the stack); not for a user stalled before starting who needs a first move rather than a stack discussion (`entry-point-first`).
-- Coached, conversational procedure for choosing a build's technologies out loud, one decision at a time, system-design-interview style.
 - Use when someone wants technology choices reasoned through with alternatives and tradeoffs: "help me pick the stack and explain why", "walk me through the tech choices like a system design interview", "what are my options for X and the pros and cons", "compare A vs B vs C for this build and recommend one", "reason through each decision as we build together", "talk me out of it if I'm wrong".
-- Per decision: frames it, takes the user's lean, lays out 2–4 candidates and axes, recommends with a "because", user decides, ADR.
-- Registers set by `learning-gate`.
-- NOT `problem-solving-gates` Options Generator (withholds options until user brings candidates).
-- NOT `design-scoping` (whole-system one-liners).
-- NOT the specialist skills used alone (`api-interface-style`, `microservices-decision`, `database-architecture`, `data-access-layer`, `deployment-strategy`, `access-control-modeling`, `bff-gateway-placement`, `serverless-execution-model`, `migration-cutover`, `config-and-secrets-management`, `cloud-iam-boundary`, `capacity-estimation`).
-- NOT `technical-cost-decision`, `incremental-build-pacing`, or `system-design-communication` Mode 3 ("don't tell me the answer", "just poke holes", "help me defend X").
-- ("log this decision", "I'm 80% sure — review it in Q4") is `decision-journal`; specs are `spec-drift-gate`; stalled starts are `entry-point-first`.

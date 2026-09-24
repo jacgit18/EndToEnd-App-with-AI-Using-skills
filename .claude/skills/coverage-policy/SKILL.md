@@ -121,11 +121,5 @@ Repo-agnostic. Scans the repo's coverage config for the current number; writes `
 
 ## Routing boundaries (full)
 
-The frontmatter `description` is kept short for the skill listing budget; the full original description is preserved here.
-- A gated decision for one codebase's or module's code-coverage policy — which metric (statement, branch, function, line), what target number, what is excluded from measurement, whether CI blocks on it, and whether the gate is on overall coverage, new-code coverage, or the coverage delta.
 - Use when someone is setting or arguing about a coverage number: "what coverage should we require", "should we enforce 80% in CI", "our coverage gate is annoying", "do we need 100% coverage", "how do we handle coverage on this legacy module", "the build failed on a coverage drop — is that right".
-- It forces the current coverage, the kind of code being measured, the change-failure history, and the team's enforcement appetite to be stated before a number is named, then writes a coverage policy document.
-- Not for which test levels exist or their effort split — that is `test-strategy`.
-- Not for the rep of writing one test — that is `test-practice-gate`.
 - Not for finding which cases to test — that is `test-case-discovery`.
-- Not for choosing the coverage tool.

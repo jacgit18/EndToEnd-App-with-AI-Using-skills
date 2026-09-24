@@ -205,11 +205,5 @@ into another repo's `.claude/skills/`. See `README.md` for where it sits next to
 
 ## Routing boundaries (full)
 
-- Decide HOW to fold one branch's commits into another — merge commit (--no-ff), fast-forward, squash-merge, or rebase-then-fast-forward — and how to bring a branch up to date with its trunk (merge trunk in vs. rebase onto it).
-- A gate: it withholds the recommendation until five facts are on the table — whether the commits being rewritten are already published/shared, whether the repo or forge already mandates a strategy, whether each commit is independently meaningful or WIP noise, whether you're integrating a finished branch or syncing an in-progress one, and whether the team reads history for archaeology.
 - Fires on "merge or rebase", "squash or merge this PR", "merge / squash / rebase", "how should I integrate this branch", "my branch is behind main — merge or rebase", "squash these commits before merging", "clean up history before the merge", "should this be a fast-forward".
-- NOT `commit-and-push` — that stages, writes the message for, and pushes a set of changes, and explicitly hands the integration-strategy choice here.
-- NOT mechanical merge-conflict resolution — no skill does that; stop and report conflicts.
 - NOT `learning-gate` — "explain how rebase differs from merge" with no specific integration to decide is a learning request, this skill decides a concrete case.
-- NOT `ambiguity-gate` — that fires when which branch or which direction is unclear; once that's clear, this decides the method.
-- A bare conceptual question ("what is a fast-forward merge") is answered directly, no gate.
