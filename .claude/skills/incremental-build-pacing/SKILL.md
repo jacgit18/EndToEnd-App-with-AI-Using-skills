@@ -49,6 +49,13 @@ Write the contract down — one line in chat the user can point back to. If the 
 start", pick the defaults (one file, stop after each, Claude writes), say so in one line, and
 proceed.
 
+The contract can loosen mid-build, two different ways with two different rules. If the user
+**explicitly asks for a bigger unit** ("finish 14", "do the rest of that"), widen the increment,
+say so once in a line ("batching the rest of #14 — client, route, test — then stopping"), and offer
+to go back to one file per turn. If the user just keeps saying "next" with **no explain-back**,
+that is the skipped-explain-back case in `increment-delivery.md` — say so once and let them
+choose; don't widen on your own.
+
 Present the contract and the Step 3 increment map together in one turn and pause there — one
 agreement gate, no code, not a separate round-trip for each.
 
@@ -56,6 +63,13 @@ agreement gate, no code, not a separate round-trip for each.
 
 Before writing anything, list the files or units this slice needs, in dependency order. Show the
 list once. Don't start until it's agreed.
+
+Two checks that keep a map honest across sessions: **name the slice** in every increment reference
+("Phase 1 auth #9", not bare "increment 9") — a project accumulates several numbered maps, and a
+bare number can mean any of them — and **diff a resumed map against the code** before trusting it
+(read the files it says are pending; an item may already be committed). The handoff list stays
+canonical for **order**; the code decides **status**. Correct the map out loud and write the fix
+back to the file. If the map carries no slice name, take it from the handoff's title or ask.
 
 Tag each increment one of three ways — the worked table with examples is in
 `increment-delivery.md`:
@@ -78,16 +92,20 @@ Per increment. The full protocol — the exact shape of each step, the coaching 
 checkpoint-quiz mechanics — is in `increment-delivery.md`.
 
 1. **Write it, or show it to type.**
-2. **Explain** — what it does, why it's shaped this way, how it connects to what already exists,
+2. **Verify by effect** — run or exercise the increment and report what you *observed*, not that
+   it returned 200 or compiled. When the increment's job is a side effect (which client IP the
+   server sees, a cookie's flags, a header, a row written), the observation is that effect
+   (`increment-delivery.md`, "Verifying by effect"). Nothing runnable yet → say so in one line; plumbing (Step 3) is exempt. If the user types the code themselves, the check happens after they have typed it: ask them to run it and report what they see.
+3. **Explain** — what it does, why it's shaped this way, how it connects to what already exists,
    and the one thing that usually trips people on this kind of file.
-3. **Stop.** The turn is the user's. Don't narrate the next increment or assume this one landed.
-4. **Check understanding** — the user says back what the increment does and how it connects; a
+4. **Stop.** The turn is the user's. Don't narrate the next increment or assume this one landed.
+5. **Check understanding** — the user says back what the increment does and how it connects; a
    real "why", not the code restated in prose. Before an increment that builds directly on this
    one, use `AskUserQuestion` for a one-question checkpoint — answer position varied, not revealed
    until they submit.
-5. **If it's shaky, stay here** — a smaller sub-piece, or a plainer explanation. Don't advance on
+6. **If it's shaky, stay here** — a smaller sub-piece, or a plainer explanation. Don't advance on
    a parrot.
-6. **Advance** — only now write or reveal the next increment.
+7. **Advance** — only now write or reveal the next increment.
 
 ## Step 5 — Drift and scope
 

@@ -40,6 +40,8 @@ Present each increment in this shape:
 Increment [n] of [total]: [file or unit, one line]
 [the code — written in full, or shown for the user to type per the contract]
 
+Observed:       [what running it showed — the effect, not "it compiled"; or "nothing runnable yet";
+                skip on plumbing. For user-typed code this line is filled after they run it.]
 What it does:   [plain-language, 2–4 sentences]
 Why this shape: [the decision this file embodies, tied back to the spec / ADR if there is one]
 Connects to:    [what already exists that this uses or is used by]
@@ -56,8 +58,14 @@ in this slice.
 
 Then:
 
-- **Stop and wait.** Don't narrate the next increment. Don't assume it landed. The turn is the
-  user's.
+- **Stop and wait** after the explanation (Claude-written code is verified *before* it, so
+  the `Observed:` line is already filled). Don't narrate the next increment. Don't assume it
+  landed. The turn is the user's.
+- **Verify by effect** (see "Verifying by effect" below) — for Claude-written code, do this
+  before explaining and report what you observed; for user-typed code, do it after the read-back
+  below by asking them to run it and paste what they see, and don't claim it works until they
+  have. Plumbing is exempt. When a slice's check spans two files (a route plus the Compose file
+  that wires it), verify each piece as soon as it can run, and say which check is still waiting.
 - **Verify it's real** when the user was the one typing — read back what they have, confirm it
   matches, catch a divergence now rather than three increments later. When Claude wrote it, this
   step is just confirming they've read it.
@@ -72,17 +80,36 @@ Then:
 - **If the user isn't attempting the explain-back at all** — "next" / "next step" with nothing
   said back, repeatedly — that's a different case from shaky, and the loop has no default for
   it: continuing to run the full loop is offering a check nobody is taking, but silently
-  dropping it isn't a call to make unilaterally either. After a few increments of this, say so
+  dropping it isn't a call to make unilaterally either. After about three increments of this, say so
   once, plainly, and let the user choose: keep the full loop, or lighten it (shorter
   explanations, bigger batches) without dropping pacing entirely. Don't just keep re-offering
   the same unconfirmed explanation forever, and don't stop offering it without saying you're
-  doing that.
+  doing that. (An explicit request for a bigger unit — "finish 14" — is a different trigger: widen
+  and announce once, per SKILL.md Step 2. If both are true, the explicit request wins.)
 - **Close it.** Tick it on the map, add a one-line note of what the user learned, and only now
   move to the next.
 
 Name the common failure for each load-bearing increment *before* it bites — "the trap here is
 returning a `float` from this function; every caller assumes `Decimal`" lands better as a warning
 than as a bug hunt later.
+
+## Verifying by effect
+
+A green status code proves the request was answered, not that the increment did its job. When the
+job is a side effect, look at the effect itself:
+
+| Increment's job | Status-code check (weak) | Observe instead |
+|---|---|---|
+| Server trusts a proxy's client-IP header | `/health` returns 200 | The server's own log line shows the forwarded IP, not the proxy's |
+| Set a `Secure` / `HttpOnly` cookie | login returns 200 | The `Set-Cookie` header carries the flags |
+| Rate limit | first request passes | The Nth+1 request is 429 with `Retry-After`, a second client is unaffected |
+| Startup validation | app boots with a good value | It refuses to boot on a bad one, with the message |
+| A new dependency / config flag | build succeeds | The setting is read at runtime (print it inside the running container) |
+
+Confirmed the hard way: a `--forwarded-allow-ips='*'` written inside `sh -c "..."` kept its quotes
+as literal characters, so uvicorn trusted nothing; every request returned 200 and the only tell was
+the log showing the proxy's address. Also worth a mutation check on a new test: break the code on
+purpose and confirm the test fails, then restore it.
 
 ## Coaching register
 
@@ -103,7 +130,8 @@ keep it in chat and repaste the updated version as increments close.
 If `session-handoff` fires mid-build (a context-length nudge, or the user ending the
 session), that handoff file *is* your persisted map going forward — capture the increment list
 in the checklist format below, not a prose "next steps" paragraph, so a fresh session can lift
-it verbatim. And on the resuming side: treat that file's list as canonical. Don't reconstruct
+it verbatim. And on the resuming side: treat that file's list as canonical for **order** (its
+status still gets diffed against the code, per SKILL.md Step 3). Don't reconstruct
 the map from memory of the pattern the build has been following — a plausible-sounding guess at
 "what's probably next" is exactly how a real ordering slip happens (confirmed the hard way:
 misnaming the next file after a reset, because the general shape of the build was remembered but

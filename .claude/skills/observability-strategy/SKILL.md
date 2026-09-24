@@ -104,6 +104,7 @@ Cardinality budget:  metric labels <allow-list>; log fields <disciplined set>; t
 Alerting:            page on <symptom / SLO burn conditions> ; ticket/dashboard for <cause signals> ; every alert → runbook
 Retention:           metrics <e.g. 15mo downsampled> | logs <e.g. 30d hot, 1y cold> | traces <e.g. 7d> — from investigation + audit lookback
 Placement:           <self-hosted stack (components) | managed (which class)> — <why, from operational capacity + residency>
+Sensitive data:      <what the SDK/agent/collector must NOT export (bodies, PII, locals, replay), the named settings that stop it, and that a test event verified them — or "none needed: no sensitive data">
 Agent-queryable:     <can an agent pull these signals directly via an API (Prometheus/PromQL, a vendor query API) for self-diagnosis or incident triage, or is this dashboard/GUI-only with no query surface>
 Tradeoffs accepted:  <2–4 concrete costs: instrumentation overhead, storage/bill class, alert-attention budget, a stack to run>
 Not chosen because:  <one line per rejected signal / tool / sampling choice>
