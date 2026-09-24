@@ -157,6 +157,29 @@ If a decision genuinely has no cost dimension — a data-type choice, a code-str
 two options that are the same byte on disk — say so and cut the axis. Don't invent numbers to
 fill a table cell.
 
+### Check the recommendation against the scope's cost cap
+
+A scope often states a ceiling ("~$0 budget", "under $10/mo", "free tiers only"). That is a
+constraint, not just another axis: a candidate that breaks it can't win on the other axes alone.
+
+- Before recommending, compare the winner's recurring cost (the user's-plan read above) with the
+  stated cap. Within it → proceed. Over it → say so in the recommendation itself ("this beats the
+  free option on X but breaks your $0 cap") and put the **within-cap option** on the table as the
+  default, so the user overrides the cap knowingly rather than discovering it later.
+- When the pick is the free / within-cap one, record the **paid alternative** in the ADR's Consequences (what
+  you'd buy if this were a real product, roughly what it costs, and the trigger for buying it).
+  Mark prices you haven't verified as such.
+- If the user keeps a cap-breaking pick, record the override and its reason in the ADR's Context
+  or Consequences (say which cap it breaks and by how much) and add a drift-log line, since the
+  decision now contradicts a stated requirement. Don't leave the scope line and the decision
+  contradicting each other unremarked.
+- Order of work: score first, then check the winner against the cap; if it breaks the cap, re-pick
+  (or take the override) before writing the recommendation.
+
+Real miss this rule exists for: a finance-dashboard scope said "~$0 cost cap" and the deployment
+ADR then picked a $5–7/mo VPS plus a $12/yr domain, with nothing reconciling the two until the
+owner asked for a free path after the auth slice was already built.
+
 ## Axes libraries
 
 Starting axes for common build decisions. Not exhaustive; drop the ones that don't discriminate,

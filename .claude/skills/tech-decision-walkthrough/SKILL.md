@@ -32,6 +32,9 @@ register, how much of the reasoning Claude does); this skill runs the loop at th
   data-access layer, frontend approach, API style, auth approach, background work, packaging,
   deployment target, observability. Cut the ones this build doesn't face; add domain-specific
   ones (for a finance app: money representation, rounding, audit trail).
+- **Any stated cost cap** ("zero budget", "free tiers only", "a small monthly ceiling") — note it now; it is a
+  constraint every recommendation is checked against (`decision-loop.md`, "Check the
+  recommendation against the scope's cost cap"), not just a cost axis.
 - **The register** — **collaborative** (default) or **interviewer**. `learning-gate`'s
   assistance level sets it; the user switches anytime ("let me drive", "just show me the
   options"). Detail in `decision-loop.md`.
@@ -69,7 +72,8 @@ For each decision — full protocol and the axes libraries are in `decision-loop
    example naming the cost driver — per `decision-loop.md` "When cost is a deciding axis". If
    the candidates cost the same at every scale, cut the axis; don't invent numbers.
 6. **Recommendation + because** — one clear lean, tied to a named axis and the stated
-   constraints. Not hedged, not a menu handed back.
+   constraints. Not hedged, not a menu handed back. If it breaks a stated cost cap, say so here
+   and offer the within-cap option as the default; the paid alternative goes in the ADR's Consequences.
 7. **User decides** — agree, override, or ask for another round. An override with a stated
    reason is a fine outcome — record the reason, not a rebuttal.
 8. **Record it** — a short ADR (context / decision / alternatives considered + why they lost /
@@ -119,8 +123,11 @@ When the last decision on the list has an ADR, don't just stop — run the close
    decisions not walked: config & secrets, test tooling (front and back), CI provider,
    date/time & timezone policy, container base images, i18n/a11y if relevant. Name each with a
    one-line recommendation and whether it's ADR-worthy or a build-time detail.
-5. **Deferred list** — what was explicitly pushed to v2 / build-time, in one place.
-6. **Hand off** — to `spec-drift-gate` (fold the ADRs + amendments into the build spec), then
+5. **Cost-cap reconciliation** — if the scope states a cost cap, list each ADR's recurring cost
+   against it and flag any that break it (override recorded, or revisit). Collect the paid
+   alternatives noted per ADR in one place.
+6. **Deferred list** — what was explicitly pushed to v2 / build-time, in one place.
+7. **Hand off** — to `spec-drift-gate` (fold the ADRs + amendments into the build spec), then
    `incremental-build-pacing` for the paced build. A rough dependency-ordered build sketch is a
    useful thing to hand over but isn't this skill's job to finalize.
 
