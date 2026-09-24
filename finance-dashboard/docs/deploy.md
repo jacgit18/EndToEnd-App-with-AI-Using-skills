@@ -55,14 +55,18 @@ gunzip -c backups/finance-<stamp>.sql.gz | docker compose -f compose.prod.yaml e
 Also copy `backups/` somewhere off this machine (USB / another computer / `rclone` to Backblaze B2's
 free 10 GB) and keep `backend/.env.prod` in a password manager. A backup on the same disk is not a backup.
 
-## Error tracking (Sentry) — not wired yet
+## Error tracking (Sentry) — optional, free tier
 
-ADR-0013 picked Sentry's free tier. The backend does not have the SDK or a `SENTRY_DSN` setting
-yet; it is a small separate increment (add `sentry-sdk`, a `sentry_dsn: str | None` in
-`config.py`, init in `main.py` only when set). Until then, `docker compose -f compose.prod.yaml logs backend`
-is the error log.
+The backend initialises Sentry only when `SENTRY_DSN` is set; without it nothing is sent anywhere.
+To turn it on: create a free account at sentry.io (no card should be needed — decline if asked),
+create a Python/FastAPI project, copy its DSN into `backend/.env.prod` as `SENTRY_DSN=https://...`,
+and restart the backend. Options are locked to finance-safe values: no request bodies, no PII, no
+tracing. Free-tier limits and the paid alternative are in [`paid-options.md`](paid-options.md).
+Without a DSN, `docker compose -f compose.prod.yaml logs backend` is the error log.
 
 ## If you were serious about this
+
+Every cost decision in the project is tracked in [`paid-options.md`](paid-options.md); this table is the deploy slice of it.
 
 | Free choice here | Upgrade | Roughly |
 |---|---|---|

@@ -5,7 +5,9 @@ validated once at import time by pydantic-settings, and are read everywhere
 else in the app via the module-level `settings` object. See ADR-0014.
 """
 
-from pydantic import Field
+from argon2 import extract_parameters
+from argon2.exceptions import InvalidHashError
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -39,6 +41,26 @@ class Settings(BaseSettings):
     # never match any password.
     auth_password_hash: str = Field(min_length=1)
 
+    @field_validator("auth_password_hash")
+    @classmethod
+    def _hash_must_be_a_real_argon2_hash(cls, value: str) -> str:
+        """Refuse to boot on a hash argon2 can't parse.
+
+        min_length=1 above only catches an empty value. A *malformed* one (a
+        placeholder never replaced, or a Compose env_file value whose `$` wasn't
+        doubled to `$$` and got stripped) is non-empty, so it used to pass
+        startup and then make every login raise InvalidHashError -> HTTP 500.
+        Parsing it here turns that into the same loud fail-fast as a missing var.
+        """
+        try:
+            extract_parameters(value)
+        except InvalidHashError as exc:
+            raise ValueError(
+                "AUTH_PASSWORD_HASH is not a valid argon2 hash. Generate one with "
+                "PasswordHasher().hash(...); in a Compose env_file, double every '$' as '$$'."
+            ) from exc
+        return value
+
     # Signs the session-id cookie value (app/security.py) — a real secret
     # (ADR-0014), generated once with e.g.
     #   python -c "import secrets; print(secrets.token_urlsafe(32))"
@@ -48,6 +70,15 @@ class Settings(BaseSettings):
     # expiry is enforced by checking AuthSession.expires_at, this just sets
     # how far out that gets stamped at login.
     session_expire_minutes: int = 60
+
+    # Sentry error tracking (ADR-0013). Unset = the SDK is never initialised and
+    # nothing leaves the machine. A DSN comes from a Sentry project you create.
+    # COST: Sentry's free "Developer" plan (as of writing, unverified since —
+    # check sentry.io/pricing) covers one user and a few thousand errors/month
+    # with no card. Past that, events are dropped or an upgrade is prompted; the
+    # paid Team plan (~$26+/mo) adds seats, retention and alerting. Documented in
+    # docs/paid-options.md.
+    sentry_dsn: str | None = None
 
     @property
     def cookie_secure(self) -> bool:
@@ -67,5 +98,3 @@ class Settings(BaseSettings):
 # raise, and the app refuses to start — a loud, early failure, by design (ADR-0014).
 settings = Settings()  # type: ignore[call-arg]
 
-# Added in later phases, same pattern:
-#   sentry_dsn: str | None = None  error tracking; unset = disabled        (Phase 1, ADR-0013)
