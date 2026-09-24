@@ -1,6 +1,6 @@
 ---
 name: config-and-secrets-management
-description: Gated decision for where application config and secrets live and how they reach a running process — env vars, orchestrator-native secrets, a secrets manager (Vault, AWS Secrets Manager, GCP Secret Manager, Azure Key Vault), or a dynamic config/feature-flag service (LaunchDarkly, Consul KV, etcd), plus rotation policy and leak blast radius. Use when someone says "where should we store our API keys/secrets", "should this be an env var or in a secrets manager", "how do we rotate our database password without downtime", "we committed a secret to git", "should we use LaunchDarkly / a feature flag for this", "our .env file has production credentials in it", "how do services get their config in Kubernetes", or proposes a config/secrets approach to check. Forces the specific value, sensitivity, change frequency, rotation need, platform and leak damage before recommending; records an ADR. A bare conceptual question ("what's the difference between Vault and AWS Secrets Manager", "what is a feature flag") is answered directly, no gate. Not for who may read a secret — `cloud-iam-boundary`. Not for app user permissions — `access-control-modeling`. Not for datastore rotation mechanics — `data-tier-operations`. Not for an unscoped system — `design-scoping`. Not for `disclosure-gap-audit`, `deployment-strategy`, or `change-surface-audit`.
+description: Gated decision for where app config and secrets live and reach a running process: env vars, orchestrator secrets, a secrets manager, or a feature-flag service, plus rotation and leak blast radius. Triggers: "where should we store our API keys/secrets", "we committed a secret to git", "how do we rotate our database password without downtime", "should we use LaunchDarkly". Not for who may read a secret — `cloud-iam-boundary`. Not for app permissions — `access-control-modeling`. Not for an unscoped system — `design-scoping`.
 ---
 
 # Config & Secrets Management
@@ -149,3 +149,12 @@ The frontmatter `description` is truncated in the skill listing, so the full bou
 - Not for auditing a shipped product's disclosures or design for secrets-in-version-control gaps — that is `disclosure-gap-audit`, which hands the fix here.
 - Not for how a deploy or rollout delivers a new version — that is `deployment-strategy`.
 - Not for what a change to a config value breaks elsewhere — that is `change-surface-audit`.
+- Gated decision for where application config and secrets live and how they reach a running process — env vars, orchestrator-native secrets, a secrets manager (Vault, AWS Secrets Manager, GCP Secret Manager, Azure Key Vault), or a dynamic config/feature-flag service (LaunchDarkly, Consul KV, etcd), plus rotation policy and leak blast radius.
+- Use when someone says "where should we store our API keys/secrets", "should this be an env var or in a secrets manager", "how do we rotate our database password without downtime", "we committed a secret to git", "should we use LaunchDarkly / a feature flag for this", "our .env file has production credentials in it", "how do services get their config in Kubernetes", or proposes a config/secrets approach to check.
+- Forces the specific value, sensitivity, change frequency, rotation need, platform and leak damage before recommending; records an ADR.
+- A bare conceptual question ("what's the difference between Vault and AWS Secrets Manager", "what is a feature flag") is answered directly, no gate.
+- Not for who may read a secret — `cloud-iam-boundary`.
+- Not for app user permissions — `access-control-modeling`.
+- Not for datastore rotation mechanics — `data-tier-operations`.
+- Not for an unscoped system — `design-scoping`.
+- Not for `disclosure-gap-audit`, `deployment-strategy`, or `change-surface-audit`.

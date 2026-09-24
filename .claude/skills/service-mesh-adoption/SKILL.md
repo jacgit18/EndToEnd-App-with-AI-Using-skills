@@ -1,6 +1,6 @@
 ---
 name: service-mesh-adoption
-description: Gated decision for whether to adopt a service mesh (Istio, Linkerd, Consul Connect) versus lighter alternatives, and which capability is being bought — mTLS, traffic control, uniform retries/circuit-breaking, or free observability — plus the service-discovery mechanism itself. Use when someone says "should we adopt a service mesh", "do we need Istio or Linkerd", "how do our services find each other", "should we use Eureka/Consul for service discovery", "do we need mTLS between services", "our services call each other by hardcoded hostnames", "should this be a sidecar or a library", "service mesh vs load balancer", or proposes a mesh to check. Forces the specific capability driving the ask (not "it's standard"), service count and topology, platform and control-plane ownership before recommending; records an ADR. A bare conceptual question ("what is a service mesh", "service mesh vs load balancer, what's the difference") is answered directly. Not for whether to split services — `microservices-decision`. Not for resilience mechanisms once decided — `resilience-strategy`. Not for service-to-service authorization — `cloud-iam-boundary`. Not for rollout — `deployment-strategy`. Not for client-to-service layers — `bff-gateway-placement` (this is east-west only). Not for an unscoped system — `design-scoping`. Not for `serverless-execution-model` or `observability-strategy`.
+description: Gated decision for whether to adopt a service mesh (Istio, Linkerd, Consul Connect) versus lighter alternatives, which capability is being bought, and the service-discovery mechanism. Use when someone says "should we adopt a service mesh", "do we need Istio or Linkerd", "how do our services find each other", "do we need mTLS between services". Not for `microservices-decision`, `resilience-strategy`, `cloud-iam-boundary`, `bff-gateway-placement` (east-west only here), or `serverless-execution-model`.
 ---
 
 # Service Mesh Adoption
@@ -140,3 +140,14 @@ The frontmatter `description` is truncated in the skill listing, so the full bou
 - A bare conceptual question with no named system ("what is a service mesh", "service mesh vs load balancer, what's the difference") is answered directly, no gate — the gate exists for a pending adoption decision on a named service topology, not for explaining the vocabulary.
 - Not for the per-invocation compute primitive or retry/DLQ contract of a function or task — that is `serverless-execution-model`.
 - Not for designing the signals, SLIs or alerting a mesh's free metrics would feed — that is `observability-strategy`.
+- Gated decision for whether to adopt a service mesh (Istio, Linkerd, Consul Connect) versus lighter alternatives, and which capability is being bought — mTLS, traffic control, uniform retries/circuit-breaking, or free observability — plus the service-discovery mechanism itself.
+- Use when someone says "should we adopt a service mesh", "do we need Istio or Linkerd", "how do our services find each other", "should we use Eureka/Consul for service discovery", "do we need mTLS between services", "our services call each other by hardcoded hostnames", "should this be a sidecar or a library", "service mesh vs load balancer", or proposes a mesh to check.
+- Forces the specific capability driving the ask (not "it's standard"), service count and topology, platform and control-plane ownership before recommending; records an ADR.
+- A bare conceptual question ("what is a service mesh", "service mesh vs load balancer, what's the difference") is answered directly.
+- Not for whether to split services — `microservices-decision`.
+- Not for resilience mechanisms once decided — `resilience-strategy`.
+- Not for service-to-service authorization — `cloud-iam-boundary`.
+- Not for rollout — `deployment-strategy`.
+- Not for client-to-service layers — `bff-gateway-placement` (this is east-west only).
+- Not for an unscoped system — `design-scoping`.
+- Not for `serverless-execution-model` or `observability-strategy`.

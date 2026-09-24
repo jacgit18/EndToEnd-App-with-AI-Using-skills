@@ -1,6 +1,6 @@
 ---
 name: software-carpentier-brand
-description: Use when copy needs to represent the user professionally under their personal brand — LinkedIn headline/About, LinkedIn feed posts (reacting to news, or writing up your own work), resume bullets, cover letters, elevator pitches, interview self-intros, portfolio/personal-site copy, or a description of the DevHiveMind Obsidian vault for an external audience. Also use to run a "check my brand consistency" pass on something already written. Applies a fixed identity (carpenter→architect device, target positioning in regulated/high-stakes systems, named proof points) and a hard honesty-calibration layer specific to this user's career facts (total relevant experience, pre-prod vs. production scope, execution vs. ownership, feature-count inflation) — constraints a generic writing pass won't know to check. Not for gathering evidence from work that just happened in this session or repo — that Evidence Block belongs to `explaining-my-work`; hand off there first, then run its output back through this skill's voice and honesty layer. De-AI-ing an existing draft's prose is `delete-ai-words`; run it first, but its bans on framed/layered/woven and em dashes do not apply to this skill's carpenter device, which it must not strip. Not for job-search strategy, salary negotiation, or which jobs to apply to — that's a different decision, not a voice/copy one.
+description: Writes and checks copy that represents the user under their personal brand: LinkedIn headline/About, feed posts, resume bullets, cover letters, pitches, portfolio copy, with a career-fact honesty layer. Use for "check my brand consistency". Not `explaining-my-work` (gathers evidence from work just done; hand off there first), not `delete-ai-words` (de-AI prose; run first, but its bans do not apply to the carpenter device), not job-search strategy or salary negotiation.
 ---
 
 # Software Carpentier Brand
@@ -205,3 +205,14 @@ Repo-agnostic. Writes nothing unless the user asks for a file; produces the draf
 proof-point table and the optional post recipe are specific to this user's real career facts as of
 2026 — when a new role, a new metric, or a materially longer tenure exists, this file needs a real
 update, not copy that quietly outgrows it.
+
+## Routing boundaries (full)
+
+The frontmatter `description` is trimmed for the skill listing budget; the original description follows verbatim, one sentence per bullet:
+
+- Use when copy needs to represent the user professionally under their personal brand — LinkedIn headline/About, LinkedIn feed posts (reacting to news, or writing up your own work), resume bullets, cover letters, elevator pitches, interview self-intros, portfolio/personal-site copy, or a description of the DevHiveMind Obsidian vault for an external audience.
+- Also use to run a "check my brand consistency" pass on something already written.
+- Applies a fixed identity (carpenter→architect device, target positioning in regulated/high-stakes systems, named proof points) and a hard honesty-calibration layer specific to this user's career facts (total relevant experience, pre-prod vs. production scope, execution vs. ownership, feature-count inflation) — constraints a generic writing pass won't know to check.
+- Not for gathering evidence from work that just happened in this session or repo — that Evidence Block belongs to `explaining-my-work`; hand off there first, then run its output back through this skill's voice and honesty layer.
+- De-AI-ing an existing draft's prose is `delete-ai-words`; run it first, but its bans on framed/layered/woven and em dashes do not apply to this skill's carpenter device, which it must not strip.
+- Not for job-search strategy, salary negotiation, or which jobs to apply to — that's a different decision, not a voice/copy one.

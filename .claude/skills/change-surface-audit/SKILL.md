@@ -1,6 +1,6 @@
 ---
 name: change-surface-audit
-description: Pre-flight procedure for one proposed add / modify / remove change — or a "silent" change (dependency upgrade, config change, infra update) — before it ships. Walks six blast-radius surfaces (API, data, state, performance, security, observability), audits hidden dependents for a removal, and classifies the change backward-compatible or breaking (breaking or removal needs a compatibility/deprecation phase). Use when someone says "what could this change break", "am I missing anything before I ship this", "is this a breaking change", "we're removing this endpoint/column/feature — what do we need to check first", "before adding this feature, what should I think about", "PR review for blast radius", or names a dependency bump / config change / infra update. A bare conceptual question ("what's expand-contract", "what counts as a breaking change") is answered directly, no audit. Not for the diff's own correctness — `code-review` / `security-review`. Not for what a change obligates you to disclose — `disclosure-gap-audit`. Not for a whole not-yet-decided design — `failure-mode-analysis`. Not for rollout mechanism — `deployment-strategy`. Not for a system migration — `migration-cutover`. Not for `resilience-strategy`, `relational-modeling`, `database-architecture`, `data-tier-operations`, `api-interface-style`, `config-and-secrets-management`, `codebase-file-orientation`, `access-control-modeling`, or a vague request — `ambiguity-gate`.
+description: Pre-flight procedure for one proposed add/modify/remove or silent change: walks six blast-radius surfaces, audits hidden dependents, classifies backward-compatible vs breaking. Triggers: "what could this change break", "is this a breaking change", "am I missing anything before I ship this", "PR review for blast radius". Not for diff correctness — `code-review`. Not for disclosure duties — `disclosure-gap-audit`. Not for rollout — `deployment-strategy`. Not for a vague request — `ambiguity-gate`.
 ---
 
 # Change Surface Audit
@@ -254,3 +254,13 @@ The frontmatter `description` is truncated in the skill listing, so the full bou
 - A bare conceptual question with no specific change in hand ("what's expand-contract", "what counts as a breaking change") is answered directly, no audit.
 - Not for the application permission model a change touches once confirmed — that is `access-control-modeling`.
 - Not for a vague request whose intent is unclear — that is `ambiguity-gate`.
+- Pre-flight procedure for one proposed add / modify / remove change — or a "silent" change (dependency upgrade, config change, infra update) — before it ships.
+- Walks six blast-radius surfaces (API, data, state, performance, security, observability), audits hidden dependents for a removal, and classifies the change backward-compatible or breaking (breaking or removal needs a compatibility/deprecation phase).
+- Use when someone says "what could this change break", "am I missing anything before I ship this", "is this a breaking change", "we're removing this endpoint/column/feature — what do we need to check first", "before adding this feature, what should I think about", "PR review for blast radius", or names a dependency bump / config change / infra update.
+- A bare conceptual question ("what's expand-contract", "what counts as a breaking change") is answered directly, no audit.
+- Not for the diff's own correctness — `code-review` / `security-review`.
+- Not for what a change obligates you to disclose — `disclosure-gap-audit`.
+- Not for a whole not-yet-decided design — `failure-mode-analysis`.
+- Not for rollout mechanism — `deployment-strategy`.
+- Not for a system migration — `migration-cutover`.
+- Not for `resilience-strategy`, `relational-modeling`, `database-architecture`, `data-tier-operations`, `api-interface-style`, `config-and-secrets-management`, `codebase-file-orientation`, `access-control-modeling`, or a vague request — `ambiguity-gate`.

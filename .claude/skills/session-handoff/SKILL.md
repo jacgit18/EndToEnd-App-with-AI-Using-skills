@@ -1,6 +1,6 @@
 ---
 name: session-handoff
-description: Creates a handoff file to preserve context when a session is ending, getting long, about to be compacted, or work will resume later/in a new chat. Captures goals, current state, files touched, what changed, and next steps in a structured markdown file. Trigger this proactively — don't wait to be asked — whenever the conversation is running long, the user says something like "let's pick this up later," "I'll continue this tomorrow," "new chat," "wrap up," "save my progress," or when you notice context is getting heavy (many files touched, many decisions made, long back-and-forth). Also trigger when the user explicitly asks for a "handoff," "session summary," "context dump," or "recap file." Not for a post-mortem of a single already-resolved bug (symptom / cause / fix / worth-learning) — that's `problem-journal` (Journal mode); this skill preserves in-progress context so work can resume, it doesn't retrospect finished debugging. Not for saving a prompt or logging session prompts (that is `prompt-archive`), not for recording a judgment call to check later (that is `decision-journal`), and not a substitute for the written spec of a multi-file build (that is `spec-drift-gate`, which a handoff links to rather than duplicates). When a session is being wrapped up, do not stack per-file orientation docs onto the handoff -- a durable per-file reference is `codebase-file-orientation`, offered separately, never as a handoff step.
+description: Writes a structured handoff file (goals, state, files touched, next steps) when a session is ending, long, or resuming later. Trigger proactively on "let's pick this up later", "new chat", "wrap up", "save my progress", "handoff", or "context dump". Not for a resolved-bug post-mortem (`problem-journal`), saving prompts (`prompt-archive`), logging a judgment call (`decision-journal`), or replacing a build spec (`spec-drift-gate`).
 ---
 
 # Session Handoff
@@ -75,3 +75,12 @@ Omit a section entirely if it has nothing real to put in it (e.g., no firm decis
 - Save it as a file (`.md`) and present it to the user rather than just printing it in chat, so it's easy to carry into the next session or hand to a fresh Claude instance.
 - Save into `.claude/handoffs/` (what `scripts/session/resume.sh` and the hook expect) with a short, descriptive filename (e.g., `handoff-auth-refactor-2026-09-02.md`), not a generic one.
 - After creating it, tell the user in one line where it is and that they can drop its contents into a new chat to resume — don't over-explain.
+
+## Routing boundaries (full)
+
+- Creates a handoff file to preserve context when a session is ending, getting long, about to be compacted, or work will resume later/in a new chat.
+- Captures goals, current state, files touched, what changed, and next steps in a structured markdown file.
+- Trigger this proactively — don't wait to be asked — whenever the conversation is running long, the user says something like "let's pick this up later," "I'll continue this tomorrow," "new chat," "wrap up," "save my progress," or when you notice context is getting heavy (many files touched, many decisions made, long back-and-forth).
+- Also trigger when the user explicitly asks for a "handoff," "session summary," "context dump," or "recap file." Not for a post-mortem of a single already-resolved bug (symptom / cause / fix / worth-learning) — that's `problem-journal` (Journal mode); this skill preserves in-progress context so work can resume, it doesn't retrospect finished debugging.
+- Not for saving a prompt or logging session prompts (that is `prompt-archive`), not for recording a judgment call to check later (that is `decision-journal`), and not a substitute for the written spec of a multi-file build (that is `spec-drift-gate`, which a handoff links to rather than duplicates).
+- When a session is being wrapped up, do not stack per-file orientation docs onto the handoff -- a durable per-file reference is `codebase-file-orientation`, offered separately, never as a handoff step.

@@ -1,6 +1,6 @@
 ---
 name: ticket-evaluation
-description: Use when a work ticket is shared for analysis, prioritization, sizing, or a go/no-go read — a Jira/Linear/Asana issue, a GitHub issue, or a pasted-in feature description. Triggers include "should we pull this into the sprint," "is this worth doing," "evaluate this ticket," "how would you prioritize this," "what's the risk on this one," backlog grooming, and comparing several tickets against each other. Also use when someone asks for a verdict on a ticket immediately and does not want to answer questions first. Not for someone who cannot yet get started on the work at all ("I don't know where to start", "overwhelmed by this codebase") — that is `entry-point-first`, which finds a low-resistance entry rep and then hands the which-matters-most call back here once they are moving. A "ticket" that is only a system name ("build billing") is an under-specified design ask for `design-scoping`, and a bare feature name with no actor or acceptance criteria goes to `user-story-decomposition` first; both come back here for the sprint verdict once scoped.
+description: Analyzes, prioritizes, sizes, or gives a go/no-go on a shared work ticket (Jira/Linear/Asana/GitHub issue or pasted feature description). Use for "should we pull this into the sprint," "is this worth doing," "evaluate this ticket," "how would you prioritize this," backlog grooming. Not `entry-point-first` (cannot start the work at all), not `design-scoping` (a bare system name like "build billing"), not `user-story-decomposition` (bare feature name with no actor or acceptance criteria).
 ---
 
 # Ticket Evaluation
@@ -175,3 +175,13 @@ Where a recommendation depends on an unknown, state the branch: "proceed if the 
 - The recommendation names five drivers
 
 **All of these mean: the rubric got filled instead of applied. Go back to what the ticket actually says.**
+
+## Routing boundaries (full)
+
+The frontmatter `description` is trimmed for the skill listing budget; the original description follows verbatim, one sentence per bullet:
+
+- Use when a work ticket is shared for analysis, prioritization, sizing, or a go/no-go read — a Jira/Linear/Asana issue, a GitHub issue, or a pasted-in feature description.
+- Triggers include "should we pull this into the sprint," "is this worth doing," "evaluate this ticket," "how would you prioritize this," "what's the risk on this one," backlog grooming, and comparing several tickets against each other.
+- Also use when someone asks for a verdict on a ticket immediately and does not want to answer questions first.
+- Not for someone who cannot yet get started on the work at all ("I don't know where to start", "overwhelmed by this codebase") — that is `entry-point-first`, which finds a low-resistance entry rep and then hands the which-matters-most call back here once they are moving.
+- A "ticket" that is only a system name ("build billing") is an under-specified design ask for `design-scoping`, and a bare feature name with no actor or acceptance criteria goes to `user-story-decomposition` first; both come back here for the sprint verdict once scoped.

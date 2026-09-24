@@ -1,6 +1,6 @@
 ---
 name: model-routing-decision
-description: Use when someone wants to route calls to an LLM across more than one model — tiering by task type (cheap/fast model for simple work, strongest model for hard reasoning), picking across providers (Claude vs. GPT vs. Gemini), adopting a proxy (OpenRouter, Claude Code Router, RelayPlane or similar), or asking "when should I use Haiku vs. Sonnet vs. Opus" / "should I build a model router" / "is a routing proxy worth it." "Model routing" is used loosely for several distinct problems, and only some of them are actually about picking a model — this skill's first job is placing the request correctly before recommending anything. Retry-on-timeout or fallback-to-another-model-on-rate-limit is an availability/failover pattern, not this skill (it's a reliability mechanism dressed in the same vocabulary). Classifying an incoming ticket/request and handing it to a downstream team or system is ops/workflow triage, not this skill, even though the classifier is often an LLM call. A lead agent delegating subtasks to specialized sub-agents is an agent-architecture / labor-division decision, not this skill — this skill re-enters once that structure exists and each sub-agent's own model choice needs deciding. Pricing the tiers once volume and token counts are known is `technical-cost-decision`, which this skill hands off to rather than repricing itself. Sizing the overall request volume this routing sits inside is `capacity-estimation`. Also covers the live-session version: mid-task in Claude Code (or similar), "which model or agent should run this step," "use a cheaper model for this," "switch models," "escalate" — see In-session mode. Whether a step should be delegated at all (who owns the decision, how load-bearing it is) is a who-owns-the-decision question (how load-bearing and reversible the choices are), not a model-tier one, and no skill here owns it; handing a settled spec's slice to `spec-executor` is `spec-drift-gate` Step 3a. A bare "what agent framework should I use" with no per-call model-tier question is `problem-solving-gates` (Options Generator), not this skill.
+description: Gated decision for routing LLM calls across more than one model: tiering by task, choosing across providers, adopting a routing proxy, or in-session model/agent choice. Triggers: "when should I use Haiku vs. Sonnet vs. Opus", "should I build a model router", "is a routing proxy worth it", "switch models". Not for retry/failover, ticket triage, or sub-agent delegation. Not for pricing tiers — `technical-cost-decision`. Not for volume sizing — `capacity-estimation`. Not for framework choice — `problem-solving-gates`.
 ---
 
 # Model Routing Decision
@@ -80,3 +80,19 @@ For a step in a live session there is no volume or architecture to gate on, and 
 - (In-session mode) Spawned a fresh subagent for work an existing named agent already covers, or tried to override a named agent's model from inside the task
 - (In-session mode) Delegated a small, context-loaded step and paid brief overhead that exceeded the step itself
 - (In-session mode) Escalated more than one tier on a single failure, or spawned a subagent for work an existing named agent already covers
+
+## Routing boundaries (full)
+
+- Use when someone wants to route calls to an LLM across more than one model — tiering by task type (cheap/fast model for simple work, strongest model for hard reasoning), picking across providers (Claude vs.
+- GPT vs.
+- Gemini), adopting a proxy (OpenRouter, Claude Code Router, RelayPlane or similar), or asking "when should I use Haiku vs.
+- Sonnet vs.
+- Opus" / "should I build a model router" / "is a routing proxy worth it." "Model routing" is used loosely for several distinct problems, and only some of them are actually about picking a model — this skill's first job is placing the request correctly before recommending anything.
+- Retry-on-timeout or fallback-to-another-model-on-rate-limit is an availability/failover pattern, not this skill (it's a reliability mechanism dressed in the same vocabulary).
+- Classifying an incoming ticket/request and handing it to a downstream team or system is ops/workflow triage, not this skill, even though the classifier is often an LLM call.
+- A lead agent delegating subtasks to specialized sub-agents is an agent-architecture / labor-division decision, not this skill — this skill re-enters once that structure exists and each sub-agent's own model choice needs deciding.
+- Pricing the tiers once volume and token counts are known is `technical-cost-decision`, which this skill hands off to rather than repricing itself.
+- Sizing the overall request volume this routing sits inside is `capacity-estimation`.
+- Also covers the live-session version: mid-task in Claude Code (or similar), "which model or agent should run this step," "use a cheaper model for this," "switch models," "escalate" — see In-session mode.
+- Whether a step should be delegated at all (who owns the decision, how load-bearing it is) is a who-owns-the-decision question (how load-bearing and reversible the choices are), not a model-tier one, and no skill here owns it; handing a settled spec's slice to `spec-executor` is `spec-drift-gate` Step 3a.
+- A bare "what agent framework should I use" with no per-call model-tier question is `problem-solving-gates` (Options Generator), not this skill.

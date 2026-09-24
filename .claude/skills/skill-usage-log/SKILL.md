@@ -1,6 +1,6 @@
 ---
 name: skill-usage-log
-description: Reports on which skills have actually been invoked in this project, from the automatic skill-usage log. Every `Skill` tool call is captured by the PreToolUse hook in .claude/settings.json (scripts/hooks/log-skill.sh), which appends a timestamped line to .claude/_Prompts/logs/YYYY-MM-DD-skills.md. Use this skill when the user asks "which skills have I used", "skill usage log / report", "how often do I use <skill>", "what skills got used today / this week", "which skills have never fired", "is the skill logging working", or wants usage tallied over a date range or per session. Also the feedback view: "which skills get overridden", "which gates annoy me", "are my skills actually helping", "skill feedback / retro" — joins each fire to the user's next prompt in that session and flags override phrases. NOT for logging or archiving prompts (that is `prompt-archive`, which owns the sibling YYYY-MM-DD.md prompt logs), NOT for checking the README/catalog is consistent with the skills tree (that is `sync-catalog` / `catalog-drift-audit`, which also owns acting on the findings this skill's feedback mode logs), NOT for testing whether a new skill collides with its siblings (that is `skill-interaction-testing`), NOT for diagnosing why one particular skill doesn't fire or reading it for quality (that is `skill-static-audit` for a read of its text, `skill-interaction-testing` for running it), and NOT for summarizing session state for a handoff (that is `session-handoff`).
+description: Reports which skills were actually invoked in this project from the automatic skill-usage log, plus a feedback view of overridden skills. Use for "which skills have I used", "skill usage log / report", "which skills have never fired", "which skills get overridden", or "skill feedback / retro". Not for prompt logs (`prompt-archive`), catalog consistency (`sync-catalog`, `catalog-drift-audit`), collision tests (`skill-interaction-testing`), or reading a skill (`skill-static-audit`).
 ---
 
 # Skill Usage Log
@@ -78,3 +78,11 @@ annoy me", "is <skill> firing when it shouldn't", "skill feedback / retro".
 4. **Say what the data can't show.** Both logs are local and gitignored, cover only sessions
    where the hooks ran, and start when the hooks were added. If the prompt log is missing for
    the dates the skill log covers, report that instead of "no overrides."
+
+## Routing boundaries (full)
+
+- Reports on which skills have actually been invoked in this project, from the automatic skill-usage log.
+- Every `Skill` tool call is captured by the PreToolUse hook in .claude/settings.json (scripts/hooks/log-skill.sh), which appends a timestamped line to .claude/_Prompts/logs/YYYY-MM-DD-skills.md.
+- Use this skill when the user asks "which skills have I used", "skill usage log / report", "how often do I use <skill>", "what skills got used today / this week", "which skills have never fired", "is the skill logging working", or wants usage tallied over a date range or per session.
+- Also the feedback view: "which skills get overridden", "which gates annoy me", "are my skills actually helping", "skill feedback / retro" — joins each fire to the user's next prompt in that session and flags override phrases.
+- NOT for logging or archiving prompts (that is `prompt-archive`, which owns the sibling YYYY-MM-DD.md prompt logs), NOT for checking the README/catalog is consistent with the skills tree (that is `sync-catalog` / `catalog-drift-audit`, which also owns acting on the findings this skill's feedback mode logs), NOT for testing whether a new skill collides with its siblings (that is `skill-interaction-testing`), NOT for diagnosing why one particular skill doesn't fire or reading it for quality (that is `skill-static-audit` for a read of its text, `skill-interaction-testing` for running it), and NOT for summarizing session state for a handoff (that is `session-handoff`).

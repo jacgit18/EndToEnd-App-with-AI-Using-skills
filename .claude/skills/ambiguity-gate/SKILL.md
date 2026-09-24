@@ -1,6 +1,6 @@
 ---
 name: ambiguity-gate
-description: Use when a request could reasonably be read more than one way and acting on the wrong reading would waste real work — vague verbs ("clean up", "fix this", "make it better", "shorter", "more professional"), or an unstated scope, format, audience, time frame, or level of detail. Applies to code, specs, plans, schemas, and written deliverables. It deliberately does NOT apply to reference lookups, factual questions, or casual conversation, where it stays out of the way and the answer is simply given. Also use when the request is phrased as a solution ("add a retry loop here", "change this to return X") and reading the code suggests the stated fix may not address the cause — the premise, not the wording, is what's in doubt. It does NOT ask the user to supply a diagnosis (that's `problem-solving-gates`) and does not audit a settled change's blast radius (that's `change-surface-audit`). Also use when a reply is about to open with a list of clarifying questions, a menu of options the user never asked for, or a request to pick between framings Claude supplied rather than words the user used. It hands off rather than asking when intent is settled and only scope is open: designing or architecting a system/feature goes to `design-scoping`, splitting work into stories goes to `user-story-decomposition`, and writing or improving a prompt goes to `prompt-authoring` (each runs its own targeted questions). Not for a request to write tests (`test-practice-gate`, which owns that gate) or a multi-file/multi-session build with no written spec once intent is settled (`spec-drift-gate`, whose spec requirement applies next, not a second clarifying question).
+description: Asks before acting when a request has more than one reasonable reading and the wrong one would waste real work, or when a stated fix may not address the cause. Use for vague verbs ("clean up", "fix this", "make it better", "shorter", "more professional") or unstated scope, format, audience. Skips lookups and casual chat. Hands off settled-intent scope to `design-scoping`, `user-story-decomposition`, `prompt-authoring`; not `problem-solving-gates` (diagnosis), `test-practice-gate` (tests), or `spec-drift-gate` (multi-file builds).
 ---
 
 # Ambiguity Gate
@@ -111,3 +111,14 @@ Each of these means you are on the wrong exit:
 - Building a solution-phrased request as stated and noting afterward that the cause looks
   elsewhere — the mismatch belongs before the work, not in a closing note.
 - A closing paragraph explaining assumptions the work already depends on.
+
+## Routing boundaries (full)
+
+- Use when a request could reasonably be read more than one way and acting on the wrong reading would waste real work — vague verbs ("clean up", "fix this", "make it better", "shorter", "more professional"), or an unstated scope, format, audience, time frame, or level of detail.
+- Applies to code, specs, plans, schemas, and written deliverables.
+- It deliberately does NOT apply to reference lookups, factual questions, or casual conversation, where it stays out of the way and the answer is simply given.
+- Also use when the request is phrased as a solution ("add a retry loop here", "change this to return X") and reading the code suggests the stated fix may not address the cause — the premise, not the wording, is what's in doubt.
+- It does NOT ask the user to supply a diagnosis (that's `problem-solving-gates`) and does not audit a settled change's blast radius (that's `change-surface-audit`).
+- Also use when a reply is about to open with a list of clarifying questions, a menu of options the user never asked for, or a request to pick between framings Claude supplied rather than words the user used.
+- It hands off rather than asking when intent is settled and only scope is open: designing or architecting a system/feature goes to `design-scoping`, splitting work into stories goes to `user-story-decomposition`, and writing or improving a prompt goes to `prompt-authoring` (each runs its own targeted questions).
+- Not for a request to write tests (`test-practice-gate`, which owns that gate) or a multi-file/multi-session build with no written spec once intent is settled (`spec-drift-gate`, whose spec requirement applies next, not a second clarifying question).

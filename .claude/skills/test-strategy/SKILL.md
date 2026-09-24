@@ -1,6 +1,6 @@
 ---
 name: test-strategy
-description: A gated decision for the test mix of one component, feature, or system — which test levels exist (unit, integration, contract, end-to-end, smoke, acceptance), what share of effort each gets, which pipeline stage each runs in, whether non-functional testing (load, performance, security) is in scope, and whether TDD or BDD/Gherkin earns its keep here. Use when someone is deciding how to test something: "how should we test this service", "what's our testing strategy for X", "do we need end-to-end tests here", "unit or integration for this", "should we do TDD on this", "is BDD worth it", "we want 100% E2E coverage — check that", "our test suite is too slow or its CI bill too high — rethink the mix", or proposes a mix and wants it pressure-tested. It forces the surface and its seams, the cost of failure per area, the pipeline stages that actually exist, and any non-functional numbers to be stated before a mix is recommended, then writes a test plan and an ADR for the contested calls. Not for picking a coverage percentage or its CI enforcement — that is `coverage-policy`. Not for the rep of writing one specific test — that is `test-practice-gate`. Not for enumerating the individual test cases (happy, unhappy, edge) for a behavior — that is `test-case-discovery`, which comes after this skill when both are asked in one message. Not for what backs a database-touching test (Testcontainers vs in-memory vs mock vs shared DB) — that is `database-test-tooling`, which runs after this skill decides an integration-level test exists. Not for test framework/tool selection or writing the tests themselves. Not for how a change rolls out to production or gets canaried and rolled back (`deployment-strategy`), nor for testing a data or system cutover during a migration (`migration-cutover`) -- this skill decides the test mix, those decide the release and cutover mechanics.
+description: Gated decision for the test mix of a component or system: levels, effort split, pipeline stages, non-functional scope, TDD/BDD. Triggers: "how should we test this service", "what's our testing strategy for X", "do we need end-to-end tests here", "should we do TDD on this". Not `coverage-policy`, `test-practice-gate`, `test-case-discovery`, or `database-test-tooling`; rollout is `deployment-strategy`.
 ---
 
 # Test Strategy
@@ -124,3 +124,16 @@ Gate not satisfied — items 1–7 all missing, and it is unclear whether this i
 ## Portability
 
 Repo-agnostic. Reads `docs/architecture/decisions/` and the CI config for context; writes a plan to `docs/testing/` and an ADR to `docs/architecture/decisions/`. Copy the `test-strategy/` directory into another repo's `.claude/skills/` to use it there. See `README.md` for where it sits among the sibling skills.
+
+## Routing boundaries (full)
+
+The frontmatter `description` is kept short for the skill listing budget; the full original description is preserved here.
+- A gated decision for the test mix of one component, feature, or system — which test levels exist (unit, integration, contract, end-to-end, smoke, acceptance), what share of effort each gets, which pipeline stage each runs in, whether non-functional testing (load, performance, security) is in scope, and whether TDD or BDD/Gherkin earns its keep here.
+- Use when someone is deciding how to test something: "how should we test this service", "what's our testing strategy for X", "do we need end-to-end tests here", "unit or integration for this", "should we do TDD on this", "is BDD worth it", "we want 100% E2E coverage — check that", "our test suite is too slow or its CI bill too high — rethink the mix", or proposes a mix and wants it pressure-tested.
+- It forces the surface and its seams, the cost of failure per area, the pipeline stages that actually exist, and any non-functional numbers to be stated before a mix is recommended, then writes a test plan and an ADR for the contested calls.
+- Not for picking a coverage percentage or its CI enforcement — that is `coverage-policy`.
+- Not for the rep of writing one specific test — that is `test-practice-gate`.
+- Not for enumerating the individual test cases (happy, unhappy, edge) for a behavior — that is `test-case-discovery`, which comes after this skill when both are asked in one message.
+- Not for what backs a database-touching test (Testcontainers vs in-memory vs mock vs shared DB) — that is `database-test-tooling`, which runs after this skill decides an integration-level test exists.
+- Not for test framework/tool selection or writing the tests themselves.
+- Not for how a change rolls out to production or gets canaried and rolled back (`deployment-strategy`), nor for testing a data or system cutover during a migration (`migration-cutover`) -- this skill decides the test mix, those decide the release and cutover mechanics.

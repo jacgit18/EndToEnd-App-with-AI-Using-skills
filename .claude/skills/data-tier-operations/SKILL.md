@@ -1,6 +1,6 @@
 ---
 name: data-tier-operations
-description: Gated decision for scaling and distributing an existing database — replicas and replication topology, partitioning vs sharding and the shard key, isolation level, distributed-transaction / change-propagation pattern (2PC / Saga / outbox / CDC), failover and RPO/RTO, connection pooling. Use when someone says "we need to shard", "the database is the bottleneck", "should we add read replicas", "which isolation level", "how do we handle transactions across services/shards", "how do we keep our search index / cache / warehouse in sync with the database", "dual-write or outbox or CDC", "we need multi-region writes", "which shard / partition key", or proposes a topology to check. Forces the pressure (a measured bottleneck, not "web scale someday"), current numbers, and per-operation consistency needs before recommending; records an ADR. Not for replica-lag alerting — `observability-strategy`. Not for executing the move — `migration-cutover`. Not for overload protection in front of the store — `resilience-strategy`. Not for a consumer stuck on one bad record — `serverless-execution-model`. Not for credential rotation or storage — `config-and-secrets-management`. Not for `index-tuning`, `caching-strategy`, `relational-modeling`, `database-architecture`, `capacity-estimation`, `microservices-decision`, `technical-cost-decision`, or `dimensional-modeling`.
+description: Gated decision for scaling and distributing an existing database: replicas, partitioning vs sharding, isolation level, distributed-transaction / change-propagation pattern (2PC / Saga / outbox / CDC), failover, connection pooling. Use when someone says "we need to shard", "the database is the bottleneck", "should we add read replicas", "dual-write or outbox or CDC". Not for `index-tuning`, `caching-strategy`, `migration-cutover`, `resilience-strategy`, or `dimensional-modeling`.
 ---
 
 # Data-Tier Operations
@@ -150,3 +150,12 @@ The frontmatter `description` is truncated in the skill listing, so the full bou
 - Not for whether to split into services — that is `microservices-decision`.
 - Not for the dollar cost of a topology — that is `technical-cost-decision`.
 - Physical tuning of an analytical warehouse (sort/distribution keys, clustering, cluster sizing) is not covered by any skill in this catalog — say so plainly rather than improvising; the dimensional model itself is `dimensional-modeling`.
+- Gated decision for scaling and distributing an existing database — replicas and replication topology, partitioning vs sharding and the shard key, isolation level, distributed-transaction / change-propagation pattern (2PC / Saga / outbox / CDC), failover and RPO/RTO, connection pooling.
+- Use when someone says "we need to shard", "the database is the bottleneck", "should we add read replicas", "which isolation level", "how do we handle transactions across services/shards", "how do we keep our search index / cache / warehouse in sync with the database", "dual-write or outbox or CDC", "we need multi-region writes", "which shard / partition key", or proposes a topology to check.
+- Forces the pressure (a measured bottleneck, not "web scale someday"), current numbers, and per-operation consistency needs before recommending; records an ADR.
+- Not for replica-lag alerting — `observability-strategy`.
+- Not for executing the move — `migration-cutover`.
+- Not for overload protection in front of the store — `resilience-strategy`.
+- Not for a consumer stuck on one bad record — `serverless-execution-model`.
+- Not for credential rotation or storage — `config-and-secrets-management`.
+- Not for `index-tuning`, `caching-strategy`, `relational-modeling`, `database-architecture`, `capacity-estimation`, `microservices-decision`, `technical-cost-decision`, or `dimensional-modeling`.

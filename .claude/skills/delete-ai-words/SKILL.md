@@ -1,7 +1,6 @@
 ---
 name: delete-ai-words
-description: >
-  Audit and rewrite any text so it stops sounding like AI. Use this skill whenever the user invokes /delete-ai-words, or asks to "delete the AI words", "humanise this", "make this sound less like AI", "de-AI this", "audit this against the writing rules", "fix the AI writing", or pastes a draft and asks you to clean up the robotic patterns. Also trigger when you have just produced a longer piece of writing (LinkedIn post, email, article, blog post) and the user asks for it to read like a person wrote it; never run unprompted. Apply the rules below to the user's supplied text, or to your own most recent draft if they say "audit your text". Not for writing a post in the user's personal-brand voice or checking brand/career-claim honesty (that is `software-carpentier-brand`), not for turning just-finished work into something sayable (that is `explaining-my-work`), and not the plugin `linkedin-humanizer` (LinkedIn-specific AI-slop audit/profile modes; use that when the user names it). A LinkedIn post that carries the user's brand voice or career claims stays in this chain (brand, then this skill) even when the request names no skill; a bare AI-tell scrub of a post with no brand content may go to the plugin `linkedin-humanizer`.
+description: Audit and rewrite text so it stops sounding like AI. Use when the user invokes /delete-ai-words or asks to "delete the AI words", "humanise this", "make this sound less like AI", "de-AI this"; never run unprompted. Not `software-carpentier-brand` (personal-brand voice, career-claim honesty), not `explaining-my-work` (turning finished work into sayable words), not the plugin `linkedin-humanizer` (LinkedIn-specific AI-slop audit).
 ---
 
 # Delete AI words
@@ -152,3 +151,14 @@ Run silently:
 8. Search for unnecessary analogies and metaphor verbs; delete unless they pass the permission test.
 9. Cut the ending if it only repeats the point.
 10. Ask: does this sound useful, or overworked? Return the cleaner version.
+
+## Routing boundaries (full)
+
+The frontmatter `description` is trimmed for the skill listing budget; the original description follows verbatim, one sentence per bullet:
+
+- Audit and rewrite any text so it stops sounding like AI.
+- Use this skill whenever the user invokes /delete-ai-words, or asks to "delete the AI words", "humanise this", "make this sound less like AI", "de-AI this", "audit this against the writing rules", "fix the AI writing", or pastes a draft and asks you to clean up the robotic patterns.
+- Also trigger when you have just produced a longer piece of writing (LinkedIn post, email, article, blog post) and the user asks for it to read like a person wrote it; never run unprompted.
+- Apply the rules below to the user's supplied text, or to your own most recent draft if they say "audit your text".
+- Not for writing a post in the user's personal-brand voice or checking brand/career-claim honesty (that is `software-carpentier-brand`), not for turning just-finished work into something sayable (that is `explaining-my-work`), and not the plugin `linkedin-humanizer` (LinkedIn-specific AI-slop audit/profile modes; use that when the user names it).
+- A LinkedIn post that carries the user's brand voice or career claims stays in this chain (brand, then this skill) even when the request names no skill; a bare AI-tell scrub of a post with no brand content may go to the plugin `linkedin-humanizer`.
