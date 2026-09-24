@@ -24,6 +24,7 @@ The governing fact, from the "Code Coverage Best Practices" source note (a Perso
 - **Coverage tool selection** (Istanbul/nyc, JaCoCo, Coverage.py, ...) — name that a choice is needed and defer it.
 - **Mutation testing setup** — named here as the quality check that coverage isn't; its adoption is its own decision.
 - **Writing the tests to raise coverage.**
+- **Adjacent handlers:** what backs a DB-touching test → `database-test-tooling`; a failing test or live symptom → `debugging-layer-selection` / `problem-solving-gates`.
 
 ---
 

@@ -21,6 +21,7 @@ Turn "design my data model" into an explicit decision with a recorded rationale.
 - **How the application code reads and writes rows** once the source-of-truth call is made — ORM vs query builder vs raw SQL vs schema-first typed codegen vs compile-checked inline SQL, and the primary/secondary blend → `data-access-layer`. This skill's "should we use an ORM" is the *where does the authoritative definition live* question (database-first / code-first / contract-first); the access-mechanics question is a parallel sibling downstream of this ADR. Don't run both gates in one turn.
 - **API interaction style** — REST vs GraphQL vs gRPC vs WebSocket vs SSE vs webhooks vs async messaging, sync-vs-async, request-response-vs-push. That is the wire protocol and interaction model for a surface, orthogonal to the source-of-truth call this skill makes → `api-interface-style`. This skill still owns "is a formal contract warranted, and what is authoritative"; it does not pick the protocol.
 - Rewriting or "just getting started on" the schema to be helpful. See the gate below.
+- **Adjacent handlers:** blast-radius audit of an already-decided data change → `change-surface-audit`; replicas / sharding / scaling topology of a chosen store → `data-tier-operations`; a whole-build stack walkthrough that includes the store → `tech-decision-walkthrough` (calls this skill for that one decision); a debugging or open-options request → `problem-solving-gates`.
 
 ---
 

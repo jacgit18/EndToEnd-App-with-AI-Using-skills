@@ -39,39 +39,17 @@ the moment the shape doesn't fit.
 
 ## Out of scope — hand these off
 
-- **How many services exist and who owns them** — service boundaries, team ownership, repo
-  layout → `microservices-decision`. This skill takes one already-scoped unit of work (inside
-  one service, one team's remit) and decides what runs it; it does not decide whether that
-  unit of work should live in its own service.
-- **The execution role and network placement** — the IAM role this function/task assumes, its
-  least-privilege permission set, and whether it sits in a public or private subnet →
-  `cloud-iam-boundary`. This skill names what the workload needs to call; that skill designs
-  the role and boundary that grants it.
-- **Overload and cascade defense on a live request path** — rate limiting, circuit breakers,
-  bulkheads, and the retry-budget policy that stops a struggling dependency from being
-  hammered by retries under load → `resilience-strategy`. Overlap point: both skills talk
-  about "retries with backoff." This skill's retry/Catch/DLQ design is the per-invocation
-  contract for one asynchronous unit of work — does it eventually succeed, land in a DLQ, or
-  get dropped — independent of whether the system is under load. The two compose: an
-  async worker built here can *also* need a concurrency limit from `resilience-strategy` if
-  its downstream is being overwhelmed by the retries this skill's contract generates.
-- **Dollar cost** — per-invocation and provisioned-concurrency pricing for Lambda, vCPU/memory
-  pricing for Fargate, per-state-transition cost for Step Functions → `technical-cost-decision`,
-  which consumes the concurrency and duration numbers this skill produces.
-- **Capacity numbers** — expected request volume, payload sizes, peak:average ratio →
-  `capacity-estimation`, which this skill consumes (concurrency and duration inputs) rather
-  than re-deriving.
-- **Hot-partition or shard topology on a poll-based source** — if a DynamoDB Streams or
-  Kinesis consumer is stuck on a poison-pill record, this skill owns the consumer-side fix
-  (`ReportBatchItemFailures`, bisect-on-error, redrive to a DLQ) regardless of cause. Only if
-  the failures trace to a genuinely hot partition key — the same key concentrating traffic,
-  not a one-off bad record — does the fix move to `data-tier-operations`'s partition/shard
-  design. Don't reach for a shard-key change before ruling out a plain poison-pill record.
-- **An unscoped, not-yet-designed system** — "what should the backend for our new service
-  look like" with no named operation, trigger, or duration yet → `design-scoping` first,
-  which sequences a specific unit of work back here once purpose and functional scope exist.
-- **Implementation** — the actual `.asl.json` state machine definition, the SAM/CDK/Terraform
-  resources, the handler code. The skill stops at the ADR.
+Each is NOT this skill; route to the sibling (full reasoning in `out-of-scope.md`):
+
+- How many services exist / who owns them → `microservices-decision`.
+- Execution role, least-privilege permissions, network placement → `cloud-iam-boundary`.
+- Overload/cascade defense on a live path (rate limits, breakers, bulkheads, retry budget) → `resilience-strategy` (composes with this skill's per-invocation retry contract).
+- Dollar cost → `technical-cost-decision`; capacity numbers → `capacity-estimation` (consumed here, not re-derived).
+- Hot-partition / shard topology → `data-tier-operations`, only after ruling out a plain poison-pill record (consumer-side fix stays here).
+- Unscoped, not-yet-designed system → `design-scoping` first.
+- Implementation (`.asl.json`, SAM/CDK/Terraform, handler code) → out; the skill stops at the ADR.
+
+**Read `out-of-scope.md`** when a request sits near one of these boundaries (especially the retry overlap with `resilience-strategy`).
 
 ---
 
@@ -146,53 +124,9 @@ production timeout.
 
 ## Challenge a proposed approach
 
-If the user opens with the mechanism already chosen, put their reasoning under the gate,
-then test the specific claim against `execution-model-decision.md` and
-`orchestration-and-failure-handling.md`:
+If the user opens with the mechanism already chosen, put their reasoning under the gate, then test the specific claim against `execution-model-decision.md` and `orchestration-and-failure-handling.md`. Flag the load-bearing assumption as a question, not a correction.
 
-- **"just use Lambda, it's serverless and simple"** — what's the actual duration ceiling
-  (item 3)? Above ~15 minutes, or needing GPU/local disk/a persistent connection, Lambda is
-  ruled out regardless of preference — that's a platform limit, not a style choice. Below it,
-  is the trigger bursty (favors it) or does it need to avoid cold starts on every single call
-  (may favor a provisioned-concurrency Lambda or a small always-on service instead)?
-- **"wrap it in Step Functions so we don't lose track of it"** — is there real branching,
-  parallel fan-out, or a wait-for-callback (item 6), or is this a straight linear chain of
-  two or three steps? A linear chain gains little from a state machine over a single function
-  calling the next step directly, or an event triggering the next step, and pays the extra
-  infrastructure and per-transition cost for the visibility. Justify the orchestrator by the
-  coordination need, not by "so we can see it in a console."
-- **"let event-driven choreography handle it, everything reacts to everything"** — can anyone
-  currently answer "where is instance #4521 in this process, and why is it stuck" without
-  reconstructing the trail from logs across every service? If coordination or debuggability
-  (item 6) matters and there's branching or a required order, choreography trades a real cost
-  (no single place to see or resume workflow state) for looser coupling — name that cost
-  explicitly rather than defaulting to it because it feels more "cloud native."
-- **"chain Lambdas calling each other synchronously"** — every hop adds latency, the calling
-  function's timeout must exceed everything downstream, and a change to the callee's
-  contract or duration silently affects the caller. If step B doesn't need to hand a result
-  back to step A immediately, invoke it asynchronously or via an event/queue instead of a
-  direct synchronous call.
-- **"retry forever until it works"** — unbounded retries with no backoff turn a transient
-  blip into sustained load on a struggling dependency (this is where `resilience-strategy`'s
-  retry-budget concern and this skill's per-invocation contract meet). Cap the attempts, use
-  exponential backoff with jitter, and name what happens when attempts are exhausted (item 7)
-  — "keep trying forever" is not a failure semantics answer, it's the absence of one.
-- **"the whole Parallel state failing when one branch fails is fine, we'll just rerun it"** —
-  by default a Parallel or Map state's failure aborts every branch, including ones that
-  already succeeded and now have to redo work. If branches are independent and partial
-  success is meaningful (some items processed, some not), catch failures per-branch or use a
-  tolerated-failure-percentage on a Distributed Map instead of accepting all-or-nothing.
-- **"just use SQS for everything" / "let's use Kinesis, it's real-time"** — a queue (SQS)
-  hands each message to exactly one of a pool of competing workers and deletes it once
-  processed; it's the wrong tool the moment a second, independent consumer also needs to see
-  the same event (that's fan-out — SNS, or a stream), or a consumer needs to replay history
-  it missed (a queue's gone once consumed; a stream/log can be re-read). "Real-time" isn't
-  the deciding factor for Kinesis over SQS — ordering-per-key and multiple independent
-  readers are. Ask which of those properties (competing workers vs fan-out vs replay vs
-  per-key ordering) this actually needs before defaulting to whichever one is already
-  familiar or already deployed elsewhere in the account.
-
-Flag the load-bearing assumption as a question, not a correction.
+**Read `challenge-list.md`** for the standard claims to test ("just use Lambda", "wrap it in Step Functions", "pure choreography", synchronous Lambda chains, "retry forever", all-or-nothing Parallel, "SQS/Kinesis for everything").
 
 ---
 
@@ -277,40 +211,7 @@ direct recommendation with reasoning. Opt-in, not a default.
 
 ## Example invocations
 
-> "When a video is uploaded to S3 we need to: transcode it (takes 3–8 minutes depending on
-> length, uses ffmpeg, needs real CPU), generate a thumbnail (a few seconds), and update the
-> record in DynamoDB, then notify the user by email. If transcoding fails we want it retried
-> twice with backoff, and if it still fails a human should look at it — that queue is checked
-> a few times a day, not paged. Thumbnail and DynamoDB update can happen in parallel with
-> transcoding. Nobody's waiting synchronously for this — the user gets a 'processing' status
-> immediately and finds out later. We don't have an event bus or orchestrator yet."
-
-Gate satisfied. Unit of work: multi-step, S3-triggered, no synchronous caller. Duration:
-transcoding (3–8 min, CPU-heavy) rules out a plain short-lived Lambda for that one step —
-either a longer-running Lambda near its ceiling with a memory bump for more CPU, or a Fargate
-task if it can run past 15 minutes; thumbnail and DynamoDB update are both well within Lambda's
-profile. Invocation: asynchronous end-to-end (S3 event trigger, no caller waiting). Given
-three steps with real coordination (parallel thumbnail+transcode, then a join before
-notification, plus a distinct failure path with different urgency for transcoding) — an
-orchestrator earns its cost here (item 6): Step Functions, `Parallel` state for
-thumbnail-generation + transcoding, `Retry` on the transcode Task (2 attempts, exponential
-backoff) `Catch`-ing to a `NotifyOpsForReview` state feeding a low-urgency (ticket, not page)
-DLQ, then a join into the DynamoDB-update-and-notify step. Idempotency: the DynamoDB update
-should be a conditional/idempotent write since a retried transcode could otherwise trigger a
-duplicate notification. Concurrency: bound by expected upload rate → `capacity-estimation` if
-not yet sized. Follow-ups: execution roles for the transcode task and the two Lambdas →
-`cloud-iam-boundary`; DLQ-checked-a-few-times-a-day alert → `observability-strategy`. ADR;
-revisit when a second failure path needs different urgency, or transcoding needs GPU (moves
-it further from Lambda toward a dedicated Fargate/EC2 profile).
-
-> "Should we use Lambda or Fargate for our API?"
-
-Gate not satisfied — item 2 (which operation — the whole API, or one endpoint?), item 3
-(duration/resource profile unstated), item 5 (concurrency/burst pattern and cold-start
-tolerance unstated). Response: ask what a typical request does and how long it takes, whether
-traffic is bursty or steady, and whether occasional cold-start latency on this path is
-acceptable to end users — those three answers, not a general preference, decide it. Do not
-recommend a primitive.
+**Read `worked-examples.md`** for a gate-satisfied multi-step video-pipeline example and a gate-not-satisfied "Lambda or Fargate for our API?" example.
 
 ---
 

@@ -27,6 +27,7 @@ Given something that needs testing — one module, one service, one feature that
 - **The API protocol / interaction model** → `api-interface-style`. This skill's contract-test decision *consumes* that choice; it doesn't make it.
 - **Cost-sizing the CI/E2E infrastructure against build volume** → `technical-cost-decision`. This skill notes when the plan will drive that.
 - **How a release rolls out and which stages gate promotion** → `deployment-strategy`. This skill decides which test levels run at which pipeline stage; that skill *consumes* that stage list to decide recreate/rolling/blue-green/canary and the smoke check before a traffic flip.
+- **Adjacent handlers:** a failing test or live symptom → `debugging-layer-selection` / `problem-solving-gates`.
 
 ---
 

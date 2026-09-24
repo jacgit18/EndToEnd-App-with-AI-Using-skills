@@ -24,7 +24,7 @@ constrained by any permissions boundary on the role.
 
 ## Corrected evaluation model
 
-Source material in this vault's notes stated an evaluation order that mixed together
+Source material in the original vault notes (not in this checkout) stated an evaluation order that mixed together
 policies operating at different scopes ("identity-based → resource-based → trust →
 permissions boundary → SCP") as if they were one linear list. That is not how AWS actually
 evaluates a request, and treating it as a flat ordered list produces wrong predictions about

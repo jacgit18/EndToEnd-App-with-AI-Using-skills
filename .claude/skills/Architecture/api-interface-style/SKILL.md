@@ -28,6 +28,7 @@ Given an API surface that needs to exist — one service's external interface, o
 - **Gateway / BFF placement** — whether a shared gateway or a backend-for-frontend sits in front of multiple services or client types → `bff-gateway-placement`. This skill decides one surface's protocol; that skill decides whether a layer exists at all, and this skill picks up again for that layer's own client-facing surface once its topology is chosen.
 - **How an AI agent should call an existing API** (REST vs MCP vs plain tool function) → `api-tooling-selection`.
 - **Whether an API change is breaking / its blast radius** → `change-surface-audit`, which defers the versioning scheme here.
+- **Adjacent handlers:** whether a read should hit a cache at all → `caching-strategy`; DB-as-API generators (PostgREST/Hasura) pair this skill's surface decision with `database-architecture`, and the data-access style behind it → `data-access-layer`.
 
 ---
 

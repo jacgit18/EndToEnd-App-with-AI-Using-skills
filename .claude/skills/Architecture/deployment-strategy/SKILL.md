@@ -25,6 +25,7 @@ Take one deployable unit — a service, a worker, a batch job, a frontend bundle
 - **CI build/pipeline mechanics** — runners, caching, artifact registries, the YAML. This skill decides the *strategy* (mechanism, progression, gating, cadence), not the pipeline implementation.
 - **How many repos, and which repo a pipeline belongs to** — one repo vs repo-per-service vs a hybrid, and the affected-graph/path-scoped CI tooling that follows from it → `microservices-decision`. This skill assumes the repo layout is settled and decides the rollout mechanism *within* a pipeline; it doesn't decide pipeline-per-repo vs one shared pipeline.
 - **Implementation** — the Argo Rollouts / Flagger / Spinnaker config, the Helm values, the migration scripts. The skill stops at the ADR.
+- **Adjacent handlers:** load-balancer/gateway placement → `bff-gateway-placement`; where a config or secret value lives → `config-and-secrets-management`; a whole-build stack walkthrough that includes rollout → `tech-decision-walkthrough`.
 
 ---
 
