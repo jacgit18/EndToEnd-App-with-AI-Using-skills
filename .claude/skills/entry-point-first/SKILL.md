@@ -1,6 +1,6 @@
 ---
 name: entry-point-first
-description: Gets a user stalled before starting to a first move: picks the lowest-resistance entry point, has them do one small rep, then forces a re-evaluate. Use for "I don't know where to start", "can't get started", "overwhelmed by this codebase". Not the prioritization call (`ticket-evaluation`), a live bug (`debugging-layer-selection`), or `learning-gate`.
+description: Gets a user stalled before starting to a first move: one small rep, then a forced re-evaluate. Use for "I don't know where to start", "can't get started", "overwhelmed by this codebase". A plain "I'm building X, where do I start" with no stall is `design-scoping`. Not prioritization (`ticket-evaluation`) or a live bug (`debugging-layer-selection`).
 ---
 
 # Entry Point First
