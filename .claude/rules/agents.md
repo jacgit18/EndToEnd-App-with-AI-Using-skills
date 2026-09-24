@@ -15,6 +15,7 @@ Skills are procedures inside one foreground conversation. Actual unattended-agen
   drift on a branch, opens a PR. Never pushes to `main`. Its audit trail is
   `.claude/_Prompts/catalog-audit-log.md`.
 
-To author a new agent, copy `template/spec-system/agent-spec-template.md` to
+To author a new agent, copy `template/spec-system/agent-spec-template.md` (absent in this
+checkout — write the spec by hand and keep the worthiness test in mind) to
 `.claude/agents/<name>.md` and fill it in (the template starts with a worthiness test —
 fixed-sequence or high-stakes tasks should stay scripts, not agents).
