@@ -121,20 +121,10 @@ For each capability inside the epic/feature:
 
 ### Splitting a story that's too big
 
-Check whether all of these are needed *right now*, in this order — drop or defer whichever
-aren't:
-
-- **Conditions** — are all the stated conditions required immediately, or can some wait?
-- **Workflow steps** — is this too many steps for one slice?
-- **Paths** — does the happy path alone deliver value, with alternates deferred?
-- **Operations** — are all the named operations (create/read/update/delete/etc.) needed now?
-- **Acceptance criteria** — are all the test scenarios needed at this point, or do some
-  belong to a later story?
-- **Data / interfaces / platforms** — are all the named variations (formats, integrations,
-  client platforms) needed immediately?
-
-A story that fails this check is written as two or more stories, not one story with a longer
-list of acceptance criteria.
+Check whether each of these is needed *right now*, in order — conditions, workflow steps,
+paths, operations, acceptance criteria, data/interfaces/platforms — and drop or defer what
+isn't. A story that fails this check is written as two or more stories, not one story with a
+longer list of acceptance criteria. **Read `splitting-stories.md`** for the six questions.
 
 ### Splitting for a documentation cadence (optional lens)
 
@@ -195,15 +185,8 @@ Story N: As a <actor>, I want <action>, so that <benefit>.
     - <criterion>
   Explicitly not covered: <if a reader would otherwise assume it is>
 
-[Use Case format:]
-Title:                <goal>
-Actors:               <who/what>
-Preconditions:        <state before>
-Main Success Scenario:
-  1. <step>
-Alternative Scenarios:
-  - <deviation, named>
-Post-conditions:      <state after>
+[Use Case format: the structure from the format decision above — Title · Actors ·
+Preconditions · Main Success Scenario (numbered) · Alternative Scenarios · Post-conditions]
 
 Quality bar:          <pass, or named gaps>
 Definition of Ready:   <pass, or named gaps>

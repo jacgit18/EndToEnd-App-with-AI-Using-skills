@@ -47,7 +47,7 @@ shows for free.
   when DevTools' own Performance/Memory panels are the right measurement tool.
 - **Proactively enumerating what could go wrong before anything has** — `failure-mode-analysis`
   runs on a design with nothing on fire; this skill runs because something already is.
-- **The test mix, coverage target, or writing tests** — `test-strategy`, `coverage-policy`,
+- **The test mix, coverage target, test-case list, or writing tests** — `test-strategy`, `coverage-policy`, `test-case-discovery`,
   `test-practice-gate`. Unrelated axis entirely.
 
 ---

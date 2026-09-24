@@ -29,6 +29,7 @@ Take a service or system that is hard to see into — an incident took hours to 
 - **Implementation** — writing the spans, the dashboards, the alert rules, the collector config. The skill stops at the ADR.
 - **Interpreting live numbers** (percentiles vs averages, utilization, error-budget burn mid-incident) → `reliability-math`, which consumes the SLIs this skill defines.
 - **Adopting a mesh for its free RED metrics/tracing** → `service-mesh-adoption`.
+- **Sizing request/event volume from scratch** when no traffic numbers exist (gate item 8 needs them) → `capacity-estimation`, which feeds its volumes in here.
 - **What a privacy policy discloses about logging** → `disclosure-gap-audit`, which defers what is safe to log here.
 - **Metric-measurement questions owned by another gate:** whether a cache hit-rate, replica-lag/failover, or IAM-drift signal is measured or alerted well lands here, but the decision it monitors stays with `caching-strategy`, `data-tier-operations`, or `cloud-iam-boundary`.
 

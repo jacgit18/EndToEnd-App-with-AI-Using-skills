@@ -20,7 +20,7 @@ Backticked hyphenated tokens in SKILL.md files that are not a skill directory (c
 !`bt=$(printf '\140'); grep -rhoE "${bt}[a-z][a-z0-9]+(-[a-z0-9]+)+${bt}" .claude/skills --include=SKILL.md 2>/dev/null | tr -d "$bt" | sort -u | while read t; do find .claude/skills -type d -name "$t" | grep -q . || echo "  $t"; done; echo "  --- end ---"`
 
 Known-legit non-directory refs — ignore these in the list above: `claude-api`, `code-review`,
-`security-review`, `writing-skills` (Claude Code built-in / plugin skills), `spec-executor`
+`security-review` (Claude Code built-in / plugin skills), `spec-executor`
 (an agent; `.claude/agents/` is not present in this checkout). Anything else that is a real skill name and not
 a directory is a genuine dead pointer.
 
