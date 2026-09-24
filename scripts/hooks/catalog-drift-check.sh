@@ -53,6 +53,13 @@ if [ -f SKILL-BACKLOG.md ]; then
   [ -n "$open" ] && out="${out}- $(cap 'Open SKILL-BACKLOG.md markers' "$open")"$'\n'
 fi
 
+# Structural lint errors only (bad frontmatter, dead skill pointers). Warnings stay on demand:
+#   scripts/skills/lint.sh
+if [ -x scripts/skills/lint.sh ]; then
+  lint_out="$(scripts/skills/lint.sh --quiet --errors-only 2>/dev/null | sed -n '/^ERRORS/,$p' | head -n 8)"
+  [ -n "$lint_out" ] && out="${out}- Skill lint: ${lint_out}"$'\n'
+fi
+
 if [ -n "$out" ]; then
   printf 'Catalog drift check (mechanical, /sync-catalog subset):\n%sFix via `catalog-drift-audit` or `/new-skill`; nothing was changed.\n' "$out"
 fi
