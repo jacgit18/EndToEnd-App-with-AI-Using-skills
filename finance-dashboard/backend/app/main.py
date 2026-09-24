@@ -4,13 +4,28 @@ Dev: `uvicorn app.main:app --reload` (from backend/, with the venv active).
 The Docker image runs the same `app.main:app` target without --reload.
 """
 
+import sentry_sdk
 from fastapi import Depends, FastAPI
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
+from app.config import settings
 from app.db import get_db
 from app.dependencies import require_csrf
 from app.routers import accounts, auth, transactions
+
+# Error tracking only when a DSN is configured (ADR-0013). This is a finance app,
+# so the defaults are tightened: no request bodies (they carry transaction
+# descriptions and amounts), no user/IP/cookie data, and no performance tracing
+# (errors only — also keeps event volume inside the free tier).
+if settings.sentry_dsn:
+    sentry_sdk.init(
+        dsn=settings.sentry_dsn,
+        environment=settings.env,
+        send_default_pii=False,
+        max_request_body_size="never",
+        traces_sample_rate=0.0,
+    )
 
 app = FastAPI(title="Finance Dashboard API")
 

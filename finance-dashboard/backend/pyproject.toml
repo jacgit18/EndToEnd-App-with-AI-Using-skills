@@ -17,6 +17,8 @@ dependencies = [
                                  # "session signing secret") — the session id itself stays an
                                  # opaque DB lookup key either way; this only stops a tampered
                                  # or guessed cookie value from reaching that lookup at all
+    "sentry-sdk>=2.0",          # error tracking, inert unless SENTRY_DSN is set (ADR-0013;
+                                 # free tier — see docs/paid-options.md)
 ]
 
 # Dev-only: installed locally and in CI, never in the runtime image.
