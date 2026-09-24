@@ -1,4 +1,4 @@
-"""POST /api/auth/login, POST /api/auth/logout (ADR-0010).
+"""POST /api/auth/login, GET /api/auth/me, POST /api/auth/logout (ADR-0010).
 
 The only place the pieces built in increments 3-6 meet HTTP:
 - login: check credentials -> stage a session row -> commit -> set the signed
@@ -19,13 +19,19 @@ from app.config import settings
 from app.db import get_db
 from app.dependencies import SESSION_COOKIE_NAME, get_current_session
 from app.models.session import AuthSession
+from app.rate_limit import limit_login_attempts
 from app.schemas.auth import LoginRequest, LoginResponse
 from app.security import make_csrf_token, sign_session_id, verify_password
 
 router = APIRouter()
 
 
-@router.post("/login", response_model=LoginResponse)
+# Rate limit is on login only, not the whole router: it would throttle logout too.
+@router.post(
+    "/login",
+    response_model=LoginResponse,
+    dependencies=[Depends(limit_login_attempts)],
+)
 def login(
     payload: LoginRequest, response: Response, db: Session = Depends(get_db)
 ) -> LoginResponse:
@@ -52,6 +58,18 @@ def login(
         secure=settings.cookie_secure,
         samesite="lax",
     )
+    return LoginResponse(csrf_token=make_csrf_token(session.id))
+
+
+@router.get("/me", response_model=LoginResponse)
+def me(session: AuthSession = Depends(get_current_session)) -> LoginResponse:
+    """Re-issue the CSRF token for a still-valid session.
+
+    The token lives only in page memory, so a reload loses it while the cookie
+    survives. Handing it back here is safe: it is derived from the session id
+    and only a caller who already holds the HttpOnly cookie gets past the
+    dependency. A cross-site page can't read this response (same-origin policy).
+    """
     return LoginResponse(csrf_token=make_csrf_token(session.id))
 
 

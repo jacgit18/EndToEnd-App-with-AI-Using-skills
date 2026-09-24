@@ -9,12 +9,26 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from app.db import get_db
-from app.routers import accounts, transactions
+from app.dependencies import require_csrf
+from app.routers import accounts, auth, transactions
 
 app = FastAPI(title="Finance Dashboard API")
 
-app.include_router(accounts.router, prefix="/api/accounts", tags=["accounts"])
-app.include_router(transactions.router, prefix="/api/transactions", tags=["transactions"])
+# Public: login needs no session; logout authenticates itself (app/routers/auth.py).
+app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
+
+# Everything else requires a valid session, plus a CSRF token on writes. Applying
+# require_csrf here (not per route) means a future router can't forget it.
+_protected = [Depends(require_csrf)]
+app.include_router(
+    accounts.router, prefix="/api/accounts", tags=["accounts"], dependencies=_protected
+)
+app.include_router(
+    transactions.router,
+    prefix="/api/transactions",
+    tags=["transactions"],
+    dependencies=_protected,
+)
 
 
 @app.get("/health")
