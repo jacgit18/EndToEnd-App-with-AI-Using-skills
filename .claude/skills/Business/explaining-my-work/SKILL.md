@@ -114,7 +114,7 @@ Produce these five pieces, labeled:
 
 For resume or interview lines specifically, the structure is: **action verb + plain business context + dash clause naming specifics + measurable outcome + plain consequence.**
 
-> "Built test coverage across compliance-sensitive customer workflows — citizenship updates and secure document requests — increasing coverage by 75% and reducing production defect risk."
+> "Built test coverage across compliance-sensitive customer workflows — citizenship updates and secure document requests — raising coverage from 70% to 75% and reducing production defect risk."
 
 The dash clause carries specificity, not jargon. "Citizenship updates and secure document requests" is specific *and* plain. "Data paths" is neither.
 

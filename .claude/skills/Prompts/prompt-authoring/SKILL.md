@@ -90,7 +90,7 @@ a few inputs?" / "archive it with `prompt-archive`?".
 - **Deciding which reading of a request to act on** before doing the work — `ambiguity-gate`.
 - **Model choice, pricing, API / thinking / effort configuration** — `claude-api`.
 - **Building a whole skill or agent around a prompt** — a container decision; `prompt-tester`
-  Step 7 makes the call, `writing-skills` builds it.
+  Step 7 makes the call, `/new-skill` builds it.
 - **Teaching prompt-writing principles** — "help me get better at prompts", "teach me the
   principles" — `learning-gate`. This skill produces one finished prompt; it does not teach the
   skill of prompting.

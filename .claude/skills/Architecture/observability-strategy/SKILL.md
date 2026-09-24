@@ -25,7 +25,7 @@ Take a service or system that is hard to see into — an incident took hours to 
 - **What the system does under overload or dependency failure** — load shedding and its priority tiers, rate limiting, circuit breakers, retry budgets, bulkheads, graceful degradation → `resilience-strategy`. This skill defines the SLIs that say "critical traffic is healthy" and alerts on them (including on shedding that fires when it shouldn't); that skill decides the mechanisms that keep those SLIs green.
 - **The rollout mechanism a canary/blue-green release gates on** → `deployment-strategy`. This skill defines the SLIs and the health signal; that skill decides recreate/rolling/blue-green/canary and wires the auto-rollback to the signal.
 - **Incident-response process, on-call rotation design, postmortem culture** — organizational, not instrumentation. Name that they matter and stop.
-- **Security monitoring, SIEM, audit logging as a compliance control** — a future `security-architecture` concern. PII-in-logs and audit-retention constraints are *inputs* to this skill (gate item 8); designing the audit trail is not.
+- **Security monitoring, SIEM, audit logging as a compliance control** — not covered by any skill in this catalog (a security-architecture concern). PII-in-logs and audit-retention constraints are *inputs* to this skill (gate item 8); designing the audit trail is not.
 - **Implementation** — writing the spans, the dashboards, the alert rules, the collector config. The skill stops at the ADR.
 
 ---

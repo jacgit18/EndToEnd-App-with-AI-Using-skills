@@ -194,8 +194,9 @@ Handoff:               <problem-solving-gates (Rubber Duck, now that a hypothesi
 Percentiles:          p50=150ms p95=2s p99=5s → the tail is the problem, not the average
 Utilization reading:  180/200 = 90% → collapse-risk zone (Rule 4) — a small burst here
                        explains a disproportionate latency spike
-Little's Law:          W (p99=5s) rising while λ is flat is consistent with growing L
-                       (requests piling up) — check queue depth directly to confirm
+Little's Law:          L = λ·W with W the *mean* time in system (not p99). At λ=180/s an
+                       assumed mean W of 0.5s → L≈90 in flight; if mean W climbs to 2s
+                       with λ flat, L≈360 — requests piling up. Check queue depth to confirm
 Error budget:          99.9% → 43 min/month; 20 min elapsed → ~47% of the month burned;
                        another 23 min exhausts it
 Graph-check:           the "average" line was hiding the real story (Rule 1); no other

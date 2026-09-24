@@ -88,7 +88,7 @@ still starts — but every pass that depends on a missing item is capped at
    whether the product is offered to the EU/UK, California, or other US states with privacy
    statutes. This scopes which regimes the flag pass names — it does not change the spine
    pass, which is factual regardless of jurisdiction.
-3. **The data inventory — the gate.** The register is withheld until these are on the table:
+3. **The data inventory — the gate.** The *complete* register is withheld until these are on the table; if they never arrive, Step 2 still produces the conditional, `inventory-incomplete`-led register (lines 78–80, 133–139), never a clean all-clear:
    - **Data flows** — what personal data is collected (fields the user provides *and*
      data derived or inferred), from what surfaces, into what stores.
    - **Third parties / subprocessors** — every external service that receives user data:
