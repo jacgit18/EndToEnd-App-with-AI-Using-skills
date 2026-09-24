@@ -13,6 +13,7 @@ The fix is not to write three things. It is to build **one evidence base** and r
 
 - **Publishing.** This skill drafts. It never posts, sends, or submits anything anywhere. The draft goes to the user; distribution is their call.
 - **Self-understanding / psychology framing.** A different concern with a different standard.
+- **A LinkedIn post about the user's own shipped work** — this skill builds the Evidence Block and the draft first (the honesty rules live here). The plugin skill `linkedin-skills:linkedin-post-writer` (hook-formula tuning, scheduling via Publora) is a *later* polish/publish step on that draft, not a replacement for it; comments and replies on other people's posts are the plugin's `linkedin-comment-drafter` / `linkedin-reply-handler`, not this skill.
 - **Personal-brand voice and career-wide honesty constraints.** This skill's Evidence Block is scoped to *this piece of work* — it has no notion of the user's total years of experience, which environments were pre-prod vs. production, or a fixed brand device. When the LinkedIn Draft or resume line is going out under the user's personal brand, run it through `software-carpentier-brand` afterward for the voice pass and those career-wide checks.
 - **Deciding which backlog work is worth writing up in the first place.** If a story was sized and flagged upstream by `user-story-decomposition`'s optional documentation-candidate pass, that flag is a pointer to go look, not evidence — the Evidence Block still gets rebuilt from the repo/session per the hard rule above, `<reason>` text included.
 

@@ -24,6 +24,11 @@ routes the deep work to the specialist skills.
   out, what the targets are — before the review, not during it.
 - The user names a system and jumps straight to a technology ("let's use Kafka and
   Postgres for this") without having stated what it's for or how big it is.
+- The user asks **"what should v1 include?"** for a product they haven't listed features for.
+  No skill in this catalog invents a feature list for them; this gate withholds by design.
+  Sequence: they state purpose and audience → they list candidate features (Claude may prompt
+  by category, not supply the list) → this gate pins scope and out-of-scope → for a competing
+  batch, `user-story-decomposition`'s MoSCoW pass (`moscow.md`) makes the categorical cut.
 
 ## Out of scope — hand these off
 
