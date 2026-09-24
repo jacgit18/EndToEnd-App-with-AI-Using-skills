@@ -49,3 +49,27 @@ worktree agent, 6 scenarios vs `spec-drift-gate` / `prompt-archive` / `problem-j
 "recap" / "before I forget" and could pre-empt `problem-journal` Journal mode on a post-fix
 bug write-up. One-line scope-narrowing clause added to `session-handoff`'s description pointing
 resolved-bug post-mortems to `problem-journal`. Memory: `skill-interaction-session-handoff.md`.
+
+## 2026-09-24 — post static-audit pass (whole catalog, 61 skills)
+
+Context: whole-catalog `skill-static-audit` (0 blockers, ~105 should-fixes) followed by three fix PRs
+(#34 tiers 1-3, #35 reciprocity + interaction-test fixes, this branch: splits + pointer triage).
+
+**Step 1 — stale markers:** not applicable — `SKILL-BACKLOG.md` not present in this checkout.
+**Step 2 — README sync:** not applicable — root `README.md` has no catalog table in this checkout.
+**Step 3 — dead references:** CLEAN for skill names. Scripted scan of backticked kebab tokens across all
+skill `*.md`: the only unresolved skill-like name is `spec-executor` (`.claude/agents/spec-executor.md`
+is missing though `repo-map.md`/`agents.md` describe it) — FLAGGED for a user decision, `spec-drift-gate`
+now carries an inline fallback. `equity-trade-decision`, `code-review`, `security-review`, `claude-api`
+are plugin/built-in skills, not dead. Frontmatter check: all 61 `SKILL.md` have `name` = directory and
+`description:` on line 3 (three folded `>` blocks predate this work).
+**Step 4 — untested pairs:** the edited sets were interaction-tested by router scenarios (Architecture/Data,
+Skill Development/Prompts, Business writing); fixes applied and 4 of 6 post-fix scenarios re-run clean.
+Not re-run: the gym-app prompt after the `entry-point-first` clause.
+**Step 5 — starvation by neglect:** CLEAN. Every skill has >= 2 inbound mentions from other skills' files.
+55 one-way NOT pointers triaged: 17 back-pointers added (grouped lines, no description growth), ~27
+non-issues (consumer-side disclaimers where the target would never claim the request) left deliberately.
+
+**Left for the user:** (a) `data-tier-operations` claims warehouse physical tuning ("which distribution /
+sort key") with no body; `index-tuning` and `dimensional-modeling` route it there — add the content or drop
+the claim and re-point; (b) restore `.claude/agents/spec-executor.md` or correct `repo-map.md`/`agents.md`.

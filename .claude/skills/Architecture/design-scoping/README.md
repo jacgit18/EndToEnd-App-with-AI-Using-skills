@@ -56,9 +56,13 @@ design ask.
 
 | File | Role |
 |---|---|
-| `SKILL.md` | Entry point. The five-dimension gate, the significance filter for deep-dive selection, challenge-a-proposed-scope, the scope-statement output contract + the specialist-skill sequence. |
+| `SKILL.md` | Entry point. The five-dimension gate, the significance filter for deep-dive selection, the one-line out-of-scope summary, the scope-statement output contract + the specialist-skill sequence. |
 | `scope-dimensions.md` | The five dimensions expanded — purpose/audience + user-base characterization; functional + the required out-of-scope list; the non-functional target checklist with what each number drives downstream; the constraints list with the GDPR / HIPAA / PCI DSS / SOC 2 / data-residency cheat-sheet. |
 | `significance-filter.md` | The blast-radius / who-cares / migration-tell classifier in full, worked against example decisions, with the explicit note that it is *scope of impact*, not the cost-to-replace axis (`technical-cost-decision`). |
+| `out-of-scope.md` | Full reasoning behind SKILL.md's one-line out-of-scope hand-offs (read near a sibling boundary). |
+| `scope-challenges.md` | The six standard pushbacks for a user who opens with scope already sketched. |
+| `worked-examples.md` | Example invocations: bare ask, fully-scoped escape-hatch case, vague ask, ticket-sizing ask. |
+| `extra-handoffs.md` | Additional specialist skills a scope can pull in beyond the seven-step typical order. |
 
 ## Output
 

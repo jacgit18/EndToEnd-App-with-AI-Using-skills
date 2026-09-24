@@ -72,76 +72,7 @@ append under a new heading or use a distinct filename.
 
 ### 3. Write the file
 
-The template below is the canonical one — use it exactly, same sections, same order.
-`references/Language Error.md` is only a backup copy of it; if the two ever differ, this inline
-template wins and the backup should be refreshed to match. Fill only what's actually known; leave the template's bracketed placeholders
-untouched for anything not known. Don't invent a reproduction step, an environment detail, or
-a root cause that wasn't stated or observed.
-
-```markdown
----
-tags:
-  - error
-author:
-  - jacgit18
-Description: "<one-sentence description>"
-Comments:
-Purpose: This documentation discusses this error in this context.
-Status: Capture
-Started:
-EditDate: <today, YYYY-MM-DD>
-Relates:
-Peer Reviewed:
-dg-publish:
----
-## Error Details
-```dataviewjs
-const { Description } = dv.current();
-
-dv.header(3, "Description");
-dv.paragraph(
-  `${Description}`,
-);
-```
-
-### Steps to Reproduce
-
-1. `[Step 1]`
-
-### Expected Behavior
-
-`[Describe what the expected behavior should be.]`
-
-### Actual Behavior
-
-`[Describe the actual behavior observed during the error.]`
-
-## Environment
-
-- Operating System: `[Enter OS or Environment]`
-- Software Version: `[Enter Software Version]`
-- Relevant Settings/Configuration: `[Specify any relevant settings or configuration]`
-
-## Error Messages
-
-<the actual error text/stack trace, verbatim>
-
-## Screenshots
-
-N/A (text-only session)
-
-## Additional Notes
-
-`[Add any additional notes or context that might be helpful.]`
-
-## Resolution Steps
-
-`[Document steps taken or proposed resolutions.]` — leave as-is if not yet resolved.
-
-## Related Issues/References
-
-`[Link to any related issues or external references.]`
-```
+The canonical capture-file template is `references/capture-template.md` — use it exactly, same sections, same order. (`references/Language Error.md` is an older, non-canonical sample; if they differ, `capture-template.md` wins.) Fill only what is actually known; leave the template's bracketed placeholders untouched for anything not known. Do not invent a reproduction step, an environment detail, or a root cause that was not stated or observed. **Read `references/capture-template.md`** before writing the file.
 
 - `Status` — `Capture` while unresolved; update to `Resolved` in place once the fix lands
   (don't create a second file for the same error).
@@ -226,38 +157,9 @@ the count first.
 A first-time, environmental, or trivially-explained problem gets **"not worth a dedicated
 pass"** as a perfectly complete verdict — don't manufacture a lesson to seem thorough.
 
-### Output block
+### Output block and entry format
 
-```
-Problem:              <symptom + root cause + fix, one or two sentences>
-Source:               <this session | Finance/Error Log/<file> | user-stated (old session)>
-Recurrence check:     <N hits — split by corpus: Finance/Error Log/ vs. prompt-archive logs>
-                      — grepped for: <term(s) searched>
-Classification:       <recurring pattern | one-off> · <fundamental concept | environmental
-                      fluke> · <delegated fully | attempted first | unknown>
-Worth learning?:       yes/no — <the one driving reason, tied to the count/classification>
-Entry written:         .claude/_Prompts/problems-log.md
-Closing the loop:     <Finance/Error Log/<file> Status updated to Resolved | no Capture file
-                      existed for this one>
-Next step:            <none | learning-gate (teach the minimum) | problem-solving-gates
-                      Knowledge Checker (verify after self-study)>
-```
-
-### Writing the entry
-
-Append to `.claude/_Prompts/problems-log.md` (create it with a `# Problem Journal` heading
-if absent):
-
-```markdown
-## 2026-09-05 — <short problem title>
-
-**Problem:** <symptom + root cause + fix>
-**Recurrence:** <N hits — corpus breakdown, or "first occurrence">
-**Classification:** <recurring/one-off> · <fundamental/environmental>
-**Worth learning:** <yes/no> — <reason>
-**Next step:** <as in the output block, or "none">
-**Error Log file:** <Finance/Error Log/<file>, if one exists — or "none captured">
-```
+**Read `output-formats.md`** for the chat output block and the `problems-log.md` entry format; emit both, with every field filled from the recurrence count and classification above.
 
 ### Closing the loop
 

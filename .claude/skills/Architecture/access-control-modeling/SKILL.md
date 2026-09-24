@@ -28,6 +28,7 @@ Take a system where more than one kind of user exists, or where a resource shoul
 - **An unscoped, not-yet-designed system** — "what should the permission system for our new product look like" with no named actors or resources yet → `design-scoping` first, which sequences a concrete feature back here.
 - **A bare conceptual question with no named system** — "how does RBAC actually work", "what's the difference between RBAC and ABAC" — is answered directly, no gate. The gate exists for a pending decision on a named system, not for explaining the vocabulary.
 - **Where in the request path an auth check is terminated** → `bff-gateway-placement`, which takes this skill's model as given.
+- **Service or machine credentials** (where a secret lives, rotation) → `config-and-secrets-management`; this skill is about end users in the application. A whole-build stack walkthrough that includes authorization → `tech-decision-walkthrough`.
 
 ---
 

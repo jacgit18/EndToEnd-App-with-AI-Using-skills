@@ -18,6 +18,7 @@ The number of services an organization can run is bounded by the number of peopl
 - **Executing a repo split or merge** — moving code between repos with history, cutting over CI, redirecting collaborators → `migration-cutover`. This skill decides the target layout; that skill sequences getting there safely.
 - **What compute primitive runs one already-scoped service** — Lambda vs a container task vs a long-running process, invocation model, and orchestration vs choreography for that service's own workflow → `serverless-execution-model`, once the service boundary here is settled. This skill decides *how many* services and where the lines are; not what runs inside one of them.
 - **What layer sits between clients and backend services** — a shared API gateway, a Backend-for-Frontend per client type, or direct-to-service calls, and where cross-cutting concerns like auth termination or rate limiting centralize → `bff-gateway-placement`, which takes this skill's service boundaries and count as a given input. This skill decides how many backend services exist; not what a client talks to in order to reach them.
+- **Observability, overload-resilience, or service-mesh questions** about services that already exist → `observability-strategy`, `resilience-strategy`, `service-mesh-adoption` (each assumes this skill's split as decided). A whole-build stack walkthrough that includes the split → `tech-decision-walkthrough`, which calls this skill for that one decision.
 
 ---
 

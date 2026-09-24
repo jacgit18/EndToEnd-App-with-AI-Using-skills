@@ -11,6 +11,8 @@ If none of the three situations apply — the user is asking Claude to write new
 
 Worked examples for each mode live in `examples/` (`example-rubber-duck.md`, `example-options-generator.md`, `example-knowledge-checker.md`, `example-optimization.md`) — read the one for the active mode when unsure how strict to be on a borderline precondition.
 
+**Specialist gates own their decision.** When a specialist gate (`data-access-layer`, `deployment-strategy`, `observability-strategy`, `resilience-strategy`, `model-routing-decision`, `reliability-math`, `incremental-build-pacing`, `decision-journal`) fires on the same request, it runs its own precondition gate; Options Generator does not stack on top, and Rubber Duck / Optimization apply only to a live bug or measured slowness.
+
 ## Shared discipline
 
 Before responding in any of these modes, check the precondition below. If it isn't met, say plainly what's missing and ask for it — do not proceed "helpfully" by supplying the missing piece yourself. Supplying it defeats the purpose: the gate exists because the missing piece (a hypothesis, a listed unknown, an attempted explanation) is the actual rep the user is trying to get.

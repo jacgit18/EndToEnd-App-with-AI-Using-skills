@@ -7,6 +7,8 @@ description: Use when a technical decision carries a recurring price — choosin
 
 Cost reasoning fails at the division, not at the concepts. The recurring failure is a response that discusses cost fluently, names engineering effort as the dominant expense, and never converts any of it into a number. This skill forces three specific calculations. It teaches no cost concepts, because that is not where the gap is.
 
+**Handoffs in:** `api-interface-style`, `caching-strategy`, `data-tier-operations`, `deployment-strategy`, `index-tuning`, `disclosure-gap-audit`, `design-scoping` and `reliability-math` decide the mechanism and send only the dollar sizing here; this skill prices a chosen or shortlisted option and does not pick the mechanism itself.
+
 ## What this does not do
 
 - **Push optimization before it is warranted.** Most cost choices are reversible and should be made late. Producing a number is not the same as acting on it — a Cost Surface showing $80/month is a reason to stop thinking about cost, and saying so is a valid outcome.

@@ -3,7 +3,7 @@
 The five things the gate in `SKILL.md` requires, expanded — what to ask, and what each
 answer drives downstream. Consolidated from `Architecture/01. System Design/Specifying Scope
 indepth.md`, `Architecture/01. System Design/Userbase.md`, and `Architecture/Define system
-threshold.md`.
+threshold.md` (vault notes, not in this checkout).
 
 Work them in order. Each produces a block of the scope statement.
 

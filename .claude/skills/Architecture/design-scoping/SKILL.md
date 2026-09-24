@@ -27,51 +27,19 @@ routes the deep work to the specialist skills.
 
 ## Out of scope — hand these off
 
-- **Working out what a vague request even asks for** — "help me with my system", "improve
-  the architecture", "can you look at this" with no design intent established → `ambiguity-gate`.
-  That skill resolves *which task this is*; this skill takes over once "design / architect a
-  system or feature" is the settled intent. (Same split as `test-practice-gate` ↔
-  `ambiguity-gate`.)
-- **Judging or sizing a defined ticket** — "should this be in the sprint", "how risky is
-  this ticket", "estimate this" → `ticket-evaluation`. That skill works a *specified* unit
-  of work; this skill elaborates scope on an *under-specified* design ask.
-- **The capacity numbers themselves** — turning "≈2M DAU" into QPS, storage, bandwidth,
-  server count, and what binds first → `capacity-estimation`. This skill makes the user
-  *state the non-functional targets*; that skill *derives the physical quantities* from the
-  usage assumptions. Chain: scope here, size there.
-- **Whether to split into services and where the boundaries go** → `microservices-decision`.
-- **The API surface style** (REST / GraphQL / gRPC / events / streaming) → `api-interface-style`.
-- **Where the source of truth lives and which store** → `database-architecture`.
-- **The failure surface** — enumerating and ranking every way the design can break →
-  `failure-mode-analysis`.
-- **Who/what gets access to a resource, and its network placement** →
-  `cloud-iam-boundary`, once a specific resource and principal exist to grant access to —
-  this skill states the compliance regime (GDPR/HIPAA/PCI) that shapes how strict that
-  skill's gate needs to be, not the grant itself.
-- **What compute primitive runs a given unit of work** — Lambda vs container vs a
-  long-running service, orchestration vs choreography → `serverless-execution-model`, once a
-  specific operation exists to run, not for the system as a whole.
-- **The deep design of the 1–2 chosen features** — this skill *selects* them (via the
-  significance filter) and states why they matter; the actual design is the specialist
-  skills above, run one at a time.
-- **Cost of reversing a decision** — how expensive a choice is to change later →
-  `technical-cost-decision`. The significance filter here uses *blast radius* (how much
-  breaks if this changes), which is a different axis; don't duplicate the cost analysis.
-- **Auditing a system that already exists and already makes public claims** — for the gaps
-  between what a shipped product does and what its privacy policy / cookie banner / security
-  posture disclose → `disclosure-gap-audit`. This skill states the compliance regime as an
-  input *before* the design; that skill is the post-build audit that checks the built thing
-  against its commitments. Scope here, audit there.
-- **Walking the whole technology decision list candidate-by-candidate** — presenting the
-  options, tradeoffs, and a recommendation for each stack choice, system-design-interview
-  style, and recording an ADR per decision → `tech-decision-walkthrough`, downstream of this
-  skill. This skill picks *which* one or two decisions deserve deep design and states the
-  targets; it does not run the comparison for every choice. Chain: `design-scoping` →
-  `tech-decision-walkthrough` → `spec-drift-gate` → `incremental-build-pacing`.
-- **The delivery cadence of the build that follows** — building the scoped system slowly,
-  one file at a time, so the user learns it → `incremental-build-pacing`, after
-  `spec-drift-gate` turns this scope statement into a build spec and names the first slice.
-  This skill scopes; that one paces delivery.
+Each is NOT this skill; route to the sibling (full reasoning and boundary cases in `out-of-scope.md`):
+
+- Vague request, unclear what is asked → `ambiguity-gate` (this skill takes over once "design / architect" is settled).
+- Judging or sizing a defined ticket → `ticket-evaluation`.
+- Deriving QPS / storage / bandwidth from the stated targets → `capacity-estimation`.
+- Service split and boundaries → `microservices-decision`; API surface style → `api-interface-style`; where data lives → `database-architecture`; failure surface → `failure-mode-analysis`.
+- Who/what gets access, network placement → `cloud-iam-boundary`; what compute primitive runs a unit of work → `serverless-execution-model`.
+- The deep design of the 1–2 chosen features → the specialist skills above, one at a time.
+- Cost of reversing a decision → `technical-cost-decision`; sizing a stated cost cap → `technical-cost-decision`.
+- Auditing a shipped product against its public claims → `disclosure-gap-audit`.
+- Candidate-by-candidate technology comparison and ADRs → `tech-decision-walkthrough`; gating a build behind a spec → `spec-drift-gate`; pacing file-by-file delivery → `incremental-build-pacing`.
+
+**Read `out-of-scope.md`** when a request sits near one of these boundaries and the one-liner does not settle it.
 
 ---
 
@@ -141,7 +109,7 @@ purpose, a user base, and a set of numeric targets that the whole design then re
 ## The significance filter (choosing the deep-dive features)
 
 For gate item 6, use this to decide which decisions deserve deep design now and which are
-acknowledged-and-deferred. Ported from `Architecture/Boundaries of LLD and HLD.md`.
+acknowledged-and-deferred. Ported from `Architecture/Boundaries of LLD and HLD.md` (a vault note, not in this checkout).
 
 **The blast-radius question** — "if I change this later, how much of the system breaks?"
 
@@ -172,25 +140,9 @@ impact*, not *cost to replace* — the reversibility / expense-to-rebuild axis l
 
 ## Challenge a proposed scope
 
-If the user opens with scope already sketched (a design doc, a set of requirements), put it
-under the gate and test it:
+If the user opens with scope already sketched (a design doc, a set of requirements), put it under the gate and test it. Flag the load-bearing gap as a question, not a correction.
 
-- **"the requirements are all functional"** — where are the numbers? A design with no
-  throughput, latency, or availability target will be over- or under-built and nobody can
-  tell which. Push for item 4 or an explicit "no constraint".
-- **"everything is in scope for v1"** — then nothing is prioritized and the timeline
-  (item 5) is fiction. What is the *smallest* thing that delivers the purpose (item 2)?
-- **no out-of-scope list** — add one. Name the five things people will assume are included
-  that aren't.
-- **compliance not mentioned** — ask directly. "Do any of GDPR, HIPAA, PCI DSS, SOC 2, or
-  data-residency rules apply?" A retrofitted compliance boundary is a redesign.
-- **jumped to technology** — "we'll use Kafka and Cassandra" before purpose and numbers is
-  a solution in search of a problem. What load and what access pattern make those the
-  answer?
-- **10 features all "critical"** — run the significance filter. Usually one or two are
-  whole-system blast radius and the rest are deferrable.
-
-Flag the load-bearing gap as a question, not a correction.
+**Read `scope-challenges.md`** for the six standard pushbacks (all-functional requirements, "everything is v1", no out-of-scope list, compliance unmentioned, jumped to technology, ten "critical" features).
 
 ---
 
@@ -255,17 +207,7 @@ Then hand off to the first skill in the sequence. Typical order:
 6. `cloud-iam-boundary` — who/what gets access to each resource, and its network placement.
 7. `failure-mode-analysis` — the failure surface of the resulting design, before sign-off.
 
-Not every design needs all seven, and the sequence is not a closed list — a scope statement
-may also pull in `data-tier-operations` (scaling an existing store), `technical-cost-decision`
-(when the cost cap is tight), `caching-strategy`, `access-control-modeling` (when one of the
-deep-dive picks is the permission/authorization model — who may do what to which resource), or
-`bff-gateway-placement` (when the audience names more than one client type — web, mobile,
-partners — and what sits between them and the services from step 2 is itself a deep-dive pick),
-`service-mesh-adoption` (when the service split from step 2 produces enough services calling
-each other that encryption, discovery, or uniform resilience between them is itself a deep-dive
-pick), or `config-and-secrets-management` (when a named credential or config value's storage
-and rotation is itself a deep-dive pick) where the deep-dive decisions imply them. Name the
-skills this scope actually needs, in dependency order.
+Not every design needs all seven, and the sequence is not a closed list — name the skills this scope actually needs, in dependency order. **Read `extra-handoffs.md`** for the additional skills a scope can pull in (`data-tier-operations`, `caching-strategy`, `access-control-modeling`, `bff-gateway-placement`, `service-mesh-adoption`, `config-and-secrets-management`, …) and when.
 
 Separately from the deep-dive sequence above, the settled **in-scope functional list** from
 item 3 is what `user-story-decomposition` turns into sprint-ready backlog stories — that
@@ -292,43 +234,7 @@ analysis they're owed, not a re-ask.)
 
 ## Example invocations
 
-> "Design a link-shortening service for us."
-
-Gate not satisfied — items 2–6 absent. Response: this needs scoping before a design, and
-the scoping is the work. Ask for: who it's for and roughly how many (internal tool? public
-service? marketing team?); the functional list (shorten, redirect, custom aliases,
-analytics?) and what's explicitly out (user accounts? link expiry? bulk API?); the numbers
-(redirects/sec at peak, acceptable redirect latency, uptime target, monthly cost ceiling);
-the constraints (team size, deadline, existing stack, any compliance); and — using the
-significance filter — which one or two decisions (the key-generation scheme? the
-read-path/storage design? custom-domain support?) are worth designing deeply now. Don't
-propose a schema or a technology.
-
-> "We're building an internal analytics dashboard. Purpose: let the ops team see order
-> volumes and error rates without asking engineering. ~20 users, all internal, web only,
-> US. In scope: 6 predefined dashboards, CSV export, a date-range picker. Explicitly out:
-> custom query builder, alerting, mobile, external sharing. Targets: it can be slow (5s
-> page load fine), 20 concurrent users max, 99% uptime is plenty, no hard cost cap but
-> keep it under ~$200/mo. Team: 2 engineers, 6 weeks, we're a Python/Postgres shop on AWS,
-> no compliance beyond SOC 2. Deep-dive: the query/aggregation approach over the orders
-> data, since that decides whether we hit Postgres directly or need a rollup layer."
-
-Escape hatch — fully scoped. Assemble the scope statement, note that the one deep-dive
-(direct-query vs rollup layer) is a whole-data-model blast-radius call and routes to
-`database-architecture` / `data-tier-operations`, and that with 20 users and a 5s budget
-the sequence is short: skip `capacity-estimation` (numbers are trivially small), skip
-`microservices-decision` (one small app), go straight to the data decision, then a light
-`failure-mode-analysis` pass before ship.
-
-> "Can you help me with my system? It's kind of a mess."
-
-Not this skill yet. "Help" and "a mess" don't establish a design task — is this a
-refactor, a debugging session, a redesign, a documentation pass? → `ambiguity-gate` to
-resolve what's being asked. If it resolves to "redesign it", this skill picks up.
-
-> "Is this ticket worth pulling into the sprint? [pastes a defined ticket]"
-
-Not this skill. A specified unit of work being judged → `ticket-evaluation`.
+**Read `worked-examples.md`** when unsure how to respond to a specific opening (bare "design X", a fully-scoped dump, a vague "help with my system", a ticket-sizing ask).
 
 ---
 

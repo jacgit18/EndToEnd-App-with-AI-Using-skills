@@ -67,8 +67,11 @@ designs the DLQ/failure destination plus the idempotency requirement it imposes.
 
 | File | Role |
 |---|---|
-| `SKILL.md` | Entry point. The gate (items 2–8 from the user), challenge-the-proposal, output contract. |
+| `SKILL.md` | Entry point. The gate (items 2–8 from the user), one-line out-of-scope summary, output contract. |
 | `execution-model-decision.md` | FaaS vs container-task vs long-running-service decision table; the three invocation models (sync, async, poll-based event-source mapping) and each one's built-in retry/error behavior; the cost of synchronous function-to-function chaining; the messaging-technology decision table (queue vs pub/sub vs stream/log vs ingest-to-destination) for what carries an event between choreographed steps. |
+| `out-of-scope.md` | Full reasoning behind SKILL.md's one-line out-of-scope hand-offs (incl. the retry overlap with `resilience-strategy`). |
+| `challenge-list.md` | The standard claims to test when the user opens with a mechanism already chosen. |
+| `worked-examples.md` | Example invocations: a gate-satisfied video pipeline and a gate-not-satisfied "Lambda or Fargate" ask. |
 | `orchestration-and-failure-handling.md` | Orchestration vs choreography tradeoff; Step Functions state types and which can carry Retry/Catch and why; hard vs soft failure classification; Parallel/Map fan-out failure semantics and Distributed Map's tolerated-failure option; DLQ/failure-destination mechanics and the idempotency requirement retries impose. |
 
 ## Output

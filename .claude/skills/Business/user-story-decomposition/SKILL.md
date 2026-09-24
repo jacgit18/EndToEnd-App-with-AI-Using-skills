@@ -13,35 +13,17 @@ criteria that would have made them testable. This skill forces both steps in ord
 
 ## Out of scope — hand these off
 
-- **Scoping a whole system** — purpose, audience, functional + explicit out-of-scope,
-  non-functional numeric targets, constraints, which 1–2 decisions deserve deep design →
-  `design-scoping`. That skill's functional/in-scope list is this skill's typical input;
-  don't re-derive it here, and don't let this skill quietly re-open it.
-- **Judging or sizing an already-written ticket** — "should this be in the sprint," "how
-  risky is this," backlog grooming across several tickets → `ticket-evaluation`. That skill
-  separates what a ticket says from what it's missing and ends in a proceed/defer verdict;
-  this skill ends when the story and its acceptance criteria are written, before anyone
-  judges whether to build it now.
-- **The technical design a story implies** — a schema, an API shape, a service boundary, a
-  permission model. If a story surfaces one of these as load-bearing, name it and hand off
-  to the specialist Architecture skill (`database-architecture`, `api-interface-style`,
-  `microservices-decision`, `access-control-modeling`, etc.) rather than deciding it here.
-- **Running the elicitation conversation** — the stakeholder interview, workshop, or survey
-  that produces the raw requirement in the first place (question ordering, meeting
-  structure, stakeholder mapping). Not owned by any skill in this catalog yet — if asked to
-  run that conversation, say so rather than silently treating a first-pass guess as the
-  requirement.
-- **Drawing the UML diagrams** — a use case, sequence, or activity diagram. This skill's
-  output is the textual structure those diagrams would visualize; it names when a diagram
-  would help and stops there.
-- **A vague ask with no established feature** — "help me with my backlog," "make this
-  better" → `ambiguity-gate` first, to resolve what's actually being asked.
-- **Drafting, dating, or publishing the actual writeup.** Once a story is closed, turning it
-  into a LinkedIn post or talking points is `explaining-my-work` — its Evidence Block records
-  when the work actually shipped, not when the draft was written — with `software-carpentier-
-  brand` handling voice and career-wide honesty on top of that. This skill's reach stops at
-  sizing stories so each is tellable on its own and flagging which ones are worth documenting;
-  never at drafting the post, and never before the story is actually done.
+Each is NOT this skill; route to the sibling (full reasoning in `out-of-scope.md`):
+
+- Scoping a whole system (purpose, audience, targets, deep-dive picks) → `design-scoping`; its in-scope list is this skill's input, do not re-open it.
+- Judging or sizing an already-written ticket, sprint fit, grooming → `ticket-evaluation`.
+- The technical design a story implies (schema, API, service boundary, permission model) → the specialist Architecture skill (`database-architecture`, `api-interface-style`, `microservices-decision`, `access-control-modeling`).
+- Running the stakeholder elicitation conversation → unowned; say so.
+- Drawing UML diagrams → out; name when one would help and stop.
+- A vague ask with no established feature → `ambiguity-gate`.
+- Drafting, dating, or publishing the writeup of a closed story → `explaining-my-work` (voice: `software-carpentier-brand`).
+
+**Read `out-of-scope.md`** when a request sits near one of these boundaries.
 
 ---
 
@@ -156,21 +138,7 @@ list of acceptance criteria.
 
 ### Splitting for a documentation cadence (optional lens)
 
-When the epic's stories are going to be documented and shared as they ship — a build log, a
-LinkedIn series, months of dated posts instead of one dump — apply one more test on top of the
-checks above: **does this story stand alone as one tellable unit** (a stated problem, what got
-built, a real before/after), or is it really a sub-step of a bigger reveal that won't make sense
-told by itself?
-
-A story can pass the sprint-sized checks above and still fail this one. "Build the CSV import
-pipeline" might be a single valid sprint-sized story and still the wrong unit to document — split
-it at the seams a reader would actually care about (upload + column mapping · dedupe logic ·
-categorization) so each piece ships, closes, and earns its own dated writeup, instead of one
-feature landing as a single post that reads like a status update.
-
-This is a tiebreaker, not a new scope-in rule. A story still has to pass the drop/defer checks
-above and the **Cohesive** quality-bar row below — don't carve a cohesive story into artificially
-small pieces just to manufacture more posts.
+Only when the stories will be documented and shared as they ship: also ask whether each story stands alone as one tellable unit. A tiebreaker, not a new scope-in rule — never carve a cohesive story into artificially small pieces. **Read `documentation-cadence.md`** for the test and example.
 
 ---
 
@@ -201,46 +169,13 @@ how well-written its prose is — name the gaps rather than rounding up.
 
 ## Marking a story documentable (optional pass)
 
-Not every story is worth a public writeup, and settling that for good belongs to whoever closes
-the story, not to this skill at authoring time — the honest signal (was there a real
-before/after, did anything notable happen building it) only exists once the work is actually
-done. What this skill can do now is flag the candidates, so "was this worth posting" doesn't
-have to be reconstructed from memory three sprints later:
-
-- **Likely worth it**: a load-bearing decision got made, a real before/after exists (a number, a
-  broken thing now working, a manual process now automated), or the story stands alone as one
-  tellable unit (the documentation-cadence lens above).
-- **Probably not**: pure plumbing, a one-line config change, a story whose only content is "did
-  what the ticket said" with nothing a reader outside the team would want to read.
-
-Record it as one line: `Documentation candidate: y/n — <reason>`. That is a prediction, not a
-commitment — re-confirm it when the story closes.
-
-**Do not hand off to `explaining-my-work` from here.** That skill's whole basis is that every
-claim traces to something that already happened; a story still in the backlog has nothing to
-trace yet. The hand-off happens later, when the story is actually closed, and whoever closes it
-should record the real completion date at that point — a post is only honestly dated if
-something wrote down when the work actually finished, not when someone got around to drafting
-about it.
+Optionally flag candidates as one line: `Documentation candidate: y/n — <reason>` (a prediction, re-confirmed when the story closes). Never hand off to `explaining-my-work` from here — only once the story is actually closed. **Read `documentation-cadence.md`** for the likely-worth-it criteria and the closing-date rule.
 
 ---
 
 ## Prioritizing within an epic (optional pass)
 
-When several candidate stories are competing for the same release and the team needs a fast
-categorical cut (not the deeper ten-dimension read `ticket-evaluation` gives one already-
-written ticket), use **MoSCoW**:
-
-| Category | Meaning |
-|---|---|
-| **Must-have** | Non-negotiable; the release fails its objective without it. |
-| **Should-have** | High-value, not launch-blocking. |
-| **Could-have** | Desirable if time and resources allow. |
-| **Won't-have (this time)** | Explicitly deferred — say so, don't just omit it. |
-
-This is a triage pass over a batch of candidate stories, not a verdict on one ticket already
-in flight — once a story is written and specifically being judged for a sprint, that's
-`ticket-evaluation`'s job, not a MoSCoW re-sort.
+When several candidate stories compete for one release and a fast categorical cut is needed, use MoSCoW (Must / Should / Could / Won't-this-time). A triage over a batch, not a verdict on one ticket (that is `ticket-evaluation`). **Read `moscow.md`** for the category table.
 
 ---
 
@@ -302,27 +237,7 @@ Handoffs:             <specialist Architecture skill, if a story surfaced a load
 
 ## Worked example (condensed)
 
-Epic: *Playing-card-game app — gameplay.*
-Actor: *player.*
-Format: **User story** — single actor, no meaningfully distinct alternate paths worth
-pre-documenting as a use case.
-
-> Story: As a player, I want to start a new game and select the card game variation, so that
-> I can play the game I'm in the mood for.
-> Acceptance Criteria:
-> - A list of available game variations is shown.
-> - The selected variation's rules and mechanics are what's enforced for the rest of the game.
-
-> Story: As a player, I want to view and interact with my hand during the game, so that I can
-> make my moves.
-> Acceptance Criteria:
-> - The player's hand is shown with clear visuals and card information.
-> - The player can select and play a card from their hand.
-> - An invalid move is rejected with feedback, not silently ignored.
-
-Multiplayer (invite friends, join public rooms, in-game chat, leaderboards) and customization
-(deck/card-back appearance) are separate feature groups — each gets its own story set rather
-than folding into gameplay's.
+**Read `worked-example.md`** for a condensed epic → stories → acceptance-criteria example (card-game app, user-story format).
 
 ---
 
