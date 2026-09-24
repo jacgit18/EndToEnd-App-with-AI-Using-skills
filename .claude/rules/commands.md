@@ -47,8 +47,8 @@ always exit 0, never block, only touch their own output:
 
 **"Testing" a skill is done by invoking a skill, not a shell command:**
 
-- `Prompts/skill-interaction-testing` — run a new/changed skill against its siblings for
+- `skill-interaction-testing` — run a new/changed skill against its siblings for
   stacking, contradiction, silent override, and beneficial chaining.
-- `Prompts/catalog-drift-audit` — periodic whole-catalog hygiene pass.
-- `Skill Development/spec-drift-gate` — gate a multi-file/multi-session build behind a
+- `catalog-drift-audit` — periodic whole-catalog hygiene pass.
+- `spec-drift-gate` — gate a multi-file/multi-session build behind a
   written spec, then diff work against it at checkpoints.

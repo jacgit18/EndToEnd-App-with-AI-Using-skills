@@ -1,6 +1,6 @@
 ---
 description: Build a new skill end-to-end per .claude/rules/adding-a-skill.md — scaffold, static audit, isolation screen, interaction test, reciprocal edits, bookkeeping, commit.
-argument-hint: "<Group>/<name>  (e.g. Prompts/foo, Architecture/Data/bar)"
+argument-hint: "<name> [Group]  (e.g. foo Prompts; the directory is flat: .claude/skills/<name>/)"
 ---
 
 Build a new skill at `.claude/skills/$ARGUMENTS/`.
@@ -13,7 +13,7 @@ first, the `Co-Authored-By` footer.
 
 Execution notes for running this well:
 
-- **Placement.** Confirm `<Group>` exists under `.claude/skills/`. Match the group's file
+- **Placement.** The directory is flat — `.claude/skills/<name>/` (Claude Code discovers skills one level deep, so no group folders). Pick the group label from `.claude/skills/INDEX.md` and add the skill there. Match the group's file
   convention: single-file `SKILL.md` for Business / Finance / Health / AI Engineering / most
   Prompts skills; `SKILL.md` + companion `*.md` + `README.md` (copy `template/skill-template/`)
   for Architecture and Testing. A brand-new group also needs its own `### Group` section in

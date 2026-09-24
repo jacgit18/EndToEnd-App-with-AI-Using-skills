@@ -88,6 +88,16 @@ def main():
             if f.endswith(".md") and f not in ("SKILL.md", "README.md") and f not in body[n]:
                 warns.append(f"{rel}: companion '{f}' is never mentioned in SKILL.md")
 
+    idx = os.path.join(a.root, "INDEX.md")
+    if os.path.exists(idx):
+        itxt = open(idx, encoding="utf-8").read()
+        for n in sorted(skills):
+            if f"`{n}`" not in itxt:
+                warns.append(f"{n}: not listed in INDEX.md")
+    for n, p in skills.items():
+        if os.path.dirname(os.path.relpath(p, a.root)) != n:
+            errors.append(f"{os.path.relpath(p, a.root)}: not at <root>/<name>/SKILL.md (nested skills are not discovered)")
+
     oneway = []
     for a_, d in descs.items():
         for b in set(TOKEN.findall(d)):
