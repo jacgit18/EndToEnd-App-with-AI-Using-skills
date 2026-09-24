@@ -1,6 +1,6 @@
 ---
 name: spec-drift-gate
-description: Use before starting substantial AI-assisted implementation — a feature, refactor, new system, or script spanning multiple files, turns, or sessions — when no written spec exists. Triggers on vague one-line build requests too ("make me a dashboard", "write me a script that…"); a detailed-looking request is not a spec, and Step 2a runs a short scoped interview to draft one. A whole-system one-liner ("build an app for my gym") goes to design-scoping first per Step 1. Also use mid-build at a checkpoint (new phase, session resuming after a gap, an action touching something the original ask never mentioned) to check work against the spec. Not for a single fully-specified one-shot request (fix this bug, add this function). Not system-design scoping — `design-scoping`. Not a "which reading did you mean" check — `ambiguity-gate`. Not one change's blast radius — `change-surface-audit`. Not the end-of-session dump — `session-handoff`. Not a "walk me through it" setup — `learning-gate` → `guided-walkthrough.md`. Not paced delivery of a specced build — `incremental-build-pacing`. Slices of a settled spec go to the `spec-executor` subagent (Step 3a). Not for `tech-decision-walkthrough`, `codebase-file-orientation`, or a stalled start — `entry-point-first`.
+description: Gate before substantial multi-file or multi-session AI-assisted builds with no written spec, and drift checkpoints mid-build. Triggers: "make me a dashboard", "write me a script that…", vague one-line build requests. Not for a single fully-specified one-shot request. Not `design-scoping`, `ambiguity-gate`, `change-surface-audit`, or `incremental-build-pacing`; slices of a settled spec go to the `spec-executor` subagent.
 ---
 
 # Spec Drift Gate
@@ -98,3 +98,16 @@ The frontmatter `description` is truncated in the skill listing, so the full bou
 - Not the delivery cadence of an already-specced build — one file at a time, paced to comprehension so the user learns the codebase — that's `incremental-build-pacing`, which starts only once this gate has settled the spec and named a slice; scope and the Step 4 drift checks stay here, that skill only sequences and explains the increments.
 - A settled spec's substantial slices can be handed to the `spec-executor` subagent to run unattended in an isolated worktree (Step 3a) — that subagent executes, it does not decide scope, and its report is a Step 4 checkpoint like any other, never a self-certifying approval.
 - Not for choosing a build's technologies out loud with tradeoffs and an ADR (`tech-decision-walkthrough`) -- settle the stack there, then spec here; not for a per-file orientation doc after files are created (`codebase-file-orientation`); not for a user stuck before starting anything (`entry-point-first`) -- a stalled start gets one low-resistance rep, not a spec interview.
+- Use before starting substantial AI-assisted implementation — a feature, refactor, new system, or script spanning multiple files, turns, or sessions — when no written spec exists.
+- Triggers on vague one-line build requests too ("make me a dashboard", "write me a script that…"); a detailed-looking request is not a spec, and Step 2a runs a short scoped interview to draft one.
+- A whole-system one-liner ("build an app for my gym") goes to design-scoping first per Step 1.
+- Also use mid-build at a checkpoint (new phase, session resuming after a gap, an action touching something the original ask never mentioned) to check work against the spec.
+- Not for a single fully-specified one-shot request (fix this bug, add this function).
+- Not system-design scoping — `design-scoping`.
+- Not a "which reading did you mean" check — `ambiguity-gate`.
+- Not one change's blast radius — `change-surface-audit`.
+- Not the end-of-session dump — `session-handoff`.
+- Not a "walk me through it" setup — `learning-gate` → `guided-walkthrough.md`.
+- Not paced delivery of a specced build — `incremental-build-pacing`.
+- Slices of a settled spec go to the `spec-executor` subagent (Step 3a).
+- Not for `tech-decision-walkthrough`, `codebase-file-orientation`, or a stalled start — `entry-point-first`.

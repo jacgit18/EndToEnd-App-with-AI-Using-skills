@@ -1,6 +1,6 @@
 ---
 name: bff-gateway-placement
-description: Gated decision for what sits between client apps and backend services — no intermediary, a shared API gateway, a Backend-for-Frontend per client type, or a hybrid. Use when someone says "should the frontend call the services directly or through a gateway", "do we need a BFF", "should mobile and web share the same API or get their own", "our API gateway is doing too much", "should auth live at the gateway or in each service", "let's add a BFF for the new mobile app", "each client hits five endpoints and stitches the screen together itself", "reverse proxy vs API gateway vs load balancer, which do we need", or proposes a topology to check. Forces the client types, backend surfaces per screen, diverging aggregation needs and shared-layer ownership before recommending; records an ADR. A bare conceptual question ("what's the difference between an API gateway and a BFF", "what is a BFF") is answered directly, no gate. Not for wire protocol — `api-interface-style`. Not for service or micro-frontend boundaries — `microservices-decision` ("Frontend decomposition"). Not for rate limiting or circuit breaking — `resilience-strategy`. Not for auth scheme — `access-control-modeling` / `cloud-iam-boundary`. Not for gateway dollar cost — `technical-cost-decision`. Not for an unscoped system — `design-scoping`. Not for rollout — `deployment-strategy`.
+description: Gated decision for what sits between clients and backend services: no intermediary, shared API gateway, BFF per client type, or hybrid. Triggers: "do we need a BFF", "should the frontend call the services directly or through a gateway", "our API gateway is doing too much", "should auth live at the gateway or in each service". Not for wire protocol — `api-interface-style`. Not for rate limiting — `resilience-strategy`. Not for auth scheme — `access-control-modeling`. Not for an unscoped system — `design-scoping`.
 ---
 
 # BFF / API Gateway Placement
@@ -140,3 +140,14 @@ The frontmatter `description` is truncated in the skill listing, so the full bou
 - Not for an unscoped, not-yet-designed system — that is `design-scoping` first, which sequences a system with named client types back here.
 - A bare conceptual question with no named system ("what's the difference between an API gateway and a BFF", "what is a BFF") is answered directly, no gate — the gate exists for a pending decision on a named client/backend topology, not for explaining the vocabulary.
 - Not for the network placement or internet exposure of a reverse proxy / load balancer (public vs private subnet) — that is `cloud-iam-boundary`; replica/rollout mechanics of a load balancer are `deployment-strategy`.
+- Gated decision for what sits between client apps and backend services — no intermediary, a shared API gateway, a Backend-for-Frontend per client type, or a hybrid.
+- Use when someone says "should the frontend call the services directly or through a gateway", "do we need a BFF", "should mobile and web share the same API or get their own", "our API gateway is doing too much", "should auth live at the gateway or in each service", "let's add a BFF for the new mobile app", "each client hits five endpoints and stitches the screen together itself", "reverse proxy vs API gateway vs load balancer, which do we need", or proposes a topology to check.
+- Forces the client types, backend surfaces per screen, diverging aggregation needs and shared-layer ownership before recommending; records an ADR.
+- A bare conceptual question ("what's the difference between an API gateway and a BFF", "what is a BFF") is answered directly, no gate.
+- Not for wire protocol — `api-interface-style`.
+- Not for service or micro-frontend boundaries — `microservices-decision` ("Frontend decomposition").
+- Not for rate limiting or circuit breaking — `resilience-strategy`.
+- Not for auth scheme — `access-control-modeling` / `cloud-iam-boundary`.
+- Not for gateway dollar cost — `technical-cost-decision`.
+- Not for an unscoped system — `design-scoping`.
+- Not for rollout — `deployment-strategy`.

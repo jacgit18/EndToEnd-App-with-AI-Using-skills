@@ -1,6 +1,6 @@
 ---
 name: explaining-my-work
-description: Use when work that just happened needs to become something the user can say out loud or post publicly — "help me talk about this," "turn this into a LinkedIn post," "how do I explain this to a non-technical person," "what do I say at the meetup," "write this up for my resume," "summarize what I built." Also use when preparing for an interview, standup, recruiter call, networking event, or stakeholder update, and when an existing draft needs an audience check — jargon a business reader can't parse, or vagueness a technical reader can't grab onto. This skill drafts the words — a script, talking points, a summary you can read or rehearse solo. Actually rehearsing a system-design interview live — Claude asking follow-ups, pressing on assumptions, a real back-and-forth with a debrief at the end — is `system-design-communication`, which this skill's draft can feed into rather than duplicate (draft the talking points here, then pressure-test them there). Not a standing in-repo reference about what a specific source file contains and how it fits the codebase, for the developers who read the code — concrete file paths plus "what does this file do / document this file I just added" is `codebase-file-orientation`; this skill faces a person, that one faces the codebase. Stripping AI-sounding patterns from an already-written draft is `delete-ai-words`, and the personal-brand voice and career-wide honesty pass (LinkedIn headline/About, resume under the brand) is `software-carpentier-brand`; run them after this skill's draft. Deciding which backlog stories deserve a write-up, or authoring the stories, is `user-story-decomposition`, whose documentation-candidate flag is only a pointer here.
+description: Turns work that just happened into words the user can say or post: a script, talking points, or a summary. Use for "help me talk about this," "turn this into a LinkedIn post," "how do I explain this to a non-technical person," "write this up for my resume." Not `system-design-communication` (live mock-interview rehearsal), not `codebase-file-orientation` (in-repo file docs), not `delete-ai-words` or `software-carpentier-brand` (run after this draft), not `user-story-decomposition`.
 ---
 
 # Explaining My Work
@@ -195,3 +195,14 @@ The second column is *also* the business framing. Naming the specific failure a 
 - Reaching for what work like this "typically" achieves
 
 **All of these mean: go back to what actually happened and write from that.**
+
+## Routing boundaries (full)
+
+The frontmatter `description` is trimmed for the skill listing budget; the original description follows verbatim, one sentence per bullet:
+
+- Use when work that just happened needs to become something the user can say out loud or post publicly — "help me talk about this," "turn this into a LinkedIn post," "how do I explain this to a non-technical person," "what do I say at the meetup," "write this up for my resume," "summarize what I built." Also use when preparing for an interview, standup, recruiter call, networking event, or stakeholder update, and when an existing draft needs an audience check — jargon a business reader can't parse, or vagueness a technical reader can't grab onto.
+- This skill drafts the words — a script, talking points, a summary you can read or rehearse solo.
+- Actually rehearsing a system-design interview live — Claude asking follow-ups, pressing on assumptions, a real back-and-forth with a debrief at the end — is `system-design-communication`, which this skill's draft can feed into rather than duplicate (draft the talking points here, then pressure-test them there).
+- Not a standing in-repo reference about what a specific source file contains and how it fits the codebase, for the developers who read the code — concrete file paths plus "what does this file do / document this file I just added" is `codebase-file-orientation`; this skill faces a person, that one faces the codebase.
+- Stripping AI-sounding patterns from an already-written draft is `delete-ai-words`, and the personal-brand voice and career-wide honesty pass (LinkedIn headline/About, resume under the brand) is `software-carpentier-brand`; run them after this skill's draft.
+- Deciding which backlog stories deserve a write-up, or authoring the stories, is `user-story-decomposition`, whose documentation-candidate flag is only a pointer here.

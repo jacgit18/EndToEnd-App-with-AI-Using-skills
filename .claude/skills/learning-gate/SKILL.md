@@ -1,6 +1,6 @@
 ---
 name: learning-gate
-description: A traffic controller for how much cognitive work Claude should do on a given request, so AI doesn't quietly replace a learning rep the user is capable of doing themselves. Its first move is always to classify intent — learning, execution, or routine reference — and it only applies gates when the user is trying to build a capability or has explicitly asked for learning-oriented help. Use this whenever a request involves learnable engineering material and it's not obvious the user just wants the answer to move forward: "what is X", "how does X work", "how do I do X", "help me understand X", "I'm trying to learn X", or open-ended design/debug/modelling questions. It is deliberately NOT universal and NOT paternalistic — on execution or reference requests it identifies that and gets out of the way without gating. It sets what rep the user should do next and how strong a hint Claude may give; the specialized problem-solving-gates skill handles the debug / architecture / knowledge-check reps in detail. A multi-step task the user will carry out and repeat themselves gets the one-step-at-a-time walkthrough in `guided-walkthrough.md`. A user who is stuck *before starting* ("I don't know where to start", "can't get started", "overwhelmed by this codebase") has an activation problem, not a learning-vs-execution one — hand to `entry-point-first`, which proposes a low-resistance entry rep and does not ask the "what have you concluded?" question. A plain request to review or audit a skill file as a document is `skill-static-audit` — execution, no classification needed; only a user learning to write skills gets the coaching level (Step 3 row).
+description: Traffic controller that classifies a request as learning, execution, or reference and sets how much thinking Claude may do so AI does not replace a learning rep. Use for "what is X", "how does X work", "help me understand X", or "I'm trying to learn X". Not paternalistic: execution and reference requests pass through. Hands off to `problem-solving-gates` for reps, `entry-point-first` for stalled starts, and `skill-static-audit` for skill reviews.
 ---
 
 # Learning Gate
@@ -114,3 +114,14 @@ Reference → answer directly. No gate, no "what do you think?".
 > "I'm building the billing module and I know the pattern cold — write the transaction wrapper."
 
 Execution → do it. Optionally one line: "there's a learning path on transaction isolation if you ever want it" — then drop it.
+
+## Routing boundaries (full)
+
+- A traffic controller for how much cognitive work Claude should do on a given request, so AI doesn't quietly replace a learning rep the user is capable of doing themselves.
+- Its first move is always to classify intent — learning, execution, or routine reference — and it only applies gates when the user is trying to build a capability or has explicitly asked for learning-oriented help.
+- Use this whenever a request involves learnable engineering material and it's not obvious the user just wants the answer to move forward: "what is X", "how does X work", "how do I do X", "help me understand X", "I'm trying to learn X", or open-ended design/debug/modelling questions.
+- It is deliberately NOT universal and NOT paternalistic — on execution or reference requests it identifies that and gets out of the way without gating.
+- It sets what rep the user should do next and how strong a hint Claude may give; the specialized problem-solving-gates skill handles the debug / architecture / knowledge-check reps in detail.
+- A multi-step task the user will carry out and repeat themselves gets the one-step-at-a-time walkthrough in `guided-walkthrough.md`.
+- A user who is stuck *before starting* ("I don't know where to start", "can't get started", "overwhelmed by this codebase") has an activation problem, not a learning-vs-execution one — hand to `entry-point-first`, which proposes a low-resistance entry rep and does not ask the "what have you concluded?" question.
+- A plain request to review or audit a skill file as a document is `skill-static-audit` — execution, no classification needed; only a user learning to write skills gets the coaching level (Step 3 row).

@@ -1,6 +1,6 @@
 ---
 name: relational-modeling
-description: Turns a settled "we're using a relational database" into an actual table design — normal form and the denormalization exceptions, key strategy (surrogate vs natural, int vs UUID), constraint placement, an index plan, lifecycle/audit columns, and relationship patterns (junction tables, self-joins, nullable FKs). Use this skill after the source-of-truth / persistence decision is made (by `database-architecture` or because a relational store already exists) and the user needs the schema itself: "model the schema for X", "how should I normalize this", "what should I index", "surrogate or natural key", "how do I handle soft deletes", "one table or two for this". It produces an ERD sketch, a table-by-table spec, and a first-cut index list — not migration code, not the where-should-the-schema-live decision (that is `database-architecture`), and not the tuning of an index set on a schema that is already deployed and carrying traffic (revising column order against a real `EXPLAIN` plan, covering/partial-index trade-offs, redundant/unused-index audit, write-cost budgeting — that is `index-tuning`). Not for analytical / warehouse modeling (star schema, grain, facts and dimensions, SCDs) — that is `dimensional-modeling`. Not for the ORM / query-builder / raw-SQL choice — that is `data-access-layer`. Not for replication, sharding, partitioning, or isolation levels — that is `data-tier-operations`.
+description: Turns a settled relational-database choice into a table design: normal form, keys, constraints, index plan, audit columns, junction tables. Use for "model the schema for X", "how should I normalize this", "surrogate or natural key", "how do I handle soft deletes". Not `database-architecture` (where the schema lives), not `index-tuning` (deployed schema, real EXPLAIN plans), not `dimensional-modeling` (warehouse/star schema), not `data-access-layer` (ORM choice).
 ---
 
 # Relational Modeling
@@ -112,3 +112,14 @@ Gate not satisfied on multiple axes, and possibly the wrong skill — there's no
 ## Portability
 
 Repo-agnostic. Reads `docs/architecture/decisions/` for the prerequisite ADR, writes `docs/data-model/`. Copy the `relational-modeling/` directory into another repo's `.claude/skills/` to use it there.
+
+## Routing boundaries (full)
+
+The frontmatter `description` is trimmed for the skill listing budget; the original description follows verbatim, one sentence per bullet:
+
+- Turns a settled "we're using a relational database" into an actual table design — normal form and the denormalization exceptions, key strategy (surrogate vs natural, int vs UUID), constraint placement, an index plan, lifecycle/audit columns, and relationship patterns (junction tables, self-joins, nullable FKs).
+- Use this skill after the source-of-truth / persistence decision is made (by `database-architecture` or because a relational store already exists) and the user needs the schema itself: "model the schema for X", "how should I normalize this", "what should I index", "surrogate or natural key", "how do I handle soft deletes", "one table or two for this".
+- It produces an ERD sketch, a table-by-table spec, and a first-cut index list — not migration code, not the where-should-the-schema-live decision (that is `database-architecture`), and not the tuning of an index set on a schema that is already deployed and carrying traffic (revising column order against a real `EXPLAIN` plan, covering/partial-index trade-offs, redundant/unused-index audit, write-cost budgeting — that is `index-tuning`).
+- Not for analytical / warehouse modeling (star schema, grain, facts and dimensions, SCDs) — that is `dimensional-modeling`.
+- Not for the ORM / query-builder / raw-SQL choice — that is `data-access-layer`.
+- Not for replication, sharding, partitioning, or isolation levels — that is `data-tier-operations`.

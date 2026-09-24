@@ -1,21 +1,11 @@
 ---
 name: codebase-file-orientation
 description: >
-  A procedure that authors or reconciles a companion orientation doc (sidecar `.md`) for a source file just
-  created or substantially changed: its role in the system, public surface / entry points, dependencies and
-  dependents, and non-obvious gotchas. Two modes: Author (no doc yet; flag unknowns, don't invent) and Reconcile (doc exists; diff its claims against the file, propose a patch,
-  never silently rewrite). Use when the user says "document the file(s) I just added", "write an
-  orientation doc for this file", "add a companion doc for `parser.ts`", "I created these files, document
-  them", "does this new module have docs", "the doc for this file is stale", "check `foo.md` still matches
-  `foo.ts`", or finishes new files and wants each documented. Also a single unprompted offer on commit of new source
-  files without one. Needs a concrete file path.
-  NOT `explaining-my-work` (words for a human audience). NOT `system-design-communication`. NOT
-  `document-page-check`. NOT `spec-drift-gate` (forward-looking spec). NOT `session-handoff`
-  (stay out when a session is wrapping up). NOT `change-surface-audit` (blast radius). NOT
-  `commit-and-push`. NOT `problem-solving-gates` (Knowledge Checker) or `learning-gate` ("explain how this
-  module works so I can check my understanding", "write up how X works so I can see if I got it" is a
-  learning rep). A bare question ("sidecar docs vs header comments", "how should I document files") is
-  answered directly.
+  Authors or reconciles a companion orientation doc (sidecar `.md`) for a source file just created or changed:
+  role, entry points, dependencies, gotchas. Use for "document the file(s) I just added", "write an
+  orientation doc for this file", "the doc for this file is stale", "check `foo.md` still matches `foo.ts`".
+  Needs a concrete file path. NOT `explaining-my-work` (words for a human audience), NOT
+  `system-design-communication`, NOT `document-page-check`, NOT `spec-drift-gate`.
 ---
 
 # Codebase File Orientation
@@ -244,3 +234,6 @@ The frontmatter `description` is truncated in the skill listing, so the full bou
 - NOT `problem-solving-gates` (Knowledge Checker) or `learning-gate` — "explain how this module works so I can check my understanding", "write up how X works so I can see if I got it" is a learning rep the user states first and Claude gap-checks; this writes a standing in-repo reference about a file the user just created or changed, never a study aid and never a stand-in for that rep.
 - A bare conceptual question — "sidecar docs vs header comments", "how should I document files" — is answered directly, no procedure.
 - Needs a concrete file path, not "the stuff I changed".
+- Trigger phrases (original): "add a companion doc for `parser.ts`", "I created these files, document them", "does this new module have docs", "check `foo.md` still matches `foo.ts`", or finishes new files and wants each documented. Also a single unprompted offer on commit of new source files without one.
+- NOT `session-handoff` (stay out when a session is wrapping up). NOT `change-surface-audit` (blast radius). NOT `commit-and-push`. NOT `problem-solving-gates` (Knowledge Checker) or `learning-gate` ("explain how this module works so I can check my understanding", "write up how X works so I can see if I got it" is a learning rep).
+- A bare question ("sidecar docs vs header comments", "how should I document files") is answered directly.

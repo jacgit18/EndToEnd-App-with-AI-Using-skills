@@ -1,6 +1,6 @@
 ---
 name: prompt-authoring
-description: Use when the user wants a finished, ready-to-use prompt produced from a rough idea, a half-formed task description, or a draft they want sharpened — "write me a prompt that…", "turn this into a prompt", "rewrite / improve / optimize this prompt", "help me prompt this", "I want to ask Claude to…", or a pasted draft prompt with a request to make it better. Output is always a single copy-paste-and-send prompt in one code block, never a template with blanks to fill. The authoring half of the Prompts pipeline — this writes the prompt, `prompt-tester` checks whether it works, `prompt-archive` files a keeper. NOT for testing or judging an existing prompt (that is `prompt-tester`, which reports and does not rewrite). NOT for filing or logging a prompt (that is `prompt-archive`). NOT for critiquing or rewriting a skill's `description:` or SKILL.md under `.claude/skills/` (that is `skill-static-audit` for the critique; the fix is a normal edit). NOT for resolving an ambiguous request to *act* — where the question is which of several readings the user meant before Claude does the work — that is `ambiguity-gate`; this skill resolves only the ambiguity that stops it producing a finished prompt, then produces one. Model IDs, pricing, and thinking / effort / streaming / tool-schema configuration around the prompt are `claude-api`'s domain, not text this skill bakes into the prompt body.
+description: Produces one finished, copy-paste-ready prompt (single code block, no blanks) from a rough idea or draft. Use when "write me a prompt that…", "turn this into a prompt", "rewrite / improve / optimize this prompt", "help me prompt this", "I want to ask Claude to…". Authoring half of the Prompts pipeline. NOT `prompt-tester` (judges, does not rewrite), NOT `prompt-archive` (filing), NOT `skill-static-audit` (skill descriptions), NOT `ambiguity-gate` (which reading of a request to act on), not `claude-api` config.
 ---
 
 # Prompt Authoring
@@ -102,3 +102,14 @@ a few inputs?" / "archive it with `prompt-archive`?".
 3. Output format named wherever it matters.
 4. Real content baked in (Case A), or a gathering step included (Case B).
 5. One code block, copy-and-send — and if the prompt contains its own code fences, the outer fence is longer than any inside it.
+
+## Routing boundaries (full)
+
+- Use when the user wants a finished, ready-to-use prompt produced from a rough idea, a half-formed task description, or a draft they want sharpened — "write me a prompt that…", "turn this into a prompt", "rewrite / improve / optimize this prompt", "help me prompt this", "I want to ask Claude to…", or a pasted draft prompt with a request to make it better.
+- Output is always a single copy-paste-and-send prompt in one code block, never a template with blanks to fill.
+- The authoring half of the Prompts pipeline — this writes the prompt, `prompt-tester` checks whether it works, `prompt-archive` files a keeper.
+- NOT for testing or judging an existing prompt (that is `prompt-tester`, which reports and does not rewrite).
+- NOT for filing or logging a prompt (that is `prompt-archive`).
+- NOT for critiquing or rewriting a skill's `description:` or SKILL.md under `.claude/skills/` (that is `skill-static-audit` for the critique; the fix is a normal edit).
+- NOT for resolving an ambiguous request to *act* — where the question is which of several readings the user meant before Claude does the work — that is `ambiguity-gate`; this skill resolves only the ambiguity that stops it producing a finished prompt, then produces one.
+- Model IDs, pricing, and thinking / effort / streaming / tool-schema configuration around the prompt are `claude-api`'s domain, not text this skill bakes into the prompt body.

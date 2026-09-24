@@ -1,6 +1,6 @@
 ---
 name: commit-and-push
-description: Stage, commit, and push work to GitHub with a commit message built from the actual diff — an imperative subject, a body that says why the change was made, and the required co-author trailer. Use when the user says "commit this", "commit and push", "push my changes", "save this to git", "commit with a good message", "write the commit message", or finishes a chunk of work and wants it in version control. It reads `git status` / `git diff` / recent `git log` first, matches the repo's existing message convention, groups unrelated changes into separate commits, runs a pre-commit sanity pass (secrets, .env files, large binaries, stray debug code, merge markers), branches off the default branch when the user hasn't said to commit straight to it, and confirms the message and push target before doing anything outward-facing. It deliberately does NOT open pull requests, resolve merge conflicts, rewrite published history (rebase / amend / force-push), or decide how a branch's history should be integrated (merge vs. squash vs. rebase vs. fast-forward) — that last one is `history-integration-strategy`. It also does not write per-file documentation for newly added modules — `codebase-file-orientation` may offer to author those orientation docs before the commit, and never blocks or delays it.
+description: Stage, commit, and push work with a message built from the actual diff (imperative subject, why-body, required co-author trailer), after a pre-commit sanity pass. Use when "commit this", "commit and push", "push my changes", "save this to git", "write the commit message". Does NOT open pull requests, resolve merge conflicts, or rewrite published history; merge vs. squash vs. rebase is `history-integration-strategy`; per-file docs for new modules are `codebase-file-orientation`, which never blocks the commit.
 ---
 
 # Commit and Push
@@ -196,3 +196,11 @@ Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
 - **No `origin` remote** — commit locally, tell the user there's nowhere to push.
 - **A pre-commit hook fails** — the commit did not happen. Show the hook's output, fix what it names (formatter, lint, tests) if that is in scope, re-stage those paths, and make a NEW commit; never `--no-verify` unless the user says so, and never `--amend` (the previous commit is not yours to rewrite).
 - **Signing fails** (GPG/SSH key unavailable, agent locked) — stop and report the error; don't disable `commit.gpgsign` or pass `--no-gpg-sign` without the user's explicit say-so.
+
+## Routing boundaries (full)
+
+- Stage, commit, and push work to GitHub with a commit message built from the actual diff — an imperative subject, a body that says why the change was made, and the required co-author trailer.
+- Use when the user says "commit this", "commit and push", "push my changes", "save this to git", "commit with a good message", "write the commit message", or finishes a chunk of work and wants it in version control.
+- It reads `git status` / `git diff` / recent `git log` first, matches the repo's existing message convention, groups unrelated changes into separate commits, runs a pre-commit sanity pass (secrets, .env files, large binaries, stray debug code, merge markers), branches off the default branch when the user hasn't said to commit straight to it, and confirms the message and push target before doing anything outward-facing.
+- It deliberately does NOT open pull requests, resolve merge conflicts, rewrite published history (rebase / amend / force-push), or decide how a branch's history should be integrated (merge vs. squash vs. rebase vs. fast-forward) — that last one is `history-integration-strategy`.
+- It also does not write per-file documentation for newly added modules — `codebase-file-orientation` may offer to author those orientation docs before the commit, and never blocks or delays it.

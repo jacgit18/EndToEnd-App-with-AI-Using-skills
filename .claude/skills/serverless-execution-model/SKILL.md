@@ -1,6 +1,6 @@
 ---
 name: serverless-execution-model
-description: Gated decision for how one unit of work runs — compute primitive (function / container task / long-running service), invocation model (sync, async, poll-based), orchestrator vs choreography vs single function, messaging tech between steps, and the failure contract (retries, backoff, DLQ, idempotency). Use when someone says "should this be a Lambda or a container for this workload", "Lambda vs Fargate for this job", "do we need Step Functions for this", "should these steps be orchestrated or event-driven", "should we use SQS or SNS", "queue vs pub/sub vs stream for this", "Kinesis or Kafka for this", "the function times out after 15 minutes", "how do we handle a failed message", "add a dead-letter queue", "should this call be sync or async", "what happens when one branch of a parallel job fails", or hands over a workflow to wire. Forces the unit of work, duration, trigger/concurrency, coordination and tolerable failure before recommending; records an ADR. A bare comparison ("what's the difference between Lambda and Fargate", "how does sync invocation differ from async") is answered directly. Not for service boundaries — `microservices-decision`. Not for execution role or network — `cloud-iam-boundary`. Not for overload retry budgets — `resilience-strategy`. Not for invocation cost — `technical-cost-decision`. Not for hot-key topology — `data-tier-operations`. Not for an unscoped system — `design-scoping`. Not for `service-mesh-adoption`.
+description: Gated decision for how one unit of work runs: compute primitive, invocation model, orchestration vs choreography, messaging tech, and the failure contract (retries, DLQ, idempotency). Use when someone says "should this be a Lambda or a container for this workload", "do we need Step Functions for this", "should we use SQS or SNS", "how do we handle a failed message", "add a dead-letter queue". Not for `microservices-decision`, `cloud-iam-boundary`, `resilience-strategy`, `data-tier-operations`, or `service-mesh-adoption`.
 ---
 
 # Serverless Execution Model
@@ -237,3 +237,14 @@ The frontmatter `description` is truncated in the skill listing, so the full bou
 - Not for DynamoDB/Kinesis partition-key or shard topology when a poll-based consumer is stuck on a hot key — that is `data-tier-operations`; this skill owns the consumer-side retry/skip/redrive contract regardless of cause.
 - Not for an unscoped, not-yet-designed system ("what should the backend for our new admin tool look like") — that is `design-scoping` first, which sequences a named unit of work back here.
 - Not for whether a service mesh or sidecar exists (Lambda generally does not fit one) — that is `service-mesh-adoption`.
+- Gated decision for how one unit of work runs — compute primitive (function / container task / long-running service), invocation model (sync, async, poll-based), orchestrator vs choreography vs single function, messaging tech between steps, and the failure contract (retries, backoff, DLQ, idempotency).
+- Use when someone says "should this be a Lambda or a container for this workload", "Lambda vs Fargate for this job", "do we need Step Functions for this", "should these steps be orchestrated or event-driven", "should we use SQS or SNS", "queue vs pub/sub vs stream for this", "Kinesis or Kafka for this", "the function times out after 15 minutes", "how do we handle a failed message", "add a dead-letter queue", "should this call be sync or async", "what happens when one branch of a parallel job fails", or hands over a workflow to wire.
+- Forces the unit of work, duration, trigger/concurrency, coordination and tolerable failure before recommending; records an ADR.
+- A bare comparison ("what's the difference between Lambda and Fargate", "how does sync invocation differ from async") is answered directly.
+- Not for service boundaries — `microservices-decision`.
+- Not for execution role or network — `cloud-iam-boundary`.
+- Not for overload retry budgets — `resilience-strategy`.
+- Not for invocation cost — `technical-cost-decision`.
+- Not for hot-key topology — `data-tier-operations`.
+- Not for an unscoped system — `design-scoping`.
+- Not for `service-mesh-adoption`.

@@ -1,6 +1,6 @@
 ---
 name: test-case-discovery
-description: A conversation for finding which test cases exist for a feature, behavior, endpoint, workflow, or piece of infrastructure — the happy paths, the unhappy paths, and the edge cases — and ending in a prioritized case table (case, type, setup, action, expected result, where the expected result came from, priority), not in test code. Use when someone is working out what to test rather than how or how much, "what should I test for this feature", "what cases am I missing", "did I cover the edge cases", "list the test cases for X", "brainstorm test scenarios", "what could go wrong with this endpoint", "review my test plan for gaps", "what do we test for this Terraform module / pipeline / migration". Two modes — think-together (the user names cases first, Claude probes the categories they skipped) and hand-off (Claude drafts from code or a spec, lists its assumptions, and asks where expected behavior is unspecified); the mode comes from intent and `learning-gate`, not from a menu asked every time. Never guesses an expected result — it comes from the spec or the user, or the case is marked open. Not for the test mix, levels, or pipeline stages of a surface — that is `test-strategy` (this skill only suggests a level per case in one line). Not for the rep of writing one specific test from a stated charter — that is `test-practice-gate`. Not for the coverage percentage or CI enforcement — that is `coverage-policy`. Not for how a database-touching test gets its database — that is `database-test-tooling`. Not for a test that is failing right now — that is `debugging-layer-selection` or `problem-solving-gates`. Not for which faults to inject in a chaos or resilience exercise — that is `failure-mode-analysis`.
+description: Conversation for finding which happy, unhappy, and edge test cases exist for a feature, endpoint, or workflow, ending in a prioritized case table, not test code. Triggers: "what should I test for this feature", "what cases am I missing", "did I cover the edge cases", "review my test plan for gaps". Not test mix (`test-strategy`), writing one test (`test-practice-gate`), `coverage-policy`, or a failing test (`debugging-layer-selection`).
 ---
 
 # Test Case Discovery
@@ -95,3 +95,17 @@ Fires, hand-off: draft the table from the spec, list assumptions, ask where expe
 > "Write the test code for `applyDiscount`" / "Should our integration tests use Testcontainers?" / "Which test levels do we need?"
 
 Does not fire: writing tests is `test-practice-gate`, the DB mechanism is `database-test-tooling`, the level mix is `test-strategy`.
+
+## Routing boundaries (full)
+
+The frontmatter `description` is kept short for the skill listing budget; the full original description is preserved here.
+- A conversation for finding which test cases exist for a feature, behavior, endpoint, workflow, or piece of infrastructure — the happy paths, the unhappy paths, and the edge cases — and ending in a prioritized case table (case, type, setup, action, expected result, where the expected result came from, priority), not in test code.
+- Use when someone is working out what to test rather than how or how much, "what should I test for this feature", "what cases am I missing", "did I cover the edge cases", "list the test cases for X", "brainstorm test scenarios", "what could go wrong with this endpoint", "review my test plan for gaps", "what do we test for this Terraform module / pipeline / migration".
+- Two modes — think-together (the user names cases first, Claude probes the categories they skipped) and hand-off (Claude drafts from code or a spec, lists its assumptions, and asks where expected behavior is unspecified); the mode comes from intent and `learning-gate`, not from a menu asked every time.
+- Never guesses an expected result — it comes from the spec or the user, or the case is marked open.
+- Not for the test mix, levels, or pipeline stages of a surface — that is `test-strategy` (this skill only suggests a level per case in one line).
+- Not for the rep of writing one specific test from a stated charter — that is `test-practice-gate`.
+- Not for the coverage percentage or CI enforcement — that is `coverage-policy`.
+- Not for how a database-touching test gets its database — that is `database-test-tooling`.
+- Not for a test that is failing right now — that is `debugging-layer-selection` or `problem-solving-gates`.
+- Not for which faults to inject in a chaos or resilience exercise — that is `failure-mode-analysis`.
