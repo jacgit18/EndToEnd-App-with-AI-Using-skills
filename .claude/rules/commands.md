@@ -31,7 +31,7 @@ guard, confirm-before-push); these scripts are the mechanism it calls.
 
 Skill catalog lint (read-only; python3): `scripts/skills/lint.sh [--strict] [--quiet] [--errors-only]
 [--pairs]`. Errors are structural (frontmatter shape, description naming a nonexistent skill);
-warnings are description length over 3000 chars, SKILL.md over 250 lines, unreferenced companion
+warnings are description length over 1536 chars (the official skill-listing truncation), SKILL.md over 250 lines, unreferenced companion
 files, and a count of one-way description pointers (`--pairs` lists them; many are legitimate hub
 fan-out). `--strict` exits 1 on errors. The `SessionStart` hook surfaces errors only.
 

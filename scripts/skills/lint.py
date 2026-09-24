@@ -5,7 +5,7 @@ Errors (exit 1 with --strict):
   - SKILL.md frontmatter: line 1 '---', line 2 'name: <dir>', 'description:' on line 3, closing '---'
   - a backticked skill-like name in a description that is not a skill directory (dead pointer)
 Warnings:
-  - description length over --desc-warn chars (default 3000)
+  - description length over --desc-warn chars (default 1536)
   - SKILL.md longer than --lines-warn lines (default 250)
   - companion *.md in a skill dir never mentioned in that SKILL.md
   - one-way pointers: A's description names skill B, but B's SKILL.md never mentions A
@@ -58,7 +58,7 @@ def main():
     ap.add_argument("--quiet", action="store_true")
     ap.add_argument("--pairs", action="store_true")
     ap.add_argument("--errors-only", action="store_true", help="drop warnings and pointer counts")
-    ap.add_argument("--desc-warn", type=int, default=3000)
+    ap.add_argument("--desc-warn", type=int, default=1536)
     ap.add_argument("--lines-warn", type=int, default=250)
     a = ap.parse_args()
 
