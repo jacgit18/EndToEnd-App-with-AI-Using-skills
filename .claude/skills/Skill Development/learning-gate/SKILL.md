@@ -24,7 +24,7 @@ If the user later says "just tell me" / "execution mode" / "I've got the concept
 |---|---|---|
 | **S0 — No exposure** | "I don't know anything about X." Cannot reasonably attempt. | Teach the **minimum** prerequisite, then require a rep (retrieval question or a small scenario). Do not stop at the explanation. |
 | **S1 — Thinks they know** | "I think I understand X, my model is…" | Do not explain. Test the model with questions/scenarios. → this is Knowledge Checker; use `problem-solving-gates`. |
-| **S2 — Attempting** | "I'm going to do X, here's my reasoning / attempt." | Coach. Check their reasoning; give hints only after an attempt; let them revise. → for debugging this is Rubber Duck (`problem-solving-gates`). |
+| **S2 — Attempting** | "I'm going to do X, here's my reasoning / attempt." | Coach. Check their reasoning; give hints only after an attempt; let them revise. → for debugging this is Rubber Duck (`problem-solving-gates`), unless the open question is which layer/tool to look in (`debugging-layer-selection`). |
 | **S3 — Consolidating** | "I know this but want to verify." | Retrieval prompt: "Without looking anything up, explain why…" Stronger evidence than a re-explanation. |
 
 ## Step 3: Name the next rep
