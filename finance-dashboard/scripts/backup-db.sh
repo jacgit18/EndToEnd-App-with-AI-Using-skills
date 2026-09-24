@@ -25,6 +25,10 @@ set -euo pipefail
 cd "$(dirname "$0")/.."   # finance-dashboard/, wherever this is called from
 
 COMPOSE_FILE="${COMPOSE_FILE:-compose.prod.yaml}"
+# The prod file needs POSTGRES_PASSWORD from .env.prod even for `exec` (Compose interpolates the
+# whole file), so pass it; the dev file must NOT get it, or it would see the prod password.
+compose=(docker compose -f "$COMPOSE_FILE")
+[ "$COMPOSE_FILE" = compose.prod.yaml ] && compose=(docker compose --env-file .env.prod -f "$COMPOSE_FILE")
 BACKUP_DIR="${BACKUP_DIR:-backups}"
 KEEP="${KEEP:-14}"
 
@@ -37,7 +41,7 @@ partial="$final.partial"
 # disk full) never leaves a file that looks like a good backup. `-T` = no TTY,
 # required when the command runs under cron. pg_dump runs *inside* the db
 # container, so the password never leaves it and the db needs no published port.
-if ! docker compose -f "$COMPOSE_FILE" exec -T db pg_dump -U finance --no-owner finance \
+if ! "${compose[@]}" exec -T db pg_dump -U finance --no-owner finance \
     | gzip > "$partial"; then
   rm -f "$partial"
   echo "backup FAILED ($stamp)" >&2

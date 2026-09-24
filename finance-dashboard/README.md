@@ -1,9 +1,15 @@
 # Finance Dashboard
 
 Personal finance dashboard — FastAPI backend, Postgres, React/Vite frontend.
-Currently Phase 0 (walking skeleton): backend health check + empty
-accounts/transactions endpoints, DB schema in place, frontend scaffolded.
-See `docs/spec.md` and `docs/architecture/decisions/` for the full design.
+**Status (2026-09-24): Phase 0 and Phase 1 are complete.** Phase 0 is the walking
+skeleton (health check, accounts/transactions, DB schema, frontend scaffold). Phase 1 adds
+single-owner login (server-side session + CSRF + login rate limit), a free deploy path via a
+Cloudflare quick tunnel, and optional Sentry error tracking. Next: Phase 2 (accounts finish).
+Phases 3-7 follow the order in `docs/spec.md`.
+
+- Design: `docs/spec.md`, `docs/architecture/decisions/`
+- Running it online for free: `docs/deploy.md`
+- Where money could come in: `docs/paid-options.md`
 
 ## Prerequisites
 

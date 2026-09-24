@@ -14,7 +14,7 @@ restarts; Cloudflare documents quick tunnels as for testing, with no uptime guar
 
 1. **Secrets.** Two gitignored files (nothing in them is ever committed):
 
-   `finance-dashboard/.env`
+   `finance-dashboard/.env.prod`  (NOT `.env` — Compose auto-loads `.env` for the dev stack too)
    ```
    POSTGRES_PASSWORD=<generate: python3 -c "import secrets; print(secrets.token_urlsafe(24))">
    ```
@@ -29,11 +29,11 @@ restarts; Cloudflare documents quick tunnels as for testing, with no uptime guar
    Hash: `cd backend && uv run python -c "from argon2 import PasswordHasher; print(PasswordHasher().hash('your-password'))"`.
    **Use a real password, not the dev `devpassword`** — this stack is reachable from the internet.
 
-2. **Start.** `docker compose -f compose.prod.yaml up -d --build` (migrations run on backend start).
-3. **Find the URL.** `docker compose -f compose.prod.yaml logs cloudflared | grep trycloudflare`
+2. **Start.** `scripts/prod.sh up -d --build` (migrations run on backend start).
+3. **Find the URL.** `scripts/prod.sh logs cloudflared | grep trycloudflare`
 4. **Smoke test.** `curl https://<that-url>/health` → `{"status":"ok","db":"connected"}`, then sign in in a browser.
    Local check without the tunnel: `http://localhost:8080`.
-5. **Stop.** `docker compose -f compose.prod.yaml down` (keeps the database volume; `down -v` deletes it).
+5. **Stop.** `scripts/prod.sh down` (keeps the database volume; `down -v` deletes it).
 
 ## What was verified (2026-09-24, dev credentials, torn down after)
 
@@ -49,8 +49,8 @@ scripts/backup-db.sh        # dumps to ./backups, keeps the newest 14
 ```
 Schedule nightly with cron (example line is in the script header). **Restore drill — do this once:**
 ```bash
-gunzip -c backups/finance-<stamp>.sql.gz | docker compose -f compose.prod.yaml exec -T db psql -U finance -d finance_restore_test
-# (create it first: docker compose -f compose.prod.yaml exec db createdb -U finance finance_restore_test)
+gunzip -c backups/finance-<stamp>.sql.gz | scripts/prod.sh exec -T db psql -U finance -d finance_restore_test
+# (create it first: scripts/prod.sh exec db createdb -U finance finance_restore_test)
 ```
 Also copy `backups/` somewhere off this machine (USB / another computer / `rclone` to Backblaze B2's
 free 10 GB) and keep `backend/.env.prod` in a password manager. A backup on the same disk is not a backup.
@@ -62,7 +62,7 @@ To turn it on: create a free account at sentry.io (no card should be needed — 
 create a Python/FastAPI project, copy its DSN into `backend/.env.prod` as `SENTRY_DSN=https://...`,
 and restart the backend. Options are locked to finance-safe values: no request bodies, no PII, no
 tracing. Free-tier limits and the paid alternative are in [`paid-options.md`](paid-options.md).
-Without a DSN, `docker compose -f compose.prod.yaml logs backend` is the error log.
+Without a DSN, `scripts/prod.sh logs backend` is the error log.
 
 ## If you were serious about this
 
