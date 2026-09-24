@@ -47,7 +47,9 @@ not a survey of all options.
 
 - **Staging, writing the commit message, pushing** — that's `commit-and-push`. It stops
   after `git push` and explicitly defers the integration-strategy choice to this skill;
-  this skill decides the method and hands back.
+  this skill decides the method and hands back. **Order:** when cleanup is wanted, this gate runs
+  *before* the push — once `commit-and-push` has pushed, Q1 ("already published") flips to yes
+  and rules out local rewrites.
 - **Mechanical merge-conflict resolution** — no skill guesses at conflict resolutions. If a
   merge or rebase throws conflicts, stop and report them (same rule `commit-and-push`
   holds).

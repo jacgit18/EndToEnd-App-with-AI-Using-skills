@@ -19,7 +19,7 @@ Given something that needs testing — one module, one service, one feature that
 
 - **A coverage percentage and whether CI blocks on it** — statement/branch/function targets, the number, exclusions, gate-vs-track → `coverage-policy`. This skill decides *which tests exist and where*; that one decides *how much of the code they must touch*.
 - **The rep of writing one specific test** — "write tests for this function", "help me test this component" when the user should first name the behavior and risk → `test-practice-gate`.
-- **Framework / tool selection** — Jest vs Vitest, Playwright vs Cypress, k6 vs Gatling, which mocking library. Name that a choice is needed and defer it.
+- **Framework / tool selection** — Jest vs Vitest, Playwright vs Cypress, k6 vs Gatling, which mocking library. Name that a choice is needed and defer it (no skill in this catalog owns framework/tool selection — say so plainly; on "set us up" with no tests, the strategy comes first and tooling is a separate step the user starts).
 - **Whether a database-seam integration/contract test hits a real instance, a substitute engine, a shared test DB, or a mock** — once this skill has decided that test exists → `database-test-tooling`. This skill decides *that* the seam gets an integration-level test; that skill decides what backs it.
 - **Writing the tests, fixtures, or CI config.** This skill stops at a plan and an ADR.
 - **Whether to split into services** → `microservices-decision`. This skill tests the surfaces that exist.
