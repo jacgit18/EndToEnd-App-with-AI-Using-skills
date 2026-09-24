@@ -1,6 +1,6 @@
 ---
 name: design-scoping
-description: Front-door gate for a system-design effort: refuses to design until purpose, audience, functional scope, numeric non-functional targets, constraints and deep-dive features are stated; outputs a scope statement routed to specialist skills. Use for "design a system for X", "I'm building X, where do I start", "scope this project" (a stalled, overwhelmed user is `entry-point-first`). Not for vague asks (`ambiguity-gate`) or interview practice (`system-design-communication`).
+description: Front-door gate for a system-design effort: refuses to design until purpose, audience, scope, numeric non-functional targets, constraints and deep-dive features are stated; outputs a scope statement routed to specialists. Use for "design a system for X", "I'm building X, where do I start", "scope this project" (stalled user: `entry-point-first`). Not for vague asks (`ambiguity-gate`) or interview practice (`system-design-communication`).
 ---
 
 # Design Scoping
