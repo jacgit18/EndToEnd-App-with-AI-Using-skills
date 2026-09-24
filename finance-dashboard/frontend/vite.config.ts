@@ -1,4 +1,4 @@
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 
 // Dev-only proxy: forwards to wherever the backend actually is. Vite's dev
@@ -31,6 +31,11 @@ const backendUrl = process.env.BACKEND_URL ?? "http://localhost:8000";
 
 export default defineConfig({
   plugins: [react()],
+  // Vitest reads this same file, so tests resolve modules exactly as the app does.
+  test: {
+    environment: "jsdom",
+    setupFiles: ["./src/test/setup.ts"],
+  },
   server: {
     // Lets the Docker MCP Playwright container reach this dev server via
     // Docker's host-gateway DNS name — Vite's DNS-rebinding check otherwise
