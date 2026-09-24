@@ -11,8 +11,8 @@ Cost reasoning fails at the division, not at the concepts. The recurring failure
 
 ## What this does not do
 
-- **Push optimization before it is warranted.** Most cost choices are reversible and should be made late. Producing a number is not the same as acting on it — a Cost Surface showing $80/month is a reason to stop thinking about cost, and saying so is a valid outcome.
-- **Manufacture precision.** One significant figure with stated assumptions is the target. `~$3k/month` is an answer; `$2,847.61/month` is a lie.
+- **Push optimization before it is warranted.** Most cost choices are reversible and should be made late. Producing a number is not the same as acting on it — a Cost Surface showing USD 80/month is a reason to stop thinking about cost, and saying so is a valid outcome.
+- **Manufacture precision.** One significant figure with stated assumptions is the target. `~USD 3k/month` is an answer; `USD 2,847.61/month` is a lie.
 
 ---
 
@@ -46,7 +46,7 @@ Run rate:            $<n>/mo
 Dominant line:       <which one, and what share of the total>
 ```
 
-**Every line appears.** A line that is genuinely trivial is written `~$0 — <reason>`, never omitted. Egress is the line most often missing and most often dominant; if data leaves your network, it has a price.
+**Every line appears.** A line that is genuinely trivial is written `~USD 0 — <reason>`, never omitted. Egress is the line most often missing and most often dominant; if data leaves your network, it has a price.
 
 **The Surface is added to the answer, not substituted for it.** Guidance that does not depend on the figures — what to build, what is expensive to reverse — is still owed. Answer the question that was asked, and put the Surface in front of it.
 
@@ -67,11 +67,11 @@ Stop only when the plausible range spans orders of magnitude *and* the recommend
 
 ## Engineer time is a line item
 
-Convert effort to money every time. Default to **$4,000 per engineer-week** loaded, and say that you used it, so the user can substitute their own figure.
+Convert effort to money every time. Default to **USD 4,000 per engineer-week** loaded, and say that you used it, so the user can substitute their own figure.
 
-Six weeks of two engineers is not "six weeks." It is `2 × 6 × $4,000 = $48,000`, and in most of these decisions it is the largest number on the page.
+Six weeks of two engineers is not "six weeks." It is `2 × 6 × USD 4,000 = USD 48,000`, and in most of these decisions it is the largest number on the page.
 
-Ongoing operational burden is also a line: "10% of an engineer forever" is `~$20k/year`, which is often larger than the infrastructure it was meant to save.
+Ongoing operational burden is also a line: "10% of an engineer forever" is `~USD 20k/year`, which is often larger than the infrastructure it was meant to save.
 
 ## Payback period
 
@@ -95,7 +95,7 @@ These phrases are conclusions of a calculation. Used without one, they are guess
 
 - You wrote "engineer-weeks" or "founder-months" without a dollar figure beside it
 - You described effort and savings but never divided one by the other
-- A line in the Cost Surface is absent rather than marked `~$0`
+- A line in the Cost Surface is absent rather than marked `~USD 0`
 - You priced the option the user asked about and no others
 - You called something a rounding error without computing it
 - The request contained a volume and your response contains no `$`
@@ -112,7 +112,7 @@ These phrases are conclusions of a calculation. Used without one, they are guess
 | "They asked about compute, not cost" | They gave you a volume. Egress and storage are on the bill whether or not they were asked about. |
 | "Engineer time isn't a cloud cost" | It is the biggest cost in most of these decisions and the only one that never appears on the bill. |
 | "I said it was six engineer-weeks — that's clear" | Weeks do not divide into dollars saved. Only dollars do. |
-| "I don't know their salary" | Use $4,000/engineer-week and label it as an assumption. |
+| "I don't know their salary" | Use USD 4,000/engineer-week and label it as an assumption. |
 | "An estimate would be wrong" | An order of magnitude with stated assumptions is the deliverable. Silence is not more accurate; it just moves the guess to the reader. |
 | "I don't have their volume" | Assume one, label it as yours, compute, and give the break-even. A labelled estimate is a deliverable; a request for data is not. |
 | "Cost doesn't matter at their stage" | Then the Surface takes two minutes and says so with a number, which is the reassurance they actually need. |
@@ -128,7 +128,7 @@ When more than one option is on the table, produce one Surface per candidate (or
 - Two to four tradeoffs accepted
 - One line per rejected option, with its number
 
-Where the Surface shows the spend is immaterial, say that plainly and stop. "Roughly $200/month at your volume — this is not worth optimizing until you have customers" is a complete and useful answer.
+Where the Surface shows the spend is immaterial, say that plainly and stop. "Roughly USD 200/month at your volume — this is not worth optimizing until you have customers" is a complete and useful answer.
 
 ## Routing boundaries (full)
 
