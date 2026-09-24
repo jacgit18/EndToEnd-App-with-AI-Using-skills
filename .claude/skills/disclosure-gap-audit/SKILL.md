@@ -68,6 +68,7 @@ call that can be made from a checklist.
   short list, not a nine-category walk.
 - **The dollar cost of a compliance program** — tooling, headcount, an audit engagement →
   `technical-cost-decision`.
+- **Drafting the privacy policy or terms text** — this skill audits and names sections to revise.
 - **A bare conceptual question** — "what is GDPR Article 22", "what makes something a
   'sale' under CPRA", "what's WCAG AA" — answered directly, no audit.
 
@@ -82,13 +83,13 @@ still starts — but every pass that depends on a missing item is capped at
 1. **The public commitments that exist.** Privacy policy, terms of service, cookie
    banner/consent UI text, any marketing or product-page claims about data handling
    ("we never sell your data", "your data is encrypted", "AI-free"), a DPA if there is one.
-   Paste the text or point to it. If **none exist**, that is itself a High finding and the
+   Paste the text or point to it. If **none exist** (and it isn't Step 1's single-operator case), that is itself a High finding and the
    audit proceeds against "what a policy would need to say."
 2. **Jurisdictions in play.** Where the users are, where the data is processed and stored,
    whether the product is offered to the EU/UK, California, or other US states with privacy
    statutes. This scopes which regimes the flag pass names — it does not change the spine
    pass, which is factual regardless of jurisdiction.
-3. **The data inventory — the gate.** The *complete* register is withheld until these are on the table; if they never arrive, Step 2 still produces the conditional, `inventory-incomplete`-led register (lines 78–80, 133–139), never a clean all-clear:
+3. **The data inventory — the gate.** The *complete* register is withheld until these are on the table; if they never arrive, Step 2 still produces the conditional, `inventory-incomplete`-led register (the inventory rule above and Step 2), never a clean all-clear:
    - **Data flows** — what personal data is collected (fields the user provides *and*
      data derived or inferred), from what surfaces, into what stores.
    - **Third parties / subprocessors** — every external service that receives user data:
@@ -117,11 +118,18 @@ secondary and flag passes, and the register format) alongside these steps.
 Restate the jurisdictions (input 2) and list which public documents exist (input 1). Record
 today's date and note that the volatile items — the US state-law patchwork, the CCPA/CPRA
 "sale/share" treatment, the EU AI Act's disclosure duties — are current only as of that
-date. If no policy exists, log finding #1 (High) now and continue. **If the product is B2B
+date. If no policy exists (and it isn't the single-operator case below), log finding #1 (High). **If the product is B2B
 and its records are about the customer's employees**, note it here — the data subjects
 include those employees, some regimes cover worker data, and per the controller/processor
 split several fixes will land in the customer-facing DPA and subprocessor list rather than
 the public website policy (see `disclosure-checklist.md` "B2B / workforce products").
+
+**If the product only ever holds its operator's own data** (personal tool, no one else's
+records; confirm nobody else can sign up), skip the spine and Step 2: mark it `n/a` in one line
+with that reason, write no register of n/a rows, run only the Step 4 security pass (an exposed
+login matters regardless), list the **triggers** that end this (a second user or sign-up,
+someone else's records, any child's data), and stop. A bank or aggregator connection re-runs
+probe 3 (judged against the aggregator's terms if no policy), the retention probe and Step 4.
 
 ### 2. Gate on the data inventory
 
@@ -163,7 +171,7 @@ abuse & cost controls · key & crypto hygiene), each written as the questions to
 ### 5. Legal/compliance pass — flag only, never rule
 
 Walk the flag list in `security-and-legal-passes.md` (age gate, accessibility, dark patterns, consent
-mechanics, IP/licensing). For each concern: state the **observable fact**
+mechanics, IP/licensing, incident/breach notification). For each concern: state the **observable fact**
 that raised it, **name the regime(s)** it implicates given input 2, and set *Who confirms
 this* to counsel / privacy officer / an accessibility specialist. Produce a
 `needs-legal-review` finding. Do **not** write "this violates COPPA" — write "the product
@@ -199,7 +207,7 @@ legal review are separate, explicitly started steps that consume this register.
 Scope:                <jurisdictions>  ·  docs reviewed: <policy / ToS / cookie UI / marketing / DPA, or "none">
 Current as of:        <date> — volatile: US state-law patchwork, CCPA/CPRA sale-vs-share, EU AI Act disclosure
 Inventory:            <complete | incomplete: which elements missing>
-Spine (15 probes):    adequate <n> · inadequate <n> · not-disclosed <n> · inventory-incomplete <n> · n/a <n>
+Spine (15 probes):    adequate <n> · inadequate <n> · not-disclosed <n> · inventory-incomplete <n> · n/a <n>  (single-operator product: one line, `n/a — single-operator`)
 Findings:             High <n> · Medium <n> · Low <n>   (policy-vs-practice <n> · security <n> · needs-legal-review <n>)
 Top findings:         <the 3-5 that matter, one line each>
 Recommendation:       <policy revision sections | product changes | controls to build | reviewers to engage>
