@@ -15,7 +15,7 @@ Don't wait for the user to ask every time. Proactively suggest a handoff when yo
 - You're doing multi-step work (debugging, a build-out, a refactor) that would be expensive to reconstruct from scratch
 - The conversation is long enough that context compaction is a realistic risk
 
-A one-line offer is enough: "Want me to write a handoff file before we stop, so the next session has full context?" Don't create the file without confirmation unless the user has already asked for one.
+A one-line offer is enough: "Want me to write a handoff file before we stop, so the next session has full context?" Don't create the file without confirmation unless the user has already asked for one or the `context-watch` hook (`scripts/hooks/context-watch.sh`) has injected an instruction to write it — that instruction is the confirmation.
 
 ## What to gather
 
@@ -73,5 +73,5 @@ Omit a section entirely if it has nothing real to put in it (e.g., no firm decis
 
 - Keep it tight — this is a working document, not a report. Prefer bullets and short lines over paragraphs.
 - Save it as a file (`.md`) and present it to the user rather than just printing it in chat, so it's easy to carry into the next session or hand to a fresh Claude instance.
-- Suggest a short, descriptive filename (e.g., `handoff-auth-refactor-2026-09-02.md`), not a generic one.
+- Save into `.claude/handoffs/` (what `scripts/session/resume.sh` and the hook expect) with a short, descriptive filename (e.g., `handoff-auth-refactor-2026-09-02.md`), not a generic one.
 - After creating it, tell the user in one line where it is and that they can drop its contents into a new chat to resume — don't over-explain.

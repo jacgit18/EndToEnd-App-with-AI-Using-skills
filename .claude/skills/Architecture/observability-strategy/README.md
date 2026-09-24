@@ -53,8 +53,8 @@ Stops before the spans, dashboards, alert rules, and collector config.
   Optimization for a measured-slow path). This skill makes those investigations *possible*.
 - Whether to split services / where boundaries go → `microservices-decision`.
 - Incident-response process, on-call rotation, postmortem culture — organizational.
-- Security monitoring / SIEM / audit logging as a compliance control → future
-  `security-architecture`. PII-in-logs and audit retention are *inputs* here, not the design.
+- Security monitoring / SIEM / audit logging as a compliance control → not covered by any
+  skill in this catalog. PII-in-logs and audit retention are *inputs* here, not the design.
 - Implementation of any kind.
 
 ## Using it in another repo

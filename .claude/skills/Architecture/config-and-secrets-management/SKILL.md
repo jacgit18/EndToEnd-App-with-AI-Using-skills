@@ -30,6 +30,10 @@ Take a value that a running application needs but that shouldn't be hardcoded in
 
 ---
 
+## Incident first: a secret already leaked
+
+If the request is "we committed/pasted/logged a secret", the gate does not delay the first move. Say up front, before any question: **revoke or rotate that credential now** — deleting the commit or log line does not un-leak it, and git history, forks and CI caches still hold it. Then run the gate for the *replacement* design (items 2–8).
+
 ## The gate
 
 Before recommending a storage mechanism or rotation policy, these must be answered.
@@ -38,7 +42,7 @@ Before recommending a storage mechanism or rotation policy, these must be answer
 
 1. **What already exists** — a `.env` file, existing secrets-manager usage, orchestrator-native secrets already configured, a feature-flag service already in the stack.
 
-**Judgment calls that must come from the user, in their own words.** Do not invent these; do not design without them. If any is missing, name it and stop:
+**Judgment calls that must come from the user, in their own words.** Do not invent these; do not design without them. If any of 2–6 is missing, name it and stop (7–8 shape the mechanism choice: ask for them, but do not withhold the recommendation for a value whose sensitivity and rotation needs are already clear and where the platform is stated in the repo):
 
 2. **The specific value** — name it concretely: "the Stripe API key," "the database password," "the checkout-page feature toggle" — not "our secrets" or "our config" collectively. Different values in the same system often want different answers.
 3. **Sensitivity** — is this a credential/secret (its exposure grants access to something) or non-sensitive config (a timeout, a hostname, a feature toggle whose exposure causes no harm)? This single fact rules out entire mechanisms immediately — non-sensitive config rarely needs a secrets manager's rotation and audit machinery.
@@ -121,7 +125,7 @@ Gate satisfied. Value: Stripe API key (item 2). Sensitivity: credential (item 3)
 
 > "Where should we store our secrets?"
 
-Gate not satisfied — item 2 (which secret, specifically — there's rarely one uniform answer for all of them), item 3 (sensitivity varies per value), item 7 (platform unstated). Response: ask for one concrete value to start with, and what platform it runs on. Do not recommend a single mechanism for "secrets" as an undifferentiated category.
+Gate not satisfied — item 2 (which secret, specifically — there's rarely one uniform answer for all of them), item 3 (sensitivity varies per value); the platform (item 7) is also unstated — ask for it alongside. Response: ask for one concrete value to start with, and what platform it runs on. Do not recommend a single mechanism for "secrets" as an undifferentiated category.
 
 ---
 

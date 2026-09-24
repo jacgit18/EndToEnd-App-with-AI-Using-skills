@@ -100,7 +100,11 @@ the symptom:
    resets, DNS packet behavior, TLS negotiation, raw timing between machines.
 5. **Is the traffic non-HTTP, or between two machines/services with no browser involved at
    all** (service-to-service, a non-web protocol, arbitrary host-to-host traffic)? Skip
-   straight to Wireshark/tshark — there is no browser layer to check first.
+   steps 1–3 — there is no browser layer to check first — but still start with the
+   highest layer that exists: the failing side's own logs/traces, the proxy or load balancer
+   log (step 4), and any error the client library already reports. Go to Wireshark/tshark
+   once those are clean, missing, or already point at the wire (resets, retransmissions,
+   handshake or DNS failures).
 
 **Do not skip to step 5 because packet capture "has more information."** If step 1–3
 already explains the symptom, stop there — the fact that a lower layer is more detailed is
@@ -150,8 +154,8 @@ TLS renegotiation) justified, to explain the gap the application-level views can
 
 > "We're seeing TCP resets in our load balancer logs between two internal services."
 
-Step 5: no browser involved, not HTTP-shaped as the actual question. Straight to
-Wireshark/tshark on both hosts.
+Step 5: no browser involved, and the load balancer log already shows the resets, so the
+evidence points at the wire. Wireshark/tshark on both hosts.
 
 ---
 

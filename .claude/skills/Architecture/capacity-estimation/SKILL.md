@@ -233,7 +233,7 @@ thumbnails and metadata ≈ 42 TB/day; over 3 years with linear growth to 3× DA
 multiplier ~2 → ~92 PB, end-state ceiling ~138 PB; × 3 replication → ~275–415 PB. Traffic:
 origin egress if the CDN offloads 95% of the 1B reads/day at 300 KB each ≈ 15 TB/day to
 edge, peak ~4 Gbps origin fill; user-facing edge egress ~300 TB/day. Cache/CDN working set:
-hot 20% of ~30 days of uploads ≈ 180M objects × 300 KB ≈ 54 TB across the CDN. Servers: the
+hot 20% of ~30 days of uploads ≈ 60M objects × 300 KB ≈ 18 TB across the CDN. Servers: the
 upload tier is I/O-bound on object storage, not CPU — a handful; the metadata/API tier
 sized off 35K/s peak reads. **What binds first: storage growth** — tens of PB per year,
 compounding, is the ceiling that arrives first and hardest; read QPS and egress are large

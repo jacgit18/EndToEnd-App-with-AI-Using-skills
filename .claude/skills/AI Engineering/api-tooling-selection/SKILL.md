@@ -23,7 +23,7 @@ description: Use when someone is deciding how an AI agent should integrate with 
 | Which LLM/model handles a given call | Model selection | `model-routing-decision` |
 | Pricing the integration once volume and token/request counts are known | Cost | `technical-cost-decision` |
 
-If the request lands in one of the last five rows, say so and hand off — do not build a Postman-vs-MCP recommendation for a question that's actually about protocol design, contract ownership, production database access, test infrastructure, or cost.
+If the request lands in one of the last six rows, say so and hand off — do not build a Postman-vs-MCP recommendation for a question that's actually about protocol design, contract ownership, production database access, test infrastructure, or cost.
 
 ## Step 2 — Gate: name these before recommending a stack
 

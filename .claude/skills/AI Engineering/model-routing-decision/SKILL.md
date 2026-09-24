@@ -22,7 +22,7 @@ Most "should I route between models" conversations skip straight to a recommenda
 | Mid-session in Claude Code: which model/agent should run the step in front of us, or whether to escalate after a failure | Model selection, live | This skill, **In-session mode** below (skip Step 2's input gate only for a step in the current session; any request about a deployed or to-be-built system, however phrased, still goes through Step 2) |
 | A lead agent delegates subtasks to specialized sub-agents | Multi-agent orchestration / labor division | **Not this skill.** That's an agent-architecture decision. Once the delegation structure exists, this skill can be reapplied to decide each sub-agent's own model. |
 
-If the request lands in one of the last three rows, name that plainly and stop — do not produce a routing architecture for a problem the user doesn't actually have. This is the most common failure mode: fluently discussing "routing" while quietly answering a different question than the one asked.
+If the request lands in one of the **Not this skill** rows above (failover, ops triage, multi-agent delegation), name that plainly and stop — do not produce a routing architecture for a problem the user doesn't actually have. This is the most common failure mode: fluently discussing "routing" while quietly answering a different question than the one asked.
 
 ## Step 2 — Gate: real inputs before an architecture recommendation
 

@@ -44,7 +44,7 @@ git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null || echo origin/mai
 
 If `git status` shows nothing to commit and nothing staged, say so and stop.
 
-If the user has already staged a subset of files, treat that as intent — commit what they staged, and mention the unstaged remainder rather than sweeping it in.
+If the user has already staged a subset of files, treat that as intent — commit what they staged (pass exactly those paths to `commit.sh`, which refuses when the index holds files outside the named paths), and mention the unstaged remainder rather than sweeping it in.
 
 ### 2. Branch guard
 
@@ -97,7 +97,7 @@ Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
 
 ### 6. Confirm, then commit
 
-Show the user the staging plan and the full message(s) before running anything. On approval, if `scripts/git/commit.sh` is present, use it — it stages exactly the paths you name, runs the Step 4 sanity checks on the staged set, appends the trailer, and commits:
+Show the user the staging plan and the full message(s) before running anything. On approval, if `scripts/git/commit.sh` is present, use it — it stages exactly the paths you name, runs a partial sanity pass on the staged set (`.env`/key files, files over 1 MiB, conflict markers only — you still do the Step 4 checks for content secrets, debug code and unrelated files), appends the trailer, and commits:
 
 ```bash
 scripts/git/commit.sh -m "<subject>" -m "<body>" -- <specific paths>
