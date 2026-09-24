@@ -1,5 +1,7 @@
 # Disclosure checklist — the spine pass
 
+Contents: B2B / workforce products — who the data subjects are · "Current as of" — the volatile items · The 15 probes · Classifying a row · Inventory declined or policy text missing
+
 Reference for `SKILL.md` step 3. Fifteen probes. For each: what the product might be
 doing, what an adequate disclosure looks like, the primary source that sets the
 expectation, and the severity to assign when it's `not-disclosed` or
@@ -198,3 +200,22 @@ relying on this."
 | `not-disclosed` | The practice is real (confirmed in the inventory) and the policy is silent. Finding at the probe's stated severity. |
 | `n/a` | The inventory confirms the product does not do this. Record the basis; do not leave the probe blank. |
 | `inventory-incomplete` | The inventory doesn't say whether the product does this. Not a pass — a finding that the inventory has a hole, plus a note that this probe is unresolved. |
+
+---
+
+## Inventory declined or policy text missing
+
+Reference for `SKILL.md` step 2.
+
+**If the user declines to supply the inventory** (or pushes back — "legal already signed
+off", "just give me the top gaps"): do not refuse, and do not fill the holes with assumed
+values. Still produce the register from what's known — a **conditional, probe-keyed** list
+("if the flow is X, this is a High finding"), the `inventory-incomplete` rows at worst-case
+severity, and the short list of facts that would convert it into a real audit. A prior
+legal review is not the same as visibility into the current data flows, and if it predates
+a feature that is exactly probe 12 — say so, without ruling on the legal question.
+
+**A missing *verbatim policy* is not a "no policy" finding** when the user has said one
+exists. Treat it as `inventory-incomplete` on the policy side of the affected spine probes,
+ask once for the text or a link, and proceed. Only log the finding-#1 "no policy" row
+(High) when there genuinely is no public policy.

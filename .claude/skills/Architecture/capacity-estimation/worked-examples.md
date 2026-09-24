@@ -1,5 +1,7 @@
 # Worked Examples
 
+Contents: Example 1 — read-heavy social feed (comments + likes) · Example 2 — media-streaming service · Example 3 — write-heavy telemetry / event pipeline · Example invocations (gate, refusal, and escape-hatch)
+
 Three estimates worked end to end from stated assumptions, following the
 `storage → traffic → cache → servers → what binds first` walk order in
 `estimation-method.md`. Each lands on a *different* binding constraint, which is the point:
@@ -263,3 +265,44 @@ partition-by-time.
 → tiering / partitioning / retention mechanics: `data-tier-operations`.
 → the storage bill and whether cold belongs in object storage: `technical-cost-decision`.
 → shedding / sampling ingest if the write rate outpaces the store: `resilience-strategy`.
+
+---
+
+## Example invocations (gate, refusal, and escape-hatch)
+
+> "Photo-sharing app. ~5M DAU, each uploads 2 photos/day at ~3 MB after compression and
+> views ~200 photos/day. Keep photos forever. Expecting to grow to ~15M DAU over 3 years.
+> Store 3 copies. Reads are served from a CDN but I want the origin numbers. Peak is about
+> 3× average, in the evening."
+
+Gate satisfied. Base rates: writes 10M/day (~115/s avg, ~350/s peak); reads 1B/day
+(~11.6K/s avg, ~35K/s peak). Storage: 10M × 3 MB = 30 TB/day of originals; ×~1.4 for
+thumbnails and metadata ≈ 42 TB/day; over 3 years with linear growth to 3× DAU, expected
+multiplier ~2 → ~92 PB, end-state ceiling ~138 PB; × 3 replication → ~275–415 PB. Traffic:
+origin egress if the CDN offloads 95% of the 1B reads/day at 300 KB each ≈ 15 TB/day to
+edge, peak ~4 Gbps origin fill; user-facing edge egress ~300 TB/day. Cache/CDN working set:
+hot 20% of ~30 days of uploads ≈ 60M objects × 300 KB ≈ 18 TB across the CDN. Servers: the
+upload tier is I/O-bound on object storage, not CPU — a handful; the metadata/API tier
+sized off 35K/s peak reads. **What binds first: storage growth** — tens of PB per year,
+compounding, is the ceiling that arrives first and hardest; read QPS and egress are large
+but flat per-user and CDN-absorbed. Follow-ups: storage cost → technical-cost-decision;
+object-store tiering / lifecycle → data-tier-operations.
+
+> "Roughly how much storage and bandwidth does a Twitter-like service need?"
+
+Gate not satisfied — items 3–9 all absent. Response: this needs assumptions before it can
+produce a number, and choosing them is the exercise. Ask for: DAU (a round number);
+tweets posted per user per day and timeline reads per user per day; bytes stored per tweet
+(with IDs, media pointers, indexes) and bytes returned per timeline page; the read:write
+ratio; the peak:average ratio and when peak is; how long tweets are retained and how fast
+the user base grows; the replication factor. Do not fill any of these in.
+
+> "I estimated our event pipeline at about 200 GB/month. Sanity-check me: 50M events/day,
+> 400 bytes each, kept 90 days."
+
+Escape hatch — they did the rep. Check it: 50M × 400 B = 20 GB/day raw. Over 90 days
+retention = 1.8 TB resident, not 200 GB — the "/month" framing dropped the retention
+window. Add index/overhead ~1.5× → ~2.7 TB, × replication 3 → ~8 TB provisioned. Their
+per-day figure is right; the resident total is ~9× their number because retention wasn't
+multiplied through. No peak factor needed for storage, but the ingest tier should be sized
+off peak events/s, not the 580/s average.

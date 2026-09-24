@@ -130,40 +130,29 @@ Check input 3 is present. For any missing element, write the gap as a finding
 a missing backup-retention number is Medium) and mark the passes that depend on it capped.
 Do not guess the product's behavior to fill a hole. Proceed with what's known.
 
-**If the user declines to supply the inventory** (or pushes back — "legal already signed
-off", "just give me the top gaps"): do not refuse, and do not fill the holes with assumed
-values. Still produce the register from what's known — a **conditional, probe-keyed** list
-("if the flow is X, this is a High finding"), the `inventory-incomplete` rows at worst-case
-severity, and the short list of facts that would convert it into a real audit. A prior
-legal review is not the same as visibility into the current data flows, and if it predates
-a feature that is exactly probe 12 — say so, without ruling on the legal question.
-
-**A missing *verbatim policy* is not a "no policy" finding** when the user has said one
-exists. Treat it as `inventory-incomplete` on the policy side of the affected spine probes,
-ask once for the text or a link, and proceed. Only log the finding-#1 "no policy" row
-(High) when there genuinely is no public policy.
+**If the user declines the inventory** (or says "legal already signed off"): do not refuse and do
+not assume values -- still produce the conditional, probe-keyed register with `inventory-incomplete`
+rows at worst-case severity. **A missing verbatim policy is not a "no policy" finding** when the user
+says one exists: ask once for the text and proceed. Read "Inventory declined or policy text missing"
+in `disclosure-checklist.md` for the full handling.
 
 ### 3. Spine pass — policy vs practice
 
 Walk the **15 probes** in `disclosure-checklist.md`. For each: state what the product does
 (from the inventory), then what the policy says. Classify the row:
 
-- `disclosed-adequately` — specific, current, and complete. No finding.
-- `disclosed-inadequately` — vague ("we may share data with partners"), incomplete (a
-  subprocessor list missing the AI vendor), or outdated (written before the feature
-  shipped). → a `policy-vs-practice-gap` finding, usually Medium.
-- `not-disclosed` — the practice is real and the policy is silent. → a
-  `policy-vs-practice-gap` finding, Medium or High per `disclosure-checklist.md`'s
-  per-probe severity notes.
+- `disclosed-adequately` (specific, current, complete) — no finding.
+- `disclosed-inadequately` (vague, incomplete, or outdated) → `policy-vs-practice-gap`, usually Medium.
+- `not-disclosed` (practice real, policy silent) → `policy-vs-practice-gap`, Medium or High per
+  `disclosure-checklist.md`'s per-probe severity notes.
 - `n/a` — the product genuinely does not do this. State why, don't skip silently.
+
+The full test per class (plus `inventory-incomplete`) is under "Classifying a row" in `disclosure-checklist.md`.
 
 ### 4. Security pass — design-review depth only
 
-Walk the fixed probe list in `security-and-legal-passes.md`: secrets in version control,
-a resource with no authorization check, IDOR (object references not scoped to the caller),
-insecure defaults (public-by-default sharing, permissive CORS, debug endpoints live),
-missing rate limiting on auth and expensive endpoints, PII written to logs or analytics,
-transport/at-rest encryption absent, over-broad OAuth scopes or third-party permissions.
+Walk the fixed probe list in `security-and-legal-passes.md` (secrets in VCS, missing authz, IDOR,
+insecure defaults, missing rate limits, PII in logs, no encryption, over-broad scopes).
 Each hit is a `security-anti-pattern` finding with a fix handoff — this skill flags that
 the control is missing, it does not design the control. **When no design doc or
 architecture description was supplied**, don't emit eight near-identical
@@ -173,10 +162,8 @@ abuse & cost controls · key & crypto hygiene), each written as the questions to
 
 ### 5. Legal/compliance pass — flag only, never rule
 
-Walk the flag list in `security-and-legal-passes.md`: age gate, accessibility (ADA/WCAG),
-dark patterns in consent or cancellation flows, consent mechanics (is consent obtained
-where a regime would require it), IP/licensing (training-data provenance, third-party
-content, open-source license obligations). For each concern: state the **observable fact**
+Walk the flag list in `security-and-legal-passes.md` (age gate, accessibility, dark patterns, consent
+mechanics, IP/licensing). For each concern: state the **observable fact**
 that raised it, **name the regime(s)** it implicates given input 2, and set *Who confirms
 this* to counsel / privacy officer / an accessibility specialist. Produce a
 `needs-legal-review` finding. Do **not** write "this violates COPPA" — write "the product
@@ -230,35 +217,10 @@ Then stop.
 
 ## Example invocations
 
-> "We just added a feature that sends the user's support message to GPT to draft a reply.
-> Our privacy policy is from last year. What do we need to disclose?"
-
-Inventory gate first: which model provider, is it their API (a subprocessor), are the
-messages retained or used for training by the provider, does anything automated act on the
-model's output. Spine pass hits probes 1 (AI processing of user input — not disclosed),
-3 (subprocessor list — missing the AI vendor), and 12 (policy-vs-practice drift — written
-before the feature). Likely findings: one High (`not-disclosed` AI processing of
-user-submitted content), one Medium (`disclosed-inadequately` subprocessor list). Security
-pass: is the support message scrubbed of anything it shouldn't send to a third party.
-Recommendation: policy revision to the "How we use your data" and "Who we share with"
-sections; confirm the provider's data-use terms.
-
-> "We're removing the `/v1/export` endpoint, nobody uses it. What breaks?"
-
-Not this skill — that's a blast-radius question → `change-surface-audit`. If the endpoint's
-*removal* also means a data flow to a partner stops and the policy claims that flow exists,
-the disclosure half of that comes back here; the "what depends on the endpoint" half does
-not.
-
-> "Is this login handler secure?" (a diff is pasted)
-
-Not this skill — code-level review of the diff → `security-review`. This skill's security
-pass asks whether login *has rate limiting and an authz model at all*, as one row in a
-product-wide register, not whether this handler's code is correct.
-
-> "What does GDPR Article 22 actually require?"
-
-Conceptual question → answered directly. No audit, no inventory gate.
+Four worked invocations (an LLM-drafted support reply against an old policy, an endpoint removal that
+routes to `change-surface-audit`, a pasted login diff that routes to `security-review`, and a bare GDPR
+question answered directly) are in `example-invocations.md`. Read it for a model of the inventory gate
+firing, sample probe hits, or the routing calls.
 
 ---
 

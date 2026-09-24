@@ -1,5 +1,7 @@
 # Estimation Method
 
+Contents: Numbers you work in · The walk order · Sanity checks · Anti-patterns (errors carried in the source notes — do not reproduce) · Challenge checklist for a proposed number
+
 The cleaned-up method for `SKILL.md`. The source notes (`Bandwidth Estimation.md`,
 `Capacity Estimation.md`, `Music Streaming Service Estimation.md`) carry the right shape but
 several self-flagged arithmetic errors (`#todo Double check calculations`). This file fixes
@@ -239,3 +241,26 @@ Run these before reporting:
 7. **Rounding seconds/day up to 100,000 without noticing it lowers the rate.** ~15%
    under-estimate on every QPS number. Round down (80,000) or use 86,400; always size off
    peak.
+
+---
+
+## Challenge checklist for a proposed number
+
+- **"about X GB per month"** — derived from write volume only? Reads do not add stored
+  bytes. Does X include replication (×3) and the index / row-overhead multiplier (~1.3–2×
+  raw field bytes)? Is it `rate × retention`, or just one month with no horizon?
+- **"we'll need N servers"** — N from peak QPS or average? Peak is the one that has to be
+  survived. Is per-server capacity `cores × utilization ÷ per-request service time`, or the
+  cores-over-a-constant shortcut (which ignores utilization headroom and assumes a fixed
+  service time)? Does N include redundancy for node / AZ loss?
+- **"it'll fit in memory / one Redis node"** — is the working set `distinct hot objects ×
+  size`, or `reads/day × size`? The second double-counts every repeat read of the same
+  object and overstates the cache by 10–100×. The cache holds one copy per hot object.
+- **"total traffic = users × (reads + writes)"** — DAU is already inside reads/day and
+  writes/day. Multiplying by the user count a second time is a common error that inflates
+  traffic by ~10^7. Total traffic in bytes is just `reads/day + writes/day`, each already
+  `driver × actions × size`.
+- **"peak is roughly average"** — almost never. A flat profile is a claim about the user
+  base (a global system with no timezone concentration, or machine-driven steady load);
+  challenge it, because a 1× peak factor under-sizes everything.
+

@@ -108,15 +108,10 @@ walking, because an inventory error propagates into every row.
 
 ### 2. Choose the scoring scheme
 
-From `scoring-and-register.md`:
-
-- **RPN (severity × occurrence × detection, 1–10 each)** — for a long-lived or regulated
-  system, a design many teams depend on, or when the register will be tracked over time.
-  More rigor, more numbers to defend.
-- **2-axis grid (severity × likelihood, 1–5 each → a 5×5 red/amber/green grid)** — for a
-  fast design-review pass, an early-stage design where occurrence and detection are too
-  speculative to score to ten levels, or a session under ~90 minutes with one or two
-  people. Coarser, quicker, no false precision.
+From `scoring-and-register.md` (which has the when-to-use for each): **RPN** (severity × occurrence ×
+detection, 1–10 each) for long-lived, regulated, or many-team systems and registers tracked over time;
+**2-axis grid** (severity × likelihood, 1–5 → 5×5 red/amber/green) for a fast design-review pass, early
+designs where occurrence/detection are too speculative, or sessions under ~90 minutes.
 
 Pick one, and calibrate each axis *for this system* using input 5 — write down what a top-of-scale severity actually is here.
 
@@ -127,20 +122,16 @@ does a failure in this category look like *for this component*?" Use the probe q
 that file. Where a category genuinely doesn't apply to a component, record it as `n/a —
 <reason>` so a skipped category is a decision on the record.
 
-In chat, don't write out all `components × 9` cells one by one — that's an unreadable grid.
-Present a **coverage table**: one row per component, the failure-mode IDs found per
-category, and a single `n/a` clause covering the categories that didn't apply and why. The
-full per-cell grid, if wanted, goes in the written register only. What matters in chat is
-that every component was walked against every category and the misses are explained, not
-that 99 "n/a" lines are printed.
+In chat, present a **coverage table** (one row per component, failure-mode IDs per category, one
+`n/a` clause with reasons) rather than all `components x 9` cells; the full grid goes in the
+written register only. Every component must still be walked against every category. Read
+"Coverage table" in `nine-categories.md` for the format.
 
 ### 4. Walk each interaction × the interaction-heavy categories
 
 Interactions concentrate failure in **integration, dependency, consistency, performance,
-and availability**. For each interaction ask: what if the call times out / errors / returns
-wrong or partial data / is slow / runs twice / arrives out of order / the callee is down /
-the network partitions. For asynchronous interactions add: message lost, duplicated,
-reordered, poison message, consumer lag / unbounded backlog.
+and availability**. Walk each interaction (sync and async) against them; the per-interaction
+question list is under "Walking interactions" in `nine-categories.md` -- read it when doing this step.
 
 ### 5. Record each mode as cause → manifestation → impact
 
@@ -213,11 +204,9 @@ Handoffs:                resilience-strategy <n rows> · observability-strategy 
 Then the full register table and the watchlist from `scoring-and-register.md`.
 
 **2. On request** (or when "block sign-off" is chosen), write the register to
-`docs/architecture/failure-modes/<system-slug>.md` — the table, the watchlist, the scheme
-and its calibration, the scope boundary, and (if block-sign-off) an "acceptance log"
-section where each triaged row records owner + decision + date. This is a living document,
-not an ADR — it gets updated as the design changes and modes are closed or added. Create
-the directory if absent.
+`docs/architecture/failure-modes/<system-slug>.md` (living document, not an ADR; create the
+directory if absent). Read the "Written register file" section of `scoring-and-register.md`
+for its required contents, including the acceptance log.
 
 Then stop. Designing the mitigations, the alerts, and the tests are separate, explicitly
 started steps that consume this register.
@@ -235,38 +224,9 @@ someone asks for "an FMEA" or "a pre-mortem" by name.
 
 ## Example invocations
 
-> "Do a pre-mortem on this: a checkout service that calls a pricing service (gRPC, sync), a
-> payment gateway (HTTPS, sync), writes orders to Postgres, and emits an `order.placed`
-> event to Kafka that a fulfilment consumer reads. Two engineers own it, basic
-> CloudWatch alarms on 5xx rate only."
-
-Frame: 5 components (checkout, pricing, payment gateway, Postgres, Kafka + fulfilment
-consumer), 4 interactions. Severity 10 = a customer charged with no order recorded, or an
-order shipped that wasn't paid. Scheme: RPN (load-bearing, money). Walk each component ×9
-and each interaction. Sample rows: *payment gateway call succeeds, Postgres write then
-fails* → double-charge risk / customer charged, no order → S10 O4 D7 (only 5xx alarms, this
-path returns 200) RPN 280 → watchlist + resilience-strategy (outbox/idempotency) +
-observability-strategy (reconcile alarm). *`order.placed` published, consumer down* →
-fulfilment silently lags → S7 O5 D8 RPN 280 → observability (consumer-lag alert) +
-test-strategy (inject consumer outage). *pricing service returns stale price on cache
-fallback* → wrong amount charged → S8 O3 D9 RPN 216. Detection gaps: 4 rows where the only
-signal is a customer complaint. Recommend block sign-off — two watchlist rows.
-
-> "What could go wrong with adding a Redis cache in front of our user-profile reads?"
-
-Narrower altitude — one interaction added. Walk the new component (Redis) and the new
-interaction (app → Redis, with DB fallback) ×9. Modes: cache down → fallback storm on the
-DB (dependency/performance); stale profile after an update (consistency); key stampede on a
-hot miss (performance); Redis eviction under memory pressure drops the working set
-(operational); a serialization-format change makes old cached entries poison
-(integration/operational). Register + hand the stampede and cache-down rows to
-`resilience-strategy` and `caching-strategy`. Small enough that "register only" is the
-right default.
-
-> "The API is throwing 502s right now and I think it's the connection pool — help me debug."
-
-Not this skill. One failure, happening now, with a hypothesis → `problem-solving-gates`
-(Rubber Duck). Say so and route.
+Three worked invocations (a checkout-service pre-mortem scored with RPN, a narrow Redis-cache
+addition, and a live-502 request that is routed away) are in `example-invocations.md`. Read it
+when you need a model of a frame, sample rows, or the routing call.
 
 ---
 
