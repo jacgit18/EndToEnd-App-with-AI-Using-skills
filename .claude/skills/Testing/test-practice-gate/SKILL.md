@@ -21,6 +21,7 @@ One mode, the same shape as `problem-solving-gates`: before writing tests for a 
 - **The test mix for a whole surface** — which levels, what split, which pipeline stage, TDD/BDD → `test-strategy`. When both a surface strategy *and* a specific test are asked in one message, `test-strategy` resolves first; the charter for the specific test comes after, not in the same turn.
 - **The coverage number** and CI enforcement → `coverage-policy`.
 - **What a database-touching test's DB actually is** (Testcontainers / shared instance / in-memory substitute / mock) → `database-test-tooling`; the seam item here is stub-vs-real, that skill picks the mechanism.
+- **A whole module or feature ("write tests for the invoice module")** where the open question is *which cases* → `test-case-discovery` first, then this gate for writing them. **Wanting to get better at testing with no specific code** ("quiz me on testing") → not this gate; that is a Knowledge Checker rep in `problem-solving-gates`.
 - **Reviewing tests that already exist** → `code-review`. **Debugging a specific failing test** → `problem-solving-gates` (Rubber Duck).
 - **Writing the production code** (not the tests) → `problem-solving-gates` if it's a design/debug rep, otherwise just help.
 - **`learning-gate` has already classified this as a learning rep and routed here** — it sets the assistance ceiling; this skill owns the charter gate. Ask for the charter only, not the learning-rep question on top.

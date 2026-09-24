@@ -17,7 +17,9 @@ This skill separates **what the ticket says** from **what the ticket is missing*
 - **A "ticket" that is a bare feature name with no description, acceptance criteria, or actor**
   — "Add notification preferences" — isn't a system to scope but also isn't yet a story to
   judge → `user-story-decomposition`. Come back here for the sprint verdict once it has an
-  actor, an action, and acceptance criteria.
+  actor, an action, and acceptance criteria. This carve-out outranks "wants a verdict
+  immediately": if the user insists on a verdict now, give a provisional one and say plainly it
+  rests on missing acceptance criteria.
 - **Implementation.** This skill ends at proceed / defer / needs more info / reconsider.
 
 ---

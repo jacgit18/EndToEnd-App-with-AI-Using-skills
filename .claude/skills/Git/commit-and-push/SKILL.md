@@ -15,7 +15,7 @@ Turn "commit this" into a clean commit whose message is actually derived from wh
 
 ## Out of scope — hand these off or decline
 
-- **Pull requests.** This skill stops after `git push`. Opening a PR is a separate, explicitly-started step.
+- **Pull requests.** This skill stops after `git push`. Opening a PR is a separate, explicitly-started step: on "open a PR", commit and push any uncommitted or unpushed work here first, then open it with `gh pr create` (and merge with `scripts/git/land.sh` only when asked). **Ordering with `history-integration-strategy`:** if the user also wants history cleaned up ("land it without messy history"), run that skill's gate *before* pushing, or ask whether to push first — pushing makes the commits "published" and changes its answer.
 - **Merge conflict resolution.** If a push is rejected for conflicts or the tree has conflict markers, stop and report it — don't guess at a resolution.
 - **History rewriting.** No `rebase`, no `commit --amend` on a pushed commit, no `push --force`. If the user wants history changed, that's a deliberate separate request with its own confirmation. Deciding *whether* to squash or rebase a branch for integration is `history-integration-strategy` (it picks the strategy; it doesn't run the rebase).
 - **Branching / integration strategy.** This skill will branch off the default branch when needed (below), but it doesn't design a Git flow or choose how a finished branch folds back in — merge commit vs. squash vs. rebase vs. fast-forward is `history-integration-strategy`.

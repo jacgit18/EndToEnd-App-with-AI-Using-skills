@@ -11,6 +11,7 @@ Every other skill in this catalog is triggered by something happening *now* — 
 
 - The user asks directly (audit, health check, "clean up the backlog," "is anything stale").
 - Proactively, after a batch of skill work in one session — offer it the way `session-handoff` proactively offers a handoff file, don't wait to be asked every time.
+- If the user only wants a report ("check for drift", changes nothing), run the read-only `/sync-catalog` command instead — this skill applies mechanical fixes.
 - A weekly scheduled cloud routine ("Weekly Catalog Drift Audit", see `.claude/rules/agents.md`) already runs this against `main`, fixes mechanical drift on a branch and opens a PR. This skill is the procedure that routine runs, also usable on demand; for a different cadence use `/schedule` or `/loop`.
 - **Read `.claude/_Prompts/catalog-audit-log.md` first** (if it exists) so already-resolved items are not re-flagged; it also holds `skill-usage-log` feedback entries to fold in.
 

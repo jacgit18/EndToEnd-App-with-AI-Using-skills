@@ -21,7 +21,7 @@ The governing fact, from the "Code Coverage Best Practices" source note (a Perso
 - **Which test levels exist and how effort splits across them** → `test-strategy`. That skill decides the portfolio; this one sets how much of the code it must touch. Run `test-strategy` first.
 - **The rep of writing one specific test** → `test-practice-gate`.
 - **A go/no-go or prioritization verdict on a ticket that proposes a coverage change** → `ticket-evaluation`. It owns the verdict; this skill designs the metric / target / enforcement only once that verdict is "proceed" (and often "proceed, but not as written").
-- **Coverage tool selection** (Istanbul/nyc, JaCoCo, Coverage.py, ...) — name that a choice is needed and defer it.
+- **Coverage tool selection** (Istanbul/nyc, JaCoCo, Coverage.py, ...) — name that a choice is needed and defer it (no skill in this catalog owns tool selection — say so plainly and answer from general knowledge only if asked).
 - **Mutation testing setup** — named here as the quality check that coverage isn't; its adoption is its own decision.
 - **Writing the tests to raise coverage.**
 - **Adjacent handlers:** what backs a DB-touching test → `database-test-tooling`; a failing test or live symptom → `debugging-layer-selection` / `problem-solving-gates`.
