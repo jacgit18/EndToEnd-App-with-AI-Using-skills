@@ -187,7 +187,6 @@ Does not apply — that is `skill-static-audit`.
 ## Routing boundaries (full)
 
 - This skill should be used when the user asks to "test this prompt", "does this prompt work", "try my prompt on a few examples", "check if this prompt does what it's supposed to", or pastes a prompt and asks whether it's any good.
-- Not for writing a new prompt from scratch (that is `prompt-authoring`), and not for editing or fixing a prompt directly -- this skill reports findings, it does not rewrite.
 - Not for merely filing or logging a prompt (that is prompt-archive) -- only use this when the ask is about whether the prompt works.
 - Also use for "should this prompt be a skill or an agent?" once there is a concrete prompt to judge.
 - Not for a skill's `description:` frontmatter, a pasted `Use when…` trigger-description block, or SKILL.md text under `.claude/skills/`, and not for debugging a skill (including this one) itself -- reviewing a skill as a document is `skill-static-audit`; a pasted block that opens with `Use when…` and ends in `NOT for…` is a skill description, so hand it to `skill-static-audit` without testing it; if it is still unclear whether a pasted block is a prompt or a skill description, ask one question first.

@@ -86,28 +86,11 @@ Never silently expand ("while I'm in here, I'll also...") without naming that it
 
 ## Routing boundaries (full)
 
-The frontmatter `description` is truncated in the skill listing, so the full boundary rules live here (moved verbatim from the original description):
-
 - Triggers on vague one-line build requests too ("make me a dashboard", "write me a script that…") — a detailed-looking request is not the same as a written spec, and Step 2a runs a short scoped interview to draft one; a whole-system one-liner ("build an app for my gym") still goes to design-scoping first per Step 1, and Step 2a only adds the build-level spec afterward.
-- Not for a single, fully-specified, one-shot request (fix this bug, add this function, answer this question) — nothing to gate when the request already is the spec.
 - Not system-design specifically — purpose/audience/functional/non-functional numeric targets for a whole system is `design-scoping`'s front door; this skill treats a settled design-scoping scope statement as an equivalent input and doesn't re-gate it, but still wants the build-level spec (tradeoffs actually weighed, an explicit out-of-scope line, a controlled-experiment slice) once implementation starts.
-- Not a one-shot "which of several readings did you mean" check on a single request — `ambiguity-gate` (resolve the reading first; once intent is settled as "build this multi-step thing," this skill's spec requirement applies next, not a second clarifying question).
+- Not a one-shot "which reading did you mean" check (which of several readings the user meant) on a single request — `ambiguity-gate` (resolve the reading first; once intent is settled as "build this multi-step thing," this skill's spec requirement applies next, not a second clarifying question).
 - Not auditing the blast radius of one already-decided change against the existing codebase's dependents — `change-surface-audit` (this skill audits the build against its OWN stated plan over time, not the codebase against a proposed change).
 - Not the end-of-session context dump — `session-handoff` (this skill's spec is what a handoff should point back to, not a replacement for writing one).
 - Not a "walk me through it / I've never done this" setup or procedure the user will perform and repeat themselves — that's `learning-gate` → `guided-walkthrough.md`; this gate resumes only if the task grows into an unattended multi-file or multi-session build.
 - Not the delivery cadence of an already-specced build — one file at a time, paced to comprehension so the user learns the codebase — that's `incremental-build-pacing`, which starts only once this gate has settled the spec and named a slice; scope and the Step 4 drift checks stay here, that skill only sequences and explains the increments.
-- A settled spec's substantial slices can be handed to the `spec-executor` subagent to run unattended in an isolated worktree (Step 3a) — that subagent executes, it does not decide scope, and its report is a Step 4 checkpoint like any other, never a self-certifying approval.
 - Not for choosing a build's technologies out loud with tradeoffs and an ADR (`tech-decision-walkthrough`) -- settle the stack there, then spec here; not for a per-file orientation doc after files are created (`codebase-file-orientation`); not for a user stuck before starting anything (`entry-point-first`) -- a stalled start gets one low-resistance rep, not a spec interview.
-- Use before starting substantial AI-assisted implementation — a feature, refactor, new system, or script spanning multiple files, turns, or sessions — when no written spec exists.
-- Triggers on vague one-line build requests too ("make me a dashboard", "write me a script that…"); a detailed-looking request is not a spec, and Step 2a runs a short scoped interview to draft one.
-- A whole-system one-liner ("build an app for my gym") goes to design-scoping first per Step 1.
-- Also use mid-build at a checkpoint (new phase, session resuming after a gap, an action touching something the original ask never mentioned) to check work against the spec.
-- Not for a single fully-specified one-shot request (fix this bug, add this function).
-- Not system-design scoping — `design-scoping`.
-- Not a "which reading did you mean" check — `ambiguity-gate`.
-- Not one change's blast radius — `change-surface-audit`.
-- Not the end-of-session dump — `session-handoff`.
-- Not a "walk me through it" setup — `learning-gate` → `guided-walkthrough.md`.
-- Not paced delivery of a specced build — `incremental-build-pacing`.
-- Slices of a settled spec go to the `spec-executor` subagent (Step 3a).
-- Not for `tech-decision-walkthrough`, `codebase-file-orientation`, or a stalled start — `entry-point-first`.

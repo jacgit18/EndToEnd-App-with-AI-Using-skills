@@ -128,12 +128,4 @@ Repo-agnostic. Reads `docs/architecture/decisions/` for context and writes new A
 
 ## Routing boundaries (full)
 
-- A gated decision for choosing the interaction style of one API surface — REST/HTTP-JSON, GraphQL, gRPC, WebSocket, Server-Sent Events, webhooks, or async messaging — plus the sync-vs-async and request-response-vs-push questions that come with it.
 - Use when someone is picking or changing how a service exposes itself or how two systems talk: "REST or GraphQL", "should we use gRPC", "how should the frontend talk to the backend", "we need real-time updates — websockets?", "webhooks vs polling", "is our API over-fetching", or proposes a style and wants it checked ("we're going GraphQL, right?").
-- It forces the surface, the consumers and their platform constraints, the interaction shape (request/response, server-push, streaming, bidirectional, events), the query-shape and latency needs, and public-vs-internal to be stated by the user before any protocol is recommended, then records the outcome as an ADR.
-- Not for where the authoritative API definition lives (contract-first vs code-first; OpenAPI / GraphQL schema / protobuf as source of truth) — that is `database-architecture`.
-- Not for whether to split into services or where service boundaries go — that is `microservices-decision`.
-- Not for cost-sizing against request volume or managed-gateway-vs-self-hosted — that is `technical-cost-decision`.
-- Not for whether a gateway or backend-for-frontend sits in front of multiple services/clients at all — that is `bff-gateway-placement`, which this skill hands the new layer's own surface style to once its topology is picked.
-- Not for how an AI agent should call an existing API (REST vs MCP vs a plain tool function, Postman/OpenAPI as agent tooling) — that is `api-tooling-selection`.
-- Not for whether a given API change is breaking or what its blast radius is — that is `change-surface-audit`, which defers the versioning scheme here.

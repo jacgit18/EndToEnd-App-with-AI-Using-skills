@@ -102,9 +102,6 @@ Use when the user wants a record of what they asked during this session (beyond 
 
 ## Routing boundaries (full)
 
-- Saves prompts to this vault — either archiving a keeper prompt into the .claude/_Prompts/ library as a properly formatted markdown file, or logging the prompts from the current session to a dated log.
 - Use when the user says "save this prompt", "archive this prompt", "add this to my prompt library", "keep this prompt", "that prompt was good, store it", or wants the session's prompts written to a log / "dump my prompts" / "log the prompts from this chat".
-- Every submitted prompt is ALSO captured automatically by the UserPromptSubmit hook in .claude/settings.json (scripts/hooks/log-prompt.sh) — this skill is the on-demand and curated path on top of that.
 - NOT for evaluating whether a prompt works well (that is prompt-tester), NOT for writing a new prompt from scratch (that is `prompt-authoring`), and NOT for recording a resolved coding bug/problem for a learning-worthiness verdict (that is `problem-journal`, which reads these dated logs as a recurrence-search corpus but writes its own separate file).
-- This is the repo's own `prompt-archive`; the plugin skill `anthropic-skills:prompt-archive` is a synced near-copy of it with the same target, so either firing is safe.
 - NOT for reporting which skills were invoked (that is `skill-usage-log`, which reads the separate `*-skills.md` logs) and NOT for preserving session state to resume later (that is `session-handoff`).

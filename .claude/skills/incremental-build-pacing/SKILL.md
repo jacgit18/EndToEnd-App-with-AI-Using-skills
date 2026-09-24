@@ -152,13 +152,6 @@ delivery in chat. Copy the `incremental-build-pacing/` directory into another re
 
 ## Routing boundaries (full)
 
-- Use when the user is doing AI-assisted implementation of an already-planned build and wants it delivered slowly — one file or one small unit at a time, pausing so they can absorb each piece — instead of a large multi-file batch dropped in one turn.
 - Triggers on "build this file by file", "go one file at a time", "slower, I want to follow along", "walk me through building this so I learn the codebase", "don't generate it all at once", or a mid-build request to slow the cadence down.
-- Sets the increment size (one file / one cohesive unit like a model + its migration / one thin vertical slice), the checkpoint cadence, and whether Claude writes each piece for the user to review or shows it for the user to type, then runs a write → explain → check-understanding → next loop.
-- NOT for deciding what to build or bounding scope — a spec, slice, or story must already exist; if it doesn't, that's `spec-drift-gate` (multi-file / multi-session build with no written spec) or `design-scoping` (a whole system to scope) first, and this skill governs delivery only once that is settled.
-- NOT for classifying whether the user wants to learn at all, or setting the assistance-level ceiling — that's `learning-gate`, which routes here from its Step 3 table once intent is learning and the rep is "understand a build as it's assembled".
-- NOT a procedure the user performs entirely with their own hands — environment setup, wiring two tools together, a runbook they'll repeat — that's `learning-gate` → `guided-walkthrough.md`; this skill covers a build where Claude may still write the code and the point is comprehension-paced delivery.
-- NOT bug-fixing, an optimization, or an architecture decision that comes up mid-build — `problem-solving-gates`.
-- Drops the pacing immediately on "just build it" / "execution mode".
-- NOT for choosing the build's stack or technologies (`tech-decision-walkthrough` first, then pace the build here);
 - NOT for a user stalled before starting who needs a first move (`entry-point-first`) -- this skill assumes the user is mid-flow on a settled plan.
+- NOT for classifying whether the user wants to learn at all, or setting the assistance-level ceiling — that is `learning-gate`, which routes here from its Step 3 table once intent is learning and the rep is "understand a build as it's assembled".

@@ -78,8 +78,6 @@ Omit a section entirely if it has nothing real to put in it (e.g., no firm decis
 
 ## Routing boundaries (full)
 
-- Creates a handoff file to preserve context when a session is ending, getting long, about to be compacted, or work will resume later/in a new chat.
-- Captures goals, current state, files touched, what changed, and next steps in a structured markdown file.
 - Trigger this proactively — don't wait to be asked — whenever the conversation is running long, the user says something like "let's pick this up later," "I'll continue this tomorrow," "new chat," "wrap up," "save my progress," or when you notice context is getting heavy (many files touched, many decisions made, long back-and-forth).
 - Also trigger when the user explicitly asks for a "handoff," "session summary," "context dump," or "recap file." Not for a post-mortem of a single already-resolved bug (symptom / cause / fix / worth-learning) — that's `problem-journal` (Journal mode); this skill preserves in-progress context so work can resume, it doesn't retrospect finished debugging.
 - Not for saving a prompt or logging session prompts (that is `prompt-archive`), not for recording a judgment call to check later (that is `decision-journal`), and not a substitute for the written spec of a multi-file build (that is `spec-drift-gate`, which a handoff links to rather than duplicates).

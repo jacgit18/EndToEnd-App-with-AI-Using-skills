@@ -93,14 +93,4 @@ Repo-agnostic. Produces no artifact — it gates a coding action. Copy the `test
 
 ## Routing boundaries (full)
 
-The frontmatter `description` is kept short for the skill listing budget; the full original description is preserved here.
-- A rep gate for writing tests — a sibling of `problem-solving-gates`.
-- When the user asks Claude to write or help write tests for a specific piece of code and there is no execution signal ("I know what these need", a port, a deadline on routine test production) — a bare request naming specific code and no charter defaults to the gate, since nothing says the user is just batch-producing — this skill makes them first state a test charter — the behavior or risk each test protects, the failure modes worth covering, the seam (what to stub versus exercise for real), and what "done" looks like — before Claude writes any test.
-- If the charter is missing, Claude asks for it and stops rather than inventing the assertions, because deciding what to assert is the rep.
-- Use whenever the user wants tests written for a specific piece of code — "write tests for this function/component", "help me test this function", "what should I test here", "add unit tests for X" — and hasn't already said what the tests should verify.
-- Not for resolving what a bare, contextless "can you test this" even asks for (write tests? run them? exploratory check?) — that is `ambiguity-gate`, and this gate takes over once writing tests for identified code is the established intent.
-- Not for the test mix / levels / pipeline of a whole surface — that is `test-strategy`.
-- Not for the coverage percentage — that is `coverage-policy`.
-- Not for finding which cases exist for a whole feature, endpoint, or plan, or for gap-reviewing a case list — that is `test-case-discovery` (this gate owns "write tests for this function" from someone building the skill).
-- Not for reviewing tests that already exist — that is `code-review`.
-- On plain execution requests from someone who clearly knows the material (explicit execution signal, or a charter already stated), this gate does not apply; an unstated skill level is not such a signal.
+- The gate applies when there is no execution signal ("I know what these need", a port, a deadline on routine test production); a bare request naming specific code and no charter defaults to the gate, and an unstated skill level is not an execution signal.

@@ -199,8 +199,5 @@ Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
 
 ## Routing boundaries (full)
 
-- Stage, commit, and push work to GitHub with a commit message built from the actual diff — an imperative subject, a body that says why the change was made, and the required co-author trailer.
 - Use when the user says "commit this", "commit and push", "push my changes", "save this to git", "commit with a good message", "write the commit message", or finishes a chunk of work and wants it in version control.
-- It reads `git status` / `git diff` / recent `git log` first, matches the repo's existing message convention, groups unrelated changes into separate commits, runs a pre-commit sanity pass (secrets, .env files, large binaries, stray debug code, merge markers), branches off the default branch when the user hasn't said to commit straight to it, and confirms the message and push target before doing anything outward-facing.
-- It deliberately does NOT open pull requests, resolve merge conflicts, rewrite published history (rebase / amend / force-push), or decide how a branch's history should be integrated (merge vs. squash vs. rebase vs. fast-forward) — that last one is `history-integration-strategy`.
 - It also does not write per-file documentation for newly added modules — `codebase-file-orientation` may offer to author those orientation docs before the commit, and never blocks or delays it.

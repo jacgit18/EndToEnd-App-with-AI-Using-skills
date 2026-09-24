@@ -179,15 +179,6 @@ This changes the depth of discussion. It does not move the Readiness Block, and 
 ## Routing boundaries (full)
 
 - Use when someone is deciding whether to adopt microservices, split a monolith, extract or add another service, or design service boundaries — including when the decision is presented as already made ("our CTO decided", "we've made the call", "don't relitigate it", "just tell me how to split it"), when repos or CI for services are already scaffolded, or when the ask is for a service list, service boundaries, data ownership across services, how many services to have, or a decomposition ordering (which service first; cutover mechanics are `migration-cutover`).
-- Also covers repo layout — one repo, repo-per-service, or a hybrid — including monorepo tooling choice (Nx/Turborepo/Bazel), CODEOWNERS, affected-graph CI, and version-skew-vs-dependency-hell, since the layout follows mechanically from the same headcount/ownership/independent-deploy facts this skill already gates on; also use when someone proposes a service count and wants it checked.
 - Also covers frontend decomposition into micro-frontends — one frontend app, micro-frontends per team, or a hybrid, and the integration technique (server-side / client-side / edge composition, module federation) — since it's the same headcount-and-ownership arithmetic applied to the client side; use when someone says "should we split the frontend into micro-frontends", "each frontend team wants their own deploy", or "should the mobile/web frontend be one app or several".
-- Not for diagnosing why a specific endpoint is slow.
 - Not for database sharding or shard-key choice, or replication/partitioning topology (that is `data-tier-operations`), even when phrased as an already-made decision — "we're sharding, just tell me the key" is a data-tier question, not a service-split one.
-- Not for what layer sits between clients and backend services — a shared API gateway, a Backend-for-Frontend, or direct-to-service calls — that is `bff-gateway-placement`, which takes this skill's service boundaries as input.
-- Not for a greenfield system with no stated scope yet — that is `design-scoping` first, which sequences into this skill.
-- Not for how a new version of an existing service is rolled out — that is `deployment-strategy`.
-- Not for executing a migration or strangler-fig extraction once the target boundaries are chosen — that is `migration-cutover`, which takes this skill's boundaries as input.
-- Not for the wire protocol between services — that is `api-interface-style`.
-- Not for the dollar cost of a service count or platform — that is `technical-cost-decision`.
-- Not for what unit of work runs as a function vs container vs long-running service — that is `serverless-execution-model`, which takes this skill's boundaries as given.
 - Not for the authorization model across services or tenants -- roles, permissions, tenant isolation, where checks are enforced (`access-control-modeling`); this skill only decides where the service boundaries fall.

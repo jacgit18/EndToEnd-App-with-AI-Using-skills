@@ -129,25 +129,5 @@ Repo-agnostic. Reads and writes `docs/architecture/decisions/` alongside the oth
 
 ## Routing boundaries (full)
 
-The frontmatter `description` is truncated in the skill listing, so the full boundary rules live here (moved verbatim from the original description):
-
-- Not for whether to split into services at all — that is `microservices-decision`, which this skill assumes as already decided; it takes the service count and call graph as input, not an output.
-- Not for exactly which resilience mechanisms run and where once the mesh-or-not decision is made (rate limits, circuit breakers, retries, bulkheads) — that is `resilience-strategy`, which already treats a service mesh as one of four control-placement options and consumes this skill's yes/no as a given fact.
-- Not for the IAM/permission grant authorizing one service to call another — that is `cloud-iam-boundary`; this skill decides whether an encrypted, discoverable transport exists between services at all (does mTLS exist), not who is authorized once that pipe exists — the two compose.
-- Not for canary/blue-green rollout mechanics for a single deployable's release — that is `deployment-strategy`, which this skill's mesh-or-not decision determines whether native traffic-splitting tooling is even available for.
-- Not for what layer sits between external clients and backend services (a gateway or BFF) — that is `bff-gateway-placement`, a client-to-service (north-south) decision; this skill is about service-to-service (east-west) traffic exclusively.
-- Not for an unscoped, not-yet-designed system — that is `design-scoping` first, which sequences a system with a named service topology back here.
-- A bare conceptual question with no named system ("what is a service mesh", "service mesh vs load balancer, what's the difference") is answered directly, no gate — the gate exists for a pending adoption decision on a named service topology, not for explaining the vocabulary.
-- Not for the per-invocation compute primitive or retry/DLQ contract of a function or task — that is `serverless-execution-model`.
-- Not for designing the signals, SLIs or alerting a mesh's free metrics would feed — that is `observability-strategy`.
-- Gated decision for whether to adopt a service mesh (Istio, Linkerd, Consul Connect) versus lighter alternatives, and which capability is being bought — mTLS, traffic control, uniform retries/circuit-breaking, or free observability — plus the service-discovery mechanism itself.
 - Use when someone says "should we adopt a service mesh", "do we need Istio or Linkerd", "how do our services find each other", "should we use Eureka/Consul for service discovery", "do we need mTLS between services", "our services call each other by hardcoded hostnames", "should this be a sidecar or a library", "service mesh vs load balancer", or proposes a mesh to check.
-- Forces the specific capability driving the ask (not "it's standard"), service count and topology, platform and control-plane ownership before recommending; records an ADR.
 - A bare conceptual question ("what is a service mesh", "service mesh vs load balancer, what's the difference") is answered directly.
-- Not for whether to split services — `microservices-decision`.
-- Not for resilience mechanisms once decided — `resilience-strategy`.
-- Not for service-to-service authorization — `cloud-iam-boundary`.
-- Not for rollout — `deployment-strategy`.
-- Not for client-to-service layers — `bff-gateway-placement` (this is east-west only).
-- Not for an unscoped system — `design-scoping`.
-- Not for `serverless-execution-model` or `observability-strategy`.

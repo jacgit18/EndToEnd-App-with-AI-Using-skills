@@ -56,13 +56,5 @@ A bare "what's the difference between Postman and MCP" with no real integration 
 
 ## Routing boundaries (full)
 
-- Use when someone is deciding how an AI agent should integrate with an external system it needs as a live tool — an HTTP API, or a database reached via a GUI-driven or MCP tool (e.g.
-- Beekeeper Studio's MCP integration) rather than through the app's own persistence code — and whether Postman, OpenAPI, MCP, or a direct Python/SDK call (httpx, requests, a vendor SDK) is the right piece for a given job.
 - Triggers: "should my agent use Postman", "is Postman part of an AI workflow", "does MCP replace calling the API directly", "how should my agent call this API", "should I hook my agent up to Beekeeper's MCP server to explore/verify data or migrations", "what's the difference between Postman, OpenAPI and MCP", or proposes a stack and wants it checked ("I'll have the agent hit Postman collections directly in production").
-- It forces two things to be named before recommending anything: (1) whether the target system is already tested/stable or still unverified — an unverified API gets a Postman/OpenAPI validation pass *before* any agent tool is wired to it, never after — and (2) whether the agent's actual job is *using* the system to get work done (→ a plain tool function per capability, wrapped in MCP only once more than one agent/client needs the same tool set) or *developing, testing, or debugging* that system for a human (→ Postman/GUI-client-style tooling becomes a first-class capability the agent drives, not a pre-step you do before building it).
-- Not for which wire protocol or interaction style an API surface itself should expose — REST, GraphQL, gRPC, WebSocket, SSE, webhooks — that's `api-interface-style`.
-- Not for where the authoritative API contract lives (database-first / code-first / contract-first, OpenAPI as source of truth) — that's `database-architecture`.
 - Not for how *application code itself* reads and writes a relational database in production — including when that's phrased as "MCP vs direct" for a database (an MCP database server vs a driver call baked into the app) — that's `data-access-layer`; this skill instead owns an *agent's own* interactive database tool, a different question.
-- Not for what an automated test suite uses as its database (Testcontainers/shared instance/substitute/mock) — that's `database-test-tooling`.
-- Not for which LLM/model handles a given call — that's `model-routing-decision`.
-- Not for cost-sizing the integration once volume and shape are known — that's `technical-cost-decision`.

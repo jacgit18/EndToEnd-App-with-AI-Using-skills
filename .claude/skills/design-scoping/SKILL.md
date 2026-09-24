@@ -228,17 +228,6 @@ it sits among the sibling skills.
 
 ## Routing boundaries (full)
 
-- The front-door gate for a system-design effort — it refuses to start designing until the user has stated the purpose and the audience, the functional requirements plus an explicit out-of-scope list, the non-functional numeric targets (RPS ceiling, concurrency, latency budget, uptime, error budget, cost cap), the constraints (team, timeline, existing stack, target platforms, compliance regime — GDPR / HIPAA / PCI DSS), and which one or two features are worth designing deeply.
-- Its output is a written scope statement that then sequences into the specialist skills — `capacity-estimation` for the numbers, `microservices-decision` for the service split, `api-interface-style` for the surface, `database-architecture` for where the data lives, `failure-mode-analysis` for the failure surface.
 - Use when someone says "design a system for X", "architect a Y", "we're building a new service — how should it be structured", "I'm building X, where do I start", "what's the architecture for this", "scope this project", or hands over a design doc and wants its scope pressure-tested.
 - It is NOT for resolving what a vague request even asks for ("help with my system", "make the architecture better", "clean this up") — that is `ambiguity-gate`, and this skill takes over only once "design or architect a system or feature" is the established intent.
-- It is NOT for judging or sizing an already-defined ticket — that is `ticket-evaluation`; this skill elaborates scope on an under-specified design ask.
-- It does not do the deep design itself — it decides which one or two decisions deserve it and hands those to the specialist skills.
-- It is also NOT for rehearsing or practicing system-design communication — "walk me through this design," "give me a mock system design interview," "help me defend microservices over a monolith here" — even though the vocabulary can sound identical to a real design ask; the tell is stakes and intent, a real system someone is about to build vs. interview prep or practice on a hypothetical.
-- That's `system-design-communication`.
-- Not for the candidate-by-candidate technology conversation across a build's decisions — that is `tech-decision-walkthrough`, downstream of this skill's decision list.
-- Not for gating a multi-file build behind a written spec or diffing work against it — that is `spec-drift-gate`; not for pacing file-by-file delivery of a chosen design — that is `incremental-build-pacing`.
-- Not for auditing a shipped product's disclosures against its practice — that is `disclosure-gap-audit`; a compliance regime here is only an input constraint.
-- Not for sizing the dollar cost of a stated cost cap — that is `technical-cost-decision`.
-- Not for turning the settled functional list into sprint-ready backlog stories — that is `user-story-decomposition`.
-- NOT for a user stalled or overwhelmed before beginning, rather than asking for an architecture — that is `entry-point-first`.
+- It is also NOT for rehearsing or practicing system-design communication — "walk me through this design," "give me a mock system design interview," "help me defend microservices over a monolith here" — even though the vocabulary can sound identical to a real design ask; the tell is stakes and intent, a real system someone is about to build vs. interview prep or practice on a hypothetical. That's `system-design-communication`.

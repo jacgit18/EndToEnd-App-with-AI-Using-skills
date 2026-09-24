@@ -142,27 +142,5 @@ Repo-agnostic. Reads and writes `docs/architecture/decisions/` alongside the oth
 
 The frontmatter `description` is truncated in the skill listing, so the full boundary rules live here (moved verbatim from the original description):
 
-- Not for the dollar sizing of an observability vendor or self-hosted stack (per-host / per-GB / per-span / per-active-series pricing) — that is `technical-cost-decision`.
-- Not for diagnosing one specific slow endpoint right now — that is `problem-solving-gates` (Rubber Duck for a bug, Optimization for a measured-slow path).
 - Not for triaging which observation layer to check during one live incident right now — that's `debugging-layer-selection`, for the ad hoc/reactive reading of "we can't tell why prod is slow" when existing logs/traces/DevTools simply haven't been checked yet, as distinct from this skill's "no durable way to see this at all" reading of the same complaint.
-- Not for whether to split services — that is `microservices-decision` (this skill consumes that shape).
-- Not for what to shed or how to degrade under overload, or the rate-limit / circuit-breaker / bulkhead design — that is `resilience-strategy`, which consumes the SLIs this skill defines.
-- Not for the health signal a progressive rollout gates on beyond defining the SLIs — the rollout mechanism is `deployment-strategy`.
-- Not for security/audit logging as a compliance control — name it and defer.
-- Not for enumerating a design's failure surface before deciding what to observe — that is `failure-mode-analysis`, whose impact ranking and detection-gap rows this skill consumes.
-- Not for interpreting live numbers (percentiles vs averages, utilization, error-budget burn during an incident) — that is `reliability-math`, which consumes the SLIs this skill defines.
-- Not for whether to adopt a mesh for its free RED metrics/tracing — that is `service-mesh-adoption`.
-- Not for what is disclosed about logging in a privacy policy — that is `disclosure-gap-audit`, which defers what is safe to log here.
-- Gated decision for how a system is made observable — signals (metrics, logs, traces, profiling), SLIs/SLOs and error budget, instrumentation (OpenTelemetry / vendor agent, collector), sampling and cardinality, alerting policy, retention tiers, self-hosted vs managed.
 - Use when someone says "we need monitoring / observability", "add Datadog / Grafana / Honeycomb", "we should have dashboards", "set up distributed tracing", "what should we alert on", "our logs are useless in an incident", "we can't tell why prod is slow", "incidents take hours to diagnose", "we're committing to an SLA", or proposes an observability approach to check.
-- Forces the triggering pressure, user-facing SLIs, architecture shape, request volume and operational capacity before recommending; records an ADR.
-- Not for vendor dollar sizing — `technical-cost-decision`.
-- Not for one slow endpoint now — `problem-solving-gates`.
-- Not for triaging which layer to check in one live incident — `debugging-layer-selection` (this skill's reading is "no durable way to see this at all").
-- Not for service splits — `microservices-decision`.
-- Not for load shedding or circuit breakers — `resilience-strategy`.
-- Not for rollout gating — `deployment-strategy`.
-- Not for failure enumeration — `failure-mode-analysis`.
-- Not for live-number interpretation — `reliability-math`.
-- Not for a mesh's metrics — `service-mesh-adoption`.
-- Not for privacy-policy logging — `disclosure-gap-audit`.
