@@ -1,0 +1,54 @@
+# Production Caddyfile (used by compose.prod.yaml; the dev stack keeps ./Caddyfile).
+#
+# Traffic path:  browser --HTTPS--> Cloudflare --tunnel--> cloudflared --HTTP--> this Caddy
+#                                                                            --> backend / static files
+# TLS ends at Cloudflare's edge, so Caddy speaks plain HTTP here and ":80" is
+# right — Caddy only requests certificates when it's given a real domain name.
+#
+# ── If you were serious about this (paid / sturdier alternatives) ─────────────
+#  * Domain: buy one (~$10-12/yr from Cloudflare Registrar, Porkbun, Namecheap)
+#    instead of a random *.trycloudflare.com hostname that changes on restart.
+#    With a domain on Cloudflare you can run a *named* tunnel (still free) with
+#    a stable URL — or drop the tunnel, point an A record at a VPS, replace
+#    ":80" below with "your.domain", and Caddy issues + renews a Let's Encrypt
+#    certificate by itself (that was ADR-0012's original design).
+#  * Host: a ~$5-7/mo VPS (Hetzner, DigitalOcean) so the app is up when your
+#    laptop is off. This file stays the same; only the "how does traffic reach
+#    Caddy" part changes.
+# ──────────────────────────────────────────────────────────────────────────────
+
+{
+	# Trust X-Forwarded-For only from private ranges (cloudflared reaches Caddy
+	# over the Compose network). Caddy then passes the real visitor IP through
+	# to the backend instead of cloudflared's address — without this, the login
+	# rate limiter would put every visitor in one bucket.
+	servers {
+		trusted_proxies static private_ranges
+	}
+}
+
+:80 {
+	handle /api/* {
+		reverse_proxy backend:8000
+	}
+	handle /health {
+		reverse_proxy backend:8000
+	}
+
+	# Everything else is the built React app (frontend/Dockerfile.prod copies the
+	# Vite build into /srv). try_files makes client-side routes like /login fall
+	# back to index.html instead of a 404 on refresh.
+	handle {
+		root * /srv
+		try_files {path} /index.html
+		file_server
+	}
+
+	# Cheap hardening; the app is same-origin so none of these break it.
+	header {
+		X-Content-Type-Options nosniff
+		X-Frame-Options DENY
+		Referrer-Policy same-origin
+		-Server
+	}
+}

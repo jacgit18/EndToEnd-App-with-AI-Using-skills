@@ -1,0 +1,107 @@
+# Production-style stack: run it ALONE, not layered on compose.yaml —
+#   docker compose -f compose.prod.yaml up -d --build
+# (compose.yaml is the dev stack: bind mounts, --reload, Vite, published db/backend
+# ports. Nothing of that belongs here, so this is a standalone file instead of an
+# overlay that would need to un-set half of it.)
+#
+# Free deployment (ADR-0012 amended): this runs on your own machine and a
+# Cloudflare *quick tunnel* gives it a public HTTPS URL. No account, no domain,
+# no open router ports. The trade-off: it's only up while this machine is, and
+# the trycloudflare.com hostname changes whenever the tunnel container restarts.
+#
+# ── If you were serious about this ────────────────────────────────────────────
+#  * Always-on host: a ~$5-7/mo VPS (Hetzner, DigitalOcean). Same file works
+#    there; delete the `cloudflared` service and publish Caddy on 80/443 instead.
+#  * Stable URL: buy a domain (~$10-12/yr) and use a *named* Cloudflare tunnel
+#    (free with the domain on Cloudflare) — replace the `command:` below with
+#    `tunnel run` and a TUNNEL_TOKEN — or point an A record at the VPS and let
+#    Caddy issue the certificate.
+#  * Database: a managed Postgres (Neon and Supabase have free tiers; paid plans
+#    add point-in-time restore) replaces the `db` service and the backup script.
+# ──────────────────────────────────────────────────────────────────────────────
+
+# A distinct project name keeps this stack's containers and volumes separate
+# from the dev stack's, so bringing both up can't clobber the dev database.
+name: finance-prod
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: finance
+      # No default on purpose: `:?` makes Compose refuse to start if it's unset,
+      # instead of quietly booting with a guessable password like dev's "finance".
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in finance-dashboard/.env}
+      POSTGRES_DB: finance
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U finance"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    # No `ports:` — only the backend (over the Compose network) and the backup
+    # script (via `docker compose exec`) ever need to reach Postgres.
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    # AUTH_EMAIL / AUTH_PASSWORD_HASH / SESSION_SECRET. Same "$$" escaping rule
+    # as backend/.env.docker.example (Compose mangles single "$" in env_file
+    # values). Real values, gitignored — see docs/deploy.md.
+    env_file:
+      - ./backend/.env.prod
+    environment:
+      DATABASE_URL: postgresql+psycopg://finance:${POSTGRES_PASSWORD}@db:5432/finance
+      # env=prod turns on the `Secure` session-cookie flag (app/config.py) and
+      # turns off SQL echo. The tunnel serves HTTPS, so Secure cookies work.
+      ENV: prod
+      # uvicorn reads this env var as --forwarded-allow-ips. It's an env var, not
+      # a CLI flag, because the command below runs inside `sh -c "..."` where a
+      # quoted '*' arrives as the literal characters '*' and silently matches
+      # nothing (found the hard way: logs showed Caddy's IP for every request).
+      FORWARDED_ALLOW_IPS: "*"
+    # Apply pending migrations, then serve. --proxy-headers + FORWARDED_ALLOW_IPS
+    # (above) make uvicorn trust X-Forwarded-For, so request.client.host (what the
+    # login rate limiter keys on) is the real visitor and not Caddy. "*" is acceptable
+    # only because the backend publishes no port: the sole thing that can reach
+    # it is Caddy, on this private network. Publish it and "*" becomes spoofable.
+    command: >
+      sh -c "uv run alembic upgrade head &&
+             uv run uvicorn app.main:app --host 0.0.0.0 --port 8000
+             --proxy-headers"
+
+  web:
+    # Caddy + the built React app (frontend/Dockerfile.prod). Serves the static
+    # site and proxies /api and /health to the backend (Caddyfile.prod).
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+    restart: unless-stopped
+    depends_on:
+      - backend
+    volumes:
+      - ./Caddyfile.prod:/etc/caddy/Caddyfile:ro
+    ports:
+      # Loopback only: lets you smoke-test at http://localhost:8080 on this
+      # machine without exposing anything to your LAN. The public path is the
+      # tunnel below, which reaches `web` over the Compose network.
+      - "127.0.0.1:8080:80"
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    depends_on:
+      - web
+    # Quick tunnel: prints a https://<random>.trycloudflare.com URL in its logs —
+    #   docker compose -f compose.prod.yaml logs cloudflared | grep trycloudflare
+    # Cloudflare documents quick tunnels as for testing/dev, with no uptime
+    # guarantee — fine for a personal tool, not for anything you depend on.
+    command: tunnel --no-autoupdate --url http://web:80
+
+volumes:
+  db-data:

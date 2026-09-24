@@ -1,0 +1,33 @@
+# Production image: a multi-stage build, so the final image holds the compiled
+# static site and Caddy — no Node, no node_modules, no source. (The dev image,
+# ./Dockerfile, runs the Vite dev server instead; compose.yaml still uses that.)
+#
+# Build context is ./frontend, so the Caddyfile can't be COPYed in from the
+# repo root — compose.prod.yaml mounts Caddyfile.prod over /etc/caddy/Caddyfile.
+
+# ── Stage 1: compile ──────────────────────────────────────────────────────────
+FROM node:20-slim AS build
+
+WORKDIR /app
+
+# Dependency files first so this layer is cached when only app code changes.
+COPY package.json package-lock.json ./
+RUN npm ci
+
+COPY . .
+# `npm run build` = type-check (tsc --noEmit) then `vite build` -> /app/dist.
+# A type error fails the image build, so a broken frontend can't ship.
+RUN npm run build
+
+# ── Stage 2: serve ────────────────────────────────────────────────────────────
+# Only /app/dist crosses over; everything else in stage 1 is discarded.
+FROM caddy:2-alpine
+
+COPY --from=build /app/dist /srv
+
+# Caddy is the entrypoint of the base image; its config comes from the mounted
+# Caddyfile.prod. Serving static files + proxying /api is all it does here.
+#
+# Serious-deployment note: for real traffic you'd put this behind a CDN. Cloudflare's
+# free plan already does that when you use a domain on Cloudflare; a paid
+# alternative is bunny.net or CloudFront (pay per GB, cents at hobby scale).
