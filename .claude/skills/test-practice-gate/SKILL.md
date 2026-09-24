@@ -1,6 +1,6 @@
 ---
 name: test-practice-gate
-description: Rep gate for writing tests: before Claude writes any, the user states a test charter (behavior or risk, failure modes, seam, done). Triggers: "write tests for this function", "what should I test here", "add unit tests for X". Not test mix (`test-strategy`), coverage percentage (`coverage-policy`), case discovery (`test-case-discovery`), or `ambiguity-gate` for a bare "can you test this".
+description: Rep gate: before Claude writes tests, the user states a test charter (risk, failure modes, seam, done). Triggers: "write tests for this function", "help me test this function/component", "what should I test here", "add unit tests for X". Not test mix (`test-strategy`), coverage percentage (`coverage-policy`), case discovery (`test-case-discovery`), or `ambiguity-gate` for a bare "can you test this".
 ---
 
 # Test Practice Gate
