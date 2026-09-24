@@ -51,6 +51,7 @@ assumptions and defending them is the reasoning rep; the arithmetic is mechanica
 - **What to measure once it is running** — the SLIs, the metric label cardinality budget,
   the log volume, sampling → `observability-strategy`, which takes this skill's request and
   event volumes as an input.
+- **Enumerating what could fail** across a design (beyond the ceiling) → `failure-mode-analysis`, which consumes this skill's "what binds first" line for its performance rows.
 - **Precise sizing** — the estimate is an order-of-magnitude floor. The real numbers come
   from a load test against a built system. The skill says so and stops.
 - **Scoping a brand-new system that has no scope statement yet** — when the user asks for

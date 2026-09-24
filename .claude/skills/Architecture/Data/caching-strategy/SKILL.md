@@ -25,6 +25,7 @@ Take a read path that is slow, expensive, or overloading its source, and decide 
 - **Request-path overload protection** — rate limiting, priority-aware load shedding, circuit breakers, retry budgets, bulkheads on the path a cache miss falls through to → `resilience-strategy`. Cache-specific overload (stampede / penetration / avalanche on a hot key) stays here; "fall back to a stale or cached response when a dependency is down" is a `resilience-strategy` degradation choice whose cache design it hands back here.
 - **Implementation** — the cache client wiring, the invalidation hooks, the warmup job. The skill stops at the ADR.
 - **How app code reads/writes rows** (ORM / query builder / raw SQL) → `data-access-layer`, which hands the cache-or-not question here.
+- **Where a gateway / BFF / reverse proxy sits in the request path** (as opposed to what it caches) → `bff-gateway-placement`, which hands the response-caching question here.
 
 ---
 

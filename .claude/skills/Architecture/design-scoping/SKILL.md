@@ -108,33 +108,19 @@ purpose, a user base, and a set of numeric targets that the whole design then re
 
 ## The significance filter (choosing the deep-dive features)
 
-For gate item 6, use this to decide which decisions deserve deep design now and which are
-acknowledged-and-deferred. Ported from `Architecture/Boundaries of LLD and HLD.md` (a vault note, not in this checkout).
+For gate item 6: which decisions deserve deep design now, which are acknowledged-and-deferred.
+Ask the **blast-radius question** — "if I change this later, how much of the system breaks?"
+Whole system or data model → high-level → **deep-dive now** (these are the 1–2); many
+modules / several teams → maybe, if on the critical path; one function / module → decide
+during implementation. Cross-check with the **who-cares test** (architect → deep-dive
+candidate; team lead → mid; individual dev → not now) and the **migration tell**: if
+changing it later needs a migration plan, data rewrite, or operational change, it was never
+low-level (ORM, serialization format, auth mechanism, primary datastore, service boundaries,
+public API shape all get mislabeled "implementation detail"). A decision that is whole-system,
+an architect's call, and needs a migration to undo is exactly one of the 1–2. This filter is
+*scope of impact*, not *cost to replace* — that axis is `technical-cost-decision`'s.
 
-**The blast-radius question** — "if I change this later, how much of the system breaks?"
-
-| Blast radius | Level | Deep-dive now? |
-|---|---|---|
-| The whole system, or the data model | High-level design | **Yes** — these are the 1–2 |
-| Many modules / several teams | Mid-level | Maybe — if it's on the critical path |
-| One function / one module | Low-level | No — decide it during implementation |
-
-**The "who cares?" test** — who in the org would need to be in the room for this decision:
-
-- An **architect** cares → high-level → deep-dive candidate.
-- A **team lead** cares → mid-level.
-- An **individual developer** cares → low-level → not now.
-
-**The migration tell** — if changing the decision later would require a **migration plan, a
-data rewrite, or an operational change**, it was never low-level design, regardless of how
-small the code change looks. Choosing the ORM, the serialization format, the auth
-mechanism, the primary datastore, the service boundaries, the public API shape — these
-routinely get mislabeled "implementation detail" and then box the system in.
-
-Apply all three. A decision that is whole-system blast radius, an architect's call, and
-would need a migration to undo is exactly one of the 1–2. This filter is about *scope of
-impact*, not *cost to replace* — the reversibility / expense-to-rebuild axis lives in
-`technical-cost-decision`; don't re-derive it here.
+**Read `significance-filter.md`** for the full classifier and worked examples.
 
 ---
 
@@ -148,24 +134,12 @@ If the user opens with scope already sketched (a design doc, a set of requiremen
 
 ## The process
 
-Work `scope-dimensions.md` in order once the gate is satisfied: restate purpose + audience
+Work `scope-dimensions.md` (five dimensions expanded, incl. the compliance cheat-sheet) in order once the gate is satisfied: restate purpose + audience
 and the user-base characterization → confirm the functional list and *write the
 out-of-scope list* → pin each non-functional target to a number or an explicit "not
 constrained" → list the constraints, compliance last and explicitly → run the significance
 filter over the in-scope decisions and pick the 1–2 → assemble the scope statement →
 sequence the deep work to the specialist skills.
-
-Reference files:
-
-- `scope-dimensions.md` — the five dimensions expanded: the purpose/audience framing and
-  the user-base questions (demographics, growth, concurrency, geography, platform
-  diversity, offline needs); the functional / out-of-scope method; the non-functional
-  target checklist with what each number drives downstream; the constraints list with the
-  compliance-regime cheat-sheet (GDPR / HIPAA / PCI DSS / SOC 2 — what each one forces into
-  the design).
-- `significance-filter.md` — the blast-radius / who-cares / migration-tell classifier in
-  full, worked against example decisions, and how it feeds the deep-dive selection without
-  duplicating `technical-cost-decision`'s reversibility axis.
 
 ---
 

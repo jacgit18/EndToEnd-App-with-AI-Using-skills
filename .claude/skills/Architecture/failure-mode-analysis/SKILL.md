@@ -65,6 +65,7 @@ document should do.
   "load exceeds what the system can serve", the *number* (what QPS / storage / bandwidth it
   can take, and what binds first) is `capacity-estimation`. This skill records the mode;
   that skill sizes the threshold.
+- **Computing or interpreting availability / composite-reliability numbers** (nines, serial-vs-parallel compounding, percentiles) → `reliability-math`. This skill records the mode; that skill does the arithmetic.
 - **Fixing the modes** — the register lists and ranks; implementing mitigations,
   refactoring the fragile component, adding the retry logic is separate work, started
   explicitly per row.
