@@ -1,11 +1,16 @@
 """Shared money-field validation for Pydantic schemas (ADR-0005).
 
-Every schema with a Decimal money field wires these two functions in rather
-than each schema re-inventing its own float guard / string serializer. One
-place to fix if the rule ever changes.
+Every schema with a Decimal money field uses these rather than re-inventing its
+own guard: `reject_float` and `as_str` (the float ban and string serializer) and
+the `Money` type for money that *comes in* (the NUMERIC(14,2) rules). One place to
+fix if the rule ever changes.
 """
 
+import re
 from decimal import Decimal
+from typing import Annotated, Any
+
+from pydantic import AfterValidator, BeforeValidator, Field, WithJsonSchema
 
 
 def reject_float(v: object) -> object:
@@ -28,3 +33,36 @@ def as_str(v: Decimal) -> str:
     a Decimal prints the exact stored value; letting the JSON encoder handle
     it directly would emit a bare number, and JSON numbers are floats."""
     return str(v)
+
+
+# A plain decimal in ASCII: optional minus, up to 12 integer digits, up to 2 after the
+# point. Rejects the forms Decimal() would happily parse but that mean nothing to a
+# client: exponents ("1E+3"), padding (" 5 "), "+5", "5.", "1_000", non-ASCII digits.
+_MONEY_RE = re.compile(r"-?[0-9]{1,12}(\.[0-9]{1,2})?")
+
+
+def _plain_money(v: Any) -> Any:
+    if isinstance(v, str) and not _MONEY_RE.fullmatch(v):
+        raise ValueError("money must look like 1234.56 (plain digits, at most 2 decimals)")
+    return v
+
+
+def _two_places(v: Decimal) -> Decimal:
+    # Always store/return the canonical 2dp form, and turn -0 into 0: a handler that
+    # doesn't re-read the row after saving would otherwise echo "-0.00" or "0E-10".
+    return v.quantize(Decimal("0.01")) + Decimal("0.00")
+
+
+# NUMERIC(14,2) as an API rule: max 14 digits, 2 after the point, no NaN/Infinity.
+# Enforced here so a bad amount is a clean 422, not a database error (500) or a
+# silently rounded value ("1.005" -> "1.01"). Negative is allowed on purpose: amounts
+# are signed (negative = money out), so a credit card can start in debt.
+# WithJsonSchema: the OpenAPI doc must say "string", because a JSON number with a
+# decimal point is refused (reject_float) and the generated TS client reads this.
+Money = Annotated[
+    Decimal,
+    BeforeValidator(_plain_money),
+    Field(max_digits=14, decimal_places=2, allow_inf_nan=False),
+    AfterValidator(_two_places),
+    WithJsonSchema({"type": "string", "pattern": r"^-?\d{1,12}(\.\d{1,2})?$"}),
+]

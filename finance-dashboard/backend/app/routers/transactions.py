@@ -7,6 +7,7 @@ edit to this one.
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
+from sqlalchemy.exc import DataError
 from sqlalchemy.orm import Session
 
 from app.db import get_db
@@ -27,7 +28,11 @@ def list_transactions(db: Session = Depends(get_db)) -> list[Transaction]:
 def create_transaction(
     payload: TransactionCreate, db: Session = Depends(get_db)
 ) -> Transaction:
-    account = db.get(Account, payload.account_id)
+    # FOR UPDATE: `balance += amount` below is read-modify-write, so two writers of
+    # the same account (two transactions, or an account edit that moves the starting
+    # balance) must take turns. Unlocked, one silently overwrote the other (measured:
+    # 26 of 60 edit-vs-post races left the balance off by the lost amount).
+    account = db.get(Account, payload.account_id, with_for_update=True)
     if account is None:
         raise HTTPException(status_code=404, detail="account not found")
 
@@ -45,6 +50,12 @@ def create_transaction(
     # read. The reconciliation job (Phase 2) is what catches this ever drifting.
     account.balance += payload.amount
 
-    db.commit()
+    try:
+        db.commit()
+    except DataError:
+        db.rollback()  # balance + amount overflowed NUMERIC(14,2); nothing saved
+        raise HTTPException(
+            status_code=422, detail="resulting balance is out of range for NUMERIC(14,2)"
+        )
     db.refresh(transaction)
     return transaction
