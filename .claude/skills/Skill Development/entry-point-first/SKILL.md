@@ -69,7 +69,7 @@ Once the user is immersed and immediate-impact options are visible, the choice i
 | Now wants a concept taught (e.g. "now explain ownership") after the rep | `learning-gate` |
 | Non-engineering work (a thesis, a plan, a household project) | No sibling owns it — the value call stays in chat: ask the re-evaluate question, then help them weigh immediate impact against long-term value directly |
 
-State the hand-off in one line and stop — do not re-derive their logic. What this skill contributes is the timing fact: the user can now judge value, because they are inside the work.
+State the hand-off in one line and stop — do not re-derive their logic. What this skill contributes is the timing fact: the user can now judge value, because they are inside the work. If the entry rep is done and the work is a multi-file or multi-session build with no written spec, hand to `spec-drift-gate` for the spec before continuing.
 
 ## Never
 

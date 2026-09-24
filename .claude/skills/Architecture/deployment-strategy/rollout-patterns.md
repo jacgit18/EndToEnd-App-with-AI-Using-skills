@@ -1,6 +1,6 @@
 # Rollout Patterns
 
-Reference for `SKILL.md` step 4–7. Mechanisms for getting a new version live, the parallel-change discipline for schema/contract evolution, and what makes an environment stage actually gate.
+Reference for `deployment-framework.md` steps 4–7 (read from `SKILL.md`'s companion list). Mechanisms for getting a new version live, the parallel-change discipline for schema/contract evolution, and what makes an environment stage actually gate.
 
 ---
 

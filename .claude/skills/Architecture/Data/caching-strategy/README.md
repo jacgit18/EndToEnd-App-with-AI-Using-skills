@@ -68,7 +68,7 @@ Stops before implementation (cache client wiring, invalidation hooks, warmup job
 - **Chains to `technical-cost-decision`** — the cache tier and CDN have a recurring price (Redis
   instance-hours, memory tier, cross-AZ transfer, CDN requests/egress); the recommendation block
   hands off the line items.
-- **Defers to `relational-modeling` / `problem-solving-gates`** for query and index tuning of one
+- **Defers to `index-tuning` / `problem-solving-gates`** for query and index tuning of one
   slow query — framework step 1 sends you there first, because a cache over a missing index
   hides the bug.
 - **Defers to `database-architecture`** for source-of-truth and store choice; caching presumes
@@ -89,5 +89,5 @@ Repo-agnostic. Reads and writes `docs/architecture/decisions/` alongside `databa
 and `data-tier-operations`, reusing `database-architecture`'s `adr-template.md`.
 
 ```
-cp -r .claude/skills/Data/caching-strategy /path/to/other-repo/.claude/skills/Data/
+cp -r .claude/skills/Architecture/Data/caching-strategy /path/to/other-repo/.claude/skills/Architecture/Data/
 ```

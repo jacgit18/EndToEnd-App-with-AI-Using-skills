@@ -79,7 +79,7 @@ Ask or infer where this runs, because the shape differs:
 
 ## Step 5 — Deliver
 
-Output the finished prompt as a single fenced code block, nothing the user has to edit out. Two
+Output the finished prompt as a single fenced code block, nothing the user has to edit out. If the prompt itself contains code fences (```), wrap it in a longer fence (four or more backticks, or `~~~~`) so the inner fences do not close it early; if the prompt is short, an indented block also works. Two
 lines under it: what you assumed (if anything), and the offer — "run it through `prompt-tester` on
 a few inputs?" / "archive it with `prompt-archive`?".
 
@@ -101,4 +101,4 @@ a few inputs?" / "archive it with `prompt-archive`?".
 2. Every instruction states its own scope.
 3. Output format named wherever it matters.
 4. Real content baked in (Case A), or a gathering step included (Case B).
-5. One code block, copy-and-send.
+5. One code block, copy-and-send — and if the prompt contains its own code fences, the outer fence is longer than any inside it.

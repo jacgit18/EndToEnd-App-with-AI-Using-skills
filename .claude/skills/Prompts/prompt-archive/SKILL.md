@@ -1,6 +1,6 @@
 ---
 name: prompt-archive
-description: Saves prompts to this vault — either archiving a keeper prompt into the .claude/_Prompts/ library as a properly formatted markdown file, or logging the prompts from the current session to a dated log. Use when the user says "save this prompt", "archive this prompt", "add this to my prompt library", "keep this prompt", "that prompt was good, store it", or wants the session's prompts written to a log / "dump my prompts" / "log the prompts from this chat". Every submitted prompt is ALSO captured automatically by the UserPromptSubmit hook in .claude/settings.json (scripts/hooks/log-prompt.sh) — this skill is the on-demand and curated path on top of that. NOT for evaluating whether a prompt works well (that is prompt-tester), NOT for writing a new prompt from scratch (that is `prompt-authoring`), and NOT for recording a resolved coding bug/problem for a learning-worthiness verdict (that is `problem-journal`, which reads these dated logs as a recurrence-search corpus but writes its own separate file).
+description: Saves prompts to this vault — either archiving a keeper prompt into the .claude/_Prompts/ library as a properly formatted markdown file, or logging the prompts from the current session to a dated log. Use when the user says "save this prompt", "archive this prompt", "add this to my prompt library", "keep this prompt", "that prompt was good, store it", or wants the session's prompts written to a log / "dump my prompts" / "log the prompts from this chat". Every submitted prompt is ALSO captured automatically by the UserPromptSubmit hook in .claude/settings.json (scripts/hooks/log-prompt.sh) — this skill is the on-demand and curated path on top of that. NOT for evaluating whether a prompt works well (that is prompt-tester), NOT for writing a new prompt from scratch (that is `prompt-authoring`), and NOT for recording a resolved coding bug/problem for a learning-worthiness verdict (that is `problem-journal`, which reads these dated logs as a recurrence-search corpus but writes its own separate file). This is the repo's own `Prompts/prompt-archive`, not the plugin skill `anthropic-skills:prompt-archive` (a separate, plugin-provided skill); here files land under this repo's `.claude/_Prompts/`. NOT for reporting which skills were invoked (that is `skill-usage-log`, which reads the separate `*-skills.md` logs) and NOT for preserving session state to resume later (that is `session-handoff`).
 ---
 
 # Prompt Archive
@@ -16,6 +16,8 @@ If the ask is ambiguous, ask which one in a single line. Don't do both unless as
 
 Paths are relative to the project root (the repo containing `.claude/`).
 
+**Name collision:** a plugin skill `anthropic-skills:prompt-archive` also exists. This one is the repo's `Prompts/prompt-archive` — it writes only under `.claude/_Prompts/` in this project and is the one `problem-journal` and the prompt-log hook pair with. If the wrong one fires, say which is meant. Neighbours: `skill-usage-log` reads the `*-skills.md` logs (not written here); `session-handoff` writes resume-context files to `.claude/handoffs/`, not prompts.
+
 ---
 
 ## Mode: Archive a keeper prompt
@@ -28,8 +30,8 @@ Use the exact prompt the user points to — a block they pasted, a prompt from e
 
 ### 2. Decide category and filename
 
-- **Category** = a subfolder of `.claude/_Prompts/`. Reuse an existing one (`ls .claude/_Prompts/`) when it fits — e.g. `Database/`. Create a new subfolder only for a clearly distinct topic. If nothing fits and the topic is broad, place the file directly in `.claude/_Prompts/`.
-- **Filename** = a short Title Case name describing what the prompt does, `.md` extension (e.g. `Schema From Process Flow.md`). Match the spaced-name style already used in the folder.
+- **Category** = a subfolder of `.claude/_Prompts/`. Reuse an existing one (`ls .claude/_Prompts/`) when it fits — e.g. a topic folder already present. Create a new subfolder only for a clearly distinct topic. If nothing fits and the topic is broad, place the file directly in `.claude/_Prompts/`.
+- **Filename** = a short Title Case name describing what the prompt does, `.md` extension (e.g. `Summarize Meeting Notes.md`). Match the spaced-name style already used in the folder.
 - Before writing, check whether a file with that name already exists. If it does, ask whether to append a variant under a new `##` heading in that file or create a distinct file.
 
 ### 3. Write the file
@@ -66,7 +68,7 @@ Append a row to `.claude/_Prompts/INDEX.md` (create the file with an `# Prompt I
 ```markdown
 | Date | Prompt | Category | Purpose |
 |---|---|---|---|
-| 2026-09-02 | [Schema From Process Flow](Database/Schema%20From%20Process%20Flow.md) | Database | Turn a described process flow into a DB schema |
+| 2026-09-02 | [Summarize Meeting Notes](Meetings/Summarize%20Meeting%20Notes.md) | Meetings | Condense raw notes into decisions and action items |
 ```
 
 ### 5. Report
@@ -96,4 +98,4 @@ Use when the user wants a record of what they asked during this session (beyond 
 `.claude/settings.json` wires `scripts/hooks/log-prompt.sh` to `UserPromptSubmit`, so every prompt submitted in this project is appended to `.claude/_Prompts/logs/YYYY-MM-DD.md` with a timestamp and short session id. The script prints nothing and always exits 0, so it never blocks a prompt or adds context.
 
 - To pause it: remove or comment the `UserPromptSubmit` block in `.claude/settings.json`.
-- The `logs/` folder can get large. If the user doesn't want logs in git, add `/.claude/_Prompts/logs/` to `.gitignore` — mention this once, don't decide it for them.
+- `.claude/_Prompts/logs/` is already gitignored (local only, never committed), so no `.gitignore` change is needed. It can still grow large; mention pruning once if relevant, don't decide it for the user.

@@ -20,6 +20,10 @@ migration-cutover         →  HOW the live workload crosses to the target  (ADR
 deployment-strategy       →  routine version release of a unit that exists (ADR)   (shares blue-green / canary vocab; cross-links on rollback)
 ```
 
+`microservices-decision` decides the target service boundaries or repo layout; an agreed
+strangler-fig extraction or repo split is sequenced here. `technical-cost-decision` prices a
+dual-run period; `test-strategy` supplies the evidence the verification bar consumes.
+
 `migration-cutover` assumes the target is already chosen (`database-architecture`) and, if
 the target is a new topology of an existing store, that `data-tier-operations` picked it and
 handed the *move* here. It is distinct from `deployment-strategy`: a migration is a one-time

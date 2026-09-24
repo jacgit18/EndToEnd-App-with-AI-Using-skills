@@ -83,8 +83,10 @@ without a new reason:
   looked at yet. Fixed with a one-line hand-off added to `problem-solving-gates` Mode 1,
   right after its Trigger line, deferring to this skill when no layer/tool is picked yet.
   The reverse direction (a stated, falsifiable hypothesis → skip straight to Rubber Duck,
-  don't re-ask "which layer") was already safe by keyword mismatch, but mirrored into both
-  skills' descriptions anyway for robustness.
+  don't re-ask "which layer") was already safe by keyword mismatch. The pointer is mirrored
+  for robustness in this skill's description, in `problem-solving-gates`' description
+  carve-outs, and in `learning-gate`'s Step 3 Debugging row (which also routes the
+  which-layer question here instead of Rubber Duck).
 - **vs `observability-strategy` — contradiction/stacking, fixed.** Its description contains
   the near-verbatim phrases "we can't tell why prod is slow" and "our logs are useless in an
   incident," and its existing carve-out routed only to `problem-solving-gates`, never to this
@@ -93,7 +95,7 @@ without a new reason:
   with an added clause on `observability-strategy`'s carve-out sentence: the *ad hoc,
   haven't-checked-yet* reading of that complaint is this skill; the *no durable way to see
   this at all* reading stays `observability-strategy`.
-- **vs `failure-mode-analysis`** — clean, no fix needed. Proactive/no-symptom trigger
+- **vs `failure-mode-analysis`** — clean, no fix needed. This skill's description carves it out (proactive, nothing on fire); `failure-mode-analysis` does not yet point back here, so a back-pointer on its side is a pending reciprocal edit. Proactive/no-symptom trigger
   phrasing doesn't overlap with this skill's live-symptom phrasing.
 - **Control scenario** (unambiguous "DevTools or Wireshark for this dropped WebSocket")
   fired only this skill, confirming the fixes above didn't overcorrect into starvation the

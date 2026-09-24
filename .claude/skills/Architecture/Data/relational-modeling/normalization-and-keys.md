@@ -20,7 +20,7 @@ Denormalization is deliberate, justified redundancy — not sloppiness. It is wa
 
 - **Read-heavy hot path with an expensive join** — duplicate the one column that removes the join. Not the whole row.
 - **Aggregates queried far more than the underlying rows change** — store `comment_count` on `post` instead of `COUNT(*)` on every render.
-- **Reporting / list views** — a pre-joined table or a materialized view, refreshed on a schedule the business can tolerate being stale by.
+- **Reporting / list views** — a pre-joined table or a materialized view (one rollup in this OLTP schema is owned here; a star/warehouse-style reporting model is `dimensional-modeling`), refreshed on a schedule the business can tolerate being stale by.
 
 Every denormalization must answer: **what keeps the copy correct?** Options, roughly in order of preference:
 

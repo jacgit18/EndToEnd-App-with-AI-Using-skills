@@ -43,14 +43,15 @@ Stops before migrations and ORM wiring.
 ## Deliberately out of scope
 
 - The where-should-the-schema-live decision → `database-architecture`.
-- Sharding, replication, connection pooling, transaction isolation, 2PC/Saga → a future
+- Sharding, replication, connection pooling, transaction isolation, 2PC/Saga →
   `data-tier-operations`; this skill only *notes* when the design will need them.
 - Tuning the index set on a schema that's already deployed and carrying traffic — column
   order against a real `EXPLAIN` plan, covering/partial-index trade-offs, redundant/unused
   audit, write-cost budgeting → `index-tuning`. This skill produces the first-cut index
   list (step 7); `index-tuning` revises it once real plans and stats exist.
 - Analytical / dimensional modeling (star, snowflake, fact/dimension, grain, warehouses,
-  marts, reporting materialized views) → a future skill; this one is OLTP only.
+  marts, star-style reporting models) → `dimensional-modeling`; this one is OLTP only. A single rollup table or
+  materialized view inside the OLTP schema stays here (see `normalization-and-keys.md`).
 - ORM / query-builder / raw-SQL / typed-codegen choice → `data-access-layer` (parallel sibling
   off the same ADR; run both for a build, one gate at a time). Migration tooling stays out too.
 
@@ -59,7 +60,7 @@ Stops before migrations and ORM wiring.
 Repo-agnostic. Reads `docs/architecture/decisions/`, writes `docs/data-model/`.
 
 ```
-cp -r .claude/skills/relational-modeling /path/to/other-repo/.claude/skills/
+cp -r .claude/skills/Architecture/Data/relational-modeling /path/to/other-repo/.claude/skills/Architecture/Data/
 ```
 
 ## Interaction with sibling skills

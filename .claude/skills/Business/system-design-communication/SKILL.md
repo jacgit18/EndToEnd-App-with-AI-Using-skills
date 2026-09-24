@@ -43,6 +43,7 @@ No separate reference file yet — this mode is thin enough that the description
 - **Do a walkthrough before a mock interview**, if the user is choosing — lower pressure, same muscle.
 - **Real projects over hypotheticals when available** — more stakes, more learning, but a hypothetical is a completely fine practice surface too.
 - **If a mock interview question feels wildly off-target** for what the user's actually preparing for, say so and offer a different one rather than forcing it through.
+- **Escape hatch — "I give up, just tell me."** If the user is stuck or asks for the answer, don't cave into supplying the design and don't keep pressing. Say once that this skill won't hand over the answer, end the drill, give the plain debrief of what they got right and where they stalled, and offer `design-scoping` (a real system to build) or `Architecture/tech-decision-walkthrough` (options plus a recommendation per decision). If they explicitly say they want the answer, that is a different request and this skill is done.
 - **Debrief plainly at the end** — one specific thing done well, one specific thing that was vague or unaddressed, tied to what they actually said, not a generic checklist.
 
 ## Boundary lines

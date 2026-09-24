@@ -11,13 +11,18 @@ Every other skill in this catalog is triggered by something happening *now* — 
 
 - The user asks directly (audit, health check, "clean up the backlog," "is anything stale").
 - Proactively, after a batch of skill work in one session — offer it the way `session-handoff` proactively offers a handoff file, don't wait to be asked every time.
-- There's no actual calendar automation wired into this repo today. If the user wants this to run on a real cadence unattended rather than opportunistically, that's a `/schedule` or `/loop` job to set up — this skill is the procedure that job would run, not the scheduler itself.
+- A weekly scheduled cloud routine ("Weekly Catalog Drift Audit", see `.claude/rules/agents.md`) already runs this against `main`, fixes mechanical drift on a branch and opens a PR. This skill is the procedure that routine runs, also usable on demand; for a different cadence use `/schedule` or `/loop`.
+- **Read `.claude/_Prompts/catalog-audit-log.md` first** (if it exists) so already-resolved items are not re-flagged; it also holds `skill-usage-log` feedback entries to fold in.
 
 ## Step 1 — Stale record check
+
+If `SKILL-BACKLOG.md` is not present in this checkout, say "SKILL-BACKLOG.md not present in this checkout", skip this step, and do not report it as a finding.
 
 Every "pending," "TODO," or similarly open-ended marker in `SKILL-BACKLOG.md` (most commonly `Memory: pending`) gets cross-checked against what's actually in the memory directory. A marker left open is not evidence the work is undone — it's just as often evidence the work got done and the marker never got updated. Grep the backlog for the marker pattern, grep memory for a file matching the skill's name, and reconcile: if the memory file exists, the backlog entry is drift, not a real gap.
 
 ## Step 2 — Catalog-doc sync check
+
+If `README.md` has no per-group skill tables (or no `README.md`), say "README catalog table not present in this checkout", skip this step (and the "marked built in the backlog" half), and do not report it as a finding.
 
 List every skill directory under `.claude/skills/` and cross-check each one against `README.md`'s per-group tables. A skill that exists on disk and is marked built in `SKILL-BACKLOG.md` but has no row in `README.md` is drift — the README is supposed to be the catalog's table of contents, and an entry-less skill is invisible to anyone reading it to find what's available.
 
@@ -40,7 +45,7 @@ One drift report, grouped by the five steps above. For each finding:
 - **Mechanical fix** (a stale marker, a missing README row, a corrected dead-name reference) — apply it directly, no need to ask.
 - **Judgment call** (a real description rewrite, a genuine contradiction between two skills, a pair that actually needs a full `skill-interaction-testing` run) — flag it and hand off, don't resolve it inline.
 
-Record the audit itself in project memory — when it ran, what it found, what got fixed vs. flagged — the same way `skill-interaction-testing` records its own results. An audit that isn't recorded invites the next one to re-discover the same already-fixed drift from scratch.
+Record the audit by appending a dated entry to `.claude/_Prompts/catalog-audit-log.md` (the repo trail; create it if absent) — when it ran, what it found, what got fixed vs. flagged, and anything deliberately left alone. An audit that isn't recorded invites the next one to re-discover the same already-fixed drift from scratch.
 
 ## What this is not
 

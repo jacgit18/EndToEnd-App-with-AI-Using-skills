@@ -68,7 +68,7 @@ Stops before the contract, handlers, resolvers, and SDKs.
 Repo-agnostic. Reads and writes `docs/architecture/decisions/`.
 
 ```
-cp -r .claude/skills/api-interface-style /path/to/other-repo/.claude/skills/
+cp -r .claude/skills/Architecture/api-interface-style /path/to/other-repo/.claude/skills/
 ```
 
 ## Interaction with sibling skills

@@ -22,7 +22,7 @@ Paths are relative to the project root (the repo containing `.claude/`).
 - 14:31:55  `dataviz`  (session a1b2c3d4)
 ```
 
-One dated file per day, alongside the prompt logs (`<date>.md`) that `log-prompt.sh` writes. The hook is defensive: needs `jq`, prints nothing, always exits 0, never blocks the tool call. It only records skills invoked through the `Skill` tool in this project — not slash commands that don't resolve to a skill, and not skills used in other repos.
+One dated file per day, alongside the prompt logs (`<date>.md`) that `log-prompt.sh` writes (the `prompt-archive` skill curates those; it does not touch the `*-skills.md` files). The hook is defensive: needs `jq`, prints nothing, always exits 0, never blocks the tool call. It only records skills invoked through the `Skill` tool in this project — not slash commands that don't resolve to a skill, and not skills used in other repos.
 
 - To pause it: remove the `PreToolUse` block in `.claude/settings.json`.
 - `logs/` can get large and may be gitignored locally — same tradeoff as the prompt logs. Mention it once; don't decide it for the user.
@@ -74,7 +74,7 @@ annoy me", "is <skill> firing when it shouldn't", "skill feedback / retro".
    zero follow-up, or never fire despite a live trigger list, are description-tuning candidates.
 3. **Record.** Append a dated entry to `.claude/_Prompts/catalog-audit-log.md` — skills flagged,
    the evidence (session id + prompt excerpt), and a suggested one-line description edit. Don't
-   edit the skill here; hand each proposed edit to `skill-interaction-testing` Step 2 onward.
+   edit the skill here; hand each proposed edit to `skill-interaction-testing` Step 2 onward. `catalog-drift-audit` reads that log first on its next run.
 4. **Say what the data can't show.** Both logs are local and gitignored, cover only sessions
    where the hooks ran, and start when the hooks were added. If the prompt log is missing for
    the dates the skill log covers, report that instead of "no overrides."

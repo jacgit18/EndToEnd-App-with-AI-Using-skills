@@ -193,8 +193,8 @@ skipped or left vague — fix that before rewriting the story prose.
 ## Definition of Ready — before the backlog calls it ready
 
 Business value stated · acceptance criteria + any needed data sets written · dependencies,
-risks, and constraints named · priority set · a rough size/estimate given · testability
-confirmed. A story sitting in the backlog missing several of these isn't ready regardless of
+risks, and constraints named · priority set, or flagged "priority: not set" (the optional MoSCoW pass supplies it; this skill does not decide it by default) · a rough size/estimate given, or flagged "estimate: missing" (the team's own estimate, not this skill's) · testability
+confirmed. Priority and estimate are owed by the team, so a flagged-missing item is a named gap, not a failure of the decomposition. A story sitting in the backlog missing several of these isn't ready regardless of
 how well-written its prose is — name the gaps rather than rounding up.
 
 ---

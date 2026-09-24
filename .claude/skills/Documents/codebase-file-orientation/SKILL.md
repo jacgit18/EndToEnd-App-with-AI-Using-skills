@@ -14,7 +14,9 @@ description: >
   user says "document the file(s) I just added", "write an orientation doc for this file", "add a
   companion doc for `parser.ts`", "I created these files, document them", "does this new module have
   docs", "the doc for this file is stale", "check `foo.md` still matches `foo.ts`", or finishes a chunk
-  of new files and wants each one documented. Needs a concrete file path, not "the stuff I changed".
+  of new files and wants each one documented. Also fires as a single unprompted offer when the user
+  moves to commit new source files that have no orientation doc (offered once, dropped if declined,
+  never blocks the commit). Needs a concrete file path, not "the stuff I changed".
   NOT `explaining-my-work` (that renders completed work into words for a human audience — a post, a
   spoken script, a summary, a resume line; this writes a standing in-repo reference for a developer
   reading the code). NOT `system-design-communication` (live out-loud rehearsal, no written artifact).

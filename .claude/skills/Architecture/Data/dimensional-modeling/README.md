@@ -85,5 +85,5 @@ Repo-agnostic. Reads the source schema and `docs/architecture/decisions/`; write
 `docs/data-model/analytics/`.
 
 ```
-cp -r .claude/skills/dimensional-modeling /path/to/other-repo/.claude/skills/
+cp -r .claude/skills/Architecture/Data/dimensional-modeling /path/to/other-repo/.claude/skills/Architecture/Data/
 ```

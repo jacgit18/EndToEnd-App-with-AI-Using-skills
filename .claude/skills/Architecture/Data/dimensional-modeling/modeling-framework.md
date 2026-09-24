@@ -7,7 +7,7 @@ Work these in order once the gate in `SKILL.md` is satisfied. Steps 2–5 are Ki
 Before modelling, check this is actually a dimensional problem:
 
 - **Recurring analytical reporting over history**, sliced many ways, by more than a throwaway query → proceed.
-- **One slow dashboard query on the operational database** → not this skill. A pre-aggregated rollup table or an indexed/materialized view is the fix (`relational-modeling`), or a read replica to move reporting load off the primary (`data-tier-operations`). Say so and stop.
+- **One slow dashboard query on the operational database** → not this skill. A single pre-aggregated rollup table or indexed/materialized view inside the OLTP schema is the fix (`relational-modeling` owns it), or a read replica to move reporting load off the primary (`data-tier-operations`). Say so and stop.
 - **"We might want analytics someday"**, no named reports → premature. The deliverable is "come back with the questions in gate item 5", not a star schema.
 
 Also confirm the target from gate item 9. If it's a separate warehouse system whose technology/ownership isn't decided, that's `database-architecture`'s call first.
@@ -83,7 +83,7 @@ A model often needs more than one — a transaction fact for detail and an accum
 
 ## 9. Rollups and aggregates
 
-For the heavy recurring reports in gate item 5, define pre-aggregated fact tables or materialized views at coarser grain ("sales by product by day" over the atomic "sales by line"). Each rollup records: its grain, which base fact it derives from, and its refresh (rebuilt each load, incrementally maintained, or on a schedule tolerable-stale by N hours). The atomic fact table stays; rollups are performance additions layered on it.
+For the heavy recurring reports in gate item 5, define pre-aggregated fact tables or materialized views at coarser grain (warehouse-side rollups are owned here; a lone rollup in the OLTP schema is `relational-modeling`) ("sales by product by day" over the atomic "sales by line"). Each rollup records: its grain, which base fact it derives from, and its refresh (rebuilt each load, incrementally maintained, or on a schedule tolerable-stale by N hours). The atomic fact table stays; rollups are performance additions layered on it.
 
 ## 10. Load plan
 

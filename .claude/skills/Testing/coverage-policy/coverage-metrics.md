@@ -36,7 +36,7 @@ Like statement coverage but counted per source line; may not distinguish multipl
 
 ## The reference band
 
-From `Code Coverage Best Practices.md`, citing Google's internal guideline — a **starting reference, not a mandate**:
+From the "Code Coverage Best Practices" source note (a PersonalBrain-vault note that is not in this checkout; it carries the "no universal number" principle and Google's 60/75/90 guideline — treat it as the origin of those claims, not a file to open), citing Google's internal guideline — a **starting reference, not a mandate**:
 
 | Coverage | Label |
 |---|---|
@@ -71,7 +71,7 @@ Common good policy: **new-code target + a small delta tolerance**, with an overa
 
 ## Guard against the checklist trap
 
-`Code Coverage Best Practices.md` is explicit: gates can degenerate into checklist exercises with "unintended outcomes" — tests written only to move the number, with weak or no assertions. Signs it's happening:
+the source note is explicit: gates can degenerate into checklist exercises with "unintended outcomes" — tests written only to move the number, with weak or no assertions. Signs it's happening:
 
 - Coverage rises but defect rate doesn't.
 - Tests with many lines exercised and one trivial assertion (`expect(result).toBeDefined()`).

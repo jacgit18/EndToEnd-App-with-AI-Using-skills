@@ -71,8 +71,15 @@ not a survey of all options.
 
 ## The precondition
 
-Before recommending anything, get answers to these five. If the user hasn't supplied one,
-ask for it and stop — don't assume.
+Before recommending anything, get answers to these five. **Surface what you can read first**, then ask only for what is left; if the user hasn't supplied one and it can't be read, ask for it and stop — don't assume.
+
+**Facts you may surface from the repo (Q1-Q3), don't ask the user for these:**
+- Q1: `git branch -r --contains <commit>` / `git log @{u}..` and `gh pr view` show whether the commits are pushed or in an open PR, and `git tag --contains` shows release tags. Pushed to a personal branch nobody else is on still needs the user's word on who else pulled it.
+- Q2: `gh api repos/:owner/:repo/branches/<base>/protection` (or the repo's merge-button settings via `gh repo view --json squashMergeAllowed,mergeCommitAllowed,rebaseMergeAllowed`), plus `CONTRIBUTING.md`, `.gitattributes`, and a PR template. Report what you found and cite the file.
+- Q3: `git log --oneline <base>..HEAD` shows the actual commit subjects ("wip", "fix", "oops"); judge buildability only if the user says so or you ran it.
+- Q4 and Q5 are judgment calls and always come from the user (Q5 can be inferred from a `git log` of trunk if the answer is obvious, and say you inferred it).
+
+If a read fails (no `gh`, no network, no access), say so and ask that one question instead.
 
 1. **Is any commit you'd be rewriting already published where others could have based work
    on it?** (pushed to a shared branch, in an open PR others are reviewing against, a
@@ -132,6 +139,9 @@ messier than ideal and why that's the correct trade.
 | Each meaningful | no, flat changelog | **Rebase then fast-forward** — replays the clean commits onto the trunk tip, linear, no merge commit. Only if the branch is private (Q1). |
 | Exactly one commit, trunk hasn't moved | either | **Fast-forward** — no merge commit for a single change; nothing to mark. |
 | Each meaningful, but branch is shared (Q1) | either | **Merge commit** — you cannot rebase; keep the commits, accept the merge node. |
+| One meaningful commit plus WIP noise, or one commit and trunk HAS moved | either | **Squash-merge** if the noise is only on this branch; **rebase then fast-forward** a lone clean commit if the branch is private, else a merge commit. |
+
+Note on rule B: squash-merge into trunk creates a new commit on trunk and does not rewrite the branch's own published commits, so a shared PR branch can still be squash-merged and then discarded; it is off the table only when the squash would be applied to the branch itself (a local squash then force-push).
 
 ### E. Long-lived branch, badly diverged
 
@@ -159,6 +169,22 @@ shared" or "resolve conflicts as they come, don't -X theirs">
 
 Then stop. Executing the merge/rebase/squash is ordinary work; a conflict during it is a
 stop-and-report, per `commit-and-push`.
+
+---
+
+## Escape hatch
+
+If the user says "just tell me", "I don't care", or it is merge day and they want an answer now: do not skip the gate silently. Surface Q1-Q3 from the repo yourself, state your assumptions for Q4-Q5 in one line (default: integrating, trunk read for archaeology unless the log says otherwise), give the recommendation, and name the one assumption that would flip it. Never rewrite published history to satisfy the hurry.
+
+## Never
+
+- Recommend rebase, squash-of-the-branch, amend, or force-push on commits that are already published to others without their agreement.
+- Override a repo or forge mandated strategy (Q2) in a single PR.
+- Lay out all four options and leave the choice open.
+- Guess at conflict resolutions; stop and report.
+- Ask the user for a fact you can read from git, the forge, or CONTRIBUTING.
+
+If `scripts/git/land.sh` is available, it executes the chosen method with `--merge`, `--squash`, or `--rebase`.
 
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: ticket-evaluation
-description: Use when a work ticket is shared for analysis, prioritization, sizing, or a go/no-go read — a Jira/Linear/Asana issue, a GitHub issue, or a pasted-in feature description. Triggers include "should we pull this into the sprint," "is this worth doing," "evaluate this ticket," "how would you prioritize this," "what's the risk on this one," backlog grooming, and comparing several tickets against each other. Also use when someone asks for a verdict on a ticket immediately and does not want to answer questions first. Not for someone who cannot yet get started on the work at all ("I don't know where to start", "overwhelmed by this codebase") — that is `entry-point-first`, which finds a low-resistance entry rep and then hands the which-matters-most call back here once they are moving.
+description: Use when a work ticket is shared for analysis, prioritization, sizing, or a go/no-go read — a Jira/Linear/Asana issue, a GitHub issue, or a pasted-in feature description. Triggers include "should we pull this into the sprint," "is this worth doing," "evaluate this ticket," "how would you prioritize this," "what's the risk on this one," backlog grooming, and comparing several tickets against each other. Also use when someone asks for a verdict on a ticket immediately and does not want to answer questions first. Not for someone who cannot yet get started on the work at all ("I don't know where to start", "overwhelmed by this codebase") — that is `entry-point-first`, which finds a low-resistance entry rep and then hands the which-matters-most call back here once they are moving. A "ticket" that is only a system name ("build billing") is an under-specified design ask for `design-scoping`, and a bare feature name with no actor or acceptance criteria goes to `user-story-decomposition` first; both come back here for the sprint verdict once scoped.
 ---
 
 # Ticket Evaluation
@@ -47,6 +47,10 @@ Your response has these parts, **in this order**. The ordering is the skill.
 3. **Scorecard** — all ten dimensions
 4. **Open questions** — what is still unresolved
 5. **Recommendation** — last, with one or two named drivers
+
+**Stop or continue after Part 2.** Default: when Part 2 finds gaps that decide the verdict and the user is present, stop after the gap questions and wait for answers, then deliver parts 3-5 in one response. Continue straight through (unanswered questions marked `insufficient info`) when the user said there's no time, when the user asked for a verdict immediately, or when no gap would change the verdict. "Not sure" answers never block: proceed with those rows as open.
+
+**Several tickets.** Run parts 1-4 per ticket in compact form (one Intake line, shared gap block, one scorecard row set each). Then replace the per-ticket part 5 with one ranked recommendation table: ticket, verdict, one named driver, and the top open question; rank numerically only if asked, saying the scale, and never rank a ticket above another on a dimension that is `insufficient info`.
 
 **No verdict, lean, or "my read is" may appear before part 5.** Not as a headline, not as a TL;DR, not as an executive summary for the busy reader. A recommendation placed above the scorecard is the thing the reader carries into planning; the "insufficient info" rows underneath it do not make the trip. If the recommendation is worth qualifying, it goes below the qualifications.
 

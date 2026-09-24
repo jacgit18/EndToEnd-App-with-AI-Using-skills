@@ -11,7 +11,7 @@ Restate gate item 5 as one sentence: the specific metric and value, or the speci
 
 Then rule out the non-cache fixes — record which are done, which would help, which are ruled out with a reason:
 
-1. **Index / query fix** — is the source slow because of a missing index, an N+1, or an unbounded scan? Send to `relational-modeling` or `problem-solving-gates` (Rubber Duck). A cache over a missing index hides the bug and adds an invalidation problem.
+1. **Index / query fix** — is the source slow because of a missing index, an N+1, or an unbounded scan? Send to `index-tuning` (missing/wrong index on a deployed schema) or `problem-solving-gates` (Rubber Duck, to find the cause first). A cache over a missing index hides the bug and adds an invalidation problem.
 2. **Read replica / vertical scale** — if the source is read-loaded and the reads tolerate small lag, a replica removes load with no application-level consistency logic. Often simpler than a cache. (That path is `data-tier-operations`.)
 3. **Pagination / payload trim / projection** — is the path slow because it returns 10× the rows or columns the consumer uses?
 4. **Denormalization / materialized view** — a maintained read model in the same store keeps the consistency story inside the database's transactions instead of in application code.

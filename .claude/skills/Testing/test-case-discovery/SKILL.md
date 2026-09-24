@@ -81,3 +81,17 @@ Follow with: assumptions list, open questions, and what was left out.
 - Stop at the table. Do not write test code, fixtures, or a test plan.
 
 See `case-categories.md` for the category checklist and a worked table.
+
+## Example invocations
+
+> "What cases am I missing for the password-reset endpoint? I have: valid email, unknown email."
+
+Fires, think-together: the user named cases first; probe the categories skipped (expired/reused token, rate limiting, malformed input, concurrent resets) and end in the case table with expected results sourced from the spec or the user, else marked open.
+
+> "Here's the spec for the invoice export — draft the test cases."
+
+Fires, hand-off: draft the table from the spec, list assumptions, ask where expected behavior is unspecified.
+
+> "Write the test code for `applyDiscount`" / "Should our integration tests use Testcontainers?" / "Which test levels do we need?"
+
+Does not fire: writing tests is `test-practice-gate`, the DB mechanism is `database-test-tooling`, the level mix is `test-strategy`.
