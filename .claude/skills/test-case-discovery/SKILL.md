@@ -1,6 +1,6 @@
 ---
 name: test-case-discovery
-description: Conversation for finding which happy, unhappy, and edge test cases exist for a feature, endpoint, or workflow, ending in a prioritized case table, not test code. Triggers: "what should I test for this feature", "what cases am I missing", "did I cover the edge cases", "review my test plan for gaps". Not test mix (`test-strategy`), writing one test (`test-practice-gate`), `coverage-policy`, or a failing test (`debugging-layer-selection`).
+description: Conversation for finding which happy, unhappy, and edge test cases exist for a feature, endpoint, or workflow, ending in a prioritized case table, not test code. Triggers: "what should I test for this feature", "what cases am I missing", "did I cover the edge cases". Not test mix (`test-strategy`), writing one test (`test-practice-gate`), or `coverage-policy`.
 ---
 
 # Test Case Discovery

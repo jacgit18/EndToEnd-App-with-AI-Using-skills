@@ -1,6 +1,6 @@
 ---
 name: catalog-drift-audit
-description: Periodic whole-catalog hygiene pass over the skill library: stale backlog markers, skills missing from README, dead skill-name references, untested old pairs; fixes mechanical drift and flags judgment calls. Use when asked to audit or clean up the catalog — "has anything gone stale," "check the backlog/README are still accurate," "clean up dead references" — or proactively after a batch of skill work. NOT `skill-interaction-testing` (one new skill vs neighbors), NOT `skill-static-audit` (one named skill), NOT `skill-usage-log` (real-use feedback).
+description: Periodic whole-catalog hygiene pass over the skill library: stale backlog markers, skills missing from README, dead skill-name references, untested old pairs; fixes mechanical drift, flags judgment calls. Use when "audit the catalog", "has anything gone stale", "clean up dead references". NOT `skill-interaction-testing` (one new skill vs neighbors), NOT `skill-static-audit` (one named skill).
 ---
 
 # Catalog Drift Audit

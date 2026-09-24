@@ -1,6 +1,6 @@
 ---
 name: serverless-execution-model
-description: Gated decision for how one unit of work runs: compute primitive, invocation model, orchestration vs choreography, messaging tech, and the failure contract (retries, DLQ, idempotency). Use when someone says "should this be a Lambda or a container for this workload", "do we need Step Functions for this", "should we use SQS or SNS", "how do we handle a failed message", "add a dead-letter queue". Not for `microservices-decision`, `cloud-iam-boundary`, `resilience-strategy`, `data-tier-operations`, or `service-mesh-adoption`.
+description: Gated decision for how one unit of work runs: compute primitive, invocation model, orchestration vs choreography, messaging tech, failure contract (retries, DLQ, idempotency). Use when someone says "should this be a Lambda or a container for this workload", "should we use SQS or SNS", "add a dead-letter queue". Not for `microservices-decision`, `cloud-iam-boundary`, or `resilience-strategy`.
 ---
 
 # Serverless Execution Model

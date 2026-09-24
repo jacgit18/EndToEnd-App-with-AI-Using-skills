@@ -1,6 +1,6 @@
 ---
 name: incremental-build-pacing
-description: Paces AI-assisted delivery of an already-planned build one file or small unit at a time, with a write, explain, check-understanding loop. Use for "build this file by file", "go one file at a time", "slower, I want to follow along", or "don't generate it all at once". Not for scoping or specs (`spec-drift-gate`, `design-scoping`), picking a stack (`tech-decision-walkthrough`), intent classification (`learning-gate`), or stalled starts (`entry-point-first`).
+description: Paces AI-assisted delivery of an already-planned build one file or small unit at a time, with a write, explain, check-understanding loop. Use for "build this file by file", "go one file at a time", "slower, I want to follow along". Not for scoping or specs (`spec-drift-gate`), picking a stack (`tech-decision-walkthrough`), or stalled starts (`entry-point-first`).
 ---
 
 # Incremental Build Pacing

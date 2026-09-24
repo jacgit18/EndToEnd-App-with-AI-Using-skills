@@ -1,6 +1,6 @@
 ---
 name: commit-and-push
-description: Stage, commit, and push work with a message built from the actual diff (imperative subject, why-body, required co-author trailer), after a pre-commit sanity pass. Use when "commit this", "commit and push", "push my changes", "save this to git", "write the commit message". Does NOT open pull requests, resolve merge conflicts, or rewrite published history; merge vs. squash vs. rebase is `history-integration-strategy`; per-file docs for new modules are `codebase-file-orientation`, which never blocks the commit.
+description: Stage, commit, and push work with a message built from the actual diff (imperative subject, why-body, co-author trailer), after a pre-commit sanity pass. Use when "commit this", "commit and push", "write the commit message". Does NOT open PRs, resolve merge conflicts, or rewrite history; merge vs. squash vs. rebase is `history-integration-strategy`; per-file docs are `codebase-file-orientation`.
 ---
 
 # Commit and Push

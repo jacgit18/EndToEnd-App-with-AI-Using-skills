@@ -1,6 +1,6 @@
 ---
 name: caching-strategy
-description: Gated decision for introducing or changing a cache in front of a data source: placement, read/write pattern, freshness mechanism, eviction and sizing, and failure-mode handling (stampede, penetration, avalanche). Use when someone says "we should add a cache", "let's put Redis in front of X", "what TTL should we use", "cache-aside or write-through", "our cache keeps serving stale data". Not for `data-tier-operations`, `technical-cost-decision`, `index-tuning`, or `resilience-strategy`.
+description: Gated decision for introducing or changing a cache in front of a data source: placement, read/write pattern, freshness, eviction and sizing, failure modes (stampede, penetration, avalanche). Use when someone says "we should add a cache", "let's put Redis in front of X", "what TTL should we use". Not for `data-tier-operations`, `technical-cost-decision`, or `index-tuning`.
 ---
 
 # Caching Strategy

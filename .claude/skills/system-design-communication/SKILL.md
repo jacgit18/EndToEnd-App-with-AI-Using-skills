@@ -1,6 +1,6 @@
 ---
 name: system-design-communication
-description: Live rehearsal of explaining a system design out loud: Design Walkthrough, Mock Interview, or Tradeoff Defense. Use for "help me walk through this design," "give me a mock system design interview," "quiz me on this," "help me defend microservices over a monolith here". Rehearsal only, no ADR. Not `design-scoping` (real system to build), not `tech-decision-walkthrough` (deciding real technology choices), not `explaining-my-work` (written explanation of finished work).
+description: Live rehearsal of explaining a system design out loud: Design Walkthrough, Mock Interview, or Tradeoff Defense. Use for "help me walk through this design," "give me a mock system design interview," "quiz me on this". Rehearsal only, no ADR. Not `design-scoping` (real system to build), not `tech-decision-walkthrough` (deciding real technology choices).
 ---
 
 # System Design Communication

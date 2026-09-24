@@ -1,6 +1,6 @@
 ---
 name: api-tooling-selection
-description: Gated decision for how an AI agent integrates with an external system as a live tool: Postman, OpenAPI, MCP, or a direct SDK/HTTP call. Triggers: "should my agent use Postman", "does MCP replace calling the API directly", "how should my agent call this API", "what's the difference between Postman, OpenAPI and MCP". Not for wire protocol style — `api-interface-style`. Not for app-code database access — `data-access-layer`. Not for test databases — `database-test-tooling`. Not for LLM choice — `model-routing-decision`.
+description: Gated decision for how an AI agent integrates with an external system as a live tool: Postman, OpenAPI, MCP, or direct SDK/HTTP call. Triggers: "should my agent use Postman", "does MCP replace calling the API directly", "how should my agent call this API". Not for wire protocol style — `api-interface-style`. Not for app-code database access — `data-access-layer`.
 ---
 
 # API Tooling Selection

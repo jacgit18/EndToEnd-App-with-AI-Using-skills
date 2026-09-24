@@ -6,3 +6,5 @@
 
 # Session handoff files — written at the context-watch threshold; local working docs
 .claude/handoffs/
+
+__pycache__/

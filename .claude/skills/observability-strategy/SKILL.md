@@ -1,6 +1,6 @@
 ---
 name: observability-strategy
-description: Gated decision for how a system is made observable: signals, SLIs/SLOs and error budget, instrumentation, sampling, alerting, retention, self-hosted vs managed. Use when someone says "we need monitoring / observability", "add Datadog / Grafana / Honeycomb", "set up distributed tracing", "what should we alert on". Not for vendor dollar sizing (`technical-cost-decision`), one slow endpoint now (`problem-solving-gates`), triaging one live incident (`debugging-layer-selection`), or live-number interpretation (`reliability-math`).
+description: Gated decision for how a system is made observable: signals, SLIs/SLOs and error budget, instrumentation, sampling, alerting, retention, self-hosted vs managed. Use for "we need monitoring / observability", "set up distributed tracing", "what should we alert on". Not for vendor dollar sizing (`technical-cost-decision`) or triaging one live incident (`debugging-layer-selection`).
 ---
 
 # Observability Strategy

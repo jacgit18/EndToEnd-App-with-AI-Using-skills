@@ -1,6 +1,6 @@
 ---
 name: learning-gate
-description: Traffic controller that classifies a request as learning, execution, or reference and sets how much thinking Claude may do so AI does not replace a learning rep. Use for "what is X", "how does X work", "help me understand X", or "I'm trying to learn X". Not paternalistic: execution and reference requests pass through. Hands off to `problem-solving-gates` for reps, `entry-point-first` for stalled starts, and `skill-static-audit` for skill reviews.
+description: Traffic controller that classifies a request as learning, execution, or reference and sets how much thinking Claude may do so AI does not replace a learning rep. Use for "what is X", "how does X work", "help me understand X". Not paternalistic: execution requests pass through. Hands off to `problem-solving-gates` for reps and `entry-point-first` for stalled starts.
 ---
 
 # Learning Gate

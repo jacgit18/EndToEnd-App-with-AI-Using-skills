@@ -1,6 +1,6 @@
 ---
 name: tech-decision-walkthrough
-description: Coached, conversational procedure for choosing a build's technologies out loud, one decision at a time, system-design-interview style. Use when someone says "help me pick the stack and explain why", "walk me through the tech choices like a system design interview", "compare A vs B vs C for this build and recommend one", "talk me out of it if I'm wrong". NOT `problem-solving-gates`, `design-scoping`, the single-decision specialist skills used alone (`database-architecture`, `api-interface-style`), or `decision-journal`.
+description: Coached, conversational procedure for choosing a build's technologies out loud, one decision at a time, system-design-interview style. Use when someone says "help me pick the stack and explain why", "walk me through the tech choices like a system design interview", "talk me out of it if I'm wrong". NOT `problem-solving-gates`, `design-scoping`, or the single-decision skills used alone (`database-architecture`).
 ---
 
 # Tech Decision Walkthrough

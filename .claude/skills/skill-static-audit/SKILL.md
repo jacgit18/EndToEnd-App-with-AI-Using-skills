@@ -1,6 +1,6 @@
 ---
 name: skill-static-audit
-description: Reads ONE existing skill closely as a document and returns cited findings rated blocker/should-fix/nit plus a verdict; read-only. Use for "audit this skill", "review this SKILL.md", "is this skill's description any good", or "check my skill before I ship it". NOT `skill-interaction-testing` (runs scenarios), `catalog-drift-audit` (whole catalog), `anthropic-skills:skill-creator`, or `prompt-tester` (prompts, not skills).
+description: Reads ONE existing skill closely as a document and returns cited findings rated blocker/should-fix/nit plus a verdict; read-only. Use for "audit this skill", "review this SKILL.md", "is this skill's description any good". NOT `skill-interaction-testing` (runs scenarios), `catalog-drift-audit` (whole catalog), or `prompt-tester` (prompts, not skills).
 ---
 
 # Skill Static Audit

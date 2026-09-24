@@ -1,6 +1,6 @@
 ---
 name: explaining-my-work
-description: Turns work that just happened into words the user can say or post: a script, talking points, or a summary. Use for "help me talk about this," "turn this into a LinkedIn post," "how do I explain this to a non-technical person," "write this up for my resume." Not `system-design-communication` (live mock-interview rehearsal), not `codebase-file-orientation` (in-repo file docs), not `delete-ai-words` or `software-carpentier-brand` (run after this draft), not `user-story-decomposition`.
+description: Turns work that just happened into words the user can say or post: a script, talking points, or a summary. Use for "help me talk about this," "turn this into a LinkedIn post," "write this up for my resume." Not `system-design-communication` (live mock-interview rehearsal), not `codebase-file-orientation` (in-repo file docs), not `delete-ai-words` or `software-carpentier-brand` (run after this draft).
 ---
 
 # Explaining My Work

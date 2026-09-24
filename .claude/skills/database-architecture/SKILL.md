@@ -1,6 +1,6 @@
 ---
 name: database-architecture
-description: Gated decision for where the source of truth for data lives (database-first, code-first, or contract-first), the system boundaries and consumers, and what gets generated. Use when someone says "where should the schema live", "should we use OpenAPI / GraphQL / Prisma as the schema source of truth", "I think we should go contract-first". Not for `api-interface-style` (wire protocol), `migration-cutover`, `data-access-layer`, `relational-modeling`, or `dimensional-modeling`.
+description: Gated decision for where the source of truth for data lives (database-first, code-first, or contract-first), system boundaries and consumers, and what gets generated. Use when someone says "where should the schema live", "should we use OpenAPI / GraphQL / Prisma as the schema source of truth", "go contract-first". Not for `api-interface-style`, `migration-cutover`, or `data-access-layer`.
 ---
 
 # Database Architecture

@@ -1,6 +1,6 @@
 ---
 name: index-tuning
-description: Procedure for adding, revising, or auditing indexes on an existing, populated database: composite order, covering and partial indexes, selectivity, redundancy audit, write-cost budget. Use when someone says "what index should this have", "why isn't my index being used", "do I have too many indexes", "which indexes are unused / redundant". Not for `relational-modeling` (initial plan), `problem-solving-gates` (Optimization), `data-tier-operations`, or `caching-strategy`.
+description: Procedure for adding, revising, or auditing indexes on an existing, populated database: composite order, covering and partial indexes, selectivity, redundancy audit, write-cost budget. Use when someone says "what index should this have", "why isn't my index being used", "do I have too many indexes". Not for `relational-modeling`, `problem-solving-gates` (Optimization), or `data-tier-operations`.
 ---
 
 # Index Tuning

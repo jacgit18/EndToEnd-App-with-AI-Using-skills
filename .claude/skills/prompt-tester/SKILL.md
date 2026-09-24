@@ -1,6 +1,6 @@
 ---
 name: prompt-tester
-description: Tests a concrete prompt against a few realistic examples and reports whether it works; reports findings, never rewrites. Use when asked to "test this prompt", "does this prompt work", "try my prompt on a few examples", or "check if this prompt does what it's supposed to". Not for writing a prompt (`prompt-authoring`), filing one (`prompt-archive`), or a skill's `description:` / SKILL.md text or a pasted `Use when…` block (`skill-static-audit`).
+description: Tests a concrete prompt against a few realistic examples and reports whether it works; reports findings, never rewrites. Use for "test this prompt", "does this prompt work", "try my prompt on a few examples". Not for writing a prompt (`prompt-authoring`), or a skill's `description:` / SKILL.md text (`skill-static-audit`).
 ---
 
 # Prompt Tester

@@ -1,6 +1,6 @@
 ---
 name: failure-mode-analysis
-description: Structured FMEA / pre-mortem over a design or service graph: enumerates failure modes across nine categories, scores and ranks them, and emits a prioritized failure-mode register plus watchlist. Use when someone says "do an FMEA", "failure mode analysis", "run a pre-mortem", "what could go wrong with this design", "walk the failure modes". Not for choosing one overload/dependency protection (`resilience-strategy`), a failure happening now (`problem-solving-gates`), or alerting and SLOs (`observability-strategy`).
+description: Structured FMEA / pre-mortem over a design or service graph: enumerates failure modes across nine categories, scores and ranks them, emits a prioritized register plus watchlist. Use for "do an FMEA", "run a pre-mortem", "what could go wrong with this design". Not for choosing one overload protection (`resilience-strategy`) or a failure happening now (`problem-solving-gates`).
 ---
 
 # Failure Mode Analysis

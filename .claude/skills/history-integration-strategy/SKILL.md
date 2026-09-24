@@ -1,6 +1,6 @@
 ---
 name: history-integration-strategy
-description: Gate for HOW to fold one branch into another (merge commit, fast-forward, squash-merge, rebase-then-fast-forward) or bring a branch up to date with trunk; withholds the recommendation until five facts are stated. Fires on "merge or rebase", "squash or merge this PR", "how should I integrate this branch", "my branch is behind main — merge or rebase", "should this be a fast-forward". NOT `commit-and-push` (stages/commits/pushes), NOT `learning-gate` (conceptual explainer), NOT `ambiguity-gate` (unclear branch or direction); no skill resolves merge conflicts.
+description: Gate for HOW to fold one branch into another (merge commit, fast-forward, squash-merge, rebase) or bring a branch up to date with trunk; withholds the recommendation until five facts are stated. Fires on "merge or rebase", "squash or merge this PR", "my branch is behind main — merge or rebase". NOT `commit-and-push` (stages/commits/pushes), NOT `learning-gate` (conceptual explainer); no skill resolves merge conflicts.
 ---
 
 # History integration strategy

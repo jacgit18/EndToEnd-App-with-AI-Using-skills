@@ -1,6 +1,6 @@
 ---
 name: data-access-layer
-description: Gated decision for how application code talks to an already-chosen relational database: raw SQL, query builder, micro-ORM, full ORM, typed codegen, or compile-checked SQL. Use when someone says "ORM or query builder", "should we use an ORM at all", "is Prisma the right call here", "raw SQL vs an ORM for this". NOT `database-architecture` (source of truth, its prerequisite), `relational-modeling`, `index-tuning`, `caching-strategy`, or `api-tooling-selection`.
+description: Gated decision for how application code talks to an already-chosen relational database: raw SQL, query builder, micro-ORM, full ORM, typed codegen, or compile-checked SQL. Use when someone says "ORM or query builder", "should we use an ORM at all", "is Prisma the right call here". NOT `database-architecture` (its prerequisite), `relational-modeling`, or `index-tuning`.
 ---
 
 # Data-Access Layer

@@ -1,6 +1,6 @@
 ---
 name: decision-journal
-description: Two modes: Log a non-trivial judgment call with reasoning, alternatives, user-stated confidence, a falsifiable prediction and a review-by date; or Review it later to compare outcome to prediction and calibrate. Use when "log this decision", "add this to my decision journal", "write this down so I can check it in a month", "review my decision from last month", "how calibrated am I". Not a live gate. NOT `problem-journal` (bug post-mortem), NOT `tech-decision-walkthrough` (makes the choice/ADR), NOT `anthropic-skills:trading-decision-journal` (trades), NOT `session-handoff`.
+description: Two modes: Log a judgment call with reasoning, alternatives, stated confidence, a falsifiable prediction and review-by date; or Review it later to compare outcome to prediction and calibrate. Use when "log this decision", "add this to my decision journal", "how calibrated am I". Not a live gate. NOT `problem-journal` (bug post-mortem), NOT `tech-decision-walkthrough` (makes the choice/ADR), NOT `session-handoff`.
 ---
 
 # Decision Journal

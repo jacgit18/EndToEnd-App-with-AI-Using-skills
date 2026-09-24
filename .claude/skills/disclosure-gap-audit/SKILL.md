@@ -1,6 +1,6 @@
 ---
 name: disclosure-gap-audit
-description: Pre-flight audit of a shipped-or-shipping product against its public commitments (privacy policy, terms, cookie banner, marketing claims), producing a findings register of disclosure and security gaps; gates on a data inventory. Use when someone says "does our privacy policy cover what we actually do", "we added an AI feature — what do we need to disclose", "GDPR / CCPA exposure review", "audit our data handling against our policy". Not for code vulnerabilities (`security-review`), one proposed change (`change-surface-audit`), or `design-scoping`.
+description: Pre-flight audit of a shipped-or-shipping product against its public commitments (privacy policy, terms, cookie banner, marketing claims), producing a findings register of disclosure and security gaps; gates on a data inventory. Use for "does our privacy policy cover what we actually do", "GDPR / CCPA exposure review". Not for code vulnerabilities (`security-review`) or one proposed change (`change-surface-audit`).
 ---
 
 # Disclosure Gap Audit

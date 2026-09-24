@@ -1,6 +1,6 @@
 ---
 name: ambiguity-gate
-description: Asks before acting when a request has more than one reasonable reading and the wrong one would waste real work, or when a stated fix may not address the cause. Use for vague verbs ("clean up", "fix this", "make it better", "shorter", "more professional") or unstated scope, format, audience. Skips lookups and casual chat. Hands off settled-intent scope to `design-scoping`, `user-story-decomposition`, `prompt-authoring`; not `problem-solving-gates` (diagnosis), `test-practice-gate` (tests), or `spec-drift-gate` (multi-file builds).
+description: Asks before acting when a request has more than one reasonable reading and the wrong one would waste real work, or when a stated fix may not address the cause. Use for vague verbs ("clean up", "fix this", "make it better") or unstated scope, format, audience. Hands off settled-intent scope to `design-scoping`, `prompt-authoring`; not `problem-solving-gates` (diagnosis), `spec-drift-gate` (builds).
 ---
 
 # Ambiguity Gate

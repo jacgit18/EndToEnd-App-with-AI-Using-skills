@@ -1,6 +1,6 @@
 ---
 name: problem-journal
-description: Two modes: Capture saves an error or stack trace verbatim as its own file; Journal writes a curated post-resolution entry (symptom/cause/fix, grepped recurrence count, worth-learning verdict). Use when "log this error", "save this error", "capture this", "log this problem", "was that worth learning from", "have I hit this before". Not a live gate. NOT `learning-gate` or `problem-solving-gates` (live debugging), NOT `prompt-archive` (prompts), NOT `decision-journal` (judgment calls), NOT `session-handoff`.
+description: Two modes: Capture saves an error or stack trace verbatim as its own file; Journal writes a curated post-resolution entry (symptom/cause/fix, recurrence count, worth-learning verdict). Use when "log this error", "save this error", "have I hit this before". Not a live gate. NOT `problem-solving-gates` (live debugging), NOT `decision-journal` (judgment calls), NOT `prompt-archive`.
 ---
 
 # Problem Journal

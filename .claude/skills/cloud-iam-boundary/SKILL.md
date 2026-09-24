@@ -1,6 +1,6 @@
 ---
 name: cloud-iam-boundary
-description: Gated decision for who or what gets access to a cloud resource and where it sits on the network: identity, least privilege, trust boundary, permissions boundary/SCP, subnet placement. Triggers: "create an IAM role for X", "can this cross-account", "should this be public or private subnet", "an audit flagged an over-permissive role". Not for app roles/RBAC — `access-control-modeling`. Not for secret storage — `config-and-secrets-management`. Not for compute choice — `serverless-execution-model`. Not for an unscoped system — `design-scoping`.
+description: Gated decision for who or what gets access to a cloud resource and where it sits on the network: identity, least privilege, trust boundary, permissions boundary/SCP, subnet placement. Triggers: "create an IAM role for X", "can this cross-account", "public or private subnet". Not for app roles/RBAC — `access-control-modeling`. Not for secret storage — `config-and-secrets-management`.
 ---
 
 # Cloud IAM & Network Boundary

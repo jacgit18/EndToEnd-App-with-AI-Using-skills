@@ -1,6 +1,6 @@
 ---
 name: problem-solving-gates
-description: Four gated modes that force the user's own reasoning first: Rubber Duck (debugging), Options Generator (architecture), Knowledge Checker (understanding), Optimization (speed/cost, needs a measurement). Use for "what's wrong with my code", "what should I do", "am I right that X", or "how do I speed this up" with no attempt shown. Not for stalled starts (`entry-point-first`), skill reviews (`skill-static-audit`), symptoms (`debugging-layer-selection`), or specialist gates (`database-architecture`).
+description: Four gated modes that force the user's own reasoning first: Rubber Duck (debugging), Options Generator (architecture), Knowledge Checker (understanding), Optimization (needs a measurement). Use for "what's wrong with my code", "what should I do", "how do I speed this up" with no attempt shown. Not for stalled starts (`entry-point-first`) or symptoms (`debugging-layer-selection`).
 ---
 
 # Problem-Solving Gates

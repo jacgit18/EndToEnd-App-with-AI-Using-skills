@@ -1,6 +1,6 @@
 ---
 name: migration-cutover
-description: Gated decision for moving a live workload from one system to another: cutover pattern, data-move mechanic, verification evidence, rollback trigger and window, consumer sequencing. Use when someone says "we're migrating from X to Y", "cut over to the new database", "replatform this", "lift-and-shift to the cloud", "replace the API gateway / ingress / reverse proxy". Not for releasing a new version of an existing unit (`deployment-strategy`), choosing the target store (`database-architecture`), or scaling an existing store (`data-tier-operations`).
+description: Gated decision for moving a live workload from one system to another: cutover pattern, data-move mechanic, verification evidence, rollback trigger and window, consumer sequencing. Use for "we're migrating from X to Y", "cut over to the new database", "lift-and-shift to the cloud". Not for releasing a new version of an existing unit (`deployment-strategy`) or choosing the target store (`database-architecture`).
 ---
 
 # Migration & Cutover

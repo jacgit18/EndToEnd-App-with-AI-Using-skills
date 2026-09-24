@@ -1,6 +1,6 @@
 ---
 name: skill-interaction-testing
-description: Tests a new or changed skill against the siblings it could collide with for stacking, contradiction, silent override, and beneficial chaining. Use after writing or substantially revising a skill in .claude/skills/, or when a description edit could newly overlap another skill. Not for whole-catalog hygiene (`catalog-drift-audit`), a read-only critique of one skill (`skill-static-audit`), or reporting real-use firing (`skill-usage-log`).
+description: Tests a new or changed skill against the siblings it could collide with for stacking, contradiction, silent override, and beneficial chaining. Use after writing or substantially revising a skill in .claude/skills/, or when a description edit could newly overlap another. Not for `catalog-drift-audit` (whole catalog) or `skill-static-audit` (read-only critique of one skill).
 ---
 
 # Skill Interaction Testing
