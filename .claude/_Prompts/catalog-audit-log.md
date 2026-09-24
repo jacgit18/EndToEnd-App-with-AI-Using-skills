@@ -92,3 +92,14 @@ ADR-template reuse, audit examples, consumer-side disclaimers).
 **FLAGGED, not fixed:** three SKILL.md files now exceed the ~250-line split heuristic — `failure-mode-analysis`
 (279), `capacity-estimation` (272), `disclosure-gap-audit` (271). They are procedures with worked examples;
 split candidates if a further trim pass is wanted (worked examples -> companion, as done for the other four).
+
+## 2026-09-24 (addendum) — gym-app scenario re-run
+
+Re-ran the one scenario left open: `design-scoping` vs `entry-point-first` after the added
+"plain 'I'm building X, where do I start' goes to design-scoping" clause. Six router prompts
+(gym app where-to-start, overwhelmed, repo, dashboard, "what should v1 include", inherited codebase):
+all six routed as expected, no stacking. Bodies also resolve the two soft spots (the documented
+v1 sequence in `design-scoping`; the three-bullets rep then hand-off to `spec-drift-gate` in
+`entry-point-first`). Two optional nits left unapplied by design (add "make me a dashboard" as an
+`entry-point-first` example phrase only if it ever mis-routes in practice; mirror the stall carve-out
+in `design-scoping`'s body). No open items remain from the 2026-09-24 audit.
