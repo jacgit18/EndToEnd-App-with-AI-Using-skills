@@ -73,3 +73,22 @@ non-issues (consumer-side disclaimers where the target would never claim the req
 **Left for the user:** (a) `data-tier-operations` claims warehouse physical tuning ("which distribution /
 sort key") with no body; `index-tuning` and `dimensional-modeling` route it there — add the content or drop
 the claim and re-point; (b) restore `.claude/agents/spec-executor.md` or correct `repo-map.md`/`agents.md`.
+
+## 2026-09-24 (second run, after PRs #34-#38 all merged)
+
+**Steps 1-2:** not applicable — no `SKILL-BACKLOG.md`, no README catalog table in this checkout.
+**Step 3 — dead references:** CLEAN. All 61 `SKILL.md` have `name` = directory and `description:` on line 3
+(three folded `>` blocks predate the audit). Only non-directory skill-like names are the known externals
+(`code-review`, `security-review`, `claude-api`, `equity-trade-decision`) and `spec-executor`, which the rule
+files now document as absent from this checkout; `sync-catalog` in `skill-usage-log`'s description is a
+command (`.claude/commands/sync-catalog.md`), not a dead skill. `writing-skills` no longer referenced anywhere
+and removed from `sync-catalog`'s allowlist.
+**Step 4 — untested pairs:** the edited sets were router-tested on 2026-09-24; gym-app scenario
+(`design-scoping` vs `entry-point-first` after the added clause) deliberately not re-run.
+**Step 5 — starvation:** CLEAN. Every skill has >= 2 inbound mentions. Full one-way scan: 122 pairs, 6 real
+back-pointers added, 116 documented non-issues (table in the session scratchpad, categories: hub fan-out,
+ADR-template reuse, audit examples, consumer-side disclaimers).
+**Companions:** no unreferenced companion files.
+**FLAGGED, not fixed:** three SKILL.md files now exceed the ~250-line split heuristic — `failure-mode-analysis`
+(279), `capacity-estimation` (272), `disclosure-gap-audit` (271). They are procedures with worked examples;
+split candidates if a further trim pass is wanted (worked examples -> companion, as done for the other four).
