@@ -58,7 +58,7 @@ Retrospective entries are **excluded from the calibration count** (a prediction 
 Append to `.claude/_Prompts/decisions-log.md` (create it with a `# Decision Journal` heading if absent):
 
 ```markdown
-## D-2026-09-23-<slug> — <short decision title>
+## D-YYYY-MM-DD-<slug> — <short decision title>   (use today's date, e.g. D-2026-09-23)
 
 **Decision:** <one sentence>
 **Reasoning:** <why>
