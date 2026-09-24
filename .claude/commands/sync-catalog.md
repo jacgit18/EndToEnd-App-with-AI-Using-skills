@@ -21,7 +21,7 @@ Backticked hyphenated tokens in SKILL.md files that are not a skill directory (c
 
 Known-legit non-directory refs — ignore these in the list above: `claude-api`, `code-review`,
 `security-review`, `writing-skills` (Claude Code built-in / plugin skills), `spec-executor`
-(an agent, `.claude/agents/spec-executor.md`). Anything else that is a real skill name and not
+(an agent; `.claude/agents/` is not present in this checkout). Anything else that is a real skill name and not
 a directory is a genuine dead pointer.
 
 From the output above, write a short report:

@@ -59,8 +59,8 @@ Stops before ETL/ELT implementation.
 
 - OLTP table design → `relational-modeling`.
 - Warehouse technology / ownership / source-of-truth → `database-architecture`.
-- Scaling an existing warehouse (dist keys, sort keys, cluster sizing) → `data-tier-operations`;
-  the warehouse bill → `technical-cost-decision`.
+- Scaling or physically tuning an existing warehouse (dist keys, sort keys, cluster sizing) →
+  not covered by any skill in this catalog; the warehouse bill → `technical-cost-decision`.
 - The ETL/ELT pipeline code and orchestration (dbt/Airflow/Dagster/CDC) — the skill produces a
   *load plan*, not the implementation.
 - BI tool / dashboard design; ML feature stores.

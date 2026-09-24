@@ -18,7 +18,7 @@ Design the analytical model: pick the business process, nail the grain, build th
 
 - **OLTP / transactional table design** — normalization, keys, indexes, constraints on the operational database → `relational-modeling`. This skill is the analytical (OLAP) counterpart; the two are different disciplines with opposite defaults (normalize vs denormalize).
 - **Whether a warehouse is warranted at all**, and **where it lives / which technology** — Redshift vs BigQuery vs Snowflake vs "just a schema in Postgres", who owns it, source-of-truth → `database-architecture`. The "one slow dashboard query, should we build a warehouse?" case in particular is not this skill — that's a rollup (`relational-modeling`) or a replica (`data-tier-operations`); see "Challenge the framing". If the warehouse is a real separate system whose platform isn't settled, settle it there first.
-- **Scaling an existing warehouse** (distribution keys, sort keys, cluster sizing, slow-query tuning on the warehouse) → `data-tier-operations`. **The warehouse bill** → `technical-cost-decision`.
+- **Scaling or physically tuning an existing warehouse** (distribution keys, sort keys, cluster sizing, slow-query tuning on the warehouse) → not covered by any skill in this catalog; say so plainly. **The warehouse bill** → `technical-cost-decision`.
 - **The ETL/ELT pipeline itself** — extraction, transformation code, orchestration (Airflow/dbt/Dagster), CDC. The skill produces a *load plan* (what must happen, cadence, how Type 2 changes land) but not the implementation.
 - **BI tool / dashboard / report layout**, and **ML feature stores**.
 
