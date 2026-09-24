@@ -22,9 +22,9 @@ The README's per-group tables say which is which.
 
 These four are referenced by many others and are the usual integration points for a new skill:
 
-- `Skill Development/learning-gate` — classifies intent (learning / execution / reference),
+- `learning-gate` — classifies intent (learning / execution / reference),
   sets how much thinking Claude may do. New skills add a Step 3 row here.
-- `Skill Development/problem-solving-gates` — prior-effort gates (Rubber Duck / Options
+- `problem-solving-gates` — prior-effort gates (Rubber Duck / Options
   Generator / Knowledge Checker / Optimization).
-- `Skill Development/spec-drift-gate` — spec-before-build + drift checkpoints.
-- `Prompts/ambiguity-gate` — ask before acting on a request with more than one reading.
+- `spec-drift-gate` — spec-before-build + drift checkpoints.
+- `ambiguity-gate` — ask before acting on a request with more than one reading.

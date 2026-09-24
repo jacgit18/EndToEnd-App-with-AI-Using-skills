@@ -1,17 +1,17 @@
 # Adding or changing a skill
 
-1. Copy `template/skill-template/` to `.claude/skills/<Group>/<name>/` and fill in
+1. Copy `template/skill-template/` to `.claude/skills/<name>/` (flat — Claude Code discovers one level only; record the group label in `.claude/skills/INDEX.md`) and fill in
    `SKILL.md` + reference files + `README.md`. Budget real effort on the `description`
    frontmatter — it alone decides when the skill fires and carries the carve-outs against
    siblings. (In a checkout without `template/`, copy a sibling skill of the same group as
    the scaffold instead — see `repo-map.md`.)
-2. **Static audit** — run `Skill Development/skill-static-audit` on the draft (read-only,
+2. **Static audit** — run `skill-static-audit` on the draft (read-only,
    cheap) and fix the blockers and should-fixes before spending agent runs on the next two
    steps. It catches missing carve-outs, unreachable steps and one-way sibling pointers by
    reading; it does not replace steps 3–4, which run the skill.
 3. **Isolation screen** — confirm a baseline (no skill) fails the way the skill exists to
    fix, and that the skill fixes it.
-4. **Interaction test** — run `Prompts/skill-interaction-testing` against the sibling set.
+4. **Interaction test** — run `skill-interaction-testing` against the sibling set.
    Record what you find: hand-off, absorption, chaining, or a fix for stacking /
    contradiction / silent override.
 5. **Reciprocal edits** — apply the sibling `description` changes and cross-pointers the
