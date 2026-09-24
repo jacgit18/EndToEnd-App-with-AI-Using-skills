@@ -71,10 +71,13 @@ confirm with [reviewer]"* — never *"the product violates [regime]"*.
 | L3 | **Dark patterns** | Consent banner with no equally-prominent "reject"; cancellation flow harder than signup; pre-checked opt-ins; "confirmshaming" copy. | FTC Act §5, CPRA (dark-pattern-obtained consent is not consent), EDPB banner guidance. | Privacy counsel + design review. |
 | L4 | **Consent mechanics** | Non-essential cookies/SDKs load before consent; no consent recorded for a purpose a regime requires it (marketing, sensitive data, minors). | e-Privacy Directive, GDPR Art. 7, state sensitive-data opt-ins. | Privacy counsel. |
 | L5 | **IP / licensing** | Training data of unknown provenance; user content re-licensed by the terms more broadly than the product needs; third-party content or code with license obligations (attribution, copyleft) not met. | Copyright law, open-source license terms, the product's own ToS grant. | IP counsel + engineering. |
+| L6 | **Incident / breach notification** | The product holds personal or financial data of people other than the operator, and there is no incident-response owner, no way to tell affected users, and no breach-notice commitment in the policy or terms. | GDPR Art. 33-34 (authority notice within 72 hours, users when high risk), US state breach-notification laws (deadlines and triggers vary by state), GLBA Safeguards Rule if financial, sector rules. | Privacy counsel + whoever operates the system. |
 
 Add a row for any other regime the jurisdictions raise that the passes above don't cover
-(HIPAA if health data, GLBA if financial, PCI-DSS if card data, sector rules) — same
+(HIPAA if health data, PCI-DSS if card data, sector rules; GLBA is named in L6 when the data is financial) — same
 flag-only treatment: name it, state the fact, route to counsel.
+
+**L6 severity:** Medium by default; High when the product holds third parties' financial or health data and the policy or terms promise breach notice the operator has no process to deliver.
 
 ---
 
