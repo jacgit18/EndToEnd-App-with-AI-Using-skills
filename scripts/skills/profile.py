@@ -3,6 +3,7 @@
 
   profile.py core     skills listed in .claude/skills/CORE.txt stay "on"; every other catalog skill -> "name-only"
   profile.py all      remove every override for catalog skills (all skills "on")
+  profile.py toggle   read the current state and flip it: any catalog skill overridden -> all; none overridden -> core
   profile.py status   show the current counts
 
 Only keys that are catalog skill names are touched; any other settings keys and any overrides for
@@ -45,6 +46,10 @@ def main():
     names = set(catalog())
     cfg = load()
     ov = cfg.get("skillOverrides", {})
+    if mode == "toggle":
+        # Flip based on what is actually in settings, not on a remembered mode.
+        mode = "all" if any(n in ov for n in names) else "core"
+        print(f"toggle: {'some skills overridden' if mode == 'all' else 'all skills fully listed'} -> switching to {mode}")
     if mode == "core":
         keep = core()
         unknown = [k for k in keep if k not in names]
