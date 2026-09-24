@@ -139,8 +139,9 @@ docker compose down                # stop and remove containers (add -v to also 
 | Field | Value |
 |---|---|
 | Connection type | PostgreSQL |
-| Host | `localhost` |
-| Port | `5432` (Option 1's standalone container) or `5433` (Option 2's Compose stack) |
+| Host | `127.0.0.1` (`localhost` can resolve to IPv6, which Docker doesn't listen on here) |
+| Port | **`5433`** for the Compose stack on this machine (host port remapped off 5432 because another project uses it); `5432` only for Option 1's standalone container, and only if it is running |
+| SSL | off (the container's Postgres has no SSL) |
 | User | `finance` |
 | Password | `finance` |
 | Database | `finance` |

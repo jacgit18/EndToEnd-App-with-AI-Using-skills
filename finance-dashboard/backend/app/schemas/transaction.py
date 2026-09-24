@@ -7,7 +7,7 @@ from decimal import Decimal
 
 from pydantic import BaseModel, ConfigDict, field_serializer, field_validator
 
-from app.schemas._money import as_str, reject_float
+from app.schemas._money import Money, as_str, reject_float
 
 
 class TransactionCreate(BaseModel):
@@ -17,7 +17,7 @@ class TransactionCreate(BaseModel):
     account_id: int
     category_id: int | None = None
     date: date
-    amount: Decimal  # negative = money out, positive = money in
+    amount: Money  # negative = money out, positive = money in; NUMERIC(14,2) rules, see _money.py
     description: str
 
     _validate_amount = field_validator("amount", mode="before")(reject_float)
