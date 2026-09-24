@@ -22,6 +22,8 @@ app/dependencies.py checks expires_at; this file only answers "is this
 signature genuine and un-tampered".
 """
 
+import secrets
+
 from argon2 import PasswordHasher
 from argon2.exceptions import Argon2Error
 from itsdangerous import BadData, URLSafeSerializer
@@ -30,6 +32,9 @@ from app.config import settings
 
 _hasher = PasswordHasher()
 _signer = URLSafeSerializer(settings.session_secret, salt="session-cookie")
+# Same secret, different salt: a CSRF token can never be replayed as a session
+# cookie value (or vice versa), because each salt yields a different signature.
+_csrf_signer = URLSafeSerializer(settings.session_secret, salt="csrf-token")
 
 
 def verify_password(password: str) -> bool:
@@ -78,3 +83,26 @@ def unsign_session_id(cookie_value: str) -> str | None:
         return _signer.loads(cookie_value)
     except BadData:
         return None
+
+
+def make_csrf_token(session_id: str) -> str:
+    """The CSRF token for a session: its id, signed under a separate salt.
+
+    Derived, not stored — `sessions` has no CSRF column, so there is nothing
+    to migrate. Tied to one session: logging in again yields a new id and
+    therefore a new token.
+    """
+    return _csrf_signer.dumps(session_id)
+
+
+def verify_csrf_token(token: str, session_id: str) -> bool:
+    """True only if `token` is genuine AND was made for `session_id`.
+
+    The second half matters: a validly signed token from another session
+    must not pass. compare_digest keeps the comparison constant-time.
+    """
+    try:
+        signed_id = _csrf_signer.loads(token)
+    except BadData:
+        return False
+    return secrets.compare_digest(signed_id.encode(), session_id.encode())
