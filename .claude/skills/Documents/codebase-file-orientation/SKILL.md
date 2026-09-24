@@ -1,40 +1,21 @@
 ---
 name: codebase-file-orientation
 description: >
-  A procedure that authors or reconciles a companion orientation doc for a source-code file that was
-  just created or substantially changed — a short sidecar `.md` (matched to whatever doc convention the
-  repo already uses; a sidecar `<file>.md` next to the source if there is none) covering the file's role
-  in the system, its public surface / entry points, what it depends on and what depends on it, and the
-  non-obvious gotchas a reader cannot infer from the code. It is complementary to inline comments —
-  comments carry the local "why" at the point of surprise, this doc carries file-level orientation — and
-  it deliberately does not restate the code line by line. Two modes. Author (no doc yet — read the file,
-  trace its callers and callees, fill the template, flag what cannot be determined instead of inventing
-  it). Reconcile (a doc already exists — diff its claims against the current file, list the stale entry
-  points / dependencies / gotchas / role drift, propose a patch, do not silently rewrite). Use when the
-  user says "document the file(s) I just added", "write an orientation doc for this file", "add a
-  companion doc for `parser.ts`", "I created these files, document them", "does this new module have
-  docs", "the doc for this file is stale", "check `foo.md` still matches `foo.ts`", or finishes a chunk
-  of new files and wants each one documented. Also fires as a single unprompted offer when the user
-  moves to commit new source files that have no orientation doc (offered once, dropped if declined,
-  never blocks the commit). Needs a concrete file path, not "the stuff I changed".
-  NOT `explaining-my-work` (that renders completed work into words for a human audience — a post, a
-  spoken script, a summary, a resume line; this writes a standing in-repo reference for a developer
-  reading the code). NOT `system-design-communication` (live out-loud rehearsal, no written artifact).
-  NOT `Documents/document-page-check` (an integrity pre-flight on a paginated PDF/EPUB being consumed;
-  this produces a doc about source code — opposite direction). NOT `spec-drift-gate` (a spec written
-  before a multi-file build and audited as it goes — forward-looking intent; this describes a file that
-  already exists now). NOT `session-handoff` (an ephemeral end-of-session context dump with next steps;
-  this is a durable per-file reference with none — and when a session is being wrapped up, stay out
-  entirely rather than stacking a per-file-doc step onto the handoff, even if new source files were
-  created this session). NOT `change-surface-audit` (reasons about what a change breaks elsewhere; this
-  describes the changed file itself and traces no blast radius). NOT `commit-and-push` (a commit message
-  from the diff — a VCS log entry about a change, not a standing doc about a file). NOT
-  `problem-solving-gates` (Knowledge Checker) or `learning-gate` — "explain how this module works so I
-  can check my understanding", "write up how X works so I can see if I got it" is a learning rep the
-  user states first and Claude gap-checks; this writes a standing in-repo reference about a file the
-  user just created or changed, never a study aid and never a stand-in for that rep. A bare conceptual
-  question — "sidecar docs vs header comments", "how should I document files" — is answered directly, no
-  procedure.
+  A procedure that authors or reconciles a companion orientation doc (sidecar `.md`) for a source file just
+  created or substantially changed: its role in the system, public surface / entry points, dependencies and
+  dependents, and non-obvious gotchas. Two modes: Author (no doc yet; flag unknowns, don't invent) and Reconcile (doc exists; diff its claims against the file, propose a patch,
+  never silently rewrite). Use when the user says "document the file(s) I just added", "write an
+  orientation doc for this file", "add a companion doc for `parser.ts`", "I created these files, document
+  them", "does this new module have docs", "the doc for this file is stale", "check `foo.md` still matches
+  `foo.ts`", or finishes new files and wants each documented. Also a single unprompted offer on commit of new source
+  files without one. Needs a concrete file path.
+  NOT `explaining-my-work` (words for a human audience). NOT `system-design-communication`. NOT
+  `Documents/document-page-check`. NOT `spec-drift-gate` (forward-looking spec). NOT `session-handoff`
+  (stay out when a session is wrapping up). NOT `change-surface-audit` (blast radius). NOT
+  `commit-and-push`. NOT `problem-solving-gates` (Knowledge Checker) or `learning-gate` ("explain how this
+  module works so I can check my understanding", "write up how X works so I can see if I got it" is a
+  learning rep). A bare question ("sidecar docs vs header comments", "how should I document files") is
+  answered directly.
 ---
 
 # Codebase File Orientation
@@ -245,3 +226,21 @@ repo's `.claude/skills/`. See `README.md` for where it sits among the siblings.
 ```
 cp -r ".claude/skills/Documents/codebase-file-orientation" /path/to/other-repo/.claude/skills/
 ```
+
+## Routing boundaries (full)
+
+The frontmatter `description` is truncated in the skill listing, so the full boundary rules live here (moved verbatim from the original description):
+
+- It is complementary to inline comments — comments carry the local "why" at the point of surprise, this doc carries file-level orientation — and it deliberately does not restate the code line by line.
+- Author (no doc yet — read the file, trace its callers and callees, fill the template, flag what cannot be determined instead of inventing it).
+- Reconcile (a doc already exists — diff its claims against the current file, list the stale entry points / dependencies / gotchas / role drift, propose a patch, do not silently rewrite).
+- NOT `explaining-my-work` (that renders completed work into words for a human audience — a post, a spoken script, a summary, a resume line; this writes a standing in-repo reference for a developer reading the code).
+- NOT `system-design-communication` (live out-loud rehearsal, no written artifact).
+- NOT `Documents/document-page-check` (an integrity pre-flight on a paginated PDF/EPUB being consumed; this produces a doc about source code — opposite direction).
+- NOT `spec-drift-gate` (a spec written before a multi-file build and audited as it goes — forward-looking intent; this describes a file that already exists now).
+- NOT `session-handoff` (an ephemeral end-of-session context dump with next steps; this is a durable per-file reference with none — and when a session is being wrapped up, stay out entirely rather than stacking a per-file-doc step onto the handoff, even if new source files were created this session).
+- NOT `change-surface-audit` (reasons about what a change breaks elsewhere; this describes the changed file itself and traces no blast radius).
+- NOT `commit-and-push` (a commit message from the diff — a VCS log entry about a change, not a standing doc about a file).
+- NOT `problem-solving-gates` (Knowledge Checker) or `learning-gate` — "explain how this module works so I can check my understanding", "write up how X works so I can see if I got it" is a learning rep the user states first and Claude gap-checks; this writes a standing in-repo reference about a file the user just created or changed, never a study aid and never a stand-in for that rep.
+- A bare conceptual question — "sidecar docs vs header comments", "how should I document files" — is answered directly, no procedure.
+- Needs a concrete file path, not "the stuff I changed".
