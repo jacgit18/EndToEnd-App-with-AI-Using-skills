@@ -1,6 +1,6 @@
 ---
 name: explaining-my-work
-description: Use when work that just happened needs to become something the user can say out loud or post publicly — "help me talk about this," "turn this into a LinkedIn post," "how do I explain this to a non-technical person," "what do I say at the meetup," "write this up for my resume," "summarize what I built." Also use when preparing for an interview, standup, recruiter call, networking event, or stakeholder update, and when an existing draft needs an audience check — jargon a business reader can't parse, or vagueness a technical reader can't grab onto. This skill drafts the words — a script, talking points, a summary you can read or rehearse solo. Actually rehearsing a system-design interview live — Claude asking follow-ups, pressing on assumptions, a real back-and-forth with a debrief at the end — is `system-design-communication`, which this skill's draft can feed into rather than duplicate (draft the talking points here, then pressure-test them there). Not a standing in-repo reference about what a specific source file contains and how it fits the codebase, for the developers who read the code — concrete file paths plus "what does this file do / document this file I just added" is `codebase-file-orientation`; this skill faces a person, that one faces the codebase.
+description: Use when work that just happened needs to become something the user can say out loud or post publicly — "help me talk about this," "turn this into a LinkedIn post," "how do I explain this to a non-technical person," "what do I say at the meetup," "write this up for my resume," "summarize what I built." Also use when preparing for an interview, standup, recruiter call, networking event, or stakeholder update, and when an existing draft needs an audience check — jargon a business reader can't parse, or vagueness a technical reader can't grab onto. This skill drafts the words — a script, talking points, a summary you can read or rehearse solo. Actually rehearsing a system-design interview live — Claude asking follow-ups, pressing on assumptions, a real back-and-forth with a debrief at the end — is `system-design-communication`, which this skill's draft can feed into rather than duplicate (draft the talking points here, then pressure-test them there). Not a standing in-repo reference about what a specific source file contains and how it fits the codebase, for the developers who read the code — concrete file paths plus "what does this file do / document this file I just added" is `codebase-file-orientation`; this skill faces a person, that one faces the codebase. Stripping AI-sounding patterns from an already-written draft is `delete-ai-words`, and the personal-brand voice and career-wide honesty pass (LinkedIn headline/About, resume under the brand) is `software-carpentier-brand`; run them after this skill's draft. Deciding which backlog stories deserve a write-up, or authoring the stories, is `user-story-decomposition`, whose documentation-candidate flag is only a pointer here.
 ---
 
 # Explaining My Work
@@ -78,7 +78,7 @@ Then fill this table. **One row per shippable unit** — the thing the user woul
   precise enough — don't manufacture a day you don't have.
 - **Mechanism** — the actual system, workflow, or failure mode. Named precisely enough that an engineer could ask a sensible follow-up.
 - **What it's worth** — cost, time, risk, or the customer. Answers "so what, for the business," not "so what, for the codebase."
-- **Outcome** — exactly one of two legal forms:
+- **Outcome** — exactly one of three legal forms:
   - **A number you can point at.** Files covered, workflows tested, steps removed from a manual process, decisions now captured before code gets written. Countable, and you know the count.
   - **A named risk reduced.** Not "reduced risk" — *which* risk. "A schema decision getting locked in across 40 files before anyone questioned it" is a named risk. "Improved architecture quality" is an adjective wearing a lab coat.
   - **A design property now in place**, for work that has no footprint in the world yet. Tooling, processes, and internal standards produce nothing measurable until someone runs them, and forcing that work into an effect-shaped number is exactly how invented metrics get in. The property must be **countable and checkable in the artifact** — "nine fields must be filled before a service name may appear" — and it must be **marked as not yet measured**, in the draft as well as the table. This is the honest form, not the weak one. Do not use it to dodge a measurement that actually exists.
@@ -118,6 +118,8 @@ For resume or interview lines specifically, the structure is: **action verb + pl
 
 The dash clause carries specificity, not jargon. "Citizenship updates and secure document requests" is specific *and* plain. "Data paths" is neither.
 
+**Precedence over `delete-ai-words`:** the resume dash clause (an em dash or comma-free dash-separated clause) is exempt from that skill's em-dash ban, and a brand device word from `software-carpentier-brand` is exempt from its metaphor-verb ban. If a de-AI pass runs on this text, it must keep the dash clause.
+
 ---
 
 ## Part 4 — LinkedIn Draft
@@ -127,7 +129,7 @@ LinkedIn is mixed audience, public, and permanent. Engineers and recruiters read
 **Shape:**
 - **First two lines carry the whole post.** Everything after them is behind a "see more" click. Lead with what changed or what it's worth — never with setup, never with "I'm excited to share."
 - **Middle: 2–4 lines of concrete specifics.** This is where the dash-clause content lives — the actual thing built, in plain words. This section is why the post is worth reading; without it the post is a status update about having been busy.
-- **The outcome**, in one of the two legal forms.
+- **The outcome**, in one of the three legal forms.
 - **A real date or timeframe** — the month the work actually shipped, from the Evidence Block's
   "When it shipped" column. Not "recently," not silence. An undated post reads as freshly done
   even when it wasn't; that's exactly the kind of invention this skill exists to prevent.

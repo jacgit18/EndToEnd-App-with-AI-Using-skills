@@ -4,7 +4,7 @@ Work these in order once the gate in `SKILL.md` is satisfied. Each step produces
 
 ## 1. Segment the codebase
 
-Split the scope into segments that deserve different policies. The axes, in priority order: **business criticality**, **change frequency**, **complexity**, **expected lifespan** (from `Code Coverage Best Practices.md`).
+Split the scope into segments that deserve different policies. The axes, in priority order: **business criticality**, **change frequency**, **complexity**, **expected lifespan** (from the "Code Coverage Best Practices" source note (a PersonalBrain-vault note that is not in this checkout; it carries the "no universal number" principle and Google's 60/75/90 guideline — treat it as the origin of those claims, not a file to open)).
 
 | Segment | Criticality | Churn | Verdict |
 |---|---|---|---|
@@ -27,7 +27,7 @@ State the metric per segment. It is normal for the critical segment to carry bra
 
 ## 3. Set the target per segment
 
-Anchor to the reference band from `Code Coverage Best Practices.md` (Google's guideline): **60% acceptable, 75% commendable, 90% exemplary.** Then adjust:
+Anchor to the reference band from the source note (Google's guideline): **60% acceptable, 75% commendable, 90% exemplary.** Then adjust:
 
 - Critical + high churn → aim at the commendable-to-exemplary end (80–90%), on **branch** coverage.
 - Ordinary code → 70–80% statement is a healthy, non-gamed target.

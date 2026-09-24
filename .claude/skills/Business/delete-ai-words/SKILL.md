@@ -1,7 +1,7 @@
 ---
 name: delete-ai-words
 description: >
-  Audit and rewrite any text so it stops sounding like AI. Use this skill whenever the user invokes /delete-ai-words, or asks to "delete the AI words", "humanise this", "make this sound less like AI", "de-AI this", "audit this against the writing rules", "fix the AI writing", or pastes a draft and asks you to clean up the robotic patterns. Also trigger right after you produce any longer piece of writing (LinkedIn post, email, article, blog post) and the user wants it to read like a person wrote it. Apply the rules below to the user's supplied text, or to your own most recent draft if they say "audit your text".
+  Audit and rewrite any text so it stops sounding like AI. Use this skill whenever the user invokes /delete-ai-words, or asks to "delete the AI words", "humanise this", "make this sound less like AI", "de-AI this", "audit this against the writing rules", "fix the AI writing", or pastes a draft and asks you to clean up the robotic patterns. Also trigger when you have just produced a longer piece of writing (LinkedIn post, email, article, blog post) and the user asks for it to read like a person wrote it; never run unprompted. Apply the rules below to the user's supplied text, or to your own most recent draft if they say "audit your text". Not for writing a post in the user's personal-brand voice or checking brand/career-claim honesty (that is `software-carpentier-brand`), not for turning just-finished work into something sayable (that is `explaining-my-work`), and not the plugin `linkedin-humanizer` (LinkedIn-specific AI-slop audit/profile modes; use that when the user names it).
 ---
 
 # Delete AI words
@@ -16,6 +16,8 @@ Take the text the user gives you (or your own most recent draft if they say "aud
 4. If you removed a pattern but the meaning got lost, keep the meaning. Accuracy beats every style rule.
 
 > Optional personal layer: if a separate voice file (a `software-carpentier-brand` draft, a saved style guide) is in context, read it and let it override these defaults where they conflict.
+>
+> **Precedence (explicit):** the `software-carpentier-brand` carpenter device (built, joined, load-bearing, structural, framed, reinforced; one use at most) and `explaining-my-work`'s resume dash-clause (the dash-separated outcome clause, which may use an em dash) are exempt from the metaphor-verb ban (framed, layered, woven) and the em-dash ban below. When either skill sends text here first, keep those device words and that dash clause intact; strip everything else. If the draft has no brand or resume context, the bans apply in full.
 
 ---
 

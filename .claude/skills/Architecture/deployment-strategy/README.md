@@ -80,6 +80,12 @@ Stops before implementation (rollout-controller config, probes, migration script
   (blue-green, canary), reciprocal boundary notes in both.
 - **Chains to `technical-cost-decision`** — blue-green's double stack, canary's extra
   capacity, a flag-service tier.
+- **Distinct from `service-mesh-adoption`** — whether a mesh exists (and so whether native
+  weighted routing is available) = there; how a release rolls out once that is settled = here.
+- **Distinct from `microservices-decision`** — deployable-unit count and repo/pipeline layout
+  = there; rollout of one unit = here.
+- **Consumes `change-surface-audit`** — its confirmed expand-contract steps are what this
+  skill stages.
 - **`learning-gate`** hands off here on rollout / release-process questions rather than
   running its own rep gate (see `learning-gate` Step 3).
 

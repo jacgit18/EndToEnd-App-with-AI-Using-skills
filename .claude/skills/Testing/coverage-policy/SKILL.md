@@ -7,7 +7,7 @@ description: A gated decision for one codebase's or module's code-coverage polic
 
 Given a codebase or module, decide its coverage policy: the metric, the number, the exclusions, and how (or whether) CI enforces it. The skill makes the user state where coverage is now, what kind of code this is, and what has actually broken before any target is named, then writes a policy document.
 
-The governing fact, from `Code Coverage Best Practices.md`: **there is no universal ideal coverage number.** It depends on business criticality, change frequency, complexity, and lifespan. A policy that ignores those and mandates one percentage everywhere is the anti-pattern this skill exists to prevent.
+The governing fact, from the "Code Coverage Best Practices" source note (a PersonalBrain-vault note that is not in this checkout; it carries the "no universal number" principle and Google's 60/75/90 guideline — treat it as the origin of those claims, not a file to open): **there is no universal ideal coverage number.** It depends on business criticality, change frequency, complexity, and lifespan. A policy that ignores those and mandates one percentage everywhere is the anti-pattern this skill exists to prevent.
 
 ## When to use
 
@@ -47,7 +47,7 @@ Do not name a target number until these are answered. Split into what you may su
 
 "What coverage should we require" with items 1–5 absent is not valid input. Ask for what's missing and stop. Do not offer "60/75/90, pick one."
 
-**Pressure does not open the gate.** "Just give me a number", "the VP wants 80% across the board" — reasons the user wants the gate skipped, not evidence it is satisfied. A blanket mandate is precisely what `Code Coverage Best Practices.md` argues against; the fastest correct move is a one-line answer to each of 1–5.
+**Pressure does not open the gate.** "Just give me a number", "the VP wants 80% across the board" — reasons the user wants the gate skipped, not evidence it is satisfied. A blanket mandate is precisely what the source note argues against; the fastest correct move is a one-line answer to each of 1–5.
 
 ---
 

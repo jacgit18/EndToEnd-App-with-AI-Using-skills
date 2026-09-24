@@ -24,7 +24,10 @@ design-scoping        →  purpose · audience · functional + out-of-scope · n
       ├─ microservices-decision   →  one service or several, and the boundaries
       ├─ api-interface-style      →  the surface style per boundary
       ├─ database-architecture    →  where the source of truth lives + which store
+      ├─ serverless-execution-model / cloud-iam-boundary  →  (as needed) what runs each unit of work; who/what gets access + network placement
       └─ failure-mode-analysis    →  the failure surface of the resulting design, before sign-off
+      (sequence is not closed: also data-tier-operations, technical-cost-decision, caching-strategy,
+       access-control-modeling, bff-gateway-placement, service-mesh-adoption, config-and-secrets-management)
 ```
 
 It is the **first** skill in an Architecture pass — everything else consumes its scope
@@ -76,8 +79,14 @@ design ask.
 - **Distinct from `ticket-evaluation`** — defined ticket → that skill; under-specified
   design ask → here.
 - **Sequences into** `capacity-estimation`, `microservices-decision`, `api-interface-style`,
-  `database-architecture`, `failure-mode-analysis` — names them and the order; does not do
-  their jobs.
+  `database-architecture`, `failure-mode-analysis` (plus `serverless-execution-model` and
+  `cloud-iam-boundary` when needed, and the optional specialists listed in SKILL.md) — names
+  them and the order; does not do their jobs.
+- **Upstream of `tech-decision-walkthrough`, `spec-drift-gate`, `incremental-build-pacing`** —
+  this skill scopes; those walk the tech choices, gate the build, and pace delivery.
+- **Not `disclosure-gap-audit` / `user-story-decomposition`** — compliance here is an input
+  constraint (audit is post-hoc); the functional list feeds story decomposition, which runs
+  alongside.
 - **Hands cost questions to `technical-cost-decision`** — the cost cap is a scope input; the
   bill sizing and the reversibility/cost-to-replace axis are that skill's.
 - **`learning-gate`** Step 3 routes "how do I scope a system design" here rather than
@@ -85,7 +94,7 @@ design ask.
 
 Run `skill-interaction-testing` after any trigger-description change here — the overlap risk
 is with `ambiguity-gate` (vague request vs system-design scope decomposition — the sharp
-one), `ticket-evaluation` (defined vs under-specified), and the five downstream skills
+one), `ticket-evaluation` (defined vs under-specified), and the downstream specialist skills
 (scope vs the deep design each owns).
 
 ## Using it in another repo

@@ -102,5 +102,5 @@ runs after it).
 Repo-agnostic. Writes nothing.
 
 ```
-cp -r ".claude/skills/Architecture/Data/index-tuning" /path/to/other-repo/.claude/skills/
+cp -r ".claude/skills/Architecture/Data/index-tuning" /path/to/other-repo/.claude/skills/Architecture/Data/
 ```

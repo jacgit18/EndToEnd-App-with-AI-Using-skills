@@ -87,5 +87,5 @@ Repo-agnostic. Reads and writes `docs/architecture/decisions/` alongside `databa
 and reuses its `adr-template.md`.
 
 ```
-cp -r .claude/skills/data-tier-operations /path/to/other-repo/.claude/skills/
+cp -r .claude/skills/Architecture/Data/data-tier-operations /path/to/other-repo/.claude/skills/Architecture/Data/
 ```

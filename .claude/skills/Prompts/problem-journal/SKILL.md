@@ -1,6 +1,6 @@
 ---
 name: problem-journal
-description: Two modes, picked by what's being asked for. Mode Capture — the moment an error/exception/stack trace appears, whether or not it's resolved yet, save it verbatim as its own file in `Finance/Error Log/` using the vault's existing `Language Error.md` template (Error Details, Steps to Reproduce, Expected/Actual Behavior, Environment, Error Messages, Resolution Steps) — "log this error", "save this error", "capture this". Mode Journal — after a coding problem is resolved and the user wants a learning-worthiness read — "log this problem", "was that worth learning from", "have I hit this before" — write a curated entry to `.claude/_Prompts/problems-log.md`: symptom/cause/fix, a recurrence count grepped from BOTH the prompt-archive logs (`.claude/_Prompts/logs/*.md`) and the `Finance/Error Log/` files (a far more precise signal, since it holds the actual error text, not just what the user typed), a classification (recurring pattern vs. one-off; fundamental concept vs. environmental fluke), and a worth-learning verdict tied to that count — never asserted without it, the same discipline `technical-cost-decision` forces for dollar figures. Neither mode is a live gate: Capture is mechanical recording (like `prompt-archive`'s Log mode, for errors instead of prompts), and Journal is a retrospective procedure that runs *after* a problem is already resolved. Neither replaces `learning-gate` (which sets how much help Claude gives on the *current, live* request) or `problem-solving-gates`' Rubber Duck (which forces the hypothesis *during* the debugging itself — this skill assumes that already happened, however it happened, and records the before/after). Once a Journal entry's verdict is "worth learning," this skill names the next step and hands it off — it does not teach the concept itself; that's `learning-gate` (S0, teach the minimum) or `problem-solving-gates`' Knowledge Checker (verify after self-study). Not for archiving a reusable prompt or logging a session's raw prompts verbatim — that's `prompt-archive`, whose dated logs this skill's Journal mode reads as one recurrence-search corpus but never writes into. Not for evaluating whether a prompt performs well — that's `prompt-tester`. Not for recording a judgment call with a confidence, a prediction and a review-by date, or for reviewing one later — that's `decision-journal`; a bug caused by a past decision can chain to it (this skill keeps the symptom / cause / fix, that one records the call and what its reasoning assumed).
+description: Two modes, picked by what's being asked for. Mode Capture — the moment an error/exception/stack trace appears, whether or not it's resolved yet, save it verbatim as its own file in `Finance/Error Log/` (or `.claude/_Prompts/problem-journal/` if that folder is absent) using the template in this skill's Capture section — "log this error", "save this error", "capture this". Mode Journal — after a coding problem is resolved and the user wants a learning-worthiness read — "log this problem", "was that worth learning from", "have I hit this before" — write a curated entry to `.claude/_Prompts/problems-log.md`: symptom/cause/fix, a recurrence count grepped from BOTH the prompt-archive logs (`.claude/_Prompts/logs/*.md`) and the `Finance/Error Log/` files (a far more precise signal, since it holds the actual error text, not just what the user typed), a classification (recurring pattern vs. one-off; fundamental concept vs. environmental fluke), and a worth-learning verdict tied to that count — never asserted without it, the same discipline `technical-cost-decision` forces for dollar figures. Neither mode is a live gate: Capture is mechanical recording (like `prompt-archive`'s Log mode, for errors instead of prompts), and Journal is a retrospective procedure that runs *after* a problem is already resolved. Neither replaces `learning-gate` (which sets how much help Claude gives on the *current, live* request) or `problem-solving-gates`' Rubber Duck (which forces the hypothesis *during* the debugging itself — this skill assumes that already happened, however it happened, and records the before/after). Once a Journal entry's verdict is "worth learning," this skill names the next step and hands it off — it does not teach the concept itself; that's `learning-gate` (S0, teach the minimum) or `problem-solving-gates`' Knowledge Checker (verify after self-study). Not for archiving a reusable prompt or logging a session's raw prompts verbatim — that's `prompt-archive`, whose dated logs this skill's Journal mode reads as one recurrence-search corpus but never writes into. Not for evaluating whether a prompt performs well — that's `prompt-tester`. Not for recording a judgment call with a confidence, a prediction and a review-by date, or for reviewing one later — that's `decision-journal`; a bug caused by a past decision can chain to it (this skill keeps the symptom / cause / fix, that one records the call and what its reasoning assumed). Not for preserving in-progress session state so work can resume (that is `session-handoff`); a handoff may link to a Capture file, but never replaces it.
 ---
 
 # Problem Journal
@@ -18,6 +18,8 @@ learning from. Capture never guesses a verdict. Journal never guesses a resoluti
 
 If the ask is ambiguous, ask which one in a single line. Don't run both unless asked — though
 the natural chain (capture while debugging, journal once fixed) is common and covered below.
+
+**Error-log directory.** Everywhere below, `Finance/Error Log/` means that folder when it exists. If it does not (this repo has no `Finance/`), use `.claude/_Prompts/problem-journal/` instead (create it, with its `INDEX.md`) — do not create a `Finance/` tree. In that case the recurrence check has only one real corpus (the prompt logs, plus any files in the fallback folder), so say "single-corpus check" in the Recurrence line; the "both corpora" gate is then satisfied by searching what exists, and the count is a weaker signal — note that in the verdict.
 
 ---
 
@@ -63,15 +65,16 @@ top few frames, the failing assertion) rather than truncating to a vague descrip
 ### 2. Decide the filename
 
 Title Case, describing the error, `.md` extension, placed directly in `Finance/Error Log/`
-(matching the existing `Language Error.md` file already there) — e.g. `Stale Cache Read On
+— e.g. `Stale Cache Read On
 Deploy.md`. Create a subfolder only if a clearly distinct topic cluster forms; don't
 subfolder for a single file. Check for a name collision first; if one exists, ask whether to
 append under a new heading or use a distinct filename.
 
 ### 3. Write the file
 
-Use the vault's own template (`Finance/Error Log/Language Error.md`) exactly — same sections,
-same order. Fill only what's actually known; leave the template's bracketed placeholders
+The template below is the canonical one — use it exactly, same sections, same order.
+`references/Language Error.md` is only a backup copy of it; if the two ever differ, this inline
+template wins and the backup should be refreshed to match. Fill only what's actually known; leave the template's bracketed placeholders
 untouched for anything not known. Don't invent a reproduction step, an environment detail, or
 a root cause that wasn't stated or observed.
 
@@ -290,12 +293,9 @@ back into chat on top of the output block already shown.
 
 ## Portability
 
-Repo-agnostic, but assumes `.claude/_Prompts/logs/` (`prompt-archive`'s automatic hook) and a
-`Finance/Error Log/` folder with the `Language Error.md` template. A backup copy of that
-template lives in this skill's own `references/Language Error.md` — if
-`Finance/Error Log/Language Error.md` is ever missing (e.g. the vault folder got deleted and
-recreated), recreate it there from the backup copy before proceeding with Capture mode,
-rather than inventing a different location or a different template. Copy the
-`problem-journal/` directory into another repo's `.claude/skills/` to use it there, alongside
-`prompt-archive`; the bundled `references/Language Error.md` travels with it, or point the
-skill at wherever that repo's equivalent error-log convention lives.
+Repo-agnostic, but assumes `.claude/_Prompts/logs/` (`prompt-archive`'s automatic hook). Capture
+files go in `Finance/Error Log/` if the vault has it, otherwise `.claude/_Prompts/problem-journal/`
+(see "Error-log directory" above). The template is the inline one in the Capture section; a
+backup copy is in this skill's `references/Language Error.md`. Copy the `problem-journal/`
+directory into another repo's `.claude/skills/` to use it there, alongside `prompt-archive`, or
+point the skill at wherever that repo's equivalent error-log convention lives.

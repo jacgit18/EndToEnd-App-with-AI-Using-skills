@@ -26,8 +26,6 @@ Append-only — you don't edit a past ADR to change the decision; you write a ne
 The point is memory: six months later, "why is the database model different from our API?" is answered by reading 003 instead of guessing
 In this skill, the ADR is the artifact written to docs/architecture/decisions/ once you approve a recommendation — see adr-template.md.
 
-(I notice the folder is now database-architecture/ — you renamed it from architecture/. The skill name in its frontmatter still says name: architecture; you'll want those to match.)
-
 
 ## Files
 
@@ -63,7 +61,7 @@ The skill is repo-agnostic — it reads and writes `docs/architecture/` relative
 invoked. To vendor it:
 
 ```
-cp -r .claude/skills/architecture /path/to/other-repo/.claude/skills/
+cp -r .claude/skills/Architecture/Data/database-architecture /path/to/other-repo/.claude/skills/Architecture/Data/
 ```
 
 Nothing else to configure. First run in a repo creates `docs/architecture/decisions/` and

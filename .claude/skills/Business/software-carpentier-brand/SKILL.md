@@ -1,6 +1,6 @@
 ---
 name: software-carpentier-brand
-description: Use when copy needs to represent the user professionally under their personal brand — LinkedIn headline/About, LinkedIn feed posts (reacting to news, or writing up your own work), resume bullets, cover letters, elevator pitches, interview self-intros, portfolio/personal-site copy, or a description of the DevHiveMind Obsidian vault for an external audience. Also use to run a "check my brand consistency" pass on something already written. Applies a fixed identity (carpenter→architect device, target positioning in regulated/high-stakes systems, named proof points) and a hard honesty-calibration layer specific to this user's career facts (total relevant experience, pre-prod vs. production scope, execution vs. ownership, feature-count inflation) — constraints a generic writing pass won't know to check. Not for gathering evidence from work that just happened in this session or repo — that Evidence Block belongs to `explaining-my-work`; hand off there first, then run its output back through this skill's voice and honesty layer. Not for job-search strategy, salary negotiation, or which jobs to apply to — that's a different decision, not a voice/copy one.
+description: Use when copy needs to represent the user professionally under their personal brand — LinkedIn headline/About, LinkedIn feed posts (reacting to news, or writing up your own work), resume bullets, cover letters, elevator pitches, interview self-intros, portfolio/personal-site copy, or a description of the DevHiveMind Obsidian vault for an external audience. Also use to run a "check my brand consistency" pass on something already written. Applies a fixed identity (carpenter→architect device, target positioning in regulated/high-stakes systems, named proof points) and a hard honesty-calibration layer specific to this user's career facts (total relevant experience, pre-prod vs. production scope, execution vs. ownership, feature-count inflation) — constraints a generic writing pass won't know to check. Not for gathering evidence from work that just happened in this session or repo — that Evidence Block belongs to `explaining-my-work`; hand off there first, then run its output back through this skill's voice and honesty layer. De-AI-ing an existing draft's prose is `delete-ai-words`; run it first, but its bans on framed/layered/woven and em dashes do not apply to this skill's carpenter device, which it must not strip. Not for job-search strategy, salary negotiation, or which jobs to apply to — that's a different decision, not a voice/copy one.
 ---
 
 # Software Carpentier Brand
@@ -27,7 +27,7 @@ wrong by default).
 - **De-AI-ing prose.** "Make it sound less like AI" on an existing draft (a LinkedIn post
   included) is `delete-ai-words`, not this skill. The "check my brand consistency" pass here only
   checks identity, proof points, and the honesty calibration — run `delete-ai-words` for the
-  prose, then add these checks after only if the draft also makes career claims.
+  prose, then add these checks after only if the draft also makes career claims. **Precedence:** the carpenter device below is exempt from `delete-ai-words`'s bans on metaphor verbs (framed/layered/woven) and em dashes; if that pass strips the device, restore the single strongest instance.
 
 ---
 
@@ -144,7 +144,7 @@ thing just shipped) and it runs on angle + hook, not on a headline formula. The 
 proof points, and the honesty calibration above still bind — a public post is the *worst* place
 for an oversold production claim or an inflated tenure to leak.
 
-**Gather the raw material first — don't draft from a cold start.** Use `AskUserQuestion` to get:
+**Gather the raw material first — don't draft from a cold start.** Use `AskUserQuestion` (or, if that tool is unavailable such as in a non-interactive session or subagent, ask the same questions in chat and stop) to get:
 
 - the news, topic, or event being reacted to (or "my own work" + which piece)
 - the specific story, number, or example the user brings — the input the model can't invent. It

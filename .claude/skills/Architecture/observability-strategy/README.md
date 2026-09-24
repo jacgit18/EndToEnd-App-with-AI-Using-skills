@@ -79,6 +79,12 @@ boundaries to hold:
   signal set and notes the cost follow-up.
 - **vs `microservices-decision`** — this skill takes the service count / request-path shape
   as a given input; it does not decide it.
+- **vs `failure-mode-analysis` / `reliability-math` / `service-mesh-adoption` /
+  `resilience-strategy` / `deployment-strategy` / `Testing/debugging-layer-selection`** —
+  FMA's impact ranking and detection-gap rows feed this skill; `reliability-math` reads live
+  numbers against the SLIs defined here; a mesh's free RED metrics are `service-mesh-adoption`'s
+  call; overload response and rollout mechanism are the resilience/deployment skills; the
+  ad hoc "which layer do I check now" reading is `debugging-layer-selection`.
 - **vs `caching-strategy` / `data-tier-operations`** — those may produce metrics worth
   watching (hit rate, replica lag); this skill decides how those get collected and alerted,
   it doesn't design the cache or the replica topology.

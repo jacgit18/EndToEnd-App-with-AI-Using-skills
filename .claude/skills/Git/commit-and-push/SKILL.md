@@ -181,6 +181,12 @@ Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
 
 ---
 
+## Routing: requests that do not fire this skill
+
+- "Open a PR for this branch" or "merge this PR" is not a commit; opening a PR is out of scope, and merging is `scripts/git/land.sh`, not this skill.
+- "Squash or rebase this before merging?" is `history-integration-strategy`; answer nothing here, hand off.
+- "Amend the last commit" / "force-push" / "resolve these conflicts" rewrite history or need conflict work; stop and say so.
+
 ## Edge cases
 
 - **Nothing staged, nothing changed** — report and stop.
@@ -188,3 +194,5 @@ Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
 - **Pre-existing staged changes you didn't make** — ask whether to include them before committing.
 - **Detached HEAD** — stop and report; committing here loses work silently.
 - **No `origin` remote** — commit locally, tell the user there's nowhere to push.
+- **A pre-commit hook fails** — the commit did not happen. Show the hook's output, fix what it names (formatter, lint, tests) if that is in scope, re-stage those paths, and make a NEW commit; never `--no-verify` unless the user says so, and never `--amend` (the previous commit is not yours to rewrite).
+- **Signing fails** (GPG/SSH key unavailable, agent locked) — stop and report the error; don't disable `commit.gpgsign` or pass `--no-gpg-sign` without the user's explicit say-so.
