@@ -1,6 +1,6 @@
 ---
 name: debugging-layer-selection
-description: A procedure for triaging a live, reproducible symptom (a slow request, a failed call, a dropped connection, unexplained behavior) to the right observation layer before investigating — browser/application (Chrome DevTools: console, network panel, performance, memory, application/storage), backend observability (logs, traces, metrics), or the network/packet layer (Wireshark/tshark: TCP, TLS, DNS, retransmissions, resets). Use when someone asks "should I use DevTools or Wireshark for this", "how do I debug this network issue", "is this a browser bug or a network problem", "the request is slow/failing and I don't know where to look", "should I capture packets", "why is this connection dropping/resetting", "CORS error" / "401 with no body" / "the response never arrives" investigated from scratch, or names a symptom (retransmissions, TLS handshake failure, WebSocket disconnects, DNS resolution) without having picked a tool yet. It is a mechanical decision procedure, not a gate — it does not withhold anything pending a user rep; it asks one question (what does the browser already show) and returns a layer plus what to look for there, with an explicit rule to stop at the highest abstraction level that already explains the symptom. Not for reasoning about *why* a bug happens once you're looking at the right layer's evidence — forming and testing that hypothesis is `problem-solving-gates` (Rubber Duck), which this skill feeds by locating the evidence first; if the user already has a stated, falsifiable hypothesis, skip straight to Rubber Duck instead of re-asking which layer. Not for designing what signals, dashboards, or alerts a system should have long-term — that's `observability-strategy`; this skill uses whatever observability already exists plus ad hoc tool capture, reactively, for one symptom happening now. Not for optimizing code you've already localized with a profile in hand — that's `problem-solving-gates` (Optimization); this skill is for when you don't yet know which layer even holds the slowness. Not for proactively enumerating everything that could go wrong with a design before it ships — that's `failure-mode-analysis`, which runs when nothing is on fire; this skill runs because something already is. Not for the test mix or coverage of a system — `test-strategy` / `coverage-policy`.
+description: A procedure for triaging a live, reproducible symptom (a slow request, a failed call, a dropped connection, unexplained behavior) to the right observation layer before investigating — browser/application (Chrome DevTools: console, network panel, performance, memory, application/storage), backend observability (logs, traces, metrics), or the network/packet layer (Wireshark/tshark: TCP, TLS, DNS, retransmissions, resets). Use when someone asks "should I use DevTools or Wireshark for this", "how do I debug this network issue", "is this a browser bug or a network problem", "the request is slow/failing and I don't know where to look", "should I capture packets", "why is this connection dropping/resetting", "CORS error" / "401 with no body" / "the response never arrives" investigated from scratch, or names a symptom (retransmissions, TLS handshake failure, WebSocket disconnects, DNS resolution) without having picked a tool yet. It is a mechanical decision procedure, not a gate — it does not withhold anything pending a user rep; it captures the bug record, then asks one question (what does the browser already show) and returns a layer plus what to look for there, with an explicit rule to stop at the highest abstraction level that already explains the symptom. Not for reasoning about *why* a bug happens once you're looking at the right layer's evidence — forming and testing that hypothesis is `problem-solving-gates` (Rubber Duck), which this skill feeds by locating the evidence first; if the user already has a stated, falsifiable hypothesis, skip straight to Rubber Duck instead of re-asking which layer. Not for designing what signals, dashboards, or alerts a system should have long-term — that's `observability-strategy`; this skill uses whatever observability already exists plus ad hoc tool capture, reactively, for one symptom happening now. Not for optimizing code you've already localized with a profile in hand — that's `problem-solving-gates` (Optimization); this skill is for when you don't yet know which layer even holds the slowness. Not for proactively enumerating everything that could go wrong with a design before it ships — that's `failure-mode-analysis`, which runs when nothing is on fire; this skill runs because something already is. Not for the test mix or coverage of a system — `test-strategy` / `coverage-policy`.
 ---
 
 # Debugging Layer Selection
@@ -54,7 +54,30 @@ shows for free.
 
 ## The procedure
 
-Ask what the browser already shows, in this order, and stop at the first step that resolves
+**Step 0 — Bug record.** Before picking a layer, capture the symptom well enough to reproduce
+without follow-up questions: repro steps, expected vs. actual, verbatim error output,
+environment, timing/frequency, what's already ruled out (template and the
+not-reliably-reproducible variant in `bug-record.md`). This is a capture step, not a gate.
+
+- **Record already complete** (or the user has a stated hypothesis / is mid-investigation with
+  evidence in hand): say "record complete" in one line and move on. Don't restate it back.
+- **Gaps:** fill what you can from what the user already gave, and ask for at most 2–3 of the
+  missing fields, most useful first — verbatim error output, then where the call originates
+  (browser / service / script; local / staging / prod). One round, appended to the layer
+  recommendation, not before it. Never invent a field.
+- **Never withhold the layer recommendation** for a field the user can't or won't supply, and
+  honor "no questions": say which fields are missing and proceed. If the question asked is
+  answerable without the details (e.g. "DevTools or Wireshark?"), answer with the
+  highest-layer-first rule and flag what would sharpen it.
+- **Only exception:** a bare "it fails sometimes" with no repro steps and no error output, and
+  a question that depends on them ("where do I look?"). Ask for the error output and the origin (plus the observed rate, if it is intermittent)
+  first, and give a provisional hint in the same turn (which layer you'd open first if the
+  answer is X vs. Y) so the turn isn't only questions.
+- **Failing client isn't yours** (some users in prod, a request that already happened): the
+  browser steps below can't run. Ask for a HAR or RUM trace from an affected user, or start
+  at backend observability scoped to that request (edge access log → app log → DB/downstream).
+
+Then ask what the browser already shows, in this order, and stop at the first step that resolves
 the symptom:
 
 1. **Is this a browser or frontend problem at all?** — JS error, DOM/CSS issue, a component
@@ -71,7 +94,9 @@ the symptom:
 4. **Is the backend healthy and the request/response well-formed, but the behavior is still
    unexplained** — inconsistent latency with no server-side cause, a connection that resets
    before any HTTP exchange, TLS failing before the browser gets far enough to log a normal
-   error? That is the actual trigger for Wireshark/tshark: TCP handshake, retransmissions,
+   error? First check the reverse proxy / load balancer / server access log, which times the
+   request before and after the handler and often explains a "handler fast, browser slow" gap
+   without a capture. If that is also clean, that is the actual trigger for Wireshark/tshark: TCP handshake, retransmissions,
    resets, DNS packet behavior, TLS negotiation, raw timing between machines.
 5. **Is the traffic non-HTTP, or between two machines/services with no browser involved at
    all** (service-to-service, a non-web protocol, arbitrary host-to-host traffic)? Skip
@@ -90,7 +115,7 @@ Tier 1/2/3 learning-priority list for a generalist engineer building this judgme
 
 ## Output
 
-State, in order: **the layer** (browser/application, backend, or network), **the specific
+State, in order: **the bug record** (or the fields still missing from it), **the layer** (browser/application, backend, or network), **the specific
 panel/command to open there** (e.g. "Network panel, filter by the failing request" or
 "`tshark -i any -f 'tcp port 443'` on both ends"), and **what finding at that layer would
 mean you're done vs. need to descend further**. Then stop — actually reading that tool's
@@ -110,19 +135,18 @@ real tool call, not inference from a raw capture" rule this implies.
 > "A POST to /api/users is returning 401 and I don't know why."
 
 Step 1–2: application-level symptom with a clear HTTP status. Answer: Chrome DevTools Network
-panel, inspect the request headers for the failing call — almost certainly a missing/expired
-Authorization header or a CORS preflight eating the real request. No reason to go further
-yet.
+panel, inspect the request and response headers for the failing call. No reason to go further
+yet. (Name where to look, not the suspected cause — forming that guess is Rubber Duck's job.)
 
 > "GET /api/orders takes 4.8s in the Network panel — Waiting is 4.7s of that, Content Download
 > is 100ms. Backend logs for that request show nothing unusual and normal processing time."
 
 Step 3 resolved (all the time is server-side wait, backend logs look clean but that's a
 contradiction) → step 4: the backend claims it was fast but the browser waited 4.7s longer
-than that, so the discrepancy is between the server sending and the browser receiving — a
-Wireshark capture on both ends around that request's timing (TCP retransmissions, a stalled
-TLS renegotiation) is now justified, specifically to explain the gap the two application-level
-views can't.
+than that, so the time is spent before or after the handler. Check the reverse proxy / load
+balancer / server access log for that request first (total vs. upstream time). Only if that
+also shows a fast server is a Wireshark capture on both ends (TCP retransmissions, a stalled
+TLS renegotiation) justified, to explain the gap the application-level views can't.
 
 > "We're seeing TCP resets in our load balancer logs between two internal services."
 
