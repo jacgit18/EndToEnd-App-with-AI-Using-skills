@@ -103,3 +103,21 @@ v1 sequence in `design-scoping`; the three-bullets rep then hand-off to `spec-dr
 `entry-point-first`). Two optional nits left unapplied by design (add "make me a dashboard" as an
 `entry-point-first` example phrase only if it ever mis-routes in practice; mirror the stall carve-out
 in `design-scoping`'s body). No open items remain from the 2026-09-24 audit.
+
+## 2026-09-24 (addendum 2) — layout, listing budget, blind routing test
+
+- **Layout:** the grouped layout (`.claude/skills/<Group>/<name>`) was not discovered by Claude Code (no catalog
+  skill appeared in the skill list; usage logs showed only new-skill/code-review/run). Flattened to
+  `.claude/skills/<name>/`; groups live in `.claude/skills/INDEX.md`. After the move the skills appeared in the list.
+- **Listing budget:** official docs truncate a description at 1,536 chars, and the listing has a TOTAL budget
+  (measured: ~29.7k chars of `- name: description` fit, ~31.6k did not, leaving skills name-only). All 61
+  descriptions trimmed twice (142k -> 30.2k -> 23.5k chars); every cut sentence lives verbatim in each body's
+  `## Routing boundaries (full)`. Catalog listing text ~24.9k, ~16% under the measured fit.
+- **Blind routing test** (routers saw only the listing text, 66 prompts covering every skill + no-skill cases):
+  65/66 first-choice correct. The miss, "I'm building a gym app, where do I start" -> `entry-point-first`,
+  was a regression of the earlier clause; restored in both descriptions and re-tested (8/8 gym-cluster prompts).
+  Caveat: prompts contained trigger words, so the score is optimistic for oddly-phrased requests.
+- **Lint:** `scripts/skills/lint.sh` now automates frontmatter, dead-pointer, length and one-way-pointer checks;
+  the SessionStart hook surfaces errors only.
+- **Left as warnings:** `change-surface-audit` (267 lines), `data-access-layer` (260), `disclosure-gap-audit` (258),
+  `serverless-execution-model` (251) exceed the 250-line split heuristic.
