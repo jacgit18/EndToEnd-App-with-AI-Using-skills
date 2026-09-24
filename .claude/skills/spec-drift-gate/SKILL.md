@@ -1,6 +1,6 @@
 ---
 name: spec-drift-gate
-description: Gate before substantial multi-file or multi-session AI-assisted builds with no written spec, and drift checkpoints mid-build. Triggers: "make me a dashboard", "write me a script that…", vague one-line build requests. Not for a single fully-specified one-shot request. Not `design-scoping`, `ambiguity-gate`, `change-surface-audit`, or `incremental-build-pacing`; slices of a settled spec go to the `spec-executor` subagent.
+description: Gate before substantial multi-file or multi-session AI-assisted builds with no written spec, and drift checkpoints mid-build. Triggers: "make me a dashboard", "write me a script that…", vague one-line build requests. Not a fully-specified one-shot request, `design-scoping`, `ambiguity-gate`, `change-surface-audit`, or `incremental-build-pacing`; slices of a settled spec go to the `spec-executor` subagent.
 ---
 
 # Spec Drift Gate

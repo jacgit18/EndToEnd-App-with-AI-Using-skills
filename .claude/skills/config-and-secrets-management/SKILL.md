@@ -1,6 +1,6 @@
 ---
 name: config-and-secrets-management
-description: Gated decision for where app config and secrets live and reach a running process: env vars, orchestrator secrets, a secrets manager, or a feature-flag service, plus rotation and leak blast radius. Triggers: "where should we store our API keys/secrets", "we committed a secret to git", "should we use LaunchDarkly". Not for who may read a secret — `cloud-iam-boundary`. Not for app permissions — `access-control-modeling`.
+description: Gated decision for where app config and secrets live and reach a running process: env vars, orchestrator secrets, a secrets manager, or a feature-flag service, plus rotation and leak blast radius. Triggers: "where do we store API keys", "we committed a secret to git", "should we use LaunchDarkly". Not for who may read a secret — `cloud-iam-boundary`. Not for app permissions — `access-control-modeling`.
 ---
 
 # Config & Secrets Management

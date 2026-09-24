@@ -1,6 +1,6 @@
 ---
 name: capacity-estimation
-description: A-priori back-of-the-envelope capacity estimate for a not-yet-built system: QPS, bandwidth, storage, cache memory, server count, what binds first, from user-stated assumptions. Triggers: "how much storage will we need", "estimate the QPS / throughput", "how many servers". Not for dollar cost — `technical-cost-decision`. Not for live telemetry — `reliability-math`.
+description: A-priori back-of-the-envelope capacity estimate for a not-yet-built system: QPS, bandwidth, storage, cache memory, server count, what binds first, from user-stated assumptions. Triggers: "how much storage will we need", "estimate the QPS / throughput", "how many servers". Not for dollar cost — `technical-cost-decision`. Not live telemetry — `reliability-math`; not LLM routing — `model-routing-decision`.
 ---
 
 # Capacity Estimation
