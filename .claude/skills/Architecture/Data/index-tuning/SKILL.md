@@ -41,8 +41,8 @@ inputs get asked for.
   `data-tier-operations`. This skill will say "the honest fix for this monthly report is to
   run it on a replica" but does not design the replication topology.
 - **Physical tuning of an analytical warehouse** — sort keys, distribution keys, zone maps,
-  clustering keys on Redshift / Snowflake / BigQuery → `data-tier-operations` (with
-  `dimensional-modeling` for the model itself). This skill is OLTP b-tree / secondary-index
+  clustering keys on Redshift / Snowflake / BigQuery → not covered by any skill in this
+  catalog (`dimensional-modeling` covers the model itself, not physical layout). This skill is OLTP b-tree / secondary-index
   land; a columnar warehouse's physical layout is a different discipline.
 - **Whether the read path should touch the database at all** — a hot read whose result is
   cacheable → `caching-strategy`.

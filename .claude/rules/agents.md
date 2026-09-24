@@ -2,7 +2,10 @@
 
 Skills are procedures inside one foreground conversation. Actual unattended-agent infra:
 
-- **`spec-executor`** (`.claude/agents/spec-executor.md`) — subagent that executes exactly
+- **`spec-executor`** — **not present in this checkout** (`.claude/agents/` does not exist here;
+  `spec-drift-gate` carries an inline fallback: build the slice inline, or use a general-purpose
+  Agent with `isolation: "worktree"` and the same three-part brief). When it is present it is a
+  subagent that executes exactly
   one slice of an already-approved `spec-drift-gate` spec in an isolated worktree. It does
   not decide scope, does not merge or push; it reports what it did and flags anything that
   fell outside the spec, for a human to run through `spec-drift-gate` Step 4. Only dispatch
