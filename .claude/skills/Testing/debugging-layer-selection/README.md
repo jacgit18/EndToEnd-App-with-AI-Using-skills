@@ -35,11 +35,12 @@ concluding "we have no way to see this layer," that's a signal to run
 | File | Role |
 |---|---|
 | `SKILL.md` | Entry point. The 5-step decision procedure and output contract. |
+| `bug-record.md` | Step 0 template: the reproducible bug record (repro, expected/actual, verbatim error, environment, timing, ruled out) and the not-reliably-reproducible variant. |
 | `layer-reference.md` | Abstraction model, full symptom → tool tables for both DevTools and Wireshark/tshark, the AI-agent-grounded variant, the Tier 1/2/3 learning list. |
 
 ## What it produces
 
-A short recommendation in chat: the layer, the specific panel/command to open there, and
+A short recommendation in chat: the bug record (or its missing fields), the layer, the specific panel/command to open there, and
 what finding at that layer would mean "done" versus "descend further." It does not open the
 tool, read the output, or diagnose the cause — that's the debugging itself, or
 `problem-solving-gates` (Rubber Duck) once a hypothesis starts forming from what the chosen
@@ -105,3 +106,15 @@ without a new reason:
   "systematic investigation procedures" in the same architectural family.
 - **vs Testing-group siblings (`test-strategy`, `coverage-policy`, `test-practice-gate`)** —
   no real overlap; different axis (deciding a test approach vs. debugging a live symptom).
+
+- **Step 0 bug record (added later, from a pasted "document the error first" prompt).**
+  Folded in as a capture step instead of a new skill, per the prefer-a-lens-over-a-new-skill
+  preference. Reciprocal pointer added to `problem-solving-gates` Rubber Duck. Interaction
+  tested with 6 read-based scenarios (control, vague symptom, stated hypothesis, full record,
+  "no questions" pressure, `observability-strategy` overlap): no stacking or starvation of
+  siblings; carve-outs with Rubber Duck, `learning-gate`, `ambiguity-gate` and
+  `observability-strategy` held. Fixes applied from the run: cap of 2-3 asks, no restating a
+  complete record, hard exception narrowed (tool-choice questions and "no questions" still get
+  an answer) with a provisional hint, a branch for a failing client that isn't yours, proxy/LB
+  access log checked before packet capture, and the "almost certainly an Authorization header"
+  example softened so it doesn't teach a diagnosis. Post-fix re-run of the three most-changed scenarios (vague symptom, "no questions", full record): all pass; two small follow-ups applied (intermittent-rate ask; the slow-request example now checks the proxy/LB log before Wireshark, matching step 4).
