@@ -52,8 +52,8 @@ they exist.
 | File | Role |
 |---|---|
 | `SKILL.md` | Entry point. The gate (items 3–9 from the user), challenge-a-proposed-number, the estimate-block output contract. |
-| `estimation-method.md` | The cleaned-up method — byte / time tables (powers of 10, not 2), per-stage formulas with corrections, overhead + redundancy + growth multipliers, sanity checks, and the anti-patterns carried in the source notes (traffic × DAU twice, cache off total reads, `cores ÷ 0.5` server math, dropped retention window, no peak factor). |
-| `worked-examples.md` | Three estimates worked end to end, each landing on a different binding constraint — a social feed (read QPS / cache), a media-streaming service (egress bandwidth), a telemetry pipeline (storage growth). |
+| `estimation-method.md` | The cleaned-up method — byte / time tables (powers of 10, not 2), per-stage formulas with corrections, overhead + redundancy + growth multipliers, sanity checks, the challenge checklist for a proposed number, and the anti-patterns carried in the source notes (traffic × DAU twice, cache off total reads, `cores ÷ 0.5` server math, dropped retention window, no peak factor). |
+| `worked-examples.md` | Three estimates worked end to end, each landing on a different binding constraint — a social feed (read QPS / cache), a media-streaming service (egress bandwidth), a telemetry pipeline (storage growth) — plus the three example invocations (gate satisfied, gate refused, escape-hatch review). |
 
 ## Output
 

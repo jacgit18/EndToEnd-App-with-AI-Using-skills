@@ -65,9 +65,10 @@ The walk:
 
 | File | Role |
 |---|---|
-| `SKILL.md` | Entry point. Inputs the procedure needs, the 8-step walk, the output block, the register-only vs block-sign-off ask, worked invocations. |
-| `nine-categories.md` | The nine categories, each with probe questions, distributed-systems / async specifics, and an example `cause → manifestation → impact` row. A table of which categories to weight per component type. |
-| `scoring-and-register.md` | Scheme A (RPN — S/O/D 1–10 scales, action thresholds), Scheme B (5×5 severity × likelihood grid), the severity override, the register / watchlist / acceptance-log table formats, and worked scoring examples. |
+| `SKILL.md` | Entry point. Inputs the procedure needs, the 8-step walk, the output block, the register-only vs block-sign-off ask, pointers to the companions. |
+| `nine-categories.md` | The nine categories, each with probe questions, distributed-systems / async specifics, and an example `cause → manifestation → impact` row. A table of which categories to weight per component type, the chat coverage-table format, and the per-interaction question list. |
+| `scoring-and-register.md` | Scheme A (RPN — S/O/D 1–10 scales, action thresholds), Scheme B (5×5 severity × likelihood grid), the severity override, the register / watchlist / acceptance-log table formats, and worked scoring examples, and the written-register-file contents. |
+| `example-invocations.md` | Three worked invocations: a checkout-service pre-mortem (RPN), a Redis-cache addition (small altitude), and a live 502 that is routed away. |
 
 ## Output
 

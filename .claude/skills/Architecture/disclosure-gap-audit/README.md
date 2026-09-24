@@ -80,8 +80,9 @@ The walk:
 
 | File | Role |
 |---|---|
-| `SKILL.md` | Entry point — when it applies / doesn't, the inputs (incl. the inventory gate), the 7-step walk, the output block. |
-| `disclosure-checklist.md` | The spine pass: the 15 probes, each with what the product might do, what adequate disclosure looks like, the primary source, and the severity to assign; plus the B2B/workforce note, the "current as of" note on the volatile regimes, and the row-classification table. |
+| `SKILL.md` | Entry point — when it applies / doesn't, the inputs (incl. the inventory gate), the 7-step walk, the output block, pointers to the companions. |
+| `example-invocations.md` | Four worked invocations: an LLM-drafted support reply against a stale policy, and three routed-away cases (endpoint removal, login diff, bare GDPR question). |
+| `disclosure-checklist.md` | The spine pass: the 15 probes, each with what the product might do, what adequate disclosure looks like, the primary source, and the severity to assign; plus the B2B/workforce note, the declined-inventory handling, the "current as of" note on the volatile regimes, and the row-classification table. |
 | `security-and-legal-passes.md` | The security probe list (8 rows, design-review depth, with fix handoffs), the legal/compliance flag list (5+ rows, flag-only phrasing rule), the severity definitions, and the findings-register format + file header. |
 
 ## What it produces

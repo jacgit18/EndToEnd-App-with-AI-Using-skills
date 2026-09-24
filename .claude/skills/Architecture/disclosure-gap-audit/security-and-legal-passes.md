@@ -1,5 +1,7 @@
 # Security pass, legal/compliance flag pass, and the register format
 
+Contents: Security pass — the fixed probe list · Legal / compliance pass — the flag list · Severity definitions (all three categories) · Findings register format
+
 Reference for `SKILL.md` steps 4, 5, and 6.
 
 The security pass is **design-review depth**: it asks whether a control *exists*, as one row

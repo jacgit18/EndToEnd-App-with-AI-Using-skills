@@ -1,5 +1,7 @@
 # Scoring & Register Format
 
+Contents: Scheme A — RPN (Risk Priority Number) · Scheme B — 2-axis grid (fast pass) · The severity override (both schemes) · Chain compounding — the register read as a path, not just rows · How many rows is a register · Register format · Worked scoring examples · Written register file
+
 Reference for `SKILL.md` steps 2, 6, and 7. The source note names FMEA but gives no scoring
 scheme and no register layout — both are defined here.
 
@@ -203,3 +205,15 @@ From the checkout-service pre-mortem in `SKILL.md`:
 
 Note the first two tie at RPN 280 but route differently — the number ranks, the categories
 and the handoffs come from the row, not the score.
+
+
+---
+
+## Written register file
+
+**2. On request** (or when "block sign-off" is chosen), write the register to
+`docs/architecture/failure-modes/<system-slug>.md` — the table, the watchlist, the scheme
+and its calibration, the scope boundary, and (if block-sign-off) an "acceptance log"
+section where each triaged row records owner + decision + date. This is a living document,
+not an ADR — it gets updated as the design changes and modes are closed or added. Create
+the directory if absent.

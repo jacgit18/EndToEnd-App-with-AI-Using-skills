@@ -1,5 +1,7 @@
 # The Nine Failure-Mode Categories
 
+Contents: 1. Functional · 2. Availability · 3. Performance · 4. Consistency & reliability · 5. Integration · 6. Dependency · 7. Security · 8. Operational · 9. Human & process · Which categories to weight per component type · Coverage table (chat presentation) · Walking interactions
+
 Reference for `SKILL.md` step 3 and step 4. For each component and each interaction, walk
 all nine. Each category below gives: what it means, the probe questions to ask, the
 distributed-systems / async specifics, and an example `cause → manifestation → impact` row.
@@ -218,3 +220,23 @@ usually concentrate:
 | Human / manual step | human/process, operational, security |
 
 Still record the others as `n/a — <reason>` so the walk is complete on paper.
+
+
+---
+
+## Coverage table (chat presentation)
+
+In chat, don't write out all `components × 9` cells one by one — that's an unreadable grid.
+Present a **coverage table**: one row per component, the failure-mode IDs found per
+category, and a single `n/a` clause covering the categories that didn't apply and why. The
+full per-cell grid, if wanted, goes in the written register only. What matters in chat is
+that every component was walked against every category and the misses are explained, not
+that 99 "n/a" lines are printed.
+
+## Walking interactions
+
+Interactions concentrate failure in **integration, dependency, consistency, performance,
+and availability**. For each interaction ask: what if the call times out / errors / returns
+wrong or partial data / is slow / runs twice / arrives out of order / the callee is down /
+the network partitions. For asynchronous interactions add: message lost, duplicated,
+reordered, poison message, consumer lag / unbounded backlog.
