@@ -39,6 +39,7 @@ truth call changes the candidate set here.
 | `SKILL.md` | Entry point. Prerequisite check, the 5-item gate, challenge-the-framing, output contract. |
 | `selection-framework.md` | The 7-step process, worked once the gate is satisfied. |
 | `access-styles.md` | The spectrum reference — each style's fit / cost / failure mode / representative libraries, plus the ergonomics-vs-source-of-truth and combining-styles notes. |
+| `example-invocations.md` | Three worked invocations (satisfied gate, failed gate, slow-query bounce). Read when calibrating the gate. |
 
 ## What it produces
 

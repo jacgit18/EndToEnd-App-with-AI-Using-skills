@@ -12,6 +12,7 @@ the prompt itself needs refinement or should be packaged as a skill or agent.
 
 - The user pastes a prompt and asks if it works, with or without supplying sample inputs.
 - The user names a prompt file and asks to verify it — read the file first, then proceed.
+- The user asks to test "this prompt" but no prompt text or file is in the conversation — do not guess which one; ask for the prompt (or its file path) in one line and stop.
 - The user wants to know not just whether a prompt works, but whether it's in the right form
   (standalone prompt, reusable skill, iterative agent).
 
