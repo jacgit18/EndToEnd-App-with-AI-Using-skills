@@ -101,7 +101,7 @@ Signals invested in: metrics <always> | structured logs <always> | traces <yes/n
 Instrumentation:     <OTel SDK + auto-instrumentation | vendor agent | manual> ; collector: <topology or "n/a">
 Sampling:            traces <head @ rate | tail on error+slow+routes | none> ; logs <level policy> — <why, from volume>
 Cardinality budget:  metric labels <allow-list>; log fields <disciplined set>; the dimensions deliberately kept OUT
-Alerting:            page on <symptom / SLO burn conditions> ; ticket/dashboard for <cause signals> ; every alert → runbook
+Alerting:            page on <symptom / SLO burn conditions> ; ticket/dashboard for <cause signals> ; every alert → runbook; a check that fails on "no data" (a reconcile job, a freshness probe) pages on every fresh deploy, so start its alert after the first real data
 Retention:           metrics <e.g. 15mo downsampled> | logs <e.g. 30d hot, 1y cold> | traces <e.g. 7d> — from investigation + audit lookback
 Placement:           <self-hosted stack (components) | managed (which class)> — <why, from operational capacity + residency>
 Sensitive data:      <what the SDK/agent/collector must NOT export (bodies, PII, locals, replay), the named settings that stop it, and that a test event verified them — or "none needed: no sensitive data">

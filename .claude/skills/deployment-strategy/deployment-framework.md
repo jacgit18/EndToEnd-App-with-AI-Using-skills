@@ -75,6 +75,8 @@ From gate item 8. If this release class changes a DB schema, a message/event for
 
 Each step is a separate release. The rollout mechanism from step 4 applies to each. This is what makes "zero-downtime migration" real rather than aspirational.
 
+First migration onto an existing data volume (including bringing a stopped prod stack back up): before the deploy, back up, record the current migration revision and a row count for the affected tables, then deploy and re-check both. Nothing else can restore rows a bad migration rewrote.
+
 Record: whether expand/contract applies to this release class, and the ordered steps if so.
 
 ## 7. Set the environment progression and promotion criteria
