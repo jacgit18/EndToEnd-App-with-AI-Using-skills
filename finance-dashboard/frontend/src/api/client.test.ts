@@ -31,7 +31,7 @@ describe("CSRF token handling", () => {
       .mockResolvedValueOnce(json({ id: 1 }, 201)); // createAccount
 
     await api.login("a@b.c", "pw");
-    await api.createAccount({ name: "Checking" });
+    await api.createAccount({ name: "Checking", type: "checking" });
 
     expect(fetchMock).toHaveBeenCalledTimes(2);
     expect(csrfHeaderOf(fetchMock.mock.calls[1])["X-CSRF-Token"]).toBe("tok-1");
@@ -43,7 +43,7 @@ describe("CSRF token handling", () => {
       .mockResolvedValueOnce(json({ csrf_token: "tok-me" })) // /auth/me
       .mockResolvedValueOnce(json({ id: 1 }, 201)); // createAccount
 
-    await api.createAccount({ name: "Checking" });
+    await api.createAccount({ name: "Checking", type: "checking" });
 
     expect(fetchMock.mock.calls[0][0]).toBe("/api/auth/me");
     expect(csrfHeaderOf(fetchMock.mock.calls[1])["X-CSRF-Token"]).toBe("tok-me");
@@ -90,10 +90,38 @@ describe("logout", () => {
 
     await api.login("a@b.c", "pw");
     await expect(api.logout()).resolves.toBeUndefined();
-    await api.createAccount({ name: "Checking" });
+    await api.createAccount({ name: "Checking", type: "checking" });
 
     // The token was cleared, so the write had to go get a new one.
     expect(fetchMock.mock.calls[2][0]).toBe("/api/auth/me");
     expect(csrfHeaderOf(fetchMock.mock.calls[3])["X-CSRF-Token"]).toBe("tok-2");
+  });
+});
+
+describe("account calls", () => {
+  it("listAccounts hides archived by default and asks for them on request", async () => {
+    const api = await loadApi();
+    fetchMock.mockImplementation(async () => json([]));
+
+    await api.listAccounts();
+    await api.listAccounts({ includeArchived: true });
+
+    expect(fetchMock.mock.calls[0][0]).toBe("/api/accounts");
+    expect(fetchMock.mock.calls[1][0]).toBe("/api/accounts?include_archived=true");
+  });
+
+  it("updateAccount PATCHes only the given fields, with the CSRF token", async () => {
+    const api = await loadApi();
+    fetchMock
+      .mockResolvedValueOnce(json({ csrf_token: "tok" })) // /auth/me
+      .mockResolvedValueOnce(json({ id: 7 }));
+
+    await api.updateAccount(7, { is_archived: true });
+
+    const [url, init] = fetchMock.mock.calls[1];
+    expect(url).toBe("/api/accounts/7");
+    expect(init.method).toBe("PATCH");
+    expect(JSON.parse(init.body)).toEqual({ is_archived: true });
+    expect(csrfHeaderOf(fetchMock.mock.calls[1])["X-CSRF-Token"]).toBe("tok");
   });
 });
