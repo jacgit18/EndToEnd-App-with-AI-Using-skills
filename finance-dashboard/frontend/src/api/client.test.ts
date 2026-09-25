@@ -125,3 +125,34 @@ describe("account calls", () => {
     expect(csrfHeaderOf(fetchMock.mock.calls[1])["X-CSRF-Token"]).toBe("tok");
   });
 });
+
+describe("multipart uploads", () => {
+  it("sends FormData with the CSRF header and NO Content-Type (browser sets the boundary)", async () => {
+    const api = await loadApi();
+    fetchMock
+      .mockResolvedValueOnce(json({ csrf_token: "tok-up" })) // /auth/me
+      .mockResolvedValueOnce(json({ headers: [], rows: [], row_count: 0, delimiter: ",", distinct_values: {} }));
+
+    await api.previewImport(new File(["a,b\n1,2\n"], "x.csv"));
+
+    const init = fetchMock.mock.calls[1][1] as RequestInit;
+    expect(init.body).toBeInstanceOf(FormData);
+    expect((init.headers as Record<string, string>)["X-CSRF-Token"]).toBe("tok-up");
+    expect(init.headers as Record<string, string>).not.toHaveProperty("Content-Type");
+  });
+
+  it("createImport omits account_id in multi-account mode and sends the mapping as JSON text", async () => {
+    const api = await loadApi();
+    fetchMock.mockResolvedValueOnce(json({ csrf_token: "t" })).mockResolvedValueOnce(json({ batch_id: 1 }, 201));
+    const mapping = {
+      date_column: "d", amount_column: "a", description_column: "n", date_format: "iso" as const,
+      invert_sign: false, account_column: "acct", account_map: { X: 3, Y: null },
+    };
+
+    await api.createImport(new File(["x"], "x.csv"), mapping);
+
+    const form = (fetchMock.mock.calls[1][1] as RequestInit).body as FormData;
+    expect(form.has("account_id")).toBe(false);
+    expect(JSON.parse(form.get("mapping") as string)).toEqual(mapping);
+  });
+});
