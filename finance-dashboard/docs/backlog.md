@@ -137,7 +137,7 @@
 
 **Explicitly not covered:** chart→transactions drill-down, custom date ranges, dashboard export.
 
-**Built (2026-09-25):** `GET /api/dashboard?month=` and `/api/dashboard/trend?month=`, plus a `/dashboard` page (month picker, income/expense/net tiles, category-vs-budget bars, 6-month net chart, recent 10). Visx charts (ADR-0017), each with a text table of the API's own strings. Dashboard net is tested to equal the sum of that month's transactions. Unit/component-tested only; not yet checked in a real browser or on prod. See `phase7-spec.md` Progress.
+**Built (2026-09-25):** `GET /api/dashboard?month=` and `/api/dashboard/trend?month=`, plus a `/dashboard` page (month picker, income/expense/net tiles, category-vs-budget bars, 6-month net chart, recent 10). Visx charts (ADR-0017), each with a text table of the API's own strings. Dashboard net is tested to equal the sum of that month's transactions. Owner-checked in a real browser on dev (2026-09-25); not on prod yet. See `phase7-spec.md` Progress.
 
 ---
 
