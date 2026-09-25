@@ -1,6 +1,6 @@
 # Talking points — finance dashboard, Phase 2 (accounts and balances)
 
-_Built from the repo, the session history and the handoff files. Drafts only: nothing here has been posted. Every claim traces to the Evidence Block. Run the LinkedIn draft through `software-carpentier-brand` and `delete-ai-words` before posting._
+_Status: documented, **not posted** (owner decision 2026-09-24). Built from the repo, the session history and the handoff files. Drafts only: nothing here has been posted. Every claim traces to the Evidence Block. Run the LinkedIn draft through `software-carpentier-brand` and `delete-ai-words` before posting._
 
 ## Evidence Block
 
