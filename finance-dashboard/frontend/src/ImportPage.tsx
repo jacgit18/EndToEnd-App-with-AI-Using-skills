@@ -17,6 +17,10 @@ const DATE_FORMAT_LABELS: Record<DateFormat, string> = {
   dmy: "DD/MM/YYYY",
 };
 
+// Loose mirror of the server's amount grammar ("-12.50", "$1,234.50", "(12.50)"), only
+// to catch a wrong column choice on the sample rows; the server stays the authority.
+const AMOUNT_LIKE = /^\(?\s*-?\s*\$?\s*-?\s*[0-9][0-9,]*(\.[0-9]+)?\s*\)?$/;
+
 // Per account-value choice: "" = not decided yet, EXCLUDE = leave those rows out,
 // otherwise an account id. Import stays disabled until every value is decided, so
 // a value is never silently skipped or dumped into a default account.
@@ -77,6 +81,11 @@ export default function ImportPage() {
   const values = preview && accountColumn ? (preview.distinct_values[accountColumn] ?? []) : [];
   const columnsPicked =
     dateColumn && amountColumn && descriptionColumn && new Set([dateColumn, amountColumn, descriptionColumn]).size === 3;
+  const amountIdx = preview && amountColumn ? preview.headers.indexOf(amountColumn) : -1;
+  const sampleAmounts = amountIdx >= 0 ? preview!.rows.map((r) => (r[amountIdx] ?? "").trim()) : [];
+  const amountOk = sampleAmounts.filter((c) => AMOUNT_LIKE.test(c)).length;
+  const amountAllBad = sampleAmounts.length > 0 && amountOk === 0;
+  const amountSomeBad = amountOk > 0 && amountOk < sampleAmounts.length;
   const accountsReady =
     mode === "single"
       ? accountId !== ""
@@ -84,7 +93,7 @@ export default function ImportPage() {
         ![dateColumn, amountColumn, descriptionColumn].includes(accountColumn) &&
         values.length > 0 &&
         values.every((v) => (choices[v] ?? "") !== "");
-  const ready = !!file && !!preview && !!columnsPicked && dateFormat !== "" && accountsReady;
+  const ready = !!file && !!preview && !!columnsPicked && dateFormat !== "" && accountsReady && !amountAllBad;
 
   function handleFile(f: File | null) {
     setFile(f);
@@ -179,6 +188,18 @@ export default function ImportPage() {
                 {headerOptions(preview.headers)}
               </select>
             </label>
+            {amountAllBad && (
+              <p role="alert" style={{ color: "crimson", margin: 0 }}>
+                None of the {sampleAmounts.length} sample rows have a number in “{amountColumn}”. Pick the column
+                with the money amounts.
+              </p>
+            )}
+            {amountSomeBad && (
+              <p role="status" style={{ margin: 0 }}>
+                Only {amountOk} of {sampleAmounts.length} sample rows have a number in “{amountColumn}”; the rest
+                will be rejected.
+              </p>
+            )}
             <label>
               Description column{" "}
               <select value={descriptionColumn} onChange={(e) => setDescriptionColumn(e.target.value)}>
