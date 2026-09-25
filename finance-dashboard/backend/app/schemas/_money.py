@@ -47,10 +47,20 @@ def _plain_money(v: Any) -> Any:
     return v
 
 
+# NUMERIC(14,2) holds |value| < 10**12. Pydantic's max_digits=14 counts ALL digits, so
+# a 13-14 digit integer (10000000000000, or Decimal("1E+13")) passes it; strings are
+# stopped earlier by _MONEY_RE's {1,12}, but ints/Decimals are not. Checked here, AFTER
+# quantizing, so a value that rounds up across the limit is caught too.
+_MONEY_LIMIT = Decimal(10) ** 12
+
+
 def _two_places(v: Decimal) -> Decimal:
     # Always store/return the canonical 2dp form, and turn -0 into 0: a handler that
     # doesn't re-read the row after saving would otherwise echo "-0.00" or "0E-10".
-    return v.quantize(Decimal("0.01")) + Decimal("0.00")
+    q = v.quantize(Decimal("0.01")) + Decimal("0.00")
+    if abs(q) >= _MONEY_LIMIT:
+        raise ValueError("money must have at most 12 digits before the decimal point")
+    return q
 
 
 # NUMERIC(14,2) as an API rule: max 14 digits, 2 after the point, no NaN/Infinity.
