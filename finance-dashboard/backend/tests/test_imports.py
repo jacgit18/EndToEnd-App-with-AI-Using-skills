@@ -689,3 +689,327 @@ def test_simultaneous_imports_of_different_files_keep_the_invariant(auth):
         expected += sum(Decimal(a) for _, a, _ in rows_a + rows_b) + Decimal(manual["amount"])
         _, balance, total, _ = assert_invariant(account_id)
         assert total == expected, round_no
+
+
+# --------------------------------------------------------------------------- 8. multi-account files
+
+
+def multi_mapping(account_map: dict, **overrides) -> dict:
+    return MAPPING | {"account_column": "Account", "account_map": account_map} | overrides
+
+
+def do_multi_import(client, content: str | bytes, mapping, account_id=None, filename="stmt.csv"):
+    """POST /api/imports WITHOUT the account_id form field (multi-account mode),
+    unless one is passed to test that it's refused."""
+    if isinstance(content, str):
+        content = content.encode()
+    raw_mapping = mapping if isinstance(mapping, str) else json.dumps(mapping)
+    data = {"mapping": raw_mapping}
+    if account_id is not None:
+        data["account_id"] = str(account_id)
+    return client.post("/api/imports", files={"file": (filename, content, "text/csv")}, data=data)
+
+
+def multi_imported(client, content, mapping) -> dict:
+    response = do_multi_import(client, content, mapping)
+    assert response.status_code == 201, response.text
+    return response.json()
+
+
+def multi_csv(*rows: tuple[str, str, str, str]) -> str:
+    return csv_text(*[(d, a, f"{desc},{acct}") for d, a, desc, acct in rows],
+                    header="Date,Amount,Description,Account")
+
+
+def batch_counts(body) -> dict[int, tuple[int, int, int]]:
+    return {b["account_id"]: (b["imported_count"], b["skipped_count"], b["rejected_count"])
+            for b in body["batches"]}
+
+
+def test_preview_lists_distinct_values_for_small_columns(client):
+    rows = [(f"2026-01-{d:02d}", f"-{d}.00", f"Shop {d}", "Checking") for d in range(1, 31)]
+    rows += [(f"2026-02-{d:02d}", f"-{d}.50", f"Card {d}", "Visa") for d in range(1, 29)]
+    rows += [("2026-03-01", "-1.00", "x", "Amex"), ("2026-03-02", "-1.00", "y", "  Amex  ")]
+
+    body = preview(client, multi_csv(*rows)).json()
+
+    # Checking (30) > Visa (28) > Amex (2, trimmed into one value); Date (60 distinct),
+    # Amount (58) and Description (60) are over 50 and left out.
+    assert body["distinct_values"] == {"Account": ["Checking", "Visa", "Amex"]}
+    assert len(body["rows"]) == 10  # the preview rows are still just the first 10
+
+
+def test_multi_account_import_files_each_row_under_its_account(client):
+    checking = make_account(client, "100.00")
+    card = make_account(client, "-50.00")
+    paypal = make_account(client, "0.00")
+    text = multi_csv(
+        ("2026-09-01", "2500.00", "Salary", "Checking"),
+        ("2026-09-02", "-40.00", "Utilities", "Checking"),
+        ("2026-09-03", "-12.34", "Groceries", "Visa 1234"),
+        ("2026-09-04", "-3.50", "Coffee", "PayPal"),
+        ("2026-09-05", "-1.00", "Gum", "Visa 1234"),
+    )
+    mapping = multi_mapping({"Checking": checking, "Visa 1234": card, "PayPal": paypal})
+
+    body = multi_imported(client, text, mapping)
+
+    assert (body["imported_count"], body["skipped_count"], body["rejected_count"],
+            body["excluded_count"], body["rejected"]) == (5, 0, 0, 0, [])
+    # One batch per account, ascending account id; batch_id is the first one.
+    assert [b["account_id"] for b in body["batches"]] == sorted([checking, card, paypal])
+    assert body["batch_id"] == body["batches"][0]["batch_id"]
+    assert batch_counts(body) == {checking: (2, 0, 0), card: (2, 0, 0), paypal: (1, 0, 0)}
+
+    for account_id, expected_sum, expected_balance in [
+        (checking, Decimal("2460.00"), Decimal("2560.00")),
+        (card, Decimal("-13.34"), Decimal("-63.34")),
+        (paypal, Decimal("-3.50"), Decimal("-3.50")),
+    ]:
+        _, balance, total, _ = assert_invariant(account_id)
+        assert (total, balance) == (expected_sum, expected_balance), account_id
+        [batch] = batches_for(account_id)
+        assert {r.import_batch_id for r in rows_for(account_id)} == {batch.id}
+        assert batch.filename == "stmt.csv"
+        [returned] = [b for b in body["batches"] if b["account_id"] == account_id]
+        assert returned["batch_id"] == batch.id
+        assert (batch.imported_count, batch.skipped_count, batch.rejected_count) == (
+            returned["imported_count"], returned["skipped_count"], returned["rejected_count"])
+
+
+def test_multi_rejections_excluded_rows_and_attribution(client):
+    a = make_account(client, "0.00")
+    b = make_account(client, "0.00")
+    text = (
+        "Date,Amount,Description,Account\n"  # 1
+        "2026-09-01,-1.00,Good,A\n"  # 2
+        "2026-09-02,-2.00,Mystery,Other Bank\n"  # 3 value not in the map: no account
+        "2026-02-30,-3.00,Bad date,B\n"  # 4 rejected, attributed to B
+        "2026-09-04,-4.00,Left out,Skip\n"  # 5 excluded
+        "not-a-date,,,Skip\n"  # 6 excluded: never validated
+        "2026-09-06,-6.00,Good too,B\n"  # 7
+    )
+    mapping = multi_mapping({"A": a, "B": b, "Skip": None})
+
+    body = multi_imported(client, text, mapping)
+
+    assert [r["line"] for r in body["rejected"]] == [3, 4]
+    assert "Other Bank" not in body["rejected"][0]["reason"]
+    assert (body["imported_count"], body["skipped_count"], body["rejected_count"],
+            body["excluded_count"]) == (2, 0, 2, 2)
+    # 2 + 0 + 2 + 2 == the file's 6 data rows. Line 3 has no account, so it's in
+    # the top-level rejected_count only; line 4 is B's.
+    assert batch_counts(body) == {a: (1, 0, 0), b: (1, 0, 1)}
+    assert assert_invariant(a)[1:] == (Decimal("-1.00"), Decimal("-1.00"), 1)
+    assert assert_invariant(b)[1:] == (Decimal("-6.00"), Decimal("-6.00"), 1)
+
+
+def test_account_whose_rows_were_all_rejected_still_gets_a_batch(client):
+    a = make_account(client, "0.00")
+    b = make_account(client, "0.00")
+    text = multi_csv(("2026-09-01", "-1.00", "Fine", "A"), ("bad", "-1.00", "x", "B"))
+
+    body = multi_imported(client, text, multi_mapping({"A": a, "B": b}))
+
+    assert batch_counts(body) == {a: (1, 0, 0), b: (0, 0, 1)}
+    assert [(x.imported_count, x.rejected_count) for x in batches_for(b)] == [(0, 1)]
+    assert db_state(b) == (Decimal("0.00"), Decimal("0.00"), 0, 0)
+
+
+def test_account_in_the_map_but_not_in_the_file_gets_no_batch(client):
+    a = make_account(client, "0.00")
+    unused = make_account(client, "0.00")
+
+    body = multi_imported(client, multi_csv(("2026-09-01", "-1.00", "x", "A")),
+                          multi_mapping({"A": a, "Unused": unused}))
+
+    assert [x["account_id"] for x in body["batches"]] == [a]
+    assert batches_for(unused) == []
+
+
+def test_file_with_no_row_for_any_mapped_account_is_422(client):
+    a = make_account(client, "0.00")
+    text = multi_csv(("2026-09-01", "-1.00", "x", "Skip"), ("2026-09-02", "-1.00", "y", "Nope"))
+    before = table_counts()
+
+    response = do_multi_import(client, text, multi_mapping({"A": a, "Skip": None}))
+
+    assert response.status_code == 422
+    assert "no row" in response.json()["detail"]
+    assert table_counts() == before
+    assert_nothing_saved(a, "0.00")
+
+
+def test_same_row_in_two_accounts_imports_into_both(client):
+    a = make_account(client, "0.00")
+    b = make_account(client, "0.00")
+    text = multi_csv(("2026-09-01", "-3.50", "Coffee", "A"), ("2026-09-01", "-3.50", "Coffee", "B"))
+
+    body = multi_imported(client, text, multi_mapping({"A": a, "B": b}))
+
+    assert batch_counts(body) == {a: (1, 0, 0), b: (1, 0, 0)}
+    assert rows_for(a)[0].content_hash == rows_for(b)[0].content_hash  # same key, own account
+    assert assert_invariant(a)[2] == assert_invariant(b)[2] == Decimal("-3.50")
+
+
+def test_multi_reimport_of_the_same_file_skips_everything(client):
+    a = make_account(client, "10.00")
+    b = make_account(client, "20.00")
+    text = multi_csv(
+        ("2026-09-01", "-3.50", "Coffee", "A"),
+        ("2026-09-01", "-3.50", "Coffee", "A"),  # in-account duplicate
+        ("2026-09-01", "-3.50", "Coffee", "B"),
+        ("2026-09-02", "100.00", "Refund", "B"),
+        ("2026-09-03", "-1.00", "Excluded", "C"),
+    )
+    mapping = multi_mapping({"A": a, "B": b, "C": None})
+    multi_imported(client, text, mapping)
+    after_first = (db_state(a), db_state(b))
+
+    body = multi_imported(client, text, mapping)
+
+    assert (body["imported_count"], body["skipped_count"], body["excluded_count"]) == (0, 4, 1)
+    assert batch_counts(body) == {a: (0, 2, 0), b: (0, 2, 0)}
+    assert (db_state(a), db_state(b)) == after_first
+
+
+def test_per_account_occurrence_index(client):
+    """Two identical rows in one account both import, and interleaving another
+    account's identical rows doesn't change their hashes: a single-account import
+    of just A's rows afterwards is recognised as the same two rows."""
+    a = make_account(client, "0.00")
+    b = make_account(client, "0.00")
+    coffee_a = ("2026-09-01", "-3.50", "Coffee", "A")
+    coffee_b = ("2026-09-01", "-3.50", "Coffee", "B")
+    text = multi_csv(coffee_b, coffee_a, coffee_b, coffee_b, coffee_a)
+
+    body = multi_imported(client, text, multi_mapping({"A": a, "B": b}))
+
+    assert batch_counts(body) == {a: (2, 0, 0), b: (3, 0, 0)}
+    a_only = csv_text(("2026-09-01", "-3.50", "Coffee"), ("2026-09-01", "-3.50", "Coffee"))
+    again = imported(client, a, a_only)
+    assert (again["imported_count"], again["skipped_count"]) == (0, 2)
+    assert assert_invariant(a)[1:] == (Decimal("-7.00"), Decimal("-7.00"), 2)
+    assert assert_invariant(b)[1:] == (Decimal("-10.50"), Decimal("-10.50"), 3)
+
+
+MULTI_TEXT = "Date,Amount,Description,Account\n2026-09-01,-1.00,x,A\n"
+
+
+@pytest.mark.parametrize(
+    "mapping_extra, send_account_id, where",
+    [
+        ({"account_column": "Account", "account_map": "A"}, True, "account_id"),  # both modes at once
+        ({"account_column": "Account", "account_map": "A"}, False, None),  # control: valid
+        ({}, False, "account_id"),  # single mode without account_id
+        ({"account_column": "Account"}, True, "mapping"),  # column without map
+        ({"account_column": "Account"}, False, "mapping"),
+        ({"account_map": "A"}, True, "mapping"),  # map without column
+        ({"account_map": "A"}, False, "mapping"),
+        ({"account_column": "Date", "account_map": "A"}, False, "mapping"),  # same as date column
+        ({"account_column": "Account", "account_map": {"A": "id"}}, False, "mapping"),
+    ],
+)
+def test_mixed_mode_combinations(client, mapping_extra, send_account_id, where):
+    account_id = make_account(client)
+    extra = dict(mapping_extra)
+    if extra.get("account_map") == "A":
+        extra["account_map"] = {"A": account_id}
+
+    response = do_multi_import(client, MULTI_TEXT, MAPPING | extra,
+                               account_id=account_id if send_account_id else None)
+
+    if where is None:
+        assert response.status_code == 201, response.text
+        return
+    assert response.status_code == 422, response.text
+    assert response.json()["detail"][0]["loc"][:2] == ["body", where]
+    assert_nothing_saved(account_id)
+
+
+def test_single_mode_ignores_extra_columns_and_reports_one_batch(client):
+    # Single mode stays exactly as before: the 4th column is just ignored.
+    account_id = make_account(client, "0.00")
+    body = imported(client, account_id, MULTI_TEXT)
+    assert (body["imported_count"], body["excluded_count"]) == (1, 0)
+    assert body["batches"] == [{"batch_id": body["batch_id"], "account_id": account_id,
+                                "imported_count": 1, "skipped_count": 0, "rejected_count": 0}]
+
+
+def test_single_mode_response_has_one_batch_with_all_rejections(client):
+    account_id = make_account(client, "0.00")
+    body = imported(client, account_id, csv_text(("bad", "-1", "x"), ("2026-01-01", "-1", "y")))
+    assert batch_counts(body) == {account_id: (1, 0, 1)}
+    assert body["rejected_count"] == 1 and body["excluded_count"] == 0
+
+
+@pytest.mark.parametrize("problem", ["unknown", "archived"])
+@pytest.mark.parametrize("problem_has_rows", [True, False])
+def test_multi_unknown_or_archived_account_saves_nothing(client, problem, problem_has_rows):
+    good = make_account(client, "100.00")
+    other = make_account(client, "100.00")
+    if problem == "archived":
+        assert client.patch(f"/api/accounts/{other}", json={"is_archived": True}).status_code == 200
+        bad_id = other
+    else:
+        with SessionLocal() as db:
+            bad_id = (db.scalar(select(func.max(Account.id))) or 0) + 1000
+    rows = [("2026-09-01", "-1.00", "x", "Good")]
+    if problem_has_rows:
+        rows.append(("2026-09-02", "-2.00", "y", "Bad"))
+    before = table_counts()
+
+    response = do_multi_import(client, multi_csv(*rows), multi_mapping({"Good": good, "Bad": bad_id}))
+
+    assert response.status_code == (404 if problem == "unknown" else 409), response.text
+    assert response.json()["detail"] == (
+        f"account {bad_id} not found" if problem == "unknown" else f"account {bad_id} is archived")
+    assert table_counts() == before  # 0 batches, 0 rows anywhere
+    assert_nothing_saved(good)
+    assert_nothing_saved(other)
+
+
+def test_multi_overflow_in_one_account_rolls_back_every_account(client):
+    low, high = make_account(client, "0.00"), make_account(client, "-999999999999.00")
+    # `low` is written first (ascending id), then `high` overflows.
+    text = multi_csv(("2026-09-01", "-5.00", "fine", "Low"), ("2026-09-01", "-1.00", "boom", "High"))
+    before = table_counts()
+
+    response = do_multi_import(client, text, multi_mapping({"Low": low, "High": high}))
+
+    assert response.status_code == 422
+    assert "out of range" in response.json()["detail"]
+    assert table_counts() == before
+    assert_nothing_saved(low, "0.00")
+    assert_nothing_saved(high, "-999999999999.00")
+
+
+def test_multi_imports_over_the_same_accounts_in_opposite_order_do_not_deadlock(auth):
+    """Two multi-account imports over the same accounts, their maps listing the
+    accounts in opposite orders, released together. Locking in map order would
+    have each hold one account the other waits for (Postgres breaks that by failing
+    one with a deadlock error). Ascending-id locking queues them instead: both
+    succeed and every account's balance == starting + SUM(rows)."""
+    setup = make_client(auth)
+    ids = [make_account(setup, "0.00") for _ in range(4)]
+    names = [f"Acct{n}" for n in range(4)]
+    forward = multi_mapping(dict(zip(names, ids)))
+    backward = multi_mapping(dict(reversed(list(zip(names, ids)))))
+    assert list(forward["account_map"].values()) == list(reversed(backward["account_map"].values()))
+    expected = dict.fromkeys(ids, Decimal("0.00"))
+
+    for round_no in range(ROUNDS):
+        rows_1 = [("2026-03-01", f"-1.{round_no:02d}", f"one {round_no}", n) for n in names]
+        rows_2 = [("2026-03-02", f"-2.{round_no:02d}", f"two {round_no}", n) for n in names]
+        file_1, file_2 = multi_csv(*rows_1), multi_csv(*rows_2)
+
+        results = run_together(auth, [
+            lambda c: do_multi_import(c, file_1, forward),
+            lambda c: do_multi_import(c, file_2, backward),
+        ])
+
+        assert [getattr(r, "status_code", r) for r in results] == [201, 201], (round_no, results)
+        for account_id in ids:
+            expected[account_id] += Decimal(f"-1.{round_no:02d}") + Decimal(f"-2.{round_no:02d}")
+            _, balance, total, _ = assert_invariant(account_id)
+            assert total == expected[account_id], (round_no, account_id)

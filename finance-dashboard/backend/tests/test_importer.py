@@ -5,6 +5,7 @@ personal data and `*.csv` is gitignored). The API-level behaviour — batches,
 balance, dedupe against the table — is tests/test_imports.py.
 """
 
+import json
 from datetime import date
 from decimal import Decimal
 
@@ -371,3 +372,177 @@ def test_rejected_rows_do_not_consume_an_occurrence_index():
     with_bad = parse("Date,Amount,Description\n2026-01-01,oops,Coffee\n" + good)
     without = parse("Date,Amount,Description\n" + good)
     assert with_bad.rows[0].content_hash == without.rows[0].content_hash
+
+
+# --------------------------------------------------------------------------- multi-account mode
+
+
+def multi(accounts: dict, **overrides) -> dict:
+    return {"account_column": "Account", "account_map": accounts} | overrides
+
+
+MULTI_TEXT = (
+    "Date,Amount,Description,Account\n"  # 1
+    "2026-01-01,-3.50,Coffee,Checking\n"  # 2
+    "2026-01-01,-3.50,Coffee, Card \n"  # 3 value is trimmed before matching
+    "2026-01-02,-9.00,Lunch,PayPal\n"  # 4 excluded
+    "2026-01-03,-1.00,Gum,Brokerage\n"  # 5 not in the map
+    "2026-01-04,oops,Bad,Card\n"  # 6 rejected, attributed to Card
+    "2026-01-05,-2.00,Tea\n"  # 7 too short to reach Account: no account
+    "2026-01-06,-4.00,Snack,checking\n"  # 8 case-sensitive: not in the map
+)
+
+
+def test_multi_account_rows_are_filed_rejected_or_excluded_per_the_map():
+    result = parse(MULTI_TEXT, **multi({"Checking": 1, "Card": 2, "PayPal": None}))
+
+    assert [(r.line, r.account_id) for r in result.rows] == [(2, 1), (3, 2)]
+    assert [line for line, _ in result.rejected] == [5, 6, 7, 8]
+    assert result.rejected_by_account == {2: 1}  # only line 6 had a mapped account
+    assert result.excluded_count == 1
+    # Every data row is exactly one of parsed / rejected / excluded.
+    assert len(result.rows) + len(result.rejected) + result.excluded_count == 7
+
+
+def test_unmapped_account_reason_does_not_echo_the_cell():
+    result = parse(
+        "Date,Amount,Description,Account\n2026-01-01,-1,A,Secret Bank 1234\n",
+        **multi({"Checking": 1}),
+    )
+    [(line, reason)] = result.rejected
+    assert line == 2
+    assert "Secret" not in reason and "1234" not in reason
+    assert "account" in reason
+
+
+def test_excluded_rows_are_not_validated_and_take_no_occurrence_index():
+    good = "2026-01-01,-3.50,Coffee,Checking\n"
+    with_excluded = parse(
+        "Date,Amount,Description,Account\n"
+        "2026-01-01,-3.50,Coffee,Old\n"  # same dedupe key as `good`, but excluded
+        "not-a-date,,,Old\n"  # garbage, but in an excluded account: not rejected
+        + good,
+        **multi({"Checking": 1, "Old": None}),
+    )
+    alone = parse("Date,Amount,Description,Account\n" + good, **multi({"Checking": 1}))
+
+    assert with_excluded.rejected == []
+    assert with_excluded.excluded_count == 2
+    assert [r.content_hash for r in with_excluded.rows] == [r.content_hash for r in alone.rows]
+
+
+def test_occurrence_index_is_per_account_not_per_file():
+    header = "Date,Amount,Description,Account\n"
+    a = "2026-01-01,-3.50,Coffee,A\n"
+    b = "2026-01-01,-3.50,Coffee,B\n"
+    accounts = multi({"A": 1, "B": 2})
+
+    interleaved = parse(header + a + b + a + b, **accounts)
+    a_only = parse(header + a + a, **accounts)
+    b_only = parse(header + b + b, **accounts)
+
+    key = importer.dedupe_key(date(2026, 1, 1), Decimal("-3.50"), "Coffee")
+    expected = [importer.content_hash(key, n) for n in (0, 0, 1, 1)]
+    assert [r.content_hash for r in interleaved.rows] == expected
+    # Each account's hashes are the same with or without the other account's rows,
+    # and the same as a single-account import of just that account's rows.
+    by_account = {1: [], 2: []}
+    for r in interleaved.rows:
+        by_account[r.account_id].append(r.content_hash)
+    assert by_account[1] == [r.content_hash for r in a_only.rows]
+    assert by_account[2] == [r.content_hash for r in b_only.rows]
+    assert by_account[1] == [r.content_hash for r in parse(header.replace(",Account", "")
+                             + "2026-01-01,-3.50,Coffee\n" * 2).rows]
+
+
+def test_short_row_that_reaches_the_account_is_attributed():
+    # Account is column 0, so a row cut off before Description still has an account.
+    result = parse("Account,Date,Amount,Description\nCard,2026-01-01,-1\n", **multi({"Card": 7}))
+    assert [line for line, _ in result.rejected] == [2]
+    assert result.rejected_by_account == {7: 1}
+
+
+def test_single_account_mode_is_unchanged():
+    result = parse("Date,Amount,Description\n2026-01-01,oops,A\n2026-01-01,-1,A\n")
+    assert [r.account_id for r in result.rows] == [None]
+    assert result.rejected_by_account == {}
+    assert result.excluded_count == 0
+
+
+def test_account_column_missing_from_header_is_a_file_error():
+    with pytest.raises(ImportFileError, match="not in the file"):
+        parse("Date,Amount,Description\n2026-01-01,-1,A\n", **multi({"A": 1}))
+
+
+@pytest.mark.parametrize(
+    "overrides",
+    [
+        {"account_column": "Account"},  # map without column
+        {"account_map": {"A": 1}},  # column without map
+        multi({"A": 1}, account_column="Date"),  # same column as the date
+        multi({"A": 1}, account_column="Description"),
+        multi({"A": None}),  # everything excluded
+        multi({}),
+        multi({" A": 1}),  # untrimmed key could never match
+        multi({"": 1}),
+        multi({"A": "1"}),  # strict: no string ids
+        multi({"A": True}),
+        multi({"A": 0}),
+        multi({"A": 1.5}),
+        multi({str(n): 1 for n in range(501)}),  # over ACCOUNT_MAP_MAX
+    ],
+)
+def test_bad_account_mapping_is_refused(overrides):
+    with pytest.raises(ValueError):
+        ImportMapping.model_validate_json(
+            json.dumps(
+                {"date_column": "Date", "amount_column": "Amount",
+                 "description_column": "Description", "date_format": "iso"} | overrides
+            )
+        )
+
+
+# --------------------------------------------------------------------------- distinct values (preview)
+
+
+def test_distinct_values_order_trim_and_blank_cells():
+    f = importer.read_csv(
+        b"Date,Amount,Account\n"
+        b"2026-01-01,-1, Card \n"
+        b"2026-01-02,-1,Checking\n"
+        b"2026-01-03,-1,Card\n"
+        b"2026-01-04,-1,\n"  # blank: not a value
+        b"2026-01-05,-1,Brokerage\n"
+        b"2026-01-06,-1,Allowance\n"
+        b"2026-01-07,-1\n"  # ragged: no Account cell
+    )
+    values = importer.distinct_values(f)
+    # Most frequent first; ties in code-point order.
+    assert values["Account"] == ["Card", "Allowance", "Brokerage", "Checking"]
+    assert values["Amount"] == ["-1"]
+
+
+def test_distinct_values_omit_columns_over_50_and_keep_exactly_50():
+    rows = "".join(f"2026-01-01,{n},A\n" for n in range(50))
+    f = importer.read_csv(("Date,Amount,Account\n" + rows).encode())
+    assert len(importer.distinct_values(f)["Amount"]) == 50
+    f = importer.read_csv(("Date,Amount,Account\n" + rows + "2026-01-01,50,A\n").encode())
+    assert "Amount" not in importer.distinct_values(f)
+    assert importer.distinct_values(f)["Account"] == ["A"]
+
+
+def test_distinct_values_counted_over_the_whole_file_not_the_preview():
+    rows = "2026-01-01,-1,Main\n" * 20 + "2026-01-01,-1,Late\n"
+    f = importer.read_csv(("Date,Amount,Account\n" + rows).encode())
+    assert importer.distinct_values(f)["Account"] == ["Main", "Late"]
+
+
+def test_distinct_values_are_cut_to_200_chars():
+    long_a, long_b = "x" * 250 + "a", "x" * 250 + "b"
+    f = importer.read_csv(f"Date,Account\n2026-01-01,{long_a}\n2026-01-01,{long_b}\n".encode())
+    assert importer.distinct_values(f)["Account"] == ["x" * 200]
+
+
+def test_distinct_values_skip_duplicate_and_blank_headers():
+    f = importer.read_csv(b"Date,Amount,Amount,\n2026-01-01,1,2,z\n")
+    assert set(importer.distinct_values(f)) == {"Date"}

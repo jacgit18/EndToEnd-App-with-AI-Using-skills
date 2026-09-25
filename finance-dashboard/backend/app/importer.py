@@ -20,6 +20,7 @@ import csv
 import hashlib
 import io
 import re
+from collections import Counter
 from dataclasses import dataclass, field
 from datetime import date
 from decimal import Decimal
@@ -32,6 +33,8 @@ from app.schemas.import_batch import ImportMapping
 MAX_FILE_BYTES = 2 * 1024 * 1024  # a year of a busy account is well under 1 MB
 MAX_DATA_ROWS = 5000
 PREVIEW_ROWS = 10
+DISTINCT_VALUES_MAX = 50  # a column with more distinct values isn't offered as an account column
+DISTINCT_VALUE_CHARS = 200
 REJECTED_LIST_CAP = 100  # the count is always exact; only the list is capped
 
 # Tried in this order; on a tie the earlier one wins (so a one-column file is ",").
@@ -134,6 +137,52 @@ def read_csv(raw: bytes) -> CsvFile:
     if not rows:
         raise ImportFileError("file has no data rows")
     return CsvFile(headers=headers, rows=rows, delimiter=delimiter)
+
+
+def distinct_values(csv_file: CsvFile) -> dict[str, list[str]]:
+    """Header -> the column's distinct values, for the account-mapping form.
+
+    Values are trimmed exactly as the import trims a cell before matching it
+    against `account_map` (str.strip()), so what the form offers is what will
+    match. Blank cells, and cells past a ragged row's end, are not values.
+    Whole file, not just the preview rows: an account that first appears on row
+    4000 still has to be mappable. Order: most frequent first, ties alphabetical
+    (code-point order), so the checking account with 3000 rows leads the list.
+
+    Left out: a column with more than DISTINCT_VALUES_MAX distinct values; a blank
+    header (it can't be mapped: ColumnName is min_length 1); a header that appears
+    more than once (mapping it is a 422, and its values would be ambiguous).
+
+    Values are cut to DISTINCT_VALUE_CHARS for the response. A cut value is not
+    the cell's value, so used as an `account_map` key it matches nothing and those
+    rows are rejected (loudly), never filed under the wrong account. After cutting,
+    a repeat of an already-listed value is dropped rather than listed twice."""
+    name_counts = Counter(csv_file.headers)
+    result: dict[str, list[str]] = {}
+    for index, header in enumerate(csv_file.headers):
+        if not header or name_counts[header] > 1:
+            continue
+        counts: Counter[str] = Counter()
+        too_many = False
+        for _, cells in csv_file.rows:
+            if index >= len(cells):
+                continue
+            value = cells[index].strip()
+            if not value:
+                continue
+            counts[value] += 1
+            if len(counts) > DISTINCT_VALUES_MAX:
+                too_many = True
+                break
+        if too_many:
+            continue
+        values: list[str] = []
+        for value, _ in sorted(counts.items(), key=lambda item: (-item[1], item[0])):
+            cut = value[:DISTINCT_VALUE_CHARS]
+            if cut not in values:
+                values.append(cut)
+        result[header] = values
+    return result
 
 
 # --------------------------------------------------------------------------- one cell at a time
@@ -253,7 +302,8 @@ def dedupe_key(day: date, amount: Decimal, description: str) -> str:
 
 
 def content_hash(key: str, occurrence: int) -> str:
-    """sha256 of the key plus its occurrence index within the file.
+    """sha256 of the key plus its occurrence index within the file (counted per
+    account in a multi-account file; see parse_rows).
 
     Two genuinely identical rows in one statement (two $3.50 coffees on the same
     day) share a key; without the index the second would be "skipped" as a
@@ -278,37 +328,88 @@ class ParsedRow:
     amount: Decimal
     description: str
     content_hash: str
+    # The account the row goes to, from `account_map`. None in single-account mode:
+    # the router files every row under the form's `account_id`.
+    account_id: int | None = None
 
 
 @dataclass
 class ParseResult:
     rows: list[ParsedRow] = field(default_factory=list)
     rejected: list[tuple[int, str]] = field(default_factory=list)  # (line, reason), all of them
+    # Multi-account mode only: account id -> how many of `rejected` had a readable
+    # account cell mapped to that account (see parse_rows). Rejections not counted
+    # here belong to no account. Always empty in single-account mode.
+    rejected_by_account: dict[int, int] = field(default_factory=dict)
+    # Rows whose account value maps to null: left out, counted nowhere else.
+    excluded_count: int = 0
+
+
+def _column_index(headers: list[str], name: str) -> int:
+    found = [i for i, h in enumerate(headers) if h == name]
+    if not found:
+        raise ImportFileError(f"column {name!r} is not in the file's header")
+    if len(found) > 1:
+        raise ImportFileError(f"column {name!r} appears more than once in the header")
+    return found[0]
 
 
 def column_indexes(headers: list[str], mapping: ImportMapping) -> tuple[int, int, int]:
     """Where the mapped columns are. A missing or duplicated header name is a
     problem with the whole request, not with any one row -> ImportFileError."""
-    indexes = []
-    for name in (mapping.date_column, mapping.amount_column, mapping.description_column):
-        found = [i for i, h in enumerate(headers) if h == name]
-        if not found:
-            raise ImportFileError(f"column {name!r} is not in the file's header")
-        if len(found) > 1:
-            raise ImportFileError(f"column {name!r} appears more than once in the header")
-        indexes.append(found[0])
-    return indexes[0], indexes[1], indexes[2]
+    return (
+        _column_index(headers, mapping.date_column),
+        _column_index(headers, mapping.amount_column),
+        _column_index(headers, mapping.description_column),
+    )
 
 
 def parse_rows(csv_file: CsvFile, mapping: ImportMapping) -> ParseResult:
-    """Every data row -> a ParsedRow or a (line, reason) rejection. Never raises for
-    a bad row; raises ImportFileError only if the mapping doesn't fit the header."""
+    """Every data row -> a ParsedRow, a (line, reason) rejection, or (multi-account
+    mode) an exclusion. Never raises for a bad row; raises ImportFileError only if
+    the mapping doesn't fit the header.
+
+    Multi-account mode resolves the row's account FIRST, before any other cell is
+    looked at:
+    - row too short to reach the account column -> rejected, no account;
+    - trimmed value not a key of account_map -> rejected, no account (the reason
+      never echoes the value: it's the user's data, same as every other reason);
+    - value mapped to null -> excluded. Not validated any further (a garbage row in
+      an account the user left out is none of this import's business), not hashed,
+      and it takes no occurrence index;
+    - value mapped to an id -> parsed as usual; if it's rejected from here on, the
+      rejection is attributed to that account (rejected_by_account)."""
     date_i, amount_i, desc_i = column_indexes(csv_file.headers, mapping)
-    needed = max(date_i, amount_i, desc_i) + 1
+    account_i = (
+        _column_index(csv_file.headers, mapping.account_column)
+        if mapping.account_column is not None
+        else None
+    )
+    needed = max(date_i, amount_i, desc_i, -1 if account_i is None else account_i) + 1
     result = ParseResult()
-    occurrences: dict[str, int] = {}
+    # Keyed by (account, dedupe key), not dedupe key alone: a row's hash must depend
+    # only on its own account's rows. Counted per file, two identical coffees in two
+    # different accounts would hash key|0 and key|1, and the second account's hash
+    # would change whenever the first account's rows were added to or removed from
+    # the export — a re-import of a differently-filtered export would double rows.
+    # In single-account mode the account part is always None, i.e. per file, as before.
+    occurrences: dict[tuple[int | None, str], int] = {}
 
     for line, cells in csv_file.rows:
+        account_id: int | None = None
+        if account_i is not None:
+            if len(cells) <= account_i:
+                reason = f"row has {len(cells)} fields, the mapping needs {needed}"
+                result.rejected.append((line, reason))
+                continue
+            value = cells[account_i].strip()
+            if value not in mapping.account_map:
+                result.rejected.append((line, "account value is not in the account mapping"))
+                continue
+            account_id = mapping.account_map[value]
+            if account_id is None:
+                result.excluded_count += 1
+                continue
         try:
             if len(cells) < needed:
                 raise RowError(f"row has {len(cells)} fields, the mapping needs {needed}")
@@ -325,11 +426,16 @@ def parse_rows(csv_file: CsvFile, mapping: ImportMapping) -> ParseResult:
             description = clean_description(cells[desc_i])
         except RowError as exc:
             result.rejected.append((line, str(exc)))
+            if account_id is not None:
+                result.rejected_by_account[account_id] = (
+                    result.rejected_by_account.get(account_id, 0) + 1
+                )
             continue
 
         key = dedupe_key(day, amount, description)
-        occurrence = occurrences.get(key, 0)  # counted over accepted rows only
-        occurrences[key] = occurrence + 1
+        # Counted over accepted rows only, per account (see `occurrences` above).
+        occurrence = occurrences.get((account_id, key), 0)
+        occurrences[(account_id, key)] = occurrence + 1
         result.rows.append(
             ParsedRow(
                 line=line,
@@ -337,6 +443,7 @@ def parse_rows(csv_file: CsvFile, mapping: ImportMapping) -> ParseResult:
                 amount=amount,
                 description=description,
                 content_hash=content_hash(key, occurrence),
+                account_id=account_id,
             )
         )
     return result
