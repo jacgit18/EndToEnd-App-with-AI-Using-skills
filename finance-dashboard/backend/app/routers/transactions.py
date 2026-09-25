@@ -12,6 +12,7 @@ from sqlalchemy.orm import Session
 
 from app.db import get_db
 from app.models.account import Account
+from app.models.category import Category
 from app.models.transaction import Transaction
 from app.schemas.transaction import TransactionCreate, TransactionRead
 
@@ -38,6 +39,18 @@ def create_transaction(
     if account.is_archived:
         # Archived means closed: history stays visible, no new activity posts to it.
         raise HTTPException(status_code=409, detail="account is archived")
+
+    if payload.category_id is not None:
+        # Checked here rather than left to the FK: a missing id used to surface as an
+        # IntegrityError at commit, i.e. a 500. FOR SHARE (read=True) holds the row so
+        # a concurrent archive can't commit between this check and our insert; it
+        # doesn't block other posts that file under the same category.
+        category = db.get(Category, payload.category_id, with_for_update={"read": True})
+        if category is None:
+            raise HTTPException(status_code=404, detail="category not found")
+        if category.is_archived:
+            # Archived categories keep their history but take no new transactions (S3).
+            raise HTTPException(status_code=409, detail="category is archived")
 
     transaction = Transaction(
         account_id=payload.account_id,
