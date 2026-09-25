@@ -105,7 +105,19 @@ def test_transaction_amount_limits_also_hold_for_non_string_input():
 def test_transaction_amount_is_normalised_to_two_places():
     assert str(txn("12.5").amount) == "12.50"
     assert str(txn(7).amount) == "7.00"
-    assert str(txn("-0").amount) == "0.00"
+    # "-0" -> "0.00" used to be checked on a transaction amount; since S4 a zero
+    # amount is refused there (test_transaction_amount_rejects_zero), so the -0
+    # normalisation is checked on starting_balance, which shares the Money type.
+    from app.schemas.account import AccountCreate
+
+    assert str(AccountCreate(name="x", type="cash", starting_balance="-0").starting_balance) == "0.00"
+
+
+@pytest.mark.parametrize("zero", ["0", "0.00", "-0", "-0.00", 0, Decimal("0")])
+def test_transaction_amount_rejects_zero(zero):
+    # S4: a zero row moves no money and can't be told apart from its own void.
+    with pytest.raises(ValidationError):
+        txn(zero)
 
 
 def test_transaction_amount_accepts_the_column_limits():

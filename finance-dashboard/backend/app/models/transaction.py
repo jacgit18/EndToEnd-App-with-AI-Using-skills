@@ -14,10 +14,12 @@ from sqlalchemy import (
     Date,
     DateTime,
     ForeignKey,
+    Index,
     Numeric,
     String,
     UniqueConstraint,
     func,
+    text,
 )
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -33,6 +35,21 @@ class Transaction(Base):
         UniqueConstraint("account_id", "content_hash", name="uq_transaction_account_hash"),
         CheckConstraint(
             "type in ('normal', 'reversal', 'adjustment')", name="ck_transaction_type"
+        ),
+        # Mirror migration 0004 (same names) so Alembic autogenerate sees no drift.
+        # A row can be voided at most once: the second reversal of the same row is
+        # refused by the database even if two voids race past the router's pre-check.
+        # Partial, so the NULL on every ordinary row stays out of the index.
+        Index(
+            "uq_transaction_one_reversal",
+            "reverses_transaction_id",
+            unique=True,
+            postgresql_where=text("reverses_transaction_id IS NOT NULL"),
+        ),
+        # A reversal always names the row it reverses, and nothing else does.
+        CheckConstraint(
+            "(type = 'reversal') = (reverses_transaction_id IS NOT NULL)",
+            name="ck_transaction_reversal_link",
         ),
     )
 
