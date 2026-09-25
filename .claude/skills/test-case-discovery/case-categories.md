@@ -6,7 +6,7 @@ The checklist Claude probes from in Think-together mode, after the user has name
 
 | Category | Ask about |
 |---|---|
-| **Invalid / missing / malformed input** | Wrong type or shape, missing required field, extra fields, wrong encoding, injection-shaped strings, empty vs whitespace |
+| **Invalid / missing / malformed input** | Wrong type or shape, missing required field, extra fields, wrong encoding, injection-shaped strings, empty vs whitespace; for a file or feed exported by an outside system, at least one case shaped like a real sample of it (many accounts in one file, a column that is all text), because synthetic fixtures only contain the shapes you already thought of |
 | **Boundaries** | Empty, one, max, one over max, off-by-one at limits, zero and negative where numbers are allowed; run each limit through every input form the API accepts (string, int, Decimal, JSON number), since a check that passes for one form can miss another |
 | **Auth & permissions** | Unauthenticated, wrong role, expired credential, another tenant's resource, permission revoked mid-flow |
 | **Dependency failure** | Dependency down, slow, times out, returns an error status, returns 200 with an error body; retry behavior and whether a retry is safe |
