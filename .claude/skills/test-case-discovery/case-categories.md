@@ -7,7 +7,7 @@ The checklist Claude probes from in Think-together mode, after the user has name
 | Category | Ask about |
 |---|---|
 | **Invalid / missing / malformed input** | Wrong type or shape, missing required field, extra fields, wrong encoding, injection-shaped strings, empty vs whitespace |
-| **Boundaries** | Empty, one, max, one over max, off-by-one at limits, zero and negative where numbers are allowed |
+| **Boundaries** | Empty, one, max, one over max, off-by-one at limits, zero and negative where numbers are allowed; run each limit through every input form the API accepts (string, int, Decimal, JSON number), since a check that passes for one form can miss another |
 | **Auth & permissions** | Unauthenticated, wrong role, expired credential, another tenant's resource, permission revoked mid-flow |
 | **Dependency failure** | Dependency down, slow, times out, returns an error status, returns 200 with an error body; retry behavior and whether a retry is safe |
 | **Partial failure & rollback** | Fails halfway through a multi-step operation; what is left behind; is the operation idempotent on retry |
@@ -15,6 +15,8 @@ The checklist Claude probes from in Think-together mode, after the user has name
 | **State** | Already exists, already deleted, stale version, called twice, called before its precondition |
 | **Volume & performance** | Large payload, many items, slow query at scale, rate limits — only if a limit or budget was actually stated |
 | **Config & environment** | Missing env var, different region/timezone/locale, feature flag on vs off, prod-vs-staging difference |
+
+A real bug found while discovering cases that will not be fixed in this pass gets a strict expected-failure test (pytest `xfail(strict=True)`, or the framework equivalent) that names the bug, so it stays visible and the fix flips it to a normal passing test. Do not leave it as a comment or a skipped test.
 
 For infrastructure (Terraform module, pipeline, migration), read "input" as variables/parameters, "dependency" as the provider, cloud API, or upstream stage, and "state" as existing resources, drift, and lock state.
 
