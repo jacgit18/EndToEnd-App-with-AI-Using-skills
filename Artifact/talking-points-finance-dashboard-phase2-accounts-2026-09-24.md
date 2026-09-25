@@ -32,15 +32,21 @@ I'm building a personal finance app slowly enough to explain every part. This ph
 
 **Follow-up line.** Wrote up the balance bug from this month: how I measured it, the fix, and the check I added. Happy to share the details.
 
-## LinkedIn draft
+## LinkedIn draft (final, after brand and de-AI passes; not posted)
 
-An account balance in my finance app could end up wrong if two edits arrived at the same moment.
+An account balance in my finance app could go wrong if two edits arrived at the same moment.
 
-I measured it before fixing it. Two simultaneous edits broke the balance 58 times out of 60. An edit racing a new transaction broke it 26 times out of 60. The cause was two requests reading the same balance and each writing back its own answer.
+Before fixing it, I measured it. Two simultaneous edits broke the balance 58 times out of 60. An edit racing a new transaction broke it 26 times out of 60. Both requests read the same balance, then each wrote back its own answer.
 
-The fix was to lock the account while its balance is being changed. After it, 0 of 60 in both cases. That lock now sits under a test that fails if I remove it, and a job compares every balance to its transaction history and names any account that disagrees.
+The fix: lock the account row while its balance changes. Afterward, 0 failures in 60 for both cases. The lock is load-bearing now: a test fails if I remove it. A separate job compares every balance to its transaction history and names any account that disagrees.
 
-This shipped in September 2026. The job has only run on test data and an empty production database so far, and it is not on a schedule yet, and the 60-run numbers come from scripts I didn't keep.
+Shipped September 2026. The job has only run on test data and an empty database on my own deployment, it isn't scheduled yet, and I didn't keep the scripts behind the 60-run numbers.
 
 What do you check before you trust a stored total?
 
+### Pass notes
+
+- **Brand honesty checks:** production claim (no employer work mentioned), variety, role, tenure, soft-skill and paste-language checks: n/a or pass. Ownership: personal project, "I measured / fixed" is accurate. Numbers: 58/60, 26/60, 0/60 are my session measurements, disclosed as unkept scripts.
+- **Device:** "load-bearing" used once, in the middle. Not reused from an earlier draft.
+- **De-AI pass:** no reframes or banned vocabulary found; changed "sits under a test" and "nightly" wording; "production database" became "an empty database on my own deployment" so it can't read as employer production.
+- **Before posting:** you confirm the numbers are yours to claim, and pick the day. Suggested: add a chart or a two-line before/after image if you want a visual.
