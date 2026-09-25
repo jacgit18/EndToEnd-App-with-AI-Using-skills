@@ -73,7 +73,7 @@ Flag the load-bearing assumption as a question, not a correction.
 
 ## The process
 
-Work `deployment-framework.md` in order once the gate is satisfied. In short: confirm the pressure is a real release problem → classify the unit (stateless service / stateful / worker / batch / frontend) because it bounds the mechanisms → check what progressive-delivery infrastructure actually exists → pick the rollout mechanism from downtime tolerance, blast-radius need, and that infrastructure → define the health signal the rollout gates on (hand its design to `observability-strategy`) and the auto-rollback trigger → apply expand/contract to any schema or contract change so every step is rollback-safe → set the environment progression and the promotion criteria that actually gate → set the cadence → recommend and record.
+Work `deployment-framework.md` in order once the gate is satisfied. In short: confirm the pressure is a real release problem → classify the unit (stateless service / stateful / worker / batch / frontend) because it bounds the mechanisms → check what progressive-delivery infrastructure actually exists → pick the rollout mechanism from downtime tolerance, blast-radius need, and that infrastructure → define the health signal the rollout gates on (hand its design to `observability-strategy`) and the auto-rollback trigger → apply expand/contract to any schema or contract change so every step is rollback-safe → set the environment progression and the promotion criteria that actually gate → set the cadence → recommend and record. For a single-operator app the release step is still named: backup, deploy on an explicit fresh go-ahead, smoke check, record what was and was not verified.
 
 Reference files:
 

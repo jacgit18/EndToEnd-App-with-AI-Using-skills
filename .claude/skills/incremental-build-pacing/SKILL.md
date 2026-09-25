@@ -95,7 +95,7 @@ checkpoint-quiz mechanics — is in `increment-delivery.md`.
 2. **Verify by effect** — run or exercise the increment and report what you *observed*, not that
    it returned 200 or compiled. When the increment's job is a side effect (which client IP the
    server sees, a cookie's flags, a header, a row written), the observation is that effect
-   (`increment-delivery.md`, "Verifying by effect"). Nothing runnable yet → say so in one line; plumbing (Step 3) is exempt. If the user types the code themselves, the check happens after they have typed it: ask them to run it and report what they see.
+   (`increment-delivery.md`, "Verifying by effect"). Nothing runnable yet → say so in one line; plumbing (Step 3) is exempt. If the increment added a dependency, rebuild or refresh the dev environment (container `node_modules` volume, venv) before running it, or a stale environment reads as a code bug. If the user types the code themselves, the check happens after they have typed it: ask them to run it and report what they see.
 3. **Explain** — what it does, why it's shaped this way, how it connects to what already exists,
    and the one thing that usually trips people on this kind of file.
 4. **Stop.** The turn is the user's. Don't narrate the next increment or assume this one landed.
