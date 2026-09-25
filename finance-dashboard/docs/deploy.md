@@ -74,6 +74,8 @@ On drift, read the WARN lines and decide which side is right by hand before touc
 
 **Applying Phase 4 to prod:** it adds migration `0004` (one-reversal-per-row index, reversal-link CHECK). Run `scripts/backup-db.sh` first, then `scripts/prod.sh up -d --build`. The migration fails (and rolls back) if prod already holds a row that breaks the CHECK; none should, since nothing could create a reversal before.
 
+**Applying Phase 5 to prod:** it adds migration `0005` (`import_batches.account_id`, `rejected_count`). Run `scripts/backup-db.sh` first (check the dump has data), then `scripts/prod.sh up -d --build`, check `alembic current` = 0005, `/health`, and a reconcile. The upload limit (2 MB) is enforced in the app *after* Starlette has buffered the body; a hard cap belongs in `Caddyfile.prod` (`request_body { max_size 3MB }` on the `/api/imports*` route) — not yet added.
+
 **Applying Phase 2 to prod:** it adds migration `0002` (account `type`, `starting_balance`), so run
 `scripts/prod.sh up -d --build` once after merging.
 

@@ -95,7 +95,11 @@
 - Import creates an `import_batch`; rows whose dedupe hash already exists are skipped and counted.
 - Imported rows land uncategorized.
 
-**Explicitly not covered:** saved per-bank mappings, auto-categorization rules, OFX/QIF, multiple accounts in one file.
+**Explicitly not covered:** saved per-bank mappings, auto-categorization rules, OFX/QIF, debit/credit split columns.
+
+*Built in Phase 5. Multiple accounts in one file is now covered (account column + value→account map, one batch per account).*
+
+**Gap — S5c (not built):** void a whole import batch. The ledger is append-only, so a bad import can only be voided row by row.
 
 **Split if needed:** S5a import with fixed column names → S5b column-mapping UI.
 
