@@ -38,6 +38,28 @@ export interface AccountUpdate {
   is_archived?: boolean;
 }
 
+export const CATEGORY_KINDS = ["expense", "income"] as const;
+export type CategoryKind = (typeof CATEGORY_KINDS)[number];
+
+export interface Category {
+  id: number;
+  name: string;
+  kind: CategoryKind;
+  is_archived: boolean;
+  created_at: string;
+}
+
+export interface CategoryCreate {
+  name: string;
+  kind: CategoryKind;
+}
+
+// PATCH: rename and/or archive. `kind` is immutable; the server rejects it (422).
+export interface CategoryUpdate {
+  name?: string;
+  is_archived?: boolean;
+}
+
 export interface Transaction {
   id: number;
   account_id: number;
@@ -130,6 +152,14 @@ export const api = {
     request<Account>("/accounts", { method: "POST", body: JSON.stringify(body) }),
   updateAccount: (id: number, body: AccountUpdate) =>
     request<Account>(`/accounts/${id}`, { method: "PATCH", body: JSON.stringify(body) }),
+
+  // Archived categories are hidden unless asked for (backend default).
+  listCategories: (opts?: { includeArchived?: boolean }) =>
+    request<Category[]>(`/categories${opts?.includeArchived ? "?include_archived=true" : ""}`),
+  createCategory: (body: CategoryCreate) =>
+    request<Category>("/categories", { method: "POST", body: JSON.stringify(body) }),
+  updateCategory: (id: number, body: CategoryUpdate) =>
+    request<Category>(`/categories/${id}`, { method: "PATCH", body: JSON.stringify(body) }),
 
   listTransactions: () => request<Transaction[]>("/transactions"),
   createTransaction: (body: TransactionCreate) =>
