@@ -80,6 +80,58 @@ export interface TransactionCreate {
   description: string;
 }
 
+export const DATE_FORMATS = ["iso", "mdy", "dmy"] as const;
+export type DateFormat = (typeof DATE_FORMATS)[number];
+
+export interface ImportMapping {
+  date_column: string;
+  amount_column: string;
+  description_column: string;
+  date_format: DateFormat; // required, never guessed
+  invert_sign: boolean;
+  // Multi-account files: which column names the account, and where each of its
+  // values goes (account id, or null = leave those rows out). Both or neither.
+  account_column?: string;
+  account_map?: Record<string, number | null>;
+}
+
+export interface ImportPreview {
+  headers: string[];
+  rows: string[][];
+  row_count: number;
+  delimiter: string;
+  // Columns with few distinct values (<= 50), for the account-column picker.
+  distinct_values: Record<string, string[]>;
+}
+
+export interface ImportBatchResult {
+  batch_id: number;
+  account_id: number;
+  imported_count: number;
+  skipped_count: number;
+  rejected_count: number;
+}
+
+export interface ImportResult {
+  batch_id: number;
+  imported_count: number;
+  skipped_count: number;
+  rejected_count: number;
+  excluded_count: number;
+  rejected: { line: number; reason: string }[];
+  batches: ImportBatchResult[];
+}
+
+export interface ImportBatch {
+  id: number;
+  filename: string;
+  account_id: number;
+  imported_count: number;
+  skipped_count: number;
+  rejected_count: number;
+  created_at: string;
+}
+
 export interface Health {
   status: string;
   db: "connected" | "unreachable";
@@ -106,9 +158,12 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     // /login like any other call; otherwise we get a fresh token and proceed.
     csrfToken = (await request<{ csrf_token: string }>("/auth/me")).csrf_token;
   }
+  // A FormData body (CSV upload) must NOT get a Content-Type: the browser adds
+  // multipart/form-data with the boundary itself, and a JSON header would break it.
+  const isForm = init?.body instanceof FormData;
   const res = await fetch(`/api${path}`, {
     headers: {
-      "Content-Type": "application/json",
+      ...(isForm ? {} : { "Content-Type": "application/json" }),
       ...(isWrite && csrfToken ? { "X-CSRF-Token": csrfToken } : {}),
     },
     ...init,
@@ -174,4 +229,19 @@ export const api = {
     request<Transaction>(`/transactions/${id}/void`, { method: "POST" }),
   createTransaction: (body: TransactionCreate) =>
     request<Transaction>("/transactions", { method: "POST", body: JSON.stringify(body) }),
+
+  previewImport: (file: File) => {
+    const form = new FormData();
+    form.append("file", file);
+    return request<ImportPreview>("/imports/preview", { method: "POST", body: form });
+  },
+  // Single-account: pass accountId. Multi-account: omit it and set mapping.account_*.
+  createImport: (file: File, mapping: ImportMapping, accountId?: number) => {
+    const form = new FormData();
+    form.append("file", file);
+    if (accountId !== undefined) form.append("account_id", String(accountId));
+    form.append("mapping", JSON.stringify(mapping));
+    return request<ImportResult>("/imports", { method: "POST", body: form });
+  },
+  listImports: () => request<ImportBatch[]>("/imports"),
 };
