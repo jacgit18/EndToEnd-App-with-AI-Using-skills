@@ -144,6 +144,32 @@ export interface ImportBatch {
   created_at: string;
 }
 
+export interface DashboardCategory {
+  category_id: number | null; // null = the Uncategorized line
+  name: string;
+  actual: string; // spend, money out is positive
+  budget: string | null; // null = no budget that month (not zero)
+}
+
+export interface Dashboard {
+  month: string;
+  income: string;
+  expense: string;
+  net: string; // always income - expense, the plain sum of the month's amounts
+  categories: DashboardCategory[];
+  recent: Transaction[];
+}
+
+export interface TrendPoint {
+  month: string;
+  net: string;
+}
+
+export interface Trend {
+  month: string;
+  points: TrendPoint[]; // oldest first, ending at `month`
+}
+
 export interface Health {
   status: string;
   db: "connected" | "unreachable";
@@ -256,6 +282,11 @@ export const api = {
     request<Transaction>(`/transactions/${id}/void`, { method: "POST" }),
   createTransaction: (body: TransactionCreate) =>
     request<Transaction>("/transactions", { method: "POST", body: JSON.stringify(body) }),
+
+  dashboard: (month: string) =>
+    request<Dashboard>(`/dashboard?month=${encodeURIComponent(month)}`),
+  dashboardTrend: (month: string) =>
+    request<Trend>(`/dashboard/trend?month=${encodeURIComponent(month)}`),
 
   previewImport: (file: File) => {
     const form = new FormData();

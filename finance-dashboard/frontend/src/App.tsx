@@ -5,6 +5,7 @@ import { api } from "./api/client";
 import AccountsPage from "./AccountsPage";
 import BudgetsPage from "./BudgetsPage";
 import CategoriesPage from "./CategoriesPage";
+import DashboardPage from "./DashboardPage";
 import ImportPage from "./ImportPage";
 import LoginPage from "./LoginPage";
 import Transactions from "./Transactions";
@@ -19,6 +20,7 @@ export default function App() {
     <Routes>
       <Route path="/login" element={<LoginPage />} />
       <Route path="/" element={<Dashboard />} />
+      <Route path="/dashboard" element={<DashboardPage />} />
       <Route path="/accounts" element={<AccountsPage />} />
       <Route path="/categories" element={<CategoriesPage />} />
       <Route path="/budgets" element={<BudgetsPage />} />
@@ -56,7 +58,8 @@ function Dashboard() {
         Sign out
       </button>
       <nav style={{ margin: "0.5rem 0" }}>
-        <Link to="/">Transactions</Link> · <Link to="/accounts">Accounts</Link> ·{" "}
+        <Link to="/dashboard">Dashboard</Link> · <Link to="/">Transactions</Link> ·{" "}
+        <Link to="/accounts">Accounts</Link> ·{" "}
         <Link to="/categories">Categories</Link> · <Link to="/budgets">Budgets</Link> ·{" "}
         <Link to="/import">Import</Link>
       </nav>
