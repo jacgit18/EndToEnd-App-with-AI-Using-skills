@@ -19,6 +19,7 @@ dependencies = [
                                  # or guessed cookie value from reaching that lookup at all
     "sentry-sdk>=2.0",          # error tracking, inert unless SENTRY_DSN is set (ADR-0013;
                                  # free tier — see docs/paid-options.md)
+    "python-multipart>=0.0.32", # multipart/form-data parsing for the CSV upload (Phase 5, S5)
 ]
 
 # Dev-only: installed locally and in CI, never in the runtime image.
@@ -30,7 +31,6 @@ dev = [
 
 # Added in later phases, not needed yet:
 #   a rate-limiting library (or a hand-rolled limiter) — login rate limiting (Phase 1, ADR-0010)
-#   python-multipart   — file upload for CSV import          (Phase 5, S5)
 #   sentry-sdk         — error tracking                       (Phase 1, ADR-0013)
 
 # No [build-system] table on purpose: this is an application, not a library.

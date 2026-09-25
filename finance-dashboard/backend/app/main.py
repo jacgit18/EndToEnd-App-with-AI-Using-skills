@@ -12,7 +12,7 @@ from sqlalchemy.orm import Session
 from app.config import settings
 from app.db import get_db
 from app.dependencies import require_csrf
-from app.routers import accounts, auth, categories, transactions
+from app.routers import accounts, auth, categories, imports, transactions
 
 # Error tracking only when a DSN is configured (ADR-0013). This is a finance app,
 # so the defaults are tightened: no request bodies (they carry transaction
@@ -49,6 +49,9 @@ app.include_router(
     prefix="/api/transactions",
     tags=["transactions"],
     dependencies=_protected,
+)
+app.include_router(
+    imports.router, prefix="/api/imports", tags=["imports"], dependencies=_protected
 )
 
 
