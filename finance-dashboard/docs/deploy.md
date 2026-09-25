@@ -47,7 +47,7 @@ the backup restore below, or any long-running behaviour.
 ```bash
 scripts/backup-db.sh        # dumps to ./backups, keeps the newest 14
 ```
-Schedule nightly with cron (example line is in the script header). **Restore drill — do this once:**
+Scheduled nightly (02:30) on the owner's machine since 2026-09-25; logs in `backups/backup.log`. Cron example is in the script header. **Restore drill — do this once:**
 ```bash
 gunzip -c backups/finance-<stamp>.sql.gz | scripts/prod.sh exec -T db psql -U finance -d finance_restore_test
 # (create it first: scripts/prod.sh exec db createdb -U finance finance_restore_test)
@@ -69,6 +69,8 @@ balance), **2** = the job itself could not run (DB down, or zero accounts, which
 wrong database). Run it nightly after the backup and alert on any non-zero exit, e.g.
 `30 2 * * * cd /path/to/finance-dashboard && scripts/prod.sh exec -T backend uv run python -m app.reconcile || <your alert>`.
 On drift, read the WARN lines and decide which side is right by hand before touching anything.
+
+**Installed 2026-09-25:** cron runs this at 02:40 (after the backup) and appends to `backups/reconcile.log`; there is no push alert, so check that log. Cron only fires while the machine is on.
 
 **Applying Phase 2 to prod:** it adds migration `0002` (account `type`, `starting_balance`), so run
 `scripts/prod.sh up -d --build` once after merging.
