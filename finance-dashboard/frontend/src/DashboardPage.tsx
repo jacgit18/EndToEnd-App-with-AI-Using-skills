@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 
 import { api } from "./api/client";
+import { CategoryChart, TrendChart } from "./DashboardCharts";
 
 // Local calendar month as YYYY-MM (toISOString would be UTC and can be a day off).
 function currentMonth(): string {
@@ -17,6 +18,11 @@ export default function DashboardPage() {
   const dashboard = useQuery({
     queryKey: ["dashboard", month],
     queryFn: () => api.dashboard(month),
+    enabled: month !== "",
+  });
+  const trend = useQuery({
+    queryKey: ["dashboard-trend", month],
+    queryFn: () => api.dashboardTrend(month),
     enabled: month !== "",
   });
   const data = dashboard.data;
@@ -45,6 +51,18 @@ export default function DashboardPage() {
             <Tile label="Expense" value={data.expense} />
             <Tile label="Net" value={data.net} />
           </div>
+
+          <h3>Spending by category</h3>
+          <CategoryChart categories={data.categories} />
+
+          <h3>Net, last six months</h3>
+          {trend.isError ? (
+            <p role="alert" style={{ color: "crimson" }}>{(trend.error as Error).message}</p>
+          ) : trend.data ? (
+            <TrendChart points={trend.data.points} />
+          ) : (
+            <p>Loading…</p>
+          )}
 
           <h3>Recent transactions</h3>
           {data.recent.length === 0 ? (
