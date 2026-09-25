@@ -113,6 +113,48 @@ def test_transaction_amount_accepts_the_column_limits():
     assert str(txn("-999999999999.99").amount) == "-999999999999.99"
 
 
+def test_largest_valid_amount_is_accepted_in_every_input_form():
+    assert str(txn("999999999999.99").amount) == "999999999999.99"
+    assert str(txn(Decimal("999999999999.99")).amount) == "999999999999.99"
+    assert str(txn(999999999999).amount) == "999999999999.00"
+    assert str(txn(-999999999999).amount) == "-999999999999.00"
+
+
+@pytest.mark.parametrize(
+    "bad",
+    [
+        10**12,  # 13 integer digits as a JSON integer
+        10**13,  # 14 digits: fits max_digits=14 but not NUMERIC(14,2)
+        -(10**13),
+        99999999999999,
+        "1000000000000",  # the same values as strings
+        "10000000000000",
+        "-10000000000000",
+        Decimal("1E+13"),  # exponent-form Decimal object, 1 significant digit
+        Decimal("10000000000000.00"),
+        Decimal("999999999999.995"),  # would round UP across the limit
+        "999999999999.995",
+        "9999999999999.996",  # rounds up to 14 integer digits
+        Decimal("9999999999999.996"),
+    ],
+)
+def test_amount_over_12_integer_digits_is_rejected_whatever_the_input_type(bad):
+    """NUMERIC(14,2) holds |x| < 10**12. Every form must be a ValidationError (422),
+    never a value that reaches the database and overflows (500)."""
+    with pytest.raises(ValidationError):
+        txn(bad)
+
+
+def test_account_create_starting_balance_has_the_same_limit():
+    from app.schemas.account import AccountCreate
+
+    for bad in (10**13, "10000000000000", 10**12):
+        with pytest.raises(ValidationError):
+            AccountCreate(name="x", type="cash", starting_balance=bad)
+    ok = AccountCreate(name="x", type="cash", starting_balance=999999999999)
+    assert str(ok.starting_balance) == "999999999999.00"
+
+
 def test_account_read_rejects_a_float_starting_balance():
     with pytest.raises(ValidationError):
         AccountRead(

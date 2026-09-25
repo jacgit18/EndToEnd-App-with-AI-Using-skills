@@ -35,6 +35,9 @@ def create_transaction(
     account = db.get(Account, payload.account_id, with_for_update=True)
     if account is None:
         raise HTTPException(status_code=404, detail="account not found")
+    if account.is_archived:
+        # Archived means closed: history stays visible, no new activity posts to it.
+        raise HTTPException(status_code=409, detail="account is archived")
 
     transaction = Transaction(
         account_id=payload.account_id,
