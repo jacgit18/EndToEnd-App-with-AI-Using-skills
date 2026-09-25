@@ -161,7 +161,17 @@ export const api = {
   updateCategory: (id: number, body: CategoryUpdate) =>
     request<Category>(`/categories/${id}`, { method: "PATCH", body: JSON.stringify(body) }),
 
-  listTransactions: () => request<Transaction[]>("/transactions"),
+  // month = "YYYY-MM". Both filters optional; the backend ANDs them.
+  listTransactions: (opts?: { month?: string; accountId?: number }) => {
+    const q = new URLSearchParams();
+    if (opts?.month) q.set("month", opts.month);
+    if (opts?.accountId) q.set("account_id", String(opts.accountId));
+    const qs = q.toString();
+    return request<Transaction[]>(`/transactions${qs ? `?${qs}` : ""}`);
+  },
+  // Append-only ledger: "delete" posts a reversing row; returns that new row.
+  voidTransaction: (id: number) =>
+    request<Transaction>(`/transactions/${id}/void`, { method: "POST" }),
   createTransaction: (body: TransactionCreate) =>
     request<Transaction>("/transactions", { method: "POST", body: JSON.stringify(body) }),
 };
