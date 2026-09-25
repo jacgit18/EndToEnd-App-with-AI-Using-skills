@@ -76,7 +76,7 @@
 
 **Explicitly not covered:** split transactions, attachments/receipts, bulk edit.
 
-*Skeleton delivers add + list; edit/delete + filtering remain.*
+*Built in Phase 4: add, void (ADR-0005), month + account filters, category picker. Confirmation on void is a browser confirm dialog.*
 
 > **Amended 2026-09-10 (ADR-0005):** the ledger is append-only. "Edit and delete" becomes
 > **add + void** — a void posts a reversing entry; there is no in-place edit or hard delete.

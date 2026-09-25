@@ -72,6 +72,8 @@ On drift, read the WARN lines and decide which side is right by hand before touc
 
 **Installed 2026-09-25:** cron runs this at 02:40 (after the backup) and appends to `backups/reconcile.log`; there is no push alert, so check that log. Cron only fires while the machine is on.
 
+**Applying Phase 4 to prod:** it adds migration `0004` (one-reversal-per-row index, reversal-link CHECK). Run `scripts/backup-db.sh` first, then `scripts/prod.sh up -d --build`. The migration fails (and rolls back) if prod already holds a row that breaks the CHECK; none should, since nothing could create a reversal before.
+
 **Applying Phase 2 to prod:** it adds migration `0002` (account `type`, `starting_balance`), so run
 `scripts/prod.sh up -d --build` once after merging.
 
