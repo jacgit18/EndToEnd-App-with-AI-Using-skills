@@ -38,3 +38,17 @@ class Dashboard(BaseModel):
     _serialize_income = field_serializer("income")(as_str)
     _serialize_expense = field_serializer("expense")(as_str)
     _serialize_net = field_serializer("net")(as_str)
+
+
+class TrendPoint(BaseModel):
+    month: str
+    net: Decimal
+
+    _serialize_net = field_serializer("net")(as_str)
+
+
+class Trend(BaseModel):
+    """Net per month, oldest first, ending at `month`. Empty months are 0.00."""
+
+    month: str
+    points: list[TrendPoint]

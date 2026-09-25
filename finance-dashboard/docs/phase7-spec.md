@@ -37,3 +37,4 @@ Chart-to-transactions drill-down, custom date ranges, export, transfers as a typ
 
 ## Progress
 - Slice 1 done: `GET /api/dashboard` (`app/routers/dashboard.py`), 25 tests in `tests/test_dashboard.py`, 9 mutations tried and all caught. Found by tests: `COALESCE(x, 0)` returned an integer `0` for budget-only rows, so amounts are quantized to 2 decimals in the router. Not yet run against real data or in a browser.
+- Slice 2 done: `GET /api/dashboard/trend?month=` (same router), 12 more tests (37 in `tests/test_dashboard.py`, 485 backend total). Includes the year-boundary window, empty months, and trend net == `/api/dashboard` net per month. 8 mutations tried: 7 caught, 1 equivalent (dropping the SQL upper date bound; out-of-window rows are discarded when matched to the month list, so the bound is only a scan-size optimization). Found by tests: `MONTH_PATTERN` starts at year 1000, so the window clamps at 1000-01. Not yet run against real data or in a browser.

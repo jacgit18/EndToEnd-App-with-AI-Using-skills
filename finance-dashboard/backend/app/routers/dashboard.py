@@ -18,11 +18,12 @@ from app.db import get_db
 from app.models.transaction import Transaction
 from app.routers.transactions import _month_range
 from app.schemas.budget import MONTH_PATTERN
-from app.schemas.dashboard import Dashboard, DashboardCategory
+from app.schemas.dashboard import Dashboard, DashboardCategory, Trend, TrendPoint
 
 router = APIRouter()
 
 RECENT_LIMIT = 10
+TREND_MONTHS = 6
 ZERO = Decimal("0.00")
 
 
@@ -104,4 +105,40 @@ def dashboard(
         net=income - expense,
         categories=categories,
         recent=list(db.scalars(stmt)),
+    )
+
+
+@router.get("/trend", response_model=Trend)
+def trend(
+    month: Annotated[str, Query(pattern=MONTH_PATTERN)],
+    db: Session = Depends(get_db),
+) -> Trend:
+    """Net (plain sum of amounts, the same figure as `/api/dashboard`) for the
+    TREND_MONTHS months ending at `month`. Months before 1000-01 (the earliest
+    MONTH_PATTERN accepts) are dropped."""
+    year, mon = int(month[:4]), int(month[5:])
+    index = year * 12 + (mon - 1)
+    months = [
+        f"{i // 12:04d}-{i % 12 + 1:02d}"
+        for i in range(index - TREND_MONTHS + 1, index + 1)
+        if i >= 1000 * 12
+    ]
+    start, _ = _month_range(months[0])
+    _, end = _month_range(month)
+    params: dict = {"start": start}
+    if end is not None:
+        params["end"] = end
+    sums = {
+        m: total
+        for m, total in db.execute(
+            text(
+                "SELECT to_char(t.date, 'YYYY-MM'), SUM(t.amount) FROM transactions t "
+                f"WHERE {_range_sql(end)} GROUP BY 1"
+            ),
+            params,
+        )
+    }
+    return Trend(
+        month=month,
+        points=[TrendPoint(month=m, net=sums.get(m, ZERO)) for m in months],
     )
