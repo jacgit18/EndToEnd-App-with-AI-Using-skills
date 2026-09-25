@@ -1,0 +1,39 @@
+# Phase 7 spec — S7 dashboard
+
+Written 2026-09-25 via `spec-drift-gate`. Decisions: ADR-0017 (Visx), ADR-0018 (no component library). Story text and acceptance criteria: `backlog.md` S7.
+
+## Problem
+See where you stand for one month at a glance, and trust it: every figure reconciles with the transactions list.
+
+## Definitions (settled with the owner)
+- **Month** = `YYYY-MM`, same validation as budgets (bad month is 422). Range is `[first, first of next)`.
+- **Income / expense by category kind.** Income = sum of amounts in `income`-kind categories. Expense = minus the sum of amounts in `expense`-kind categories. So a refund on an expense category reduces expense; a void nets its original to zero.
+- **Uncategorized rows** (`category_id` null): summed together; a negative sum counts as expense, a positive sum as income. Shown as an "Uncategorized" line in the category chart only when it counts as expense (net negative); a positive net is income and has no chart line. (Refined in slice 1 from "when nonzero", since the chart shows spend.)
+- **Net** = income - expense = the plain sum of every amount in the month. This is the reconciliation invariant.
+- **Category chart** rows: every expense-kind category that has a budget row or a nonzero net spend that month. Budget-only rows show 0 actual; spend-only rows show budget `null` ("no budget"). Archived categories with spend are included.
+- Reversals are ordinary ledger rows: included in totals and in the recent list.
+
+## In scope
+- `GET /api/dashboard?month=`: `{month, income, expense, net, categories[], recent[]}`; recent = last 10 transactions in the month (date desc, id desc).
+- `GET /api/dashboard/trend?month=`: net per month for the 6 months ending at `month` (oldest first, months with no rows are `0.00`).
+- Raw SQL, money as strings, no migration.
+- Dashboard page: month picker (default current month), tiles, category bar chart (Visx), trend chart (Visx), recent list. Every charted value is also visible as text.
+- Tests: backend reconciliation (dashboard net == sum of `/api/transactions?month=`), frontend component tests with mutation checks.
+
+## Out of scope
+Chart-to-transactions drill-down, custom date ranges, export, transfers as a type, budgets on income categories, migrations.
+
+## Slices
+1. `/api/dashboard` (tiles, categories, recent) + reconciliation tests. Cheap first slice: if the definitions are wrong it shows here.
+2. `/api/dashboard/trend`.
+3. Dashboard page: month picker, tiles, recent list.
+4. Category bar chart, then trend chart (Visx; check React 18.3 peer deps first).
+5. Docs, browser check, deploy on a fresh "deploy to prod".
+
+## Tripwires (stop and ask)
+- A dashboard figure that can't be made to equal the transactions list.
+- A category with spend that no rule above places.
+- Anything needing a migration.
+
+## Progress
+- Slice 1 done: `GET /api/dashboard` (`app/routers/dashboard.py`), 25 tests in `tests/test_dashboard.py`, 9 mutations tried and all caught. Found by tests: `COALESCE(x, 0)` returned an integer `0` for budget-only rows, so amounts are quantized to 2 decimals in the router. Not yet run against real data or in a browser.
