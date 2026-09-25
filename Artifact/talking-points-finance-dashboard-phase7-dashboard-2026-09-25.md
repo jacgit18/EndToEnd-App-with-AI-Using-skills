@@ -11,7 +11,7 @@ _Status: documented, **not posted** (owner's call). Drafts only; run any LinkedI
 | Dashboard page | 2026-09-25 | Month picker, tiles, recent list; `Number()` only for drawing and colour, never for displayed figures | Figures on screen are the exact strings the API sent | Number: 7 component tests, 9 mutations caught | PR #92; `DashboardPage.tsx` |
 | Category and trend charts | 2026-09-25 | Visx bars with a budget tick; red only for over-budget or negative and always paired with a text table | Charts without a component library (ADR-0017, ADR-0018) | Number: 12 tests, 11 mutations, 1 survived and was fixed; bundle 93.6 kB gzip | PR #93; `DashboardCharts.tsx` |
 
-**Not verified (say these before someone asks):** everything ran only under pytest and Vitest; the owner checked it in a real browser on the dev stack with real data (no detailed per-figure record); Phase 7 is not on prod; the "net equals the transactions list" check is tested on fixtures, not on the real ledger.
+**Not verified (say these before someone asks):** everything ran only under pytest and Vitest; the owner checked it in a real browser on the dev stack with real data (no detailed per-figure record); Phase 7 was deployed to prod 2026-09-25 and the owner saw the chart there (no detailed check recorded); the "net equals the transactions list" check is tested on fixtures, not on the real ledger.
 
 ## Plain-language summary
 
