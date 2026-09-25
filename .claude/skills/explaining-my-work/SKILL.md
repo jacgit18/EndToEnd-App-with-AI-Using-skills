@@ -155,6 +155,8 @@ Tell the user in one line where it is. Do not re-explain the contents.
 
 ## Pre-delivery checks
 
+**Verification check** (applies to the Evidence Block's "Not verified" line) — when the owner says they checked something, record what they looked at (one figure, one screen, one count) if they will give it. If they decline, write "no detailed check recorded" instead of implying more.
+
 Run both before handing anything over.
 
 **Jargon check** (applies to parts 2, 3-business-branch, and 4) — for each technical term:

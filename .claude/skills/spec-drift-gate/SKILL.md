@@ -25,6 +25,7 @@ Before touching a file, get these stated — draft them from context and confirm
 2. **Tradeoffs actually considered** — at least one real alternative named and why it lost. A tradeoff that shows up for the first time in the finished answer, never having been weighed against anything, is a rationalization, not a decision.
 3. **Scope boundary** — explicit in-scope *and* explicit out-of-scope. The out-of-scope line is the one that gets skipped, and it is the one that actually stops drift later — "in scope" alone doesn't bound anything.
 4. **A controlled-experiment slice**, when the approach is genuinely uncertain or the infrastructure commitment is heavy — scope a narrow, cheap-to-discard first slice (just the read path, just one component, just the frontend piece) to learn real system behavior before committing to the full build. Skip this for routine, well-understood work — not every change needs a spike.
+5. **Reconciliation invariant**, when the build displays a total, balance or count derived from other data — state the equality that must hold (e.g. "dashboard net equals the sum of the transactions list") and make it the first slice's test, so a wrong definition fails on the cheapest slice.
 
 Write it down — a markdown file, or at minimum a stated block in the conversation the user can point back to. This is the artifact Step 4 checks against; without it, Step 4 has nothing to compare.
 

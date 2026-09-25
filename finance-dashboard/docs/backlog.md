@@ -117,7 +117,7 @@
 
 **Explicitly not covered:** rollover of unspent amounts, weekly/annual budgets, per-account budgets.
 
-**Built (2026-09-25):** PUT upsert, GET `?month=`, DELETE (clear), copy-forward that never overwrites and skips archived categories. Amount must be > 0 (clearing = no row). Budgets page in the UI. Owner confirmed the page works in a browser (2026-09-25); not on prod yet. See the drift log in `spec.md`.
+**Built (2026-09-25):** PUT upsert, GET `?month=`, DELETE (clear), copy-forward that never overwrites and skips archived categories. Amount must be > 0 (clearing = no row). Budgets page in the UI. Owner confirmed the page works in a browser (2026-09-25); deployed to prod with Phase 7 (2026-09-25). See the drift log in `spec.md`.
 
 ---
 
