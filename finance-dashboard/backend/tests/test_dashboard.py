@@ -377,3 +377,77 @@ def test_month_is_required(client):
 
 def test_needs_a_session():
     assert TestClient(app).get("/api/dashboard", params={"month": M}).status_code == 401
+
+
+# --------------------------------------------------------------------------- trend
+
+
+def trend(client, month=M) -> dict:
+    response = client.get("/api/dashboard/trend", params={"month": month})
+    assert response.status_code == 200, response.text
+    return response.json()
+
+
+def test_trend_is_six_months_oldest_first_ending_at_month_empty_are_zero(client):
+    data = trend(client, "2031-07")
+    assert data["month"] == "2031-07"
+    assert [p["month"] for p in data["points"]] == [
+        "2031-02", "2031-03", "2031-04", "2031-05", "2031-06", "2031-07",
+    ]
+    assert all(p["net"] == "0.00" for p in data["points"])
+
+
+def test_trend_window_crosses_a_year_boundary(client):
+    data = trend(client, "2031-02")
+    assert [p["month"] for p in data["points"]] == [
+        "2030-09", "2030-10", "2030-11", "2030-12", "2031-01", "2031-02",
+    ]
+
+
+def test_trend_net_per_month_is_the_plain_sum_and_matches_dashboard(client):
+    acct, cat, salary = make_account(client), make_category(client), make_category(client, "income")
+    post(client, acct, "-40.00", cat, date="2031-03-31")
+    post(client, acct, "-10.25", None, date="2031-03-01")
+    post(client, acct, "1000.00", salary, date="2031-05-01")
+    post(client, acct, "-5.00", cat, date="2031-05-31")
+    post(client, acct, "-99.00", cat, date="2031-08-01")  # after the window
+    post(client, acct, "-77.00", cat, date="2030-12-31")  # before the window
+    points = {p["month"]: p["net"] for p in trend(client, "2031-07")["points"]}
+    assert points == {
+        "2031-02": "0.00", "2031-03": "-50.25", "2031-04": "0.00",
+        "2031-05": "995.00", "2031-06": "0.00", "2031-07": "0.00",
+    }
+    for m in ("2031-03", "2031-05"):
+        assert dash(client, m)["net"] == points[m]
+
+
+def test_trend_void_nets_to_zero(client):
+    acct, cat = make_account(client), make_category(client)
+    tx = post(client, acct, "-40.00", cat, date="2031-04-10")
+    assert client.post(f"/api/transactions/{tx['id']}/void").status_code == 201
+    points = {p["month"]: p["net"] for p in trend(client, "2031-04")["points"]}
+    assert points["2031-04"] == "0.00"
+
+
+def test_trend_at_the_earliest_month_drops_months_before_year_1000(client):
+    data = trend(client, "1000-02")
+    assert [p["month"] for p in data["points"]] == ["1000-01", "1000-02"]
+
+
+def test_trend_at_the_last_month_works(client):
+    data = trend(client, "9999-12")
+    assert data["points"][-1]["month"] == "9999-12"
+    assert len(data["points"]) == 6
+
+
+@pytest.mark.parametrize("month", ["2031-13", "2031-1", "", "abc"])
+def test_trend_bad_month_is_422(client, month):
+    assert client.get("/api/dashboard/trend", params={"month": month}).status_code == 422
+
+
+def test_trend_month_is_required(client):
+    assert client.get("/api/dashboard/trend").status_code == 422
+
+
+def test_trend_needs_a_session():
+    assert TestClient(app).get("/api/dashboard/trend", params={"month": M}).status_code == 401
