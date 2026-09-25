@@ -65,7 +65,7 @@ At a checkpoint, diff the proposed or actual work against the written spec:
 
 - **Inside the stated scope?** Proceed.
 - **Not in the spec?** This is a decision, not a default. Say so out loud, and do one of two things — never neither:
-  - **Amend the spec** — write down what's expanding and why the boundary is moving.
+  - **Amend the spec** — write down what's expanding and why the boundary is moving. If the amendment changes something that already works, record its behavior **before → after**, and once it lands confirm the "after" by observing it, not by rereading the diff.
   - **Pull back** to what was actually scoped.
 
 Never silently expand ("while I'm in here, I'll also...") without naming that it's happening. A silent expansion is exactly the failure this step exists to catch.

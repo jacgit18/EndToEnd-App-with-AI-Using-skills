@@ -95,6 +95,11 @@ Work `surface-checklist.md` and `removal-and-silent-changes.md` alongside these 
 State the type (Add/Modify/Remove/Silent) and the concrete surface from input 2. This is
 the thing every later step is checked against — get it wrong and the whole walk is void.
 
+For Modify and Silent, also state the **behavior before → after** in one line each: what
+the feature does today (observed or read from the code, never assumed) and what it will do
+once the change ships. A change that can't be described as "was X, becomes Y" isn't concrete
+enough to audit yet, and the "before" is what Step 6's invalidated assumptions are read from.
+
 ### 2. Walk the six surfaces
 
 From `surface-checklist.md`: **API, Data, State, Performance, Security, Observability.**
@@ -159,6 +164,7 @@ actually predicts the incident — more than the surface checklist alone.
 
 ```
 Change:              <type — Add/Modify/Remove/Silent>  ·  <concrete surface>
+Behavior:            <Modify/Silent: before → after, one line each; else n/a>
 Surfaces touched:     API <y/n+risk> · Data <..> · State <..> · Performance <..> · Security <..> · Observability <..>
 Compatibility:        <backward-compatible | breaking> — <why>
 Hidden dependents:    <count found, source of each — logs/registry/config scan — or "audited, none found">
