@@ -3,6 +3,7 @@ import { Link, Navigate, Route, Routes } from "react-router-dom";
 
 import { api } from "./api/client";
 import AccountsPage from "./AccountsPage";
+import BudgetsPage from "./BudgetsPage";
 import CategoriesPage from "./CategoriesPage";
 import ImportPage from "./ImportPage";
 import LoginPage from "./LoginPage";
@@ -20,6 +21,7 @@ export default function App() {
       <Route path="/" element={<Dashboard />} />
       <Route path="/accounts" element={<AccountsPage />} />
       <Route path="/categories" element={<CategoriesPage />} />
+      <Route path="/budgets" element={<BudgetsPage />} />
       <Route path="/import" element={<ImportPage />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
@@ -55,7 +57,8 @@ function Dashboard() {
       </button>
       <nav style={{ margin: "0.5rem 0" }}>
         <Link to="/">Transactions</Link> · <Link to="/accounts">Accounts</Link> ·{" "}
-        <Link to="/categories">Categories</Link> · <Link to="/import">Import</Link>
+        <Link to="/categories">Categories</Link> · <Link to="/budgets">Budgets</Link> ·{" "}
+        <Link to="/import">Import</Link>
       </nav>
       <p>
         Backend:{" "}

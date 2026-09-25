@@ -60,6 +60,18 @@ export interface CategoryUpdate {
   is_archived?: boolean;
 }
 
+export interface Budget {
+  id: number;
+  category_id: number;
+  month: string; // "YYYY-MM"
+  amount: string; // money string, see the note at the top
+}
+
+export interface CopyForwardResult {
+  copied: number;
+  skipped: number; // previous month's lines not copied (already set, or category archived)
+}
+
 export interface Transaction {
   id: number;
   account_id: number;
@@ -215,6 +227,21 @@ export const api = {
     request<Category>("/categories", { method: "POST", body: JSON.stringify(body) }),
   updateCategory: (id: number, body: CategoryUpdate) =>
     request<Category>(`/categories/${id}`, { method: "PATCH", body: JSON.stringify(body) }),
+
+  // Budgets: one amount per (category, month), month = "YYYY-MM". "No row" means no
+  // budget, so clearing a line is a DELETE (404 if there was none).
+  listBudgets: (month: string) =>
+    request<Budget[]>(`/budgets?month=${encodeURIComponent(month)}`),
+  setBudget: (month: string, categoryId: number, amount: string) =>
+    request<Budget>(`/budgets/${month}/${categoryId}`, {
+      method: "PUT",
+      body: JSON.stringify({ amount }),
+    }),
+  clearBudget: (month: string, categoryId: number) =>
+    request<void>(`/budgets/${month}/${categoryId}`, { method: "DELETE" }),
+  // Copies last month's lines into `month`; never overwrites a line already there.
+  copyBudgetsForward: (month: string) =>
+    request<CopyForwardResult>(`/budgets/${month}/copy-forward`, { method: "POST" }),
 
   // month = "YYYY-MM". Both filters optional; the backend ANDs them.
   listTransactions: (opts?: { month?: string; accountId?: number }) => {
