@@ -117,6 +117,8 @@
 
 **Explicitly not covered:** rollover of unspent amounts, weekly/annual budgets, per-account budgets.
 
+**Built (2026-09-25):** PUT upsert, GET `?month=`, DELETE (clear), copy-forward that never overwrites and skips archived categories. Amount must be > 0 (clearing = no row). Budgets page in the UI. Not yet run in a real browser or on prod. See the drift log in `spec.md`.
+
 ---
 
 ## S7 — Dashboard (Must) — large, splittable per widget

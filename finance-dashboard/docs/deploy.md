@@ -79,6 +79,10 @@ On drift, read the WARN lines and decide which side is right by hand before touc
 **Applying Phase 2 to prod:** it adds migration `0002` (account `type`, `starting_balance`), so run
 `scripts/prod.sh up -d --build` once after merging.
 
+## Phase 6 (budgets) deploy note
+
+No migration (still 0005). Deploying it is a backend + frontend rebuild only: back up with `scripts/backup-db.sh`, then `scripts/prod.sh up -d --build`, and check `/health` and that `GET /api/budgets?month=2026-09` answers 401 without a session.
+
 ## Error tracking (Sentry) — optional, free tier
 
 The backend initialises Sentry only when `SENTRY_DSN` is set; without it nothing is sent anywhere.
