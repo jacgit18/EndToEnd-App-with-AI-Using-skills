@@ -125,6 +125,18 @@ describe("ImportPage", () => {
     expect(screen.getByRole("button", { name: "Import" })).toBeDisabled();
   });
 
+  it("blocks Import and warns when the chosen amount column has no numbers in the sample", async () => {
+    await uploadAndMapColumns();
+    expect(screen.queryByRole("alert")).toBeNull();
+    pick("Account", "1");
+    expect(screen.getByRole("button", { name: "Import" })).toBeEnabled();
+    pick("Amount column", "Account Name");
+    expect(screen.getByRole("alert")).toHaveTextContent(/None of the 1 sample rows/);
+    expect(screen.getByRole("button", { name: "Import" })).toBeDisabled();
+    pick("Amount column", "Amount");
+    expect(screen.queryByRole("alert")).toBeNull();
+  });
+
   it("shows the server's error when the import fails", async () => {
     createImport.mockRejectedValue(new Error("account is archived"));
     await uploadAndMapColumns();
