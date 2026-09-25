@@ -55,6 +55,24 @@ gunzip -c backups/finance-<stamp>.sql.gz | scripts/prod.sh exec -T db psql -U fi
 Also copy `backups/` somewhere off this machine (USB / another computer / `rclone` to Backblaze B2's
 free 10 GB) and keep `backend/.env.prod` in a password manager. A backup on the same disk is not a backup.
 
+## Balance reconciliation (Phase 2)
+
+`accounts.balance` is a maintained figure; ADR-0005 says it must equal
+`starting_balance + SUM(transactions.amount)`. `app/reconcile.py` checks that for every account
+(archived too). It is read-only: it reports drift, it never repairs it.
+
+```bash
+scripts/prod.sh exec -T backend uv run python -m app.reconcile
+```
+Exit code **0** = all match, **1** = drift (WARN lines name each account, its stored and expected
+balance), **2** = the job itself could not run (DB down, or zero accounts, which usually means the
+wrong database). Run it nightly after the backup and alert on any non-zero exit, e.g.
+`30 2 * * * cd /path/to/finance-dashboard && scripts/prod.sh exec -T backend uv run python -m app.reconcile || <your alert>`.
+On drift, read the WARN lines and decide which side is right by hand before touching anything.
+
+**Applying Phase 2 to prod:** it adds migration `0002` (account `type`, `starting_balance`), so run
+`scripts/prod.sh up -d --build` once after merging.
+
 ## Error tracking (Sentry) — optional, free tier
 
 The backend initialises Sentry only when `SENTRY_DSN` is set; without it nothing is sent anywhere.

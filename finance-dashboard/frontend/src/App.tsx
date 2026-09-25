@@ -1,7 +1,8 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Link, Navigate, Route, Routes } from "react-router-dom";
 
 import { api } from "./api/client";
+import AccountsPage from "./AccountsPage";
 import LoginPage from "./LoginPage";
 import Transactions from "./Transactions";
 
@@ -15,6 +16,7 @@ export default function App() {
     <Routes>
       <Route path="/login" element={<LoginPage />} />
       <Route path="/" element={<Dashboard />} />
+      <Route path="/accounts" element={<AccountsPage />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
@@ -47,6 +49,9 @@ function Dashboard() {
       <button onClick={() => logout.mutate()} disabled={logout.isPending}>
         Sign out
       </button>
+      <nav style={{ margin: "0.5rem 0" }}>
+        <Link to="/">Transactions</Link> · <Link to="/accounts">Accounts</Link>
+      </nav>
       <p>
         Backend:{" "}
         <strong style={{ color: status === "connected" ? "seagreen" : "crimson" }}>

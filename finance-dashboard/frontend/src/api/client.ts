@@ -10,9 +10,15 @@
 // real decimal library only when you need to format or add them for display
 // — never do money arithmetic in JS floats.
 
+export const ACCOUNT_TYPES = ["checking", "savings", "credit_card", "cash"] as const;
+export type AccountType = (typeof ACCOUNT_TYPES)[number];
+
 export interface Account {
   id: number;
   name: string;
+  type: AccountType;
+  // Opening balance; editable. `balance` is server-maintained (ADR-0005), never sent.
+  starting_balance: string;
   balance: string;
   is_archived: boolean;
   created_at: string;
@@ -20,6 +26,16 @@ export interface Account {
 
 export interface AccountCreate {
   name: string;
+  type: AccountType;
+  starting_balance?: string; // omitted = "0.00"
+}
+
+// PATCH: send only what changes; the server rejects an empty body, nulls and `balance`.
+export interface AccountUpdate {
+  name?: string;
+  type?: AccountType;
+  starting_balance?: string;
+  is_archived?: boolean;
 }
 
 export interface Transaction {
@@ -107,9 +123,13 @@ export const api = {
     csrfToken = null;
   },
 
-  listAccounts: () => request<Account[]>("/accounts"),
+  // Archived accounts are hidden unless asked for (backend default).
+  listAccounts: (opts?: { includeArchived?: boolean }) =>
+    request<Account[]>(`/accounts${opts?.includeArchived ? "?include_archived=true" : ""}`),
   createAccount: (body: AccountCreate) =>
     request<Account>("/accounts", { method: "POST", body: JSON.stringify(body) }),
+  updateAccount: (id: number, body: AccountUpdate) =>
+    request<Account>(`/accounts/${id}`, { method: "PATCH", body: JSON.stringify(body) }),
 
   listTransactions: () => request<Transaction[]>("/transactions"),
   createTransaction: (body: TransactionCreate) =>

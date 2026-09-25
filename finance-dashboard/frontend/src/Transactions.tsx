@@ -14,7 +14,7 @@ export default function Transactions() {
   const queryClient = useQueryClient();
   const [form, setForm] = useState(emptyForm);
 
-  const accounts = useQuery({ queryKey: ["accounts"], queryFn: api.listAccounts });
+  const accounts = useQuery({ queryKey: ["accounts"], queryFn: () => api.listAccounts() });
   const transactions = useQuery({ queryKey: ["transactions"], queryFn: api.listTransactions });
 
   const createTransaction = useMutation({
