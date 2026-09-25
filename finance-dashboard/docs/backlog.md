@@ -59,7 +59,7 @@
 
 **Explicitly not covered:** subcategories, per-category colors/icons.
 
-*Skeleton delivers the seed; the management UI remains.*
+*Built in Phase 3: seed (skeleton) + management API and page. A category picker on the transaction form arrives with S4.*
 
 ---
 
