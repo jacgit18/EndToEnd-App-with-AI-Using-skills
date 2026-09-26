@@ -92,6 +92,7 @@ Secondary style:     <style for a named sub-case, e.g. "SSE for the live order f
 Interaction shape:   <request-response | server-push | client-stream | bidirectional | events>
 Consumers covered:   <each client type and how it reaches the surface>
 Tradeoffs accepted:  <2–4 concrete costs of this choice>
+Error contract:      <per failure class (bad input, unauthenticated, forbidden, missing, conflict, rate-limited, dependency down): status/code, error body shape, client retry-safe?, idempotent? — or "deferred: <why>">
 Not chosen because:  <one line per rejected style>
 Deferred:            <versioning / auth scheme / gateway or BFF / contract source-of-truth — to which skill, and the trigger>
 ```
