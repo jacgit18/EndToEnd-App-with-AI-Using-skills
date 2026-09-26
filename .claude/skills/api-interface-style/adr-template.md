@@ -29,6 +29,7 @@ memory of the conversation understands the situation.>
 - **Secondary style:** <style for a named sub-case, e.g. "SSE for the live order feed" — or "none">
 - **Interaction shape:** <request-response | server-push | client-stream | bidirectional | events>
 - **Consumers covered:** <each client type and how it reaches the surface>
+- **Error contract:** <per failure class: status/code, body shape, retry-safe, idempotent — or "deferred: <why>">
 
 ## Consequences
 

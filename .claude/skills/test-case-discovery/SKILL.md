@@ -66,7 +66,7 @@ Ask one or two questions at a time. Do not dump the category checklist up front.
 - **Type:** happy / unhappy / edge.
 - **Source of expected result:** `spec`, `user`, `code (as written — confirm intended)`, or `open`. A case with `open` is a question, not a test.
 - **Level (suggestion):** unit / integration / e2e in one word. Not a plan — `test-strategy` decides that.
-- For an unhappy case on an API, the Expected result names the status and body shape. Take them from the API's error contract (`api-interface-style` "Error contract" field, or the spec); with none, mark the source `open` — never pick a status code yourself.
+- For an unhappy case on an API, the Expected result names the status and body shape. Take them from the API's error contract (`api-interface-style` "Error contract" field, or the spec); statuses the contract does not list stay `open`; with no contract, mark the source `open`. Never pick a status code yourself, except as an explicit `open — proposed default`. A contract the user approved (ADR or pasted) counts as `spec`/`user`.
 - Mark any case that rests on an assumption (dependency always up, clock in UTC, single writer) in the Setup column with `assumes: …`.
 
 Follow with: assumptions list, open questions, and what was left out.
