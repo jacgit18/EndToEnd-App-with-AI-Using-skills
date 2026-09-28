@@ -24,6 +24,7 @@ Groups are labels only — this file is the mapping. Add new skills here.
 - `microservices-decision`
 - `migration-cutover`
 - `observability-strategy`
+- `pwa-adoption`
 - `reliability-math`
 - `resilience-strategy`
 - `serverless-execution-model`

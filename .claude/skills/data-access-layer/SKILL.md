@@ -63,6 +63,9 @@ writes an ADR.
   store.
 - **Whether a read should hit the database at all** rather than a cache → `caching-strategy`.
   This skill assumes the query runs against the database and decides how it's written.
+- **Caching a query's response client-side for offline use in a PWA** (IndexedDB, Cache
+  Storage) → `pwa-adoption`. This skill decides how the server reaches its own store; how a
+  browser stores a response it already received is a different layer, decided there.
 - **Implementation** — writing the models, the repository classes, the query modules. The
   skill stops at the ADR.
 
