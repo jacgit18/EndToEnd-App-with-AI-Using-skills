@@ -89,6 +89,7 @@ Groups are labels only — this file is the mapping. Add new skills here.
 - `coverage-policy`
 - `database-test-tooling`
 - `debugging-layer-selection`
+- `repo-reality-audit`
 - `test-case-discovery`
 - `test-practice-gate`
 - `test-strategy`

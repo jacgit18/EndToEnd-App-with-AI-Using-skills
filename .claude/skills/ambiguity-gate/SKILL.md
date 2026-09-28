@@ -27,6 +27,9 @@ Separate the two. They have different fixes:
   after looking has actually failed.
 - **Ambiguous intent** — which of several different jobs the user wants done. No amount of reading
   the codebase resolves this, because it lives in the user's head. This is what the gate is for.
+  A bare "audit my codebase" is this case, not a lookup — it could mean `repo-reality-audit`
+  (do the docs/ADRs/CI still match reality), `security-review`, `code-review` (one diff), or
+  `catalog-drift-audit` (the skill catalog itself); name the candidates when asking.
 
 Conflating them is what produces four-question replies: one real question about intent, padded with
 three lookups that were never the user's job to answer.
