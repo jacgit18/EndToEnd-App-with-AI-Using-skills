@@ -29,6 +29,7 @@ Given an API surface that needs to exist — one service's external interface, o
 - **How an AI agent should call an existing API** (REST vs MCP vs plain tool function) → `api-tooling-selection`.
 - **Whether an API change is breaking / its blast radius** → `change-surface-audit`, which defers the versioning scheme here.
 - **Adjacent handlers:** whether a read should hit a cache at all → `caching-strategy`; DB-as-API generators (PostgREST/Hasura) pair this skill's surface decision with `database-architecture`, and the data-access style behind it → `data-access-layer`.
+- **Web push to a browser PWA, once push is chosen as the mechanism** — the subscription flow, VAPID keys, and service-worker `push`-event plumbing → `pwa-adoption`. This skill still decides whether a surface should push at all vs be polled and the wire protocol among push options (SSE/WebSocket/webhook/web push); once web push specifically is picked for an installable web app, the client-side mechanics are there.
 
 ---
 

@@ -30,6 +30,7 @@ Take a service or a request path that is at risk of being overwhelmed — a traf
 - **Whether a gateway/BFF layer exists** → `bff-gateway-placement`, which hands the "centralize here" decision to this skill.
 - **Edge/WAF/DDoS network placement** → `cloud-iam-boundary`.
 - **What a change breaks elsewhere before it ships** → `change-surface-audit`.
+- **A client-side PWA's behavior with genuinely no network at all** — offline scope, service-worker caching, what a browser tab shows when it can't reach the server — → `pwa-adoption`. This skill's degradation is for a *reachable* backend under overload or dependency failure; "the client has no connection to anything" is a different condition owned there.
 
 ---
 

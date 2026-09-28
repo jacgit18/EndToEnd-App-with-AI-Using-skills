@@ -26,6 +26,7 @@ Take a read path that is slow, expensive, or overloading its source, and decide 
 - **Implementation** — the cache client wiring, the invalidation hooks, the warmup job. The skill stops at the ADR.
 - **How app code reads/writes rows** (ORM / query builder / raw SQL) → `data-access-layer`, which hands the cache-or-not question here.
 - **Where a gateway / BFF / reverse proxy sits in the request path** (as opposed to what it caches) → `bff-gateway-placement`, which hands the response-caching question here.
+- **A browser-resident service-worker cache for offline/installable use** — `pwa-adoption`. This skill's placement menu includes HTTP `Cache-Control`/`ETag` headers on a response; how a service worker interprets and stores those responses client-side, and the offline/install scope around it, is `pwa-adoption`'s. The two shouldn't set contradictory freshness rules for the same route.
 
 ---
 
