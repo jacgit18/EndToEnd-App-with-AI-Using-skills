@@ -13,8 +13,11 @@ re-verified — check the provider's pricing page before relying on a number.**
 | Database | Postgres in a container | Nothing | Managed Postgres with point-in-time restore (Neon/Supabase free tiers exist; paid ~$10–25+/mo) | `compose.prod.yaml` |
 | Backups | `pg_dump` cron to local disk | Off-box storage beyond a free allowance (Backblaze B2: first 10 GB free, then per-GB) | Managed backups / VPS snapshot add-on (~20% of VPS price) | `scripts/backup-db.sh` |
 | Uptime alerts | None yet (ADR-0013 names UptimeRobot free) | Free plan has a check interval limit and no SMS | Paid monitor, ~$7+/mo | not built |
-| CI | None (no CI in the repo) | GitHub Actions is free for public repos; private repos have a monthly minutes cap | Paid minutes / self-hosted runner | not built |
-| Container images | Docker Hub pulls (postgres, caddy, cloudflared, node) | Anonymous pull rate limits, free with an account | Docker Pro / a registry mirror | `compose*.yaml` |
+| CI | GitHub Actions, free for public repos (ADR-0016, reaffirmed ADR-0019) | Private repos have a monthly minutes cap | Paid minutes, or a self-hosted runner (rejected for this repo — public-repo security exposure, see ADR-0019) | `.github/workflows/` (Phase 8) |
+| Container registry | GHCR, free and unlimited for a public repo (ADR-0021) | Nothing today; would need a private-repo minutes-style cap or a switch to a paid registry | AWS ECR (~$0.10/GB-mo storage + egress) — only worth it once other infra is already on AWS | Phase 8 CI workflow |
+| Container images (base images) | Docker Hub pulls (postgres, caddy, cloudflared, node) | Anonymous pull rate limits, free with an account | Docker Pro / a registry mirror | `compose*.yaml` |
+| Kubernetes reps | k3s side track on the existing/a second $5-7/mo VPS, free software (ADR-0020) | Nothing beyond the VPS already budgeted for hosting | AWS EKS: ~$0.10/hr control plane (~$73/mo) + worker nodes (~$15-30/mo) + load balancer (~$18/mo) ≈ $100-150+/mo minimum, regardless of traffic — not adopted; revisit only if multiple independently-scaled services exist | not built |
+| Feature flags | Roll-your-own `feature_flags` table + admin toggle, free (ADR-0022) | Nothing | Unleash self-hosted (free) as a middle step, or LaunchDarkly (free tier thin; real pricing scales with MAU into the hundreds/mo) if flags ever need to be shared across services or non-technical stakeholders | not built |
 | Auth | Single owner login, argon2 + sessions | Nothing | Hosted auth (Auth0/Clerk) only if multi-user; free tiers exist | ADR-0010 |
 | Bank connectivity | None (manual entry / CSV import) | Plaid and similar charge per connected account after a trial | Plaid, ~usage-based | not in scope |
 
