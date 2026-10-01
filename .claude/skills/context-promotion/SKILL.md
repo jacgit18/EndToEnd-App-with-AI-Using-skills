@@ -1,6 +1,6 @@
 ---
 name: context-promotion
-description: Finds stable constraints and preferences in your prompts or recent prompt logs, proposes a rules file or CLAUDE.md, a spec, or memory, writes only after you confirm, and gives the short @reference for next time. Use for "add this to my CLAUDE.md", "I keep repeating this", "put that in the spec". Not `session-handoff`, `spec-drift-gate` (new spec), `prompt-archive`, or a one-off "remember X".
+description: Promotes context that recurs across sessions (a constraint, deciding axis or preference restated in a later session) into a rules file or CLAUDE.md, a spec, or memory, after you confirm. Use for "I keep repeating this", "add this to my CLAUDE.md", "put that in the spec", or when you notice a standing preference restated. Not `session-handoff`, `spec-drift-gate` (new spec), `prompt-archive`, or a one-off "remember X".
 ---
 
 # Context Promotion
@@ -10,7 +10,7 @@ A prompt that re-explains the same background every session is a rule or spec th
 ## When to use
 
 - The user says "add this to my CLAUDE.md", "I keep repeating this", "put that in the spec", "make this a rule", "stop me re-explaining this", or asks where a piece of context should live.
-- You notice the same background, constraint or preference restated across prompts or pasted at the top of a long prompt — offer once, in one line ("Want me to promote that into a rules file so you can stop pasting it?"). Do not offer twice in a session.
+- You notice the same background, constraint or preference restated across prompts or pasted at the top of a long prompt — offer once, in one line ("Want me to promote that into a rules file so you can stop pasting it?"). Do not offer twice in a session. Most restatements are not announced: they arrive mid-task in the user's own words ("order these by what helps me grow as an engineer", said in two different sessions). A deciding axis or constraint that recurs in a new session and is not yet in the rules or memory counts, even with no "I keep repeating this".
 
 ## Out of scope — route these instead
 

@@ -121,3 +121,32 @@ in `design-scoping`'s body). No open items remain from the 2026-09-24 audit.
   the SessionStart hook surfaces errors only.
 - **Left as warnings:** `change-surface-audit` (267 lines), `data-access-layer` (260), `disclosure-gap-audit` (258),
   `serverless-execution-model` (251) exceed the 250-line split heuristic.
+
+## 2026-10-01 — skill-usage-log feedback pass (overrides + organic-use read)
+
+**Overrides.** Ran the override-phrase recipe over all 8 skills-log days. **Zero overrides** found
+across 86 distinct skill fires with a same-session follow-up (2026-09-13 excluded: no matching
+`<date>.md` prompt log that day, so its fires are unchecked). No evidence of the user bypassing a
+gate with "just tell me" / "skip this" / etc. in this window. Clean result, but note the phrase
+list is a heuristic and this is the first time it's been run — no prior baseline to compare against.
+
+**Organic-use vs. construction-day fire (new finding, not previously tracked).** Cross-referencing
+fire dates against each skill's own build date shows the top-line usage tally is contaminated: the
+great majority of the 55 skills sitting at count=1 fired on **2026-09-24**, the day of a bulk
+`new-skill` / interaction-testing pass (confirmed via the per-day breakdown and the override-recipe
+output above, which shows ~60 distinct skills firing that single day). That is very likely each
+skill's own isolation-screen exercise, not an independent reach-for-it during real build work — the
+log has no field distinguishing "fired because the build needed it" from "fired because this skill
+was being constructed/tested that day." `tech-decision-walkthrough` (5 fires spread 09-24..09-29)
+and `session-handoff` (17 fires spread 09-24..10-01, partly hook-nudged) are the clearest examples
+of genuinely organic, repeated, cross-day reuse. Recommendation for the next audit: when scoring
+"never used" or "lightly used," exclude a skill's own creation-day fire from the organic count, or
+flag it separately, so a future tally doesn't read construction-testing as field validation.
+
+**Never fired since logging began (unchanged from the count/never-used pass earlier this session):**
+`context-promotion` (pre-dates this session's build-out, no construction-day excuse — a real
+candidate for a routing check), `repo-reality-audit`, `web-vitals-audit` (both newly added, not
+yet due to fire organically).
+
+No description edits proposed this pass — nothing here points to a specific wording fix, only a
+measurement-method fix for the next `catalog-drift-audit` / usage-log run.
