@@ -93,3 +93,4 @@ Groups are labels only — this file is the mapping. Add new skills here.
 - `test-case-discovery`
 - `test-practice-gate`
 - `test-strategy`
+- `web-vitals-audit`

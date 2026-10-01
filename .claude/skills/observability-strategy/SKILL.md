@@ -1,6 +1,6 @@
 ---
 name: observability-strategy
-description: Gated decision for how a system is made observable: signals, SLIs/SLOs and error budget, instrumentation, sampling, alerting, retention, self-hosted vs managed. Use for "we need monitoring / observability", "set up distributed tracing", "what should we alert on". Not for vendor dollar sizing (`technical-cost-decision`) or triaging one live incident (`debugging-layer-selection`).
+description: Gated decision for how a system is made observable: signals, SLIs/SLOs and error budget, instrumentation, sampling, alerting, retention, self-hosted vs managed. Use for "we need monitoring / observability", "set up distributed tracing", "what should we alert on". Not for vendor dollar sizing (`technical-cost-decision`), triaging one live incident (`debugging-layer-selection`), or one page's web vitals (`web-vitals-audit`).
 ---
 
 # Observability Strategy
@@ -143,5 +143,6 @@ Repo-agnostic. Reads and writes `docs/architecture/decisions/` alongside the oth
 
 The frontmatter `description` is truncated in the skill listing, so the full boundary rules live here (moved verbatim from the original description):
 
+- Not for diagnosing and fixing one page's Lighthouse / Core Web Vitals number -- that is `web-vitals-audit`; collecting web vitals from real users (RUM) as a durable signal stays here.
 - Not for triaging which observation layer to check during one live incident right now — that's `debugging-layer-selection`, for the ad hoc/reactive reading of "we can't tell why prod is slow" when existing logs/traces/DevTools simply haven't been checked yet, as distinct from this skill's "no durable way to see this at all" reading of the same complaint.
 - Use when someone says "we need monitoring / observability", "add Datadog / Grafana / Honeycomb", "we should have dashboards", "set up distributed tracing", "what should we alert on", "our logs are useless in an incident", "we can't tell why prod is slow", "incidents take hours to diagnose", "we're committing to an SLA", or proposes an observability approach to check.
