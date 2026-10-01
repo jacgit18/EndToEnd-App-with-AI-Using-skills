@@ -1,6 +1,6 @@
 ---
 name: debugging-layer-selection
-description: Triages a live, reproducible symptom to the right observation layer: browser DevTools, backend logs/traces/metrics, or packet capture (Wireshark). Triggers: "should I use DevTools or Wireshark for this", "how do I debug this network issue", "why is this connection dropping/resetting". Not hypothesis testing (`problem-solving-gates`) or long-term signals (`observability-strategy`).
+description: Triages a live, reproducible symptom to the right observation layer: browser DevTools, backend logs/traces/metrics, or packet capture (Wireshark). Triggers: "should I use DevTools or Wireshark for this", "how do I debug this network issue", "why is this connection dropping/resetting". Not hypothesis testing (`problem-solving-gates`), long-term signals (`observability-strategy`), or page-load metrics (`web-vitals-audit`).
 ---
 
 # Debugging Layer Selection
@@ -169,4 +169,5 @@ Repo-agnostic; names no project-specific files or paths. Copy the
 The frontmatter `description` is kept short for the skill listing budget; the full original description is preserved here.
 
 - Use when someone asks "should I use DevTools or Wireshark for this", "how do I debug this network issue", "is this a browser bug or a network problem", "the request is slow/failing and I don't know where to look", "should I capture packets", "why is this connection dropping/resetting", "CORS error" / "401 with no body" / "the response never arrives" investigated from scratch, or names a symptom (retransmissions, TLS handshake failure, WebSocket disconnects, DNS resolution) without having picked a tool yet.
+- Not for a page-load metric or content that jumps as it loads ("should I look in DevTools for why the page jumps") -- that is `web-vitals-audit`, which picks its own tools (Lighthouse, a layout-shift observer).
 - Not for interpreting live telemetry numbers once a layer is chosen -- percentile breakdowns, SLO burn, Little's Law, utilization against the queueing curve (`reliability-math`); not for a user who cannot begin at all ("where do I even start" with no observed symptom yet) -- that is `entry-point-first`, which hands back here once there is a live symptom.

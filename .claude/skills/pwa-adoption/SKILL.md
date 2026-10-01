@@ -1,6 +1,6 @@
 ---
 name: pwa-adoption
-description: Gated decision for making a web app installable/offline-capable: service-worker caching strategy, offline scope, update lifecycle, manifest/install criteria, push notifications. Use when "should we make this a PWA", "add offline support", "make it installable", "do we need a service worker". Not `caching-strategy` (server-side cache), `deployment-strategy` (rollout), or `resilience-strategy` (overload protection).
+description: Gated decision for making a web app installable/offline-capable: service-worker caching strategy, offline scope, update lifecycle, manifest/install criteria, push notifications. Use when "should we make this a PWA", "add offline support", "make it installable", "do we need a service worker". Not `caching-strategy` (server-side cache), `deployment-strategy` (rollout), `resilience-strategy` (overload), or Lighthouse scores (`web-vitals-audit`).
 ---
 
 # PWA Adoption
@@ -246,4 +246,4 @@ cp -r ".claude/skills/pwa-adoption" /path/to/other-repo/.claude/skills/
   "should the service worker cache everything", or proposes a service-worker/manifest design
   and wants it checked. See "Out of scope" above for the sibling carve-outs
   (`caching-strategy`, `deployment-strategy`, `resilience-strategy`, `api-interface-style`,
-  `data-access-layer`) — not repeated here.
+  `data-access-layer`) — not repeated here. A poor Lighthouse number is `web-vitals-audit` (SW bypassed).

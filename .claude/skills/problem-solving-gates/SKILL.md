@@ -1,6 +1,6 @@
 ---
 name: problem-solving-gates
-description: Four gated modes that force the user's own reasoning first: Rubber Duck (debugging), Options Generator (architecture), Knowledge Checker (understanding), Optimization (needs a measurement). Use for "what's wrong with my code", "what should I do", "how do I speed this up" with no attempt shown. Not stalled starts (`entry-point-first`), symptoms (`debugging-layer-selection`), or `learning-gate` routing.
+description: Four gated modes that force the user's own reasoning first: Rubber Duck (debugging), Options Generator (architecture), Knowledge Checker (understanding), Optimization (needs a measurement). Use for "what's wrong with my code", "what should I do", "how do I speed this up" with no attempt shown. Not stalled starts (`entry-point-first`), symptoms (`debugging-layer-selection`), page-load metrics (`web-vitals-audit`), or `learning-gate` routing.
 ---
 
 # Problem-Solving Gates
@@ -143,5 +143,6 @@ The value in all four modes is location of effort: the hypothesis, the option-sc
 - Not for a request to review a skill file (`SKILL.md`, its description) as a document -- that is `skill-static-audit`, a read-only critique, not a debugging or design gate.
 - Not for a user who is stuck before starting anything at all ("I don't know where to start", "can't get started", "overwhelmed by this codebase") with no bug, no decision and no attempt to check — that is `entry-point-first`, which finds a low-resistance entry rep first and hands the later prioritization call back to the right gate here (Options Generator, once they have candidates and a lean).
 - Not for a live symptom where no observation layer is picked yet (`debugging-layer-selection` first), a request to lay out and recommend a stack (`tech-decision-walkthrough`), the test mix, coverage target, test cases, or a DB test mechanism (`test-strategy`, `coverage-policy`, `test-case-discovery`, `database-test-tooling`), writing tests (`test-practice-gate`), or a request with more than one reading (`ambiguity-gate`).
+- Not for a poor Lighthouse / Core Web Vitals number or a page that jumps as it loads -- that is `web-vitals-audit`, a procedure whose own escape hatch hands a learner the diagnosis rep; Rubber Duck / Optimization do not gate on top of it.
 - Not for an a-priori sizing estimate of a system that does not exist yet (`capacity-estimation`) -- Optimization here needs a measurement of a live system; not for enumerating everything that could fail in a design before it ships (`failure-mode-analysis`) -- a pre-mortem is a procedure, not an Options Generator decision; not for a request to document a file just written (`codebase-file-orientation`) -- Knowledge Checker is the user's own explain-back rep, not a standing doc.
 - NOT for a decision a specialist Architecture gate already owns (`microservices-decision`, `database-architecture`, `deployment-strategy`, etc.) — Options Generator applies only when no specialist fits.
