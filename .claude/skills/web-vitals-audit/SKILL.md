@@ -24,6 +24,10 @@ Ask if unstated, in one message:
 3. **What "fixed" means** — a score threshold, a metric passing (CLS < 0.1, LCP < 2.5 s,
    INP < 200 ms at p75), or "it stops jumping".
 
+If the user names no threshold, the default target is the standing policy in
+`.claude/rules/web-accessibility-and-lighthouse.md`: 100 in every Lighthouse category on
+mobile and desktop. A 100 is regression evidence, never a WCAG AAA conformance claim.
+
 No number and no symptom ("make the site faster") is not this skill yet — ask which page and
 what is slow, or route to `problem-solving-gates` Optimization if it is not a page-load metric.
 
