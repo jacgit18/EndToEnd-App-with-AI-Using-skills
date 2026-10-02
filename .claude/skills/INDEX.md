@@ -67,6 +67,7 @@ Groups are labels only — this file is the mapping. Add new skills here.
 - `catalog-drift-audit`
 - `context-promotion`
 - `decision-journal`
+- `idea-to-first-test`
 - `problem-journal`
 - `prompt-archive`
 - `prompt-authoring`

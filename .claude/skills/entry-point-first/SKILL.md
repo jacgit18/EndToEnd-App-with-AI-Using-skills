@@ -1,6 +1,6 @@
 ---
 name: entry-point-first
-description: Gets a user stalled before starting to a first move: one small rep, then a forced re-evaluate. Use for "I don't know where to start", "can't get started", "overwhelmed by this codebase". A plain "I'm building X, where do I start" with no stall is `design-scoping`. Not prioritization (`ticket-evaluation`) or a live bug (`debugging-layer-selection`).
+description: Gets a user stalled before starting to a first move: one small rep, then a forced re-evaluate. Use for "I don't know where to start", "can't get started", "overwhelmed by this codebase". A plain "I'm building X, where do I start" with no stall is `design-scoping`. Not prioritization (`ticket-evaluation`) or a live bug (`debugging-layer-selection`). Stalled on an unformed idea: after the rep, `idea-to-first-test`.
 ---
 
 # Entry Point First
@@ -64,6 +64,7 @@ Once the user is immersed and immediate-impact options are visible, the choice i
 | A feature or epic that needs breaking into stories | `user-story-decomposition` |
 | A decision where the user now has candidates and a lean | `problem-solving-gates` Options Generator |
 | A whole system needing scope | `design-scoping` |
+| A raw idea with no demand evidence yet | `idea-to-first-test` |
 | A build with no written spec | `spec-drift-gate` |
 | Wants to build it file by file to understand it | `incremental-build-pacing` |
 | Now wants a concept taught (e.g. "now explain ownership") after the rep | `learning-gate` |
