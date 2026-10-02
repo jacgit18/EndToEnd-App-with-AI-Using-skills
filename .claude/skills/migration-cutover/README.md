@@ -20,6 +20,9 @@ migration-cutover         →  HOW the live workload crosses to the target  (ADR
 deployment-strategy       →  routine version release of a unit that exists (ADR)   (shares blue-green / canary vocab; cross-links on rollback)
 ```
 
+Retiring one capability inside a system that stays — an endpoint, API version, or feature with
+consumers who need a notice window — is `deprecation-sunset`, not a migration.
+
 `microservices-decision` decides the target service boundaries or repo layout; an agreed
 strangler-fig extraction or repo split is sequenced here. `technical-cost-decision` prices a
 dual-run period; `test-strategy` supplies the evidence the verification bar consumes.

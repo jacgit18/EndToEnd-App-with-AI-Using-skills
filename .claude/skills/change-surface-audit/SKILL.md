@@ -1,6 +1,6 @@
 ---
 name: change-surface-audit
-description: Pre-flight procedure for one proposed add/modify/remove or silent change: walks six blast-radius surfaces, audits hidden dependents, classifies backward-compatible vs breaking. Triggers: "what could this change break", "is this a breaking change", "PR review for blast radius". Not for diff correctness — `code-review`. Not rollout — `deployment-strategy`; not build specs — `spec-drift-gate`.
+description: Pre-flight procedure for one proposed add/modify/remove or silent change: walks six blast-radius surfaces, audits hidden dependents, classifies backward-compatible vs breaking. Triggers: "what could this change break", "is this a breaking change", "what do I check before I delete this endpoint". Not for diff correctness — `code-review`. Not rollout — `deployment-strategy`; not build specs — `spec-drift-gate`. Running a removal's sunset window and notices — `deprecation-sunset`.
 ---
 
 # Change Surface Audit
@@ -45,6 +45,7 @@ say anything useful.
   planned — canary, blue-green, feature-flag-gated release, environment progression →
   `deployment-strategy`. This skill decides *whether* a compatibility phase is needed and
   what it must contain; that skill decides *how* the rollout is staged and what aborts it.
+- **Running the retirement once consumers are confirmed** — the sunset window, notice schedule, brownouts, straggler policy, and exit criteria for a removal that has consumers outside the owning team → `deprecation-sunset`. This skill runs first and decides *whether* a deprecation window is needed; that skill plans the window and extends the deprecation record this skill creates.
 - **A live system-to-system migration** — replacing a datastore, replatforming, moving
   hosting providers → `migration-cutover`. That is a whole system moving to a new
   implementation with its own cutover pattern and rollback window; this skill is one
@@ -236,10 +237,8 @@ default.
 
 ## Portability
 
-Repo-agnostic. Writes a deprecation record only for removals with a live deprecation
-window, to `docs/engineering/deprecations/`. Copy the `change-surface-audit/` directory
-into another repo's `.claude/skills/` to use it there. See `README.md` for where it sits
-among the sibling skills.
+Repo-agnostic. Writes a deprecation record only for removals with a live deprecation window, to `docs/engineering/deprecations/`. Copy the `change-surface-audit/` directory
+into another repo's `.claude/skills/` to use it there. See `README.md` for where it sits among the sibling skills.
 
 ## Routing boundaries (full)
 
