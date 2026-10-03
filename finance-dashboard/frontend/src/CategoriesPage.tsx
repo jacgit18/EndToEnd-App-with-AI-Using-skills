@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 
 import { api, CATEGORY_KINDS, type Category, type CategoryCreate, type CategoryKind, type CategoryUpdate } from "./api/client";
+import { ERROR_TEXT, ScrollTable, VisuallyHidden } from "./a11y";
 
 export const KIND_LABELS: Record<CategoryKind, string> = {
   expense: "Expense",
@@ -36,13 +37,13 @@ export default function CategoriesPage() {
   }
 
   return (
-    <section style={{ fontFamily: "system-ui, sans-serif", padding: "2rem" }}>
+    <main style={{ fontFamily: "system-ui, sans-serif", padding: "2rem" }}>
       <p>
         <Link to="/">← Transactions</Link>
       </p>
-      <h2>Categories</h2>
+      <h1>Categories</h1>
 
-      <form onSubmit={handleSubmit} style={{ display: "flex", gap: "0.5rem", marginBottom: "0.5rem" }}>
+      <form onSubmit={handleSubmit} style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginBottom: "0.5rem" }}>
         <label>
           Name <input required value={name} onChange={(e) => setName(e.target.value)} />
         </label>
@@ -62,7 +63,7 @@ export default function CategoriesPage() {
       </form>
 
       {createCategory.isError && (
-        <p role="alert" style={{ color: "crimson" }}>{(createCategory.error as Error).message}</p>
+        <p role="alert" style={{ color: ERROR_TEXT }}>{(createCategory.error as Error).message}</p>
       )}
 
       <label style={{ display: "block", margin: "0.5rem 0" }}>
@@ -74,12 +75,12 @@ export default function CategoriesPage() {
         Show archived
       </label>
 
-      <table>
+      <ScrollTable label="Categories"><table>
         <thead>
           <tr>
             <th style={{ textAlign: "left" }}>Name</th>
             <th style={{ textAlign: "left" }}>Kind</th>
-            <th />
+            <th><VisuallyHidden>Actions</VisuallyHidden></th>
           </tr>
         </thead>
         <tbody>
@@ -87,8 +88,8 @@ export default function CategoriesPage() {
             <CategoryRow key={c.id} category={c} />
           ))}
         </tbody>
-      </table>
-    </section>
+      </table></ScrollTable>
+    </main>
   );
 }
 
@@ -118,7 +119,7 @@ function CategoryRow({ category: c }: { category: Category }) {
   }
 
   const error = update.isError && (
-    <span role="alert" style={{ color: "crimson" }}> {(update.error as Error).message}</span>
+    <span role="alert" style={{ color: ERROR_TEXT }}> {(update.error as Error).message}</span>
   );
 
   if (!editing) {

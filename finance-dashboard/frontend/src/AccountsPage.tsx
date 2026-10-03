@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 
 import { ACCOUNT_TYPES, api, type Account, type AccountType, type AccountUpdate } from "./api/client";
+import { ERROR_TEXT, ScrollTable, VisuallyHidden } from "./a11y";
 
 // Same shape the backend enforces (app/schemas/_money.py): optional minus, up to 12
 // integer digits, up to 2 decimals. Checked here so the user sees the problem next to
@@ -64,13 +65,13 @@ export default function AccountsPage() {
   }
 
   return (
-    <section style={{ fontFamily: "system-ui, sans-serif", padding: "2rem" }}>
+    <main style={{ fontFamily: "system-ui, sans-serif", padding: "2rem" }}>
       <p>
         <Link to="/">← Transactions</Link>
       </p>
-      <h2>Accounts</h2>
+      <h1>Accounts</h1>
 
-      <form onSubmit={handleSubmit} style={{ display: "flex", gap: "0.5rem", marginBottom: "0.5rem" }}>
+      <form onSubmit={handleSubmit} style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginBottom: "0.5rem" }}>
         <label>
           Name <input required value={name} onChange={(e) => setName(e.target.value)} />
         </label>
@@ -100,9 +101,9 @@ export default function AccountsPage() {
         </button>
       </form>
 
-      {balanceError && <p role="alert" style={{ color: "crimson" }}>{balanceError}</p>}
+      {balanceError && <p role="alert" style={{ color: ERROR_TEXT }}>{balanceError}</p>}
       {createAccount.isError && (
-        <p role="alert" style={{ color: "crimson" }}>{(createAccount.error as Error).message}</p>
+        <p role="alert" style={{ color: ERROR_TEXT }}>{(createAccount.error as Error).message}</p>
       )}
 
       <label style={{ display: "block", margin: "0.5rem 0" }}>
@@ -114,14 +115,14 @@ export default function AccountsPage() {
         Show archived
       </label>
 
-      <table>
+      <ScrollTable label="Accounts"><table>
         <thead>
           <tr>
             <th style={{ textAlign: "left" }}>Name</th>
             <th style={{ textAlign: "left" }}>Type</th>
             <th style={{ textAlign: "right" }}>Starting balance</th>
             <th style={{ textAlign: "right" }}>Balance</th>
-            <th />
+            <th><VisuallyHidden>Actions</VisuallyHidden></th>
           </tr>
         </thead>
         <tbody>
@@ -129,8 +130,8 @@ export default function AccountsPage() {
             <AccountRow key={a.id} account={a} />
           ))}
         </tbody>
-      </table>
-    </section>
+      </table></ScrollTable>
+    </main>
   );
 }
 
@@ -192,7 +193,7 @@ function AccountRow({ account: a }: { account: Account }) {
             {a.is_archived ? "Unarchive" : "Archive"}
           </button>
           {update.isError && (
-            <span role="alert" style={{ color: "crimson" }}> {(update.error as Error).message}</span>
+            <span role="alert" style={{ color: ERROR_TEXT }}> {(update.error as Error).message}</span>
           )}
         </td>
       </tr>
@@ -228,9 +229,9 @@ function AccountRow({ account: a }: { account: Account }) {
           Save
         </button>{" "}
         <button onClick={() => setEditing(false)}>Cancel</button>
-        {startError && <span role="alert" style={{ color: "crimson" }}> {startError}</span>}
+        {startError && <span role="alert" style={{ color: ERROR_TEXT }}> {startError}</span>}
         {update.isError && (
-          <span role="alert" style={{ color: "crimson" }}> {(update.error as Error).message}</span>
+          <span role="alert" style={{ color: ERROR_TEXT }}> {(update.error as Error).message}</span>
         )}
       </td>
     </tr>

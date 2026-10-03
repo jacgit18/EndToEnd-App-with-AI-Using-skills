@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 
 import { api, type Budget, type Category } from "./api/client";
+import { ERROR_TEXT, ScrollTable, VisuallyHidden } from "./a11y";
 
 // Local calendar month as YYYY-MM (toISOString would be UTC and can be a day off).
 function currentMonth(): string {
@@ -38,13 +39,13 @@ export default function BudgetsPage() {
   }
 
   return (
-    <section style={{ fontFamily: "system-ui, sans-serif", padding: "2rem" }}>
+    <main style={{ fontFamily: "system-ui, sans-serif", padding: "2rem" }}>
       <p>
         <Link to="/">← Transactions</Link>
       </p>
-      <h2>Budgets</h2>
+      <h1>Budgets</h1>
 
-      <form onSubmit={handleCopy} style={{ display: "flex", gap: "0.5rem", marginBottom: "0.5rem" }}>
+      <form onSubmit={handleCopy} style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginBottom: "0.5rem" }}>
         <label>
           Month <input type="month" value={month} onChange={(e) => setMonth(e.target.value)} />
         </label>
@@ -54,7 +55,7 @@ export default function BudgetsPage() {
       </form>
 
       {copyForward.isError && (
-        <p role="alert" style={{ color: "crimson" }}>{(copyForward.error as Error).message}</p>
+        <p role="alert" style={{ color: ERROR_TEXT }}>{(copyForward.error as Error).message}</p>
       )}
       {copyForward.isSuccess && (
         <p role="status">
@@ -65,12 +66,12 @@ export default function BudgetsPage() {
       {month === "" ? (
         <p>Pick a month.</p>
       ) : (
-        <table>
+        <ScrollTable label="Budgets"><table>
           <thead>
             <tr>
               <th style={{ textAlign: "left" }}>Category</th>
               <th style={{ textAlign: "left" }}>Budget</th>
-              <th />
+              <th><VisuallyHidden>Actions</VisuallyHidden></th>
             </tr>
           </thead>
           <tbody>
@@ -81,9 +82,9 @@ export default function BudgetsPage() {
               return <BudgetRow key={`${month}:${c.id}:${budget?.amount ?? ""}`} month={month} category={c} budget={budget} />;
             })}
           </tbody>
-        </table>
+        </table></ScrollTable>
       )}
-    </section>
+    </main>
   );
 }
 
@@ -123,7 +124,7 @@ function BudgetRow({ month, category: c, budget }: { month: string; category: Ca
         <button onClick={() => clear.mutate()} disabled={busy || budget === undefined}>
           Clear
         </button>
-        {error && <span role="alert" style={{ color: "crimson" }}> {(error as Error).message}</span>}
+        {error && <span role="alert" style={{ color: ERROR_TEXT }}> {(error as Error).message}</span>}
       </td>
     </tr>
   );

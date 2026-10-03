@@ -10,6 +10,7 @@ import {
   type ImportPreview,
   type ImportResult,
 } from "./api/client";
+import { ERROR_TEXT, ScrollTable } from "./a11y";
 
 const DATE_FORMAT_LABELS: Record<DateFormat, string> = {
   iso: "YYYY-MM-DD",
@@ -131,11 +132,11 @@ export default function ImportPage() {
     ));
 
   return (
-    <section style={{ fontFamily: "system-ui, sans-serif", padding: "2rem" }}>
+    <main style={{ fontFamily: "system-ui, sans-serif", padding: "2rem" }}>
       <p>
         <Link to="/">← Transactions</Link>
       </p>
-      <h2>Import CSV</h2>
+      <h1>Import CSV</h1>
 
       <label>
         CSV file{" "}
@@ -146,7 +147,7 @@ export default function ImportPage() {
         />
       </label>
       {previewFile.isError && (
-        <p role="alert" style={{ color: "crimson" }}>{(previewFile.error as Error).message}</p>
+        <p role="alert" style={{ color: ERROR_TEXT }}>{(previewFile.error as Error).message}</p>
       )}
 
       {preview && (
@@ -154,7 +155,7 @@ export default function ImportPage() {
           <p>
             {preview.row_count} rows. First {preview.rows.length}:
           </p>
-          <table>
+          <ScrollTable label="File preview"><table>
             <thead>
               <tr>
                 {preview.headers.map((h) => (
@@ -171,7 +172,7 @@ export default function ImportPage() {
                 </tr>
               ))}
             </tbody>
-          </table>
+          </table></ScrollTable>
 
           <div style={{ display: "grid", gap: "0.5rem", margin: "1rem 0", maxWidth: "32rem" }}>
             <label>
@@ -189,7 +190,7 @@ export default function ImportPage() {
               </select>
             </label>
             {amountAllBad && (
-              <p role="alert" style={{ color: "crimson", margin: 0 }}>
+              <p role="alert" style={{ color: ERROR_TEXT, margin: 0 }}>
                 None of the {sampleAmounts.length} sample rows have a number in “{amountColumn}”. Pick the column
                 with the money amounts.
               </p>
@@ -299,12 +300,12 @@ export default function ImportPage() {
       )}
 
       {runImport.isError && (
-        <p role="alert" style={{ color: "crimson" }}>{(runImport.error as Error).message}</p>
+        <p role="alert" style={{ color: ERROR_TEXT }}>{(runImport.error as Error).message}</p>
       )}
 
       {result && (
         <div role="status">
-          <h3>Import finished</h3>
+          <h2>Import finished</h2>
           <p>
             Imported {result.imported_count}, skipped {result.skipped_count} duplicates, rejected{" "}
             {result.rejected_count}
@@ -335,8 +336,8 @@ export default function ImportPage() {
         </div>
       )}
 
-      <h3>History</h3>
-      <table>
+      <h2>History</h2>
+      <ScrollTable label="Import history"><table>
         <thead>
           <tr>
             <th style={{ textAlign: "left" }}>When</th>
@@ -359,7 +360,7 @@ export default function ImportPage() {
             </tr>
           ))}
         </tbody>
-      </table>
-    </section>
+      </table></ScrollTable>
+    </main>
   );
 }

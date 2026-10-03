@@ -43,29 +43,37 @@ A test pins the landmark and heading structure (`DashboardPage.test.tsx`); rever
 - `unused-javascript` (about 42 KiB) and `network-dependency-tree-insight`: informational, score is 100 anyway.
 - `robots.txt` allows all crawlers. Every data route is behind login, so there is nothing to index; blocking crawlers would make Lighthouse's `is-crawlable` fail. Revisit if the owner prefers `Disallow: /` over the SEO score.
 
-## Other routes (run 2026-10-03, after the deploy; NOT yet fixed)
+## Other routes: found 2026-10-03, fixed in the same pass
 
-Same setup as above (prod build, real Caddy with `Caddyfile.prod`, fixture API with 1 account, 3 categories, 2 budgets, 3 transactions, 1 import batch). Lighthouse mobile / desktop; axe at 1280px and 320px.
+First run (prod build, real Caddy, fixture API): `/` Lighthouse accessibility 85, `/accounts` 95 mobile; axe found 3 to 5 violations per route; every route's page was 369 to 819 px wide at 320px.
 
-| Route | Lighthouse mobile (P/A/BP/SEO) | desktop | axe 1280px | axe 320px |
-|---|---|---|---|---|
-| `/` Transactions | 100 / **85** / 100 / 100 | 100 / **85** / 100 / 100 | 4 violations | 4 violations, **page 819 px wide** |
-| `/accounts` | 100 / **95** / 100 / 100 | 100 / 100 / 100 / 100 | 4 | 5, page 585 px wide |
-| `/categories` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 | 4 | 5, page 382 px wide |
-| `/budgets` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 | 4 | 4, page 369 px wide |
-| `/import` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 | 3 | 3, page 533 px wide |
+| Found | Fix |
+|---|---|
+| `/`: date input, account select, amount and description had no real label (amount and description had only a placeholder) | `aria-label` on each |
+| `/`: "connected" text seagreen at 4.24:1 (fails AA). Error text crimson at 4.99:1 (passes AA, fails AAA) | `#1b5e20` (7.9:1) and `#a00000` (8.4:1), defined once in `src/a11y.tsx`. Chart bar fills keep their colours (graphics, 3:1) and every value is also text |
+| Empty actions column header on `/`, accounts, categories, budgets | `VisuallyHidden` "Actions" text |
+| No `<main>` / `<h1>` on accounts, categories, budgets, import; import's `h3` sections | `<main>`, `<h1>`, sections `<h2>` |
+| 320px reflow: forms did not wrap, wide tables stretched the page | `flexWrap` on form rows; every table inside `ScrollTable` (a named, keyboard-focusable scroll box) |
+| Touch targets under 44px (buttons, inputs, selects, links, checkboxes) | 44px minimum in a small inline `<style>` in `index.html` (a separate CSS file cost 0.3 s of mobile LCP on `/dashboard`, so it is inlined). Checkboxes: the wrapping label is the 44px target |
 
-Findings, all still open:
+Tests: `src/a11y.test.tsx` renders each page and checks one `main`, one `h1`, every control has an accessible name, no empty table header, plus the helpers. Mutations tried: removing the Date label, the Description label, the Account label, the `h1`, the "Actions" text, `main` to `section`, an emptied `th`, and the scroll box's `position`. All caught (the first run missed the Date label because date inputs have no testing-library role; the test now checks the DOM directly).
 
-- **Transactions `/`** (serious): the date filter input and the account `<select>` have no label (`label`, `select-name`, both critical); the "Backend: connected" text is seagreen `#2e8b57` on white at 4.24:1, below even AA 4.5:1 (`color-contrast`); one table header cell is empty (`empty-table-header`).
-- **Reflow at 320px fails on every route** (page is 369 to 819 px wide): fails the reflow criterion. Tables and forms need to wrap or scroll inside their own container.
-- **Landmarks and headings:** `/accounts`, `/categories`, `/budgets`, `/import` have no `<main>` and no `<h1>` (same fix as `/dashboard`), plus `region`.
-- **Empty table header** on accounts, categories and budgets (an actions column with no accessible text).
-- **Target size** below 24px on `/accounts` (2 nodes) and `/categories` (6 nodes) at 320px. The AAA target is 44px, so more would fail under a manual check.
-- Lighthouse scores of 100 on four routes hide these: its audit only counts the subset it weighs. axe is the better signal here.
+Final measurement, same setup, after the fixes:
+
+| Check | Result |
+|---|---|
+| Lighthouse, 7 routes (`/`, `/dashboard`, `/accounts`, `/categories`, `/budgets`, `/import`, `/login`), mobile and desktop | 100 / 100 / 100 / 100 on all 14 runs. LCP 1.2 to 1.6 s mobile, 0.4 s desktop. Mobile Performance moved between 99 and 100 in earlier runs; see "Run-to-run variation" |
+| axe (WCAG 2.0 to 2.2 A/AA/AAA tags + best practice), 1280px and 320px, all 7 routes | 0 violations on all 14 |
+| Page width at 320px | 320px on all routes |
+| Interactive controls under 44px | none on any route (measured, not just axe's 24px check) |
+
+**Run-to-run variation.** Lighthouse mobile Performance moved between 99 and 100 on identical builds (simulated throttling). One real regression appeared and was fixed: a separate stylesheet made `/dashboard` score 99 on three runs in a row (LCP 1.9 s); inlining it restored 100 (LCP 1.6 s, two repeat runs).
+
+**Not covered by this run.** Pages were measured in their loaded, default state only: the account and category edit rows, the Import page after a file is chosen, and error messages were not audited. The fixture API is not real data. Deploy status: see TODO.md.
 
 ## Not measured yet
 
+- Edit states (account and category edit rows), the Import page after a file is chosen, and error states.
 - The deployed HTTPS site (Cloudflare tunnel). Local loopback is not the live site.
 - Authenticated pages with real data and real volumes.
 
