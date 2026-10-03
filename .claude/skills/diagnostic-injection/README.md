@@ -91,5 +91,5 @@ Does not fire: this is `problem-solving-gates` Rubber Duck first. Once you have 
 ## Dependencies
 
 Needs `git worktree` and a reproducible symptom or test suite. The siblings it hands off to are listed in `SKILL.md` → Portability; if one isn't installed,
-`SKILL.md` says what to do inline. Not yet packaged as a plugin; `plugins/README.md` describes
-how catalog subsets are installed in other projects.
+`SKILL.md` says what to do inline. Installed in other projects via the `testing-skills` plugin
+described in `plugins/README.md`.

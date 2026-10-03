@@ -1,6 +1,7 @@
 {
   "enabledPlugins": {
-    "architecture-skills@skills-dir": false
+    "architecture-skills@skills-dir": false,
+    "testing-skills@skills-dir": false
   },
   "hooks": {
     "PreToolUse": [

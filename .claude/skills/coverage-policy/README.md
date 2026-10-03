@@ -54,8 +54,8 @@ Stops before CI wiring and before writing tests to raise the number.
 
 Needs no repo setup; output paths are defaults the repo's own convention overrides.
 The siblings it hands off to are listed in `SKILL.md` → Portability; if one isn't installed,
-`SKILL.md` says what to do inline. Not yet packaged as a plugin; `plugins/README.md` describes
-how catalog subsets are installed in other projects.
+`SKILL.md` says what to do inline. Installed in other projects via the `testing-skills` plugin
+described in `plugins/README.md`.
 
 ## Interaction with sibling skills
 
