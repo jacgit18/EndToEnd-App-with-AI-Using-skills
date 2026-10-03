@@ -50,7 +50,7 @@ From gate item 11. This is the step that turns "it seems fine" into "it is autho
 
 - **Structural parity** — row counts per table, and checksums / hashes over the rows (full for small tables, sampled or partitioned for large ones). Target: exact match, or a documented and explained delta.
 - **Shadow-read comparison** (parallel run) — for a representative slice of real read traffic, run the query against both systems and diff the results. Track the diff rate over time; it should fall toward zero as backfill completes and dual-write bugs are fixed. Set the flip threshold (e.g. "< 0.01% mismatches, none in the money paths, for 72 hours").
-- **Business-metric parity** — pick 2–4 numbers the business already watches (daily revenue, order count, active users, ledger balance) and confirm they match between systems for a settling period. A schema transform bug often shows here before it shows in row counts.
+- **Business-metric parity** — pick 2–4 numbers the business already watches (daily revenue, order count, active users, account balances) and confirm they match between systems for a settling period. A schema transform bug often shows here before it shows in row counts.
 - **Reconciliation report** — a scheduled job listing every unexplained delta. The flip criterion is zero unexplained entries, not zero entries.
 
 Record the checks, the thresholds, and who signs off that the bar is met.

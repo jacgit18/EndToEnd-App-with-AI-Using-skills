@@ -217,13 +217,9 @@ direct recommendation with reasoning. Opt-in, not a default.
 
 ## Portability
 
-Repo-agnostic. Reads and writes `docs/architecture/decisions/` alongside the other
-architecture skills, reusing `database-architecture`'s `adr-template.md`. Written from AWS
-vocabulary (Lambda, Fargate, Step Functions, SQS/Kinesis event-source mapping) but the gate
-items and decision structure transfer to Azure Functions/Container Apps/Durable Functions or
-GCP Cloud Functions/Cloud Run/Workflows — swap the platform-specific limits and mechanics in
-the reference files if this repo targets a different cloud. Copy the
-`serverless-execution-model/` directory into another repo's `.claude/skills/` to use it there.
+Needs no repo setup. Writes an ADR to `docs/architecture/decisions/` by default (follow the repo's own convention if it has one), in `database-architecture`'s ADR format; if `database-architecture` isn't installed, use this skeleton: title `NNN. <decision>`; Status and Date; **Context** (the gate answers, plainly); **Decision** (the recommendation block); **Consequences** (accepted costs, rejected alternatives); **Revisit when** (a concrete trigger). Written from AWS vocabulary (Lambda, Fargate, Step Functions, SQS); the decision structure transfers to Azure or GCP, so swap the platform limits in the reference files for another cloud.
+
+Depends on: `microservices-decision`, `cloud-iam-boundary`, `resilience-strategy`, `technical-cost-decision`, `capacity-estimation`, `data-tier-operations`, `design-scoping`, `database-architecture`, `service-mesh-adoption`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `resilience-strategy` → the failure contract here (retries, DLQ, idempotency) still applies; overload protection beyond it is separate; no `cloud-iam-boundary` → default to one least-privilege execution role per function and flag it as unreviewed; no `microservices-decision` → take service boundaries as given.
 
 ## Routing boundaries (full)
 

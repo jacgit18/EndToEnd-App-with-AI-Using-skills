@@ -132,7 +132,9 @@ Gate not satisfied — item 5 (no measured pressure; "feels slow" and "before la
 
 ## Portability
 
-Repo-agnostic. Reads and writes `docs/architecture/decisions/` alongside `database-architecture` and `data-tier-operations`, reusing `database-architecture`'s `adr-template.md`. Copy the `caching-strategy/` directory into another repo's `.claude/skills/` to use it there.
+Needs no repo setup. Writes an ADR to `docs/architecture/decisions/` by default (follow the repo's own convention if it has one), in `database-architecture`'s ADR format; if `database-architecture` isn't installed, use this skeleton: title `NNN. <decision>`; Status and Date; **Context** (the gate answers, plainly); **Decision** (the recommendation block); **Consequences** (accepted costs, rejected alternatives); **Revisit when** (a concrete trigger).
+
+Depends on: `data-tier-operations`, `technical-cost-decision`, `index-tuning`, `relational-modeling`, `database-architecture`, `api-interface-style`, `resilience-strategy`, `data-access-layer`, `bff-gateway-placement`, `pwa-adoption`, `observability-strategy`, `access-control-modeling`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `index-tuning` → for a slow read, ask for the query plan and check the indexes before adding a cache; no `technical-cost-decision` → list cache memory size and node count and ask the user to price them; no `data-tier-operations` → read replicas are the alternative to name, not design.
 
 ## Routing boundaries (full)
 

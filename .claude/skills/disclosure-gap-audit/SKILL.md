@@ -234,10 +234,9 @@ firing, sample probe hits, or the routing calls.
 
 ## Portability
 
-Repo-agnostic. Writes an optional register to `docs/compliance/`. The `disclosure-checklist.md`
-"current as of" note names the fast-moving regimes so a future run knows to re-check them.
-Copy the `disclosure-gap-audit/` directory into another repo's `.claude/skills/`. See
-`README.md` for where it sits among the sibling skills.
+Needs no repo setup. Writes an optional register to `docs/compliance/` by default (follow the repo's own convention). The `disclosure-checklist.md` "current as of" note names the fast-moving regimes so a later run re-checks them.
+
+Depends on: `change-surface-audit`, `design-scoping`, `access-control-modeling`, `cloud-iam-boundary`, `config-and-secrets-management`, `failure-mode-analysis`, `technical-cost-decision`, `resilience-strategy`, `observability-strategy`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `change-surface-audit` → for a removal or a breaking change, say it needs a blast-radius check and list the consumers you can see; no `config-and-secrets-management` or `cloud-iam-boundary` → record the gap in the register and name the decision it needs, without designing the fix.
 
 ## Routing boundaries (full)
 

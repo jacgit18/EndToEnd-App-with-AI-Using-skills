@@ -69,14 +69,13 @@ Stops before implementation (warning middleware, brownout switch, removal PR).
   deserves the effort next to other work.
 - **`learning-gate`** hands off here on retirement questions rather than running its own rep gate.
 
-Run `skill-interaction-testing` after any trigger-description change here — the overlap risk is
+Re-check overlap after any trigger-description change here — the overlap risk is
 with `change-surface-audit` (removal phrasing), `migration-cutover` ("retire the legacy X"), and
 `api-interface-style` (versioning policy).
 
-## Using it in another repo
+## Dependencies
 
-Repo-agnostic. Reads and writes `docs/engineering/deprecations/` alongside `change-surface-audit`.
-
-```
-cp -r ".claude/skills/deprecation-sunset" /path/to/other-repo/.claude/skills/
-```
+Needs no repo setup; output paths are defaults the repo's own convention overrides. The
+siblings it hands off to are listed in `SKILL.md` → Portability; if one isn't installed,
+`SKILL.md` says what to do inline. Installed in other projects via the plugin described in
+`plugins/README.md`.

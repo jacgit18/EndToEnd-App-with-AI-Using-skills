@@ -84,17 +84,14 @@ JSON).
   questions rather than running its own rep gate (see `learning-gate` Step 3 — Architecture
   decision row and `step3-rows.md`).
 
-Run `skill-interaction-testing` after any trigger-description change here — the overlap risk
+Re-check overlap after any trigger-description change here — the overlap risk
 is with `caching-strategy` (browser vs server cache), `deployment-strategy` (rollout vs SW
 update lifecycle), `resilience-strategy` (offline vs overload degradation), and
 `api-interface-style` (push-vs-poll vs web-push plumbing).
 
-## Using it in another repo
+## Dependencies
 
-Repo-agnostic. Reads and writes `docs/architecture/decisions/` alongside
-`database-architecture` and `caching-strategy`, reusing `database-architecture`'s
-`adr-template.md`.
-
-```
-cp -r .claude/skills/pwa-adoption /path/to/other-repo/.claude/skills/
-```
+Needs no repo setup; output paths are defaults the repo's own convention overrides. The
+siblings it hands off to are listed in `SKILL.md` → Portability; if one isn't installed,
+`SKILL.md` says what to do inline. Installed in other projects via the plugin described in
+`plugins/README.md`.

@@ -1,8 +1,7 @@
 # The Significance Filter
 
 For gate item 6 in `SKILL.md` — deciding which one or two decisions get designed deeply and
-written down *now*, and which are acknowledged and deferred to implementation time. Ported
-from `Architecture/Boundaries of LLD and HLD.md` (a vault note, not in this checkout).
+written down *now*, and which are acknowledged and deferred to implementation time.
 
 The failure this prevents runs both ways: designing all forty decisions up front (waterfall,
 and most of them will change), or treating a foundational decision as "just an

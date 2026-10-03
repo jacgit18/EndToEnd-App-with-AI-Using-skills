@@ -87,17 +87,13 @@ Stops before implementation (the actual middleware/policy-engine code, RLS polic
   output shapes the tenancy decision (gate item 7); also defers there outright for an unscoped
   system with no named actors or resources yet.
 
-Run `skill-interaction-testing` after any trigger-description change here — the overlap risk is
+Re-check overlap after any trigger-description change here — the overlap risk is
 with `cloud-iam-boundary` (app-user vs infra-identity principal, both phrased as "who can access
 X") and `relational-modeling` (naming entities vs designing their schema).
 
-## Using it in another repo
+## Dependencies
 
-Repo-agnostic. Reads and writes `docs/architecture/decisions/` alongside `database-architecture`
-and reuses its `adr-template.md`. Framework-neutral vocabulary; if the repo already uses a policy
-engine (Casbin, OPA, CASL) or an IdP with role/group claims (Auth0, Cognito, Okta), map the
-recommendation onto its actual primitives during the gate rather than inventing a parallel system.
-
-```
-cp -r ".claude/skills/access-control-modeling" /path/to/other-repo/.claude/skills/
-```
+Needs no repo setup; output paths are defaults the repo's own convention overrides. The
+siblings it hands off to are listed in `SKILL.md` → Portability; if one isn't installed,
+`SKILL.md` says what to do inline. Installed in other projects via the plugin described in
+`plugins/README.md`.

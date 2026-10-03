@@ -28,7 +28,9 @@ A gate skill. Output order is fixed: Readiness Block first, unanswered gate ques
 (monorepo tooling, CODEOWNERS, affected-graph CI) and `frontend-layout.md` (integration
 techniques).
 
-## Using it in another repo
+## Dependencies
 
-Repo-agnostic. Writes ADRs to `docs/architecture/decisions/`. Copy the directory to
-`.claude/skills/microservices-decision/`.
+Needs no repo setup; output paths are defaults the repo's own convention overrides. The
+siblings it hands off to are listed in `SKILL.md` → Portability; if one isn't installed,
+`SKILL.md` says what to do inline. Installed in other projects via the plugin described in
+`plugins/README.md`.

@@ -6,8 +6,7 @@ Reference for `SKILL.md` step 3 and step 4. For each component and each interact
 all nine. Each category below gives: what it means, the probe questions to ask, the
 distributed-systems / async specifics, and an example `cause → manifestation → impact` row.
 
-The source note (`Architecture/01. System Design/Failure Modes.md`) defines the categories;
-this file adds the *probe questions* and the async-interaction specifics it lacks, so the
+This file adds *probe questions* and async-interaction specifics to each category, so the
 walk is repeatable rather than freeform.
 
 Record `n/a — <reason>` when a category genuinely does not apply to a component, so a

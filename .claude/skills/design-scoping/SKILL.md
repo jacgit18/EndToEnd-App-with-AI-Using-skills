@@ -25,7 +25,7 @@ routes the deep work to the specialist skills.
 - The user names a system and jumps straight to a technology ("let's use Kafka and
   Postgres for this") without having stated what it's for or how big it is.
 - The user asks **"what should v1 include?"** for a product they haven't listed features for.
-  No skill in this catalog invents a feature list for them; this gate withholds by design.
+  No sibling skill invents a feature list for them; this gate withholds by design.
   Sequence: they state purpose and audience → they list candidate features (Claude may prompt
   by category, not supply the list) → this gate pins scope and out-of-scope → for a competing
   batch, `user-story-decomposition`'s MoSCoW pass (`moscow.md`) makes the categorical cut.
@@ -219,15 +219,13 @@ analysis they're owed, not a re-ask.)
 
 ## Portability
 
-Repo-agnostic. Writes a living scope statement to `docs/architecture/scope/`; the deep-dive
-decisions get their own ADRs from the specialist skills. Copy the `design-scoping/`
-directory into another repo's `.claude/skills/` to use it there. See `README.md` for where
-it sits among the sibling skills.
+Needs no repo setup. Writes a living scope statement to `docs/architecture/scope/` by default (follow the repo's own convention); the deep-dive decisions get their own ADRs from the specialist skills.
 
-**Not a stalled start:** if the user cannot begin at all ("I don't know where to start", overwhelmed) rather than needing a scope statement, that is `entry-point-first` -- one low-resistance rep first, then return here.
+Depends on: `idea-to-first-test`, `system-design-communication`, `user-story-decomposition`, `ticket-evaluation`, `capacity-estimation`, `microservices-decision`, `api-interface-style`, `database-architecture`, `failure-mode-analysis`, `cloud-iam-boundary`, `serverless-execution-model`, `technical-cost-decision`, `disclosure-gap-audit`, `tech-decision-walkthrough`, `spec-drift-gate`, `incremental-build-pacing`, `data-tier-operations`, `caching-strategy`, `access-control-modeling`, `bff-gateway-placement`, `service-mesh-adoption`, `config-and-secrets-management`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no specialist for a deep-dive → record it in the scope statement as an open decision with the question it must answer, rather than deciding it inline; no `technical-cost-decision` → list the cost drivers next to the targets and leave pricing to the user; no `capacity-estimation` → keep the numeric targets as stated and mark them unsized.
 
 ## Routing boundaries (full)
 
 - Use when someone says "design a system for X", "architect a Y", "we're building a new service — how should it be structured", "I'm building X, where do I start", "what's the architecture for this", "scope this project", or hands over a design doc and wants its scope pressure-tested.
 - It is NOT for resolving what a vague request even asks for ("help with my system", "make the architecture better", "clean this up") — that is `ambiguity-gate`, and this skill takes over only once "design or architect a system or feature" is the established intent.
 - It is also NOT for rehearsing or practicing system-design communication — "walk me through this design," "give me a mock system design interview," "help me defend microservices over a monolith here" — even though the vocabulary can sound identical to a real design ask; the tell is stakes and intent, a real system someone is about to build vs. interview prep or practice on a hypothetical. That's `system-design-communication`.
+- Not a stalled start: a user who cannot begin at all ("I don't know where to start", overwhelmed) rather than needing a scope statement is `entry-point-first` — one low-resistance rep first, then return here.

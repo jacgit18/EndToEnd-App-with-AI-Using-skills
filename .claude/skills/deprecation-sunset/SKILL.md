@@ -140,7 +140,9 @@ Not this skill — how versions are named → `api-interface-style`. Come back h
 
 ## Portability
 
-Repo-agnostic. Writes a `## Sunset plan` section into `docs/engineering/deprecations/<slug>.md`, the record `change-surface-audit` owns. Copy the `deprecation-sunset/` directory into another repo's `.claude/skills/` to use it there. See `README.md` for where it sits among the sibling skills.
+Needs no repo setup. Writes a `## Sunset plan` section into `docs/engineering/deprecations/<slug>.md` by default (follow the repo's own convention), the record `change-surface-audit` owns.
+
+Depends on: `change-surface-audit`, `migration-cutover`, `api-interface-style`, `deployment-strategy`, `ticket-evaluation`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `change-surface-audit` → create the record first yourself (what is removed, who consumes it, the replacement, the window), then add the Sunset plan; no `migration-cutover` → moving consumers onto a new system is a separate decision, say so.
 
 ## Routing boundaries (full)
 

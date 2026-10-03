@@ -9,8 +9,6 @@ binary blobs go" — files, media, documents, exports, backups. That is a separa
 choice, and getting it wrong (multi-MB blobs in database rows) is a common early mistake that
 is expensive to undo.
 
-Ported from `Architecture/02. Backing Service Options/File System Storage.md`.
-
 ---
 
 ## The three storage shapes

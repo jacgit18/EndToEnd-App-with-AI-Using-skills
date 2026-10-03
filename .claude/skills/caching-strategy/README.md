@@ -79,15 +79,13 @@ Stops before implementation (cache client wiring, invalidation hooks, warmup job
 - **`learning-gate`** should hand off to this skill on caching-design questions rather than
   running its own rep gate (see `learning-gate` Step 3 — Database design row).
 
-Run `skill-interaction-testing` after any trigger-description change here — the overlap risk is
+Re-check overlap after any trigger-description change here — the overlap risk is
 with `data-tier-operations` (read-scaling questions), `technical-cost-decision` (volume-stated
 system questions), and `api-interface-style` (HTTP caching on an API surface).
 
-## Using it in another repo
+## Dependencies
 
-Repo-agnostic. Reads and writes `docs/architecture/decisions/` alongside `database-architecture`
-and `data-tier-operations`, reusing `database-architecture`'s `adr-template.md`.
-
-```
-cp -r .claude/skills/caching-strategy /path/to/other-repo/.claude/skills/
-```
+Needs no repo setup; output paths are defaults the repo's own convention overrides. The
+siblings it hands off to are listed in `SKILL.md` → Portability; if one isn't installed,
+`SKILL.md` says what to do inline. Installed in other projects via the plugin described in
+`plugins/README.md`.

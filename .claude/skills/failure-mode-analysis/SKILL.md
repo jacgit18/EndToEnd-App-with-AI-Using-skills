@@ -232,10 +232,9 @@ when you need a model of a frame, sample rows, or the routing call.
 
 ## Portability
 
-Repo-agnostic. Writes a living register to `docs/architecture/failure-modes/` (not the
-`decisions/` ADR tree — this is a tracked document, not a point-in-time decision). Copy the
-`failure-mode-analysis/` directory into another repo's `.claude/skills/` to use it there.
-See `README.md` for where it sits among the sibling skills.
+Needs no repo setup. Writes a living register to `docs/architecture/failure-modes/` by default (follow the repo's own convention); it is a tracked document, not a point-in-time ADR.
+
+Depends on: `resilience-strategy`, `observability-strategy`, `test-strategy`, `disclosure-gap-audit`, `change-surface-audit`, `capacity-estimation`, `reliability-math`, `document-page-check`, `test-case-discovery`, `debugging-layer-selection`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `resilience-strategy` → the register names the mitigation category (shed, breaker, timeout, bulkhead) without designing it; no `observability-strategy` → the detection column names the signal, not the alert design; no `test-strategy` → name which modes need a test, not the test mix.
 
 ## Routing boundaries (full)
 

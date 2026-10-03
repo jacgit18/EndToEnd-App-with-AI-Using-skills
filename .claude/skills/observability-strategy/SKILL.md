@@ -25,7 +25,7 @@ Take a service or system that is hard to see into — an incident took hours to 
 - **What the system does under overload or dependency failure** — load shedding and its priority tiers, rate limiting, circuit breakers, retry budgets, bulkheads, graceful degradation → `resilience-strategy`. This skill defines the SLIs that say "critical traffic is healthy" and alerts on them (including on shedding that fires when it shouldn't); that skill decides the mechanisms that keep those SLIs green.
 - **The rollout mechanism a canary/blue-green release gates on** → `deployment-strategy`. This skill defines the SLIs and the health signal; that skill decides recreate/rolling/blue-green/canary and wires the auto-rollback to the signal.
 - **Incident-response process, on-call rotation design, postmortem culture** — organizational, not instrumentation. Name that they matter and stop.
-- **Security monitoring, SIEM, audit logging as a compliance control** — not covered by any skill in this catalog (a security-architecture concern). PII-in-logs and audit-retention constraints are *inputs* to this skill (gate item 8); designing the audit trail is not.
+- **Security monitoring, SIEM, audit logging as a compliance control** — no sibling skill covers it (a security-architecture concern). PII-in-logs and audit-retention constraints are *inputs* to this skill (gate item 8); designing the audit trail is not.
 - **Implementation** — writing the spans, the dashboards, the alert rules, the collector config. The skill stops at the ADR.
 - **Interpreting live numbers** (percentiles vs averages, utilization, error-budget burn mid-incident) → `reliability-math`, which consumes the SLIs this skill defines.
 - **Adopting a mesh for its free RED metrics/tracing** → `service-mesh-adoption`.
@@ -137,7 +137,9 @@ Gate not satisfied — item 4 (no incident, blind spot, or SLA named; "before la
 
 ## Portability
 
-Repo-agnostic. Reads and writes `docs/architecture/decisions/` alongside the other architecture skills, reusing `database-architecture`'s `adr-template.md`. Copy the `observability-strategy/` directory into another repo's `.claude/skills/` to use it there. See `README.md` for where it sits among the sibling skills.
+Needs no repo setup. Writes an ADR to `docs/architecture/decisions/` by default (follow the repo's own convention if it has one), in `database-architecture`'s ADR format; if `database-architecture` isn't installed, use this skeleton: title `NNN. <decision>`; Status and Date; **Context** (the gate answers, plainly); **Decision** (the recommendation block); **Consequences** (accepted costs, rejected alternatives); **Revisit when** (a concrete trigger).
+
+Depends on: `technical-cost-decision`, `debugging-layer-selection`, `web-vitals-audit`, `failure-mode-analysis`, `microservices-decision`, `resilience-strategy`, `deployment-strategy`, `reliability-math`, `service-mesh-adoption`, `capacity-estimation`, `disclosure-gap-audit`, `caching-strategy`, `data-tier-operations`, `cloud-iam-boundary`, `pwa-adoption`, `database-architecture`, `repo-reality-audit`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `technical-cost-decision` → list the volume drivers (ingest GB/day, retention days, metric cardinality, trace sampling rate) and ask the user to price them; no `debugging-layer-selection` → for one live incident, ask which layer the symptom was seen in before designing anything; no `reliability-math` → reading a live SLO burn is out of scope, ask for the numbers.
 
 ## Routing boundaries (full)
 

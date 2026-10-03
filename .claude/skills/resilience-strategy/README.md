@@ -8,11 +8,9 @@ detecting or alerting on overload (that's `observability-strategy`), not scaling
 (that's `data-tier-operations`), not the cache design (that's `caching-strategy`), not
 diagnosing one endpoint that fell over last night (that's `problem-solving-gates`).
 
-Built from the `Architecture/02. Backing Service Options/` notes — `Load Shedding.md`
-(priority dropping, dynamic thresholds, graceful degradation, fallbacks), `Load Shedding
-Implementation.md` (traffic managers, gateways, service meshes, queueing systems, custom
-logic), `Load Balancer.md` (L4/L7, where shedding and limiting attach) — plus `Rate
-Limiting.md`, `Fault Tolerance.md`, and `Chaos Engineering.md`.
+Covers load shedding (priority dropping, dynamic thresholds, graceful degradation, fallbacks)
+and where it attaches (traffic managers, gateways, meshes, queues, custom logic), L4/L7 load
+balancing, rate limiting, fault tolerance and chaos engineering.
 
 ## Where it sits
 
@@ -94,15 +92,13 @@ Stops before implementation (middleware, mesh policy YAML, breaker wiring, load-
 - **`learning-gate`** hands off here on overload-protection / resilience questions rather than
   running its own rep gate (see `learning-gate` Step 3).
 
-Run `skill-interaction-testing` after any trigger-description change here — the overlap risk
+Re-check overlap after any trigger-description change here — the overlap risk
 is with `observability-strategy` (overload detection vs response), `data-tier-operations` (DB
 connection exhaustion), and `caching-strategy` (stale-serve fallback).
 
-## Using it in another repo
+## Dependencies
 
-Repo-agnostic. Reads and writes `docs/architecture/decisions/` alongside `database-architecture`
-and reuses its `adr-template.md`.
-
-```
-cp -r ".claude/skills/resilience-strategy" /path/to/other-repo/.claude/skills/
-```
+Needs no repo setup; output paths are defaults the repo's own convention overrides. The
+siblings it hands off to are listed in `SKILL.md` → Portability; if one isn't installed,
+`SKILL.md` says what to do inline. Installed in other projects via the plugin described in
+`plugins/README.md`.

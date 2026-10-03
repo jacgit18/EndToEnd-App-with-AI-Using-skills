@@ -8,13 +8,9 @@ workload to a different system (that's `migration-cutover`), not which tests run
 pipeline (that's `test-strategy`), not the health signal's own design (that's
 `observability-strategy`).
 
-Built from the `Architecture/Devops/` notes — `Deployment Strategies.md` (CI/CD, deployment
-patterns), `Release.md` (versioning, code freeze, release process), `Staged Deployment.md`
-(environment progression), `Steps to Release Stage.md`, `Deployment Artifacts.md` — plus the
-12-factor `V Build, release, run.md` and `Database Migrations.md`. The ECS-vs-Kubernetes
-vendor-mechanics note in `rollout-patterns.md` was added `2026-09-04` from `Architecture/02.
-Backing Service Options/Cloud/AWS/AWS CI-CD Pipeline.md` (CodeDeploy for ECS,
-kubectl/Helm/Argo Rollouts/Flagger for EKS).
+Covers CI/CD and rollout patterns, versioning and the release process, environment
+progression, deployment artifacts, build/release/run separation and database migrations,
+with ECS vs. Kubernetes rollout mechanics in `rollout-patterns.md`.
 
 ## Where it sits
 
@@ -89,15 +85,13 @@ Stops before implementation (rollout-controller config, probes, migration script
 - **`learning-gate`** hands off here on rollout / release-process questions rather than
   running its own rep gate (see `learning-gate` Step 3).
 
-Run `skill-interaction-testing` after any trigger-description change here — the overlap risk
+Re-check overlap after any trigger-description change here — the overlap risk
 is with `migration-cutover` (blue-green / canary phrasing, "cut over"), `test-strategy`
 (pipeline stages), and `observability-strategy` (the health signal).
 
-## Using it in another repo
+## Dependencies
 
-Repo-agnostic. Reads and writes `docs/architecture/decisions/` alongside `database-architecture`
-and reuses its `adr-template.md`.
-
-```
-cp -r ".claude/skills/deployment-strategy" /path/to/other-repo/.claude/skills/
-```
+Needs no repo setup; output paths are defaults the repo's own convention overrides. The
+siblings it hands off to are listed in `SKILL.md` → Portability; if one isn't installed,
+`SKILL.md` says what to do inline. Installed in other projects via the plugin described in
+`plugins/README.md`.

@@ -127,7 +127,9 @@ Gate not satisfied — items 1–8 all missing, and it's unclear whether this is
 
 ## Portability
 
-Repo-agnostic. Reads `docs/architecture/decisions/` for context and writes new ADRs there. Copy the `api-interface-style/` directory into another repo's `.claude/skills/` to use it there. See `README.md` for where it sits among the sibling decision skills.
+Needs no repo setup. Writes an ADR to `docs/architecture/decisions/` by default (follow the repo's own convention if it has one), in `database-architecture`'s ADR format; if `database-architecture` isn't installed, use this skeleton: title `NNN. <decision>`; Status and Date; **Context** (the gate answers, plainly); **Decision** (the recommendation block); **Consequences** (accepted costs, rejected alternatives); **Revisit when** (a concrete trigger).
+
+Depends on: `database-architecture`, `bff-gateway-placement`, `deprecation-sunset`, `microservices-decision`, `technical-cost-decision`, `relational-modeling`, `dimensional-modeling`, `data-tier-operations`, `api-tooling-selection`, `change-surface-audit`, `caching-strategy`, `data-access-layer`, `pwa-adoption`, `tech-decision-walkthrough`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `database-architecture` and the question is whether the API contract is the schema's source of truth → say that is a separate decision and ask which side owns the schema before choosing a style; no `bff-gateway-placement` → recommend the style per consumer and name what sits between client and services as open; no `deprecation-sunset` → for retiring an old version, name the minimum: a dated window, notice to consumers, and a usage check before removal.
 
 ## Routing boundaries (full)
 
