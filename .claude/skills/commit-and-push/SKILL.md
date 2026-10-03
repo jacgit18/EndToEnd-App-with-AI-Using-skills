@@ -197,6 +197,12 @@ Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
 - **A pre-commit hook fails** — the commit did not happen. Show the hook's output, fix what it names (formatter, lint, tests) if that is in scope, re-stage those paths, and make a NEW commit; never `--no-verify` unless the user says so, and never `--amend` (the previous commit is not yours to rewrite).
 - **Signing fails** (GPG/SSH key unavailable, agent locked) — stop and report the error; don't disable `commit.gpgsign` or pass `--no-gpg-sign` without the user's explicit say-so.
 
+## Portability
+
+Needs only `git` (and `gh` for the PR hand-off). The `scripts/git/*` helpers are this repo's wrappers: when `scripts/git/` is absent, use the plain-git equivalent shown beside each step. The co-author trailer comes from `git config commit-helper.trailer` or the repo's recent history; with neither, ask once rather than invent one. Writes nothing outside the repo.
+
+Depends on: `history-integration-strategy`. If it isn't installed, say so and give the one-line answer inline instead of dropping the hand-off. The load-bearing fallback: no `history-integration-strategy` and the user wants history cleaned up before pushing → say the strategy gate isn't installed, push nothing yet, and ask which strategy they want.
+
 ## Routing boundaries (full)
 
 - Use when the user says "commit this", "commit and push", "push my changes", "save this to git", "commit with a good message", "write the commit message", or finishes a chunk of work and wants it in version control.

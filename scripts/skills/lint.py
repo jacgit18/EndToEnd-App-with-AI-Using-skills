@@ -43,6 +43,8 @@ def read_frontmatter(path):
         else:
             desc = first
             k = 3
+            while k < len(L) and re.match(r"^[a-z][a-z-]*: \S", L[k]):
+                k += 1  # single-line keys after the description, e.g. disable-model-invocation
             if k < len(L) and L[k].strip() != "---":
                 errs.append("description continues past line 3 without a folded block")
     closed = any(l.strip() == "---" for l in L[k:k + 2]) or (k < len(L) and L[k].strip() == "---")

@@ -1,6 +1,7 @@
 ---
 name: context-promotion
 description: Promotes context that recurs across sessions (a constraint, deciding axis or preference restated in a later session) into a rules file or CLAUDE.md, a spec, or memory, after you confirm. Use for "I keep repeating this", "add this to my CLAUDE.md", "put that in the spec", or when you notice a standing preference restated. Not `session-handoff`, `spec-drift-gate` (new spec), `prompt-archive`, or a one-off "remember X".
+disable-model-invocation: true
 ---
 
 # Context Promotion
@@ -72,4 +73,4 @@ Does not fire → `session-handoff`. Likewise "write a spec for the invoicing se
 
 ## Portability
 
-Repo-agnostic except the paths in `destinations.md` (`.claude/rules/`, `.claude/_Prompts/logs/`, the memory index). Project-only: not in any plugin; a repo without those paths needs them adjusted first.
+Repo-agnostic except the paths in `destinations.md` (`.claude/rules/`, `.claude/_Prompts/logs/`, the memory index). Slash-only (`disable-model-invocation`), installed globally. In a repo with no `.claude/rules/`, put a standing project instruction in the repo's `CLAUDE.md` (ask before creating one); a preference about how the user works goes to memory or `~/.claude/CLAUDE.md`. With no prompt logs, work from the current prompt only (Step 1 already says so).

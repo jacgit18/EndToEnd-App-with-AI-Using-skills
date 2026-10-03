@@ -1,6 +1,7 @@
 ---
 name: tech-decision-walkthrough
 description: Coached, conversational procedure for choosing a build's technologies out loud, one decision at a time, system-design-interview style. Use when someone says "help me pick the stack and explain why", "walk me through the tech choices like a system design interview", "talk me out of it if I'm wrong". NOT `problem-solving-gates`, `design-scoping`, or the single-decision skills used alone (`database-architecture`).
+disable-model-invocation: true
 ---
 
 # Tech Decision Walkthrough
@@ -105,7 +106,7 @@ in those terms — "what would undoing this in six months cost, and what builds 
 decision that *looks* routine but is a proxy for an undecided business definition ("how does the
 business define X?") is load-bearing; tag it that way. Say who holds the call: Claude may own a
 routine pick, drafts a structural one for the user's review, and only recommends on a
-load-bearing one. (Human-facing recall card: `Artifact/delegation-decision-density.md`.)
+load-bearing one. (Human-facing recall card: `Artifact/delegation-decision-density.md` — in this project, the DevHiveMind copy; see `.claude/rules/conventions.md`.)
 
 ## Step 4 — Closeout
 

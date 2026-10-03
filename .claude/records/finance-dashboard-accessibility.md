@@ -69,7 +69,7 @@ Final measurement, same setup, after the fixes:
 
 **Run-to-run variation.** Lighthouse mobile Performance moved between 99 and 100 on identical builds (simulated throttling). One real regression appeared and was fixed: a separate stylesheet made `/dashboard` score 99 on three runs in a row (LCP 1.9 s); inlining it restored 100 (LCP 1.6 s, two repeat runs).
 
-**Not covered by this run.** Pages were measured in their loaded, default state only: the account and category edit rows, the Import page after a file is chosen, and error messages were not audited. The fixture API is not real data. Deploy status: see TODO.md.
+**Not covered by this run.** Pages were measured in their loaded, default state only: the account and category edit rows, the Import page after a file is chosen, and error messages were not audited. The fixture API is not real data. Deploy status: see ~/Documents/TODO.md.
 
 ## States and manual-review items run by script (2026-10-03, second pass)
 

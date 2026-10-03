@@ -1,6 +1,7 @@
 ---
 name: system-design-communication
 description: Live rehearsal of explaining a system design out loud: Design Walkthrough, Mock Interview, or Tradeoff Defense. Use for "help me walk through this design," "give me a mock system design interview," "quiz me on this". Rehearsal only, no ADR. Not `design-scoping` (real system to build), not `tech-decision-walkthrough` (real tech choices), not `codebase-file-orientation` (a file's doc).
+disable-model-invocation: true
 ---
 
 # System Design Communication
@@ -52,7 +53,7 @@ Not real design work — a request to actually architect, scope, or decide on a 
 
 ## Portability
 
-Needs no repo setup and writes nothing. Project-only: not in any plugin.
+Needs no repo setup and writes nothing. Slash-only (`disable-model-invocation`); shipped in the personal-core symlink set, not a plugin.
 
 Depends on: `design-scoping`, `tech-decision-walkthrough`, `explaining-my-work`, `learning-gate`, `codebase-file-orientation`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `design-scoping` or `tech-decision-walkthrough` at the escape hatch → end the drill with the debrief and say the real-design path isn't installed, still without supplying the design; no `design-scoping` and the request is a real system about to be built → say this skill is rehearsal only and ask whether they want to practise or build.
 

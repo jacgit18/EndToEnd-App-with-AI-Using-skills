@@ -1,6 +1,7 @@
 ---
 name: decision-journal
 description: Two modes: Log a judgment call with reasoning, alternatives, stated confidence, a falsifiable prediction and review-by date; or Review it later to compare outcome to prediction and calibrate. Use when "log this decision", "add this to my decision journal", "how calibrated am I". Not a live gate. NOT `problem-journal` (bug post-mortem), NOT `tech-decision-walkthrough` (makes the choice/ADR), NOT `session-handoff`.
+disable-model-invocation: true
 ---
 
 # Decision Journal
@@ -9,7 +10,7 @@ A decision made without a written prediction can't be wrong, so it can't teach a
 
 | Ask | Mode |
 |---|---|
-| "log this decision", "I decided X — record why", "write this down so I can check it later" | **Log** — one entry in `.claude/_Prompts/decisions-log.md` |
+| "log this decision", "I decided X — record why", "write this down so I can check it later" | **Log** — one entry in `<journal>/decisions-log.md` |
 | A logged review-by has come due; "review my decision from …", "did that pan out", "how good are my calls" | **Review** — fill in the outcome on the entry, then a calibration read |
 
 If it's unclear which, ask in one line. Do not run both unless asked.
@@ -55,7 +56,9 @@ Retrospective entries are **excluded from the calibration count** (a prediction 
 
 ### Entry format
 
-Append to `.claude/_Prompts/decisions-log.md` (create it with a `# Decision Journal` heading if absent):
+`<journal>` is one folder, resolved once per run: `$JOURNAL_DIR` if set; else the `Journal root:` line in `~/.claude/CLAUDE.md`; else `.claude/_Prompts/` in the current repo. Quote the path (it may contain spaces).
+
+Append to `<journal>/decisions-log.md` (create it with a `# Decision Journal` heading if absent):
 
 ```markdown
 ## D-YYYY-MM-DD-<slug> — <short decision title>   (use today's date, e.g. D-2026-09-23)
@@ -125,11 +128,11 @@ Not this skill. `problem-journal`.
 
 ## Portability
 
-Repo-agnostic. Assumes only `.claude/_Prompts/` (also used by `problem-journal` and `prompt-archive`); the ADR link works with any ADR convention — drop the `tech-decision-walkthrough` path if that skill isn't present. Copy the `decision-journal/` directory into another repo's `.claude/skills/` to use it there.
+Repo-agnostic. Writes only under the journal root (`$JOURNAL_DIR`, else `Journal root:` in `~/.claude/CLAUDE.md`, else `.claude/_Prompts/` — see Log mode). The ADR link works with any ADR convention — drop the `tech-decision-walkthrough` path if that skill isn't present. Installed globally, it needs no per-repo setup.
 
 ## Routing boundaries (full)
 
-- Mode Log — the user has made (or is committing to) a non-trivial engineering or judgment call and wants it recorded so it can be checked later — "log this decision", "I decided to X, record why", "add this to my decision journal", "write this down so I can check it in a month" — writes a short entry to `.claude/_Prompts/decisions-log.md` with the decision, the reasoning, the alternatives rejected, a stated confidence (%), a concrete falsifiable prediction, and a review-by date or trigger.
+- Mode Log — the user has made (or is committing to) a non-trivial engineering or judgment call and wants it recorded so it can be checked later — "log this decision", "I decided to X, record why", "add this to my decision journal", "write this down so I can check it in a month" — writes a short entry to `<journal>/decisions-log.md` with the decision, the reasoning, the alternatives rejected, a stated confidence (%), a concrete falsifiable prediction, and a review-by date or trigger.
 - Mode Review — the review-by date or trigger has arrived, or the user asks "review my decision from last month", "did that decision pan out", "how good are my calls", "how calibrated am I" — compares what actually happened to the prediction and the confidence, names the hit or miss, and asks the user what their reasoning assumed that did or didn't hold; the user does that reasoning, Claude does not grade it for them.
 - NOT a live gate and NOT on every decision: it fires only when the user wants a decision recorded or reviewed, or a logged review-by has come due; it never interrupts a decision in progress.
 - NOT `problem-solving-gates` Options Generator (making the decision) and NOT `learning-gate`.
