@@ -1,6 +1,6 @@
 ---
 name: web-vitals-audit
-description: Procedure for a poor Lighthouse or Core Web Vitals number: reproduce it cold (first visit, throttling verified, several widths), find layout shift element by element, rank fixes by cost. Triggers: "my Lighthouse score is low", "fix our CLS", "the page jumps when fonts load". Not backend slowness (`problem-solving-gates` Optimization), service-worker design (`pwa-adoption`), a network symptom (`debugging-layer-selection`), or an axe scan inside e2e (`browser-test-tooling`).
+description: Procedure for a poor Lighthouse or Core Web Vitals number, or an axe/accessibility audit of a site: reproduce cold (first visit, throttling verified, several widths), find layout shift element by element, rank fixes by cost. Triggers: "my Lighthouse score is low", "fix our CLS", "audit this site's accessibility", "run axe on every page". Not backend slowness (`problem-solving-gates`), service workers (`pwa-adoption`), a network symptom (`debugging-layer-selection`), or axe inside e2e (`browser-test-tooling`).
 ---
 
 # Web Vitals Audit
