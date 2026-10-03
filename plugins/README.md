@@ -62,12 +62,14 @@ Try it without installing: `claude --plugin-dir plugins/planning-skills`. This r
 ## Personal core (not a plugin)
 
 Skills about how you work rather than about a project load as plain user skills via symlinks:
-the four request-shape gates, plus the writing trio (`explaining-my-work`, `delete-ai-words`,
-`software-carpentier-brand`). Already installed ones are skipped:
+the four request-shape gates, the writing trio (`explaining-my-work`, `delete-ai-words`,
+`software-carpentier-brand`), and the two Documents skills (`codebase-file-orientation`,
+`document-page-check`). Already installed ones are skipped:
 
 ```bash
 for s in ambiguity-gate learning-gate problem-solving-gates entry-point-first \
-         explaining-my-work delete-ai-words software-carpentier-brand; do
+         explaining-my-work delete-ai-words software-carpentier-brand \
+         codebase-file-orientation document-page-check; do
   [ -e ~/.claude/skills/$s ] || ln -s "$PWD/.claude/skills/$s" ~/.claude/skills/$s
 done
 ```

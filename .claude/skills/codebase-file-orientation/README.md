@@ -62,14 +62,11 @@ newly-missing symbols) and a proposed patch — **not applied until the user con
 - The file already has a docstring the repo's tooling reads and it already carries role + surface →
   the sidecar may be unnecessary; say so.
 
-## Using it in another repo
+## Dependencies
 
-Repo-agnostic — reads source, writes one `.md` per file at the repo's own convention, owns no fixed
-`docs/` path.
-
-```
-cp -r ".claude/skills/codebase-file-orientation" /path/to/other-repo/.claude/skills/
-```
+Needs no repo setup — reads source, writes one `.md` per file at the repo's own convention, owns no
+fixed `docs/` path. The siblings it hands off to are listed in `SKILL.md` → Portability; if one isn't
+installed, `SKILL.md` says what to do inline. Installed in other projects via the personal-core symlink set in `plugins/README.md`.
 
 ## Interaction with sibling skills
 

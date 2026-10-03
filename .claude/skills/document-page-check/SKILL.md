@@ -141,13 +141,11 @@ range when they asked what it says), recommend **Gate** and say why in one line.
 
 ## Portability
 
-Repo-agnostic and self-contained — it writes no files and touches no `docs/` tree, it just
-inspects a document and reports. Copy the `document-page-check/` directory into another
-repo's `.claude/skills/` to use it there.
+Needs no repo setup and is self-contained: it writes no files and touches no `docs/` tree, it just
+inspects a document and reports.
 
-```
-cp -r ".claude/skills/document-page-check" /path/to/other-repo/.claude/skills/
-```
+Depends on: nothing. `codebase-file-orientation` is named only as a carve-out; if it isn't installed,
+a request to document a source file is still not this skill's job.
 
 See `README.md` for how it sits next to the other skills.
 
