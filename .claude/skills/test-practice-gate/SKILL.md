@@ -89,7 +89,9 @@ Practice intent, charter absent. Do not list what to test. Point at `charter-gui
 
 ## Portability
 
-Repo-agnostic. Produces no artifact — it gates a coding action. Copy the `test-practice-gate/` directory into another repo's `.claude/skills/` to use it there. See `README.md` for where it sits relative to `problem-solving-gates`, `learning-gate`, `test-strategy`, and `coverage-policy`.
+Needs no repo setup; produces no files — it gates a coding action.
+
+Depends on: `test-strategy`, `test-case-discovery`, `coverage-policy`, `database-test-tooling`, `browser-test-tooling`, `problem-solving-gates`, `ambiguity-gate`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `ambiguity-gate` and the ask is a bare "can you test this" → ask one question (write tests, run them, or explore what to test?) before any charter question; no `test-case-discovery` and the target is a whole module → ask the user to list its behaviours first, then charter one.
 
 ## Routing boundaries (full)
 

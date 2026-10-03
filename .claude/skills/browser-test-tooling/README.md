@@ -41,14 +41,22 @@ write config or tests.
 - Lighthouse/CWV scores → `web-vitals-audit`; service-worker design → `pwa-adoption`.
 - Agents driving a browser as a live tool → `api-tooling-selection`.
 
-## Using it in another repo
+## Dependencies
 
-Repo-agnostic; names no project files.
-
-```
-cp -r .claude/skills/browser-test-tooling /path/to/other-repo/.claude/skills/
-```
+Needs no repo setup. The siblings it hands off to are listed in `SKILL.md` → Portability; if one isn't installed,
+`SKILL.md` says what to do inline. Not yet packaged as a plugin; `plugins/README.md` describes
+how catalog subsets are installed in other projects.
 
 ## Interaction with sibling skills
 
-Tested via `skill-interaction-testing` at build time; see the project memory entry.
+- **vs `test-strategy`** — that skill decides whether an e2e tier exists and which journeys it
+  covers; this one decides what it runs against and how it stays deterministic. Settle the
+  tier first.
+- **vs `test-case-discovery`** — which journeys/cases to cover is there.
+- **vs `problem-solving-gates`** — one failing spec with a trace is a Rubber Duck rep; a suite
+  flaking across runs is here.
+- **vs `pwa-adoption`** — service-worker design is there; keeping tests honest around a
+  service worker is here.
+- **vs `web-vitals-audit`** — a Lighthouse/CWV number is there; an axe scan inside e2e is here.
+
+Re-check overlap after any trigger-description change here.

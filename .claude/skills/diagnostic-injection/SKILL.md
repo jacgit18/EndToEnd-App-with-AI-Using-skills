@@ -111,6 +111,8 @@ Does not fire: first is not ready (form a hypothesis first), second is tool sele
 
 Works on any code you can edit and run locally or on a test environment. Language, stack, and deployment model agnostic. Requires `git worktree` (standard in modern git) and the ability to reproduce the symptom quickly (within seconds).
 
+Depends on: `debugging-layer-selection`, `problem-solving-gates`, `bug-hunt-drill`, `test-case-discovery`, `problem-journal`, `repo-reality-audit`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `debugging-layer-selection` and the layer isn't known → ask which layer the symptom was seen in (browser, server logs, network, database) before choosing a mutation; no `problem-journal` → give the hypothesis → injection → result → fix summary in chat and offer to save it as a markdown file.
+
 ## References
 
 - `mutation-patterns.md` — real-world examples of mutations by hypothesis (cache, async, permissions, performance) with expected results.

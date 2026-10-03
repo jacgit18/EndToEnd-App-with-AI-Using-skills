@@ -61,19 +61,17 @@ Stops before framework choice, test code, and CI wiring.
   decision consumes that choice).
 - CI / E2E infrastructure cost at build volume → `technical-cost-decision`.
 
-## Using it in another repo
+## Dependencies
 
-Repo-agnostic. Reads `docs/architecture/decisions/` and CI config; writes `docs/testing/`
-and `docs/architecture/decisions/`.
-
-```
-cp -r .claude/skills/test-strategy /path/to/other-repo/.claude/skills/
-```
+Needs no repo setup; output paths are defaults the repo's own convention overrides.
+The siblings it hands off to are listed in `SKILL.md` → Portability; if one isn't installed,
+`SKILL.md` says what to do inline. Not yet packaged as a plugin; `plugins/README.md` describes
+how catalog subsets are installed in other projects.
 
 ## Interaction with sibling skills
 
-Run `skill-interaction-testing` when this skill or a sibling's description changes. Known
-boundaries to hold:
+Re-check overlap when this skill or a sibling's description changes. Known boundaries to
+hold:
 
 - **vs `coverage-policy`** — both fire on "how should we test X". The split is
   which-tests-and-where (here) vs what-percentage-and-enforcement (there). Both

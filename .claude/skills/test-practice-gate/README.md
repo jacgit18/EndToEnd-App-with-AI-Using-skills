@@ -49,18 +49,16 @@ user-authored charter*, or a request for that charter.
 - Reviewing tests that already exist → `code-review`.
 - The charter was already in the request → gate satisfied on arrival, write the tests.
 
-## Using it in another repo
+## Dependencies
 
-Repo-agnostic, produces no files.
-
-```
-cp -r .claude/skills/test-practice-gate /path/to/other-repo/.claude/skills/
-```
+Needs no repo setup. The siblings it hands off to are listed in `SKILL.md` → Portability; if one isn't installed,
+`SKILL.md` says what to do inline. Not yet packaged as a plugin; `plugins/README.md` describes
+how catalog subsets are installed in other projects.
 
 ## Interaction with sibling skills
 
-Run `skill-interaction-testing` when this skill or a sibling's description changes. Known
-boundaries to hold:
+Re-check overlap when this skill or a sibling's description changes. Known boundaries to
+hold:
 
 - **vs `problem-solving-gates`** — that skill's three modes are debugging, architecture, and
   understanding *production* code; it excludes writing code. This is the writing-tests case

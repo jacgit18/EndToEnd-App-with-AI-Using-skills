@@ -24,9 +24,10 @@ Ask if unstated, in one message:
 3. **What "fixed" means** — a score threshold, a metric passing (CLS < 0.1, LCP < 2.5 s,
    INP < 200 ms at p75), or "it stops jumping".
 
-If the user names no threshold, the default target is the standing policy in
-`.claude/rules/web-accessibility-and-lighthouse.md`: 100 in every Lighthouse category on
-mobile and desktop. A 100 is regression evidence, never a WCAG AAA conformance claim.
+If the user names no threshold, the default target is the repo's standing policy if it has
+one (here, `.claude/rules/web-accessibility-and-lighthouse.md`: 100 in every Lighthouse
+category on mobile and desktop); with none, propose the Core Web Vitals "good" thresholds
+above and confirm. A 100 is regression evidence, never a WCAG AAA conformance claim.
 
 No number and no symptom ("make the site faster") is not this skill yet — ask which page and
 what is slow, or route to `problem-solving-gates` Optimization if it is not a page-load metric.
@@ -140,6 +141,12 @@ Does not apply — `pwa-adoption`.
 > "The page loads but the fetch to `/api/user` fails with a CORS error."
 
 Does not apply — a functional network symptom; `debugging-layer-selection`.
+
+## Portability
+
+Needs Node (`npx lighthouse`) and a Chromium; Playwright is optional but makes the height-diff and multi-width runs scriptable. Produces no files.
+
+Depends on: `problem-solving-gates`, `pwa-adoption`, `debugging-layer-selection`, `browser-test-tooling`, `caching-strategy`, `observability-strategy`, `reliability-math`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `problem-solving-gates` and the slowness is server-side → ask for a server timing measurement before changing frontend code; no `pwa-adoption` → service-worker design is a separate decision, say so; no `debugging-layer-selection` and the symptom is a failing or hanging request → that is a network question, not a vitals one.
 
 ## Routing boundaries (full)
 

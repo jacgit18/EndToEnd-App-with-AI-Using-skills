@@ -87,3 +87,9 @@ Injects `return` to skip the await; runs the job; if it returns instantly, the a
 > "I've been debugging this for an hour. What's wrong with my code?"
 
 Does not fire: this is `problem-solving-gates` Rubber Duck first. Once you have a hypothesis, come back here to test it.
+
+## Dependencies
+
+Needs `git worktree` and a reproducible symptom or test suite. The siblings it hands off to are listed in `SKILL.md` → Portability; if one isn't installed,
+`SKILL.md` says what to do inline. Not yet packaged as a plugin; `plugins/README.md` describes
+how catalog subsets are installed in other projects.

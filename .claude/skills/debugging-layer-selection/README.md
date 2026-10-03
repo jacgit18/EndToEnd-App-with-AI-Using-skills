@@ -62,19 +62,16 @@ layer shows.
   `test-practice-gate`. Unrelated axis; grouped here as a sibling because both are
   quality/engineering-practice skills, not because the subject matter overlaps.
 
-## Using it in another repo
+## Dependencies
 
-Repo-agnostic; names no project-specific files or paths.
-
-```
-cp -r .claude/skills/debugging-layer-selection /path/to/other-repo/.claude/skills/
-```
+Needs no repo setup. The siblings it hands off to are listed in `SKILL.md` → Portability; if one isn't installed,
+`SKILL.md` says what to do inline. Not yet packaged as a plugin; `plugins/README.md` describes
+how catalog subsets are installed in other projects.
 
 ## Interaction with sibling skills
 
-Tested via `skill-interaction-testing` (worktree agent, 5 scenarios) at build time — 2 real
-issues found and fixed reciprocally, recorded here so the pair isn't silently re-tested
-without a new reason:
+Interaction-tested at build time (5 scenarios); 2 real issues found and fixed reciprocally,
+recorded here so the pair isn't re-tested without a new reason:
 
 - **vs `problem-solving-gates` (Rubber Duck) — starvation, fixed.** Rubber Duck's Mode 1
   trigger is broad enough ("user is debugging... without having shown their own attempt

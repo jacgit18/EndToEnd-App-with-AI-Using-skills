@@ -38,17 +38,15 @@ A case table: case | type | setup | action | expected result | source of expecte
 - Fault-injection target list → `failure-mode-analysis`.
 - Test code quality → `code-review`.
 
-## Using it in another repo
+## Dependencies
 
-Repo-agnostic, produces no files.
-
-```
-cp -r .claude/skills/test-case-discovery /path/to/other-repo/.claude/skills/
-```
+Needs no repo setup. The siblings it hands off to are listed in `SKILL.md` → Portability; if one isn't installed,
+`SKILL.md` says what to do inline. Not yet packaged as a plugin; `plugins/README.md` describes
+how catalog subsets are installed in other projects.
 
 ## Interaction with sibling skills
 
-Run `skill-interaction-testing` when this skill or a sibling's description changes. Boundaries to hold:
+Re-check overlap when this skill or a sibling's description changes. Boundaries to hold:
 
 - **vs `test-practice-gate`** — the closest overlap. "What should I test here" about one unit from someone practicing → the gate (user states a charter). "What cases am I missing for this feature / endpoint / plan" → here. Never stack the charter questions on the discovery probes. When a stated charter's failure-mode list is thin, the gate's gap-check may point here for a wider sweep only if the user asks for it.
 - **vs `test-strategy`** — this skill's level column is a one-word suggestion; strategy owns levels and the pipeline. When one message asks for both, strategy resolves first and the case table follows, not a second round of questions in the same turn. (Interaction test S3 caught this: without the rule, both skills' questions stacked and had to be merged by judgment.)

@@ -53,17 +53,19 @@ write the test infrastructure or CI config — that's the implementer's next, se
 - **Where the schema's source of truth lives** (database-first/code-first/contract-first) →
   `database-architecture`.
 
-## Using it in another repo
+## Dependencies
 
-Repo-agnostic; names no project-specific files, paths, or database engine.
-
-```
-cp -r .claude/skills/database-test-tooling /path/to/other-repo/.claude/skills/
-```
+Needs no repo setup. The siblings it hands off to are listed in `SKILL.md` → Portability; if one isn't installed,
+`SKILL.md` says what to do inline. Not yet packaged as a plugin; `plugins/README.md` describes
+how catalog subsets are installed in other projects.
 
 ## Interaction with sibling skills
 
-Tested via `skill-interaction-testing` (worktree agent) at build time. See the skill's own
-`SKILL.md` commit message / project memory for the scenarios run and any fixes applied — this
-section is refreshed only when a later change reopens a specific pair, per that skill's own
-"don't re-test without a new reason" rule.
+- **vs `test-strategy`** — that skill decides that a DB-seam test exists and at which level;
+  this one decides what backs it.
+- **vs `data-access-layer`** — how production code reads and writes rows is there.
+- **vs `api-tooling-selection`** — an agent driving a database GUI or MCP server live is there.
+- **vs `test-practice-gate` / `test-case-discovery`** — writing one DB test, or listing its
+  cases, is there.
+
+Re-check overlap after any trigger-description change here.

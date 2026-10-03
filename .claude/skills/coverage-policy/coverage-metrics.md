@@ -36,7 +36,7 @@ Like statement coverage but counted per source line; may not distinguish multipl
 
 ## The reference band
 
-From the "Code Coverage Best Practices" source note (a PersonalBrain-vault note that is not in this checkout; it carries the "no universal number" principle and Google's 60/75/90 guideline — treat it as the origin of those claims, not a file to open), citing Google's internal guideline — a **starting reference, not a mandate**:
+From the Google Testing Blog post "Code Coverage Best Practices" (2020), citing Google's internal guideline — a **starting reference, not a mandate**:
 
 | Coverage | Label |
 |---|---|

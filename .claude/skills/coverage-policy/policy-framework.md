@@ -4,7 +4,7 @@ Work these in order once the gate in `SKILL.md` is satisfied. Each step produces
 
 ## 1. Segment the codebase
 
-Split the scope into segments that deserve different policies. The axes, in priority order: **business criticality**, **change frequency**, **complexity**, **expected lifespan** (from the "Code Coverage Best Practices" source note (a PersonalBrain-vault note that is not in this checkout; it carries the "no universal number" principle and Google's 60/75/90 guideline — treat it as the origin of those claims, not a file to open)).
+Split the scope into segments that deserve different policies. The axes, in priority order: **business criticality**, **change frequency**, **complexity**, **expected lifespan** (from the Google Testing Blog post "Code Coverage Best Practices", 2020).
 
 | Segment | Criticality | Churn | Verdict |
 |---|---|---|---|

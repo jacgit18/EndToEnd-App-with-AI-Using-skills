@@ -98,6 +98,12 @@ Fires, hand-off: draft the table from the spec, list assumptions, ask where expe
 
 Does not fire: writing tests is `test-practice-gate`, the DB mechanism is `database-test-tooling`, the level mix is `test-strategy`.
 
+## Portability
+
+Needs no repo setup; produces no files.
+
+Depends on: `test-strategy`, `test-practice-gate`, `coverage-policy`, `database-test-tooling`, `browser-test-tooling`, `debugging-layer-selection`, `problem-solving-gates`, `failure-mode-analysis`, `api-interface-style`, `bug-hunt-drill`, `ambiguity-gate`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `test-strategy` → the level column stays a one-word suggestion and the mix is a separate decision, say so; no `test-practice-gate` and the ask is one function from someone practicing → ask them to name the risk the tests protect before drafting; no `api-interface-style` → take an API's error statuses from the spec or the user, never pick them yourself.
+
 ## Routing boundaries (full)
 
 The frontmatter `description` is kept short for the skill listing budget; the full original description is preserved here.
