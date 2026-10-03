@@ -150,3 +150,21 @@ yet due to fire organically).
 
 No description edits proposed this pass — nothing here points to a specific wording fix, only a
 measurement-method fix for the next `catalog-drift-audit` / usage-log run.
+
+## 2026-10-03 — whole-catalog mechanical pass (70 skills), ahead of global/plugin packaging
+
+- **Steps 1–2:** skipped (`SKILL-BACKLOG.md` and README catalog table absent in this checkout).
+- **Step 3 dead references:** none real. 8 backticked names flagged by the heuristic were concepts or
+  external skills (`threat-model`, `pip-audit`, `equity-trade-decision` = anthropic-skills, etc.).
+- **Step 5 starvation:** none; every skill has 3+ inbound pointers.
+- **Mechanical fixes applied:** 11 one-way description pointers → 0, by adding reciprocal "Not for"
+  bullets to the Routing boundaries section of `problem-solving-gates`, `debugging-layer-selection`,
+  `test-case-discovery`, `catalog-drift-audit`, `change-surface-audit`, `observability-strategy`,
+  `spec-drift-gate`, `test-strategy` (bodies only, no description budget spent). Trimmed
+  `repo-reality-audit` description from ~1,500 to ~480 chars (carve-outs already in its body);
+  listing total 29,051 → 28,172 chars.
+- **Step 4 (untested old pairs):** flagged, not run. Handled by the Data-cluster interaction test.
+- **Usage read:** organic repeat use only for `session-handoff`, `tech-decision-walkthrough`,
+  `spec-drift-gate`; 8 skills never fired (`browser-test-tooling`, `bug-hunt-drill`,
+  `context-promotion`, `deprecation-sunset`, `diagnostic-injection`, `idea-to-first-test`,
+  `repo-reality-audit`, `web-vitals-audit`). Most are new; no action.
