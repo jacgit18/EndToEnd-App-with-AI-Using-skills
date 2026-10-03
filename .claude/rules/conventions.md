@@ -11,6 +11,16 @@
 - **Staging** is always explicit pathspecs — never `git add -A` / `git add .`. Check
   `git diff --cached` before a pathspec-less `git commit`.
 
+## Standing preferences
+
+- **Prod deploys** need an explicit, fresh "deploy to prod" from the user in the current
+  session. A spec, an earlier approval, or the pre-authorized `land.sh` merge never stands in
+  for it.
+- **Pasted preambles.** When a prompt opens with a block of standing preferences, decisions or
+  constraints, check each against memory, `.claude/rules/` and the spec it names. If any is not
+  saved, offer once, in one line, to save it (`context-promotion` says where each belongs), then
+  carry on with the task. Say nothing if they are all saved; don't repeat the offer in a session.
+
 ## Git helper scripts
 
 `scripts/git/` wraps the rituals so a commit is one call, not four:
