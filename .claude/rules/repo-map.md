@@ -6,7 +6,7 @@
 > were distilled from. Do not expect to find them here; do not try to "restore" them.
 
 **This checkout is a working subset.** Tracked here: `.claude/`, `Artifact/`, `finance-dashboard/`,
-`scripts/`, `.mcp.json`, and a few root files (`README.md` stub, two LinkedIn drafts). Rows below
+`plugins/`, `scripts/`, `.mcp.json`, and a few root files (`README.md` stub, two LinkedIn drafts). Rows below
 marked *(absent here)* describe the fuller repo — `Books/`, `curriculum/`, `.superpowers/`,
 `template/`, `SKILL-BACKLOG.md`, the README catalog table, and the `Finance` / `Health` / `Research`
 skill groups are **not in this checkout**. Do not try to restore them; skills and commands that
@@ -26,5 +26,6 @@ depend on them (`catalog-drift-audit` Steps 1–2, `/new-skill` bookkeeping) ski
 | `template/skill-template/` *(absent here)* | Scaffold for a new skill — `SKILL.md` + `reference-file.md` + `README.md` skeletons. Copy to `.claude/skills/<name>/`. |
 | `template/spec-system/agent-spec-template.md` *(absent here)* | Template + worthiness test for authoring a new agent. |
 | `scripts/` | `hooks/log-prompt.sh`, `hooks/catalog-drift-check.sh`; `git/state.sh` (snapshot), `git/commit.sh` (staged-pathspec commit + trailer), `git/push.sh` (timeout/fallback/retry), `git/land.sh` (merge a PR via `gh` + resync local), `git/batch-git-push.sh` (bulk). See `commands.md` / `conventions.md`. |
+| `plugins/` | Packaged catalog subsets for other projects. `data-skills/` = the Data cluster + 3 load-bearing siblings as a plugin (skills are relative symlinks into `.claude/skills/`, so edit there). `plugins/README.md` has the install commands and the personal-core symlink set. This repo's `settings.json` disables `data-skills@skills-dir` to avoid duplicate listings. |
 | `Artifact/` | Talking points / catalog write-ups for external posts. |
 | `curriculum/`, `.superpowers/sdd/` *(absent here)* | A separate spec-driven learning-portfolio project (specs, plans, task briefs/reports). Unrelated to the skill catalog. |
