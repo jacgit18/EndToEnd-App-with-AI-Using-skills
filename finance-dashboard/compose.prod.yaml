@@ -4,10 +4,14 @@
 # ports. Nothing of that belongs here, so this is a standalone file instead of an
 # overlay that would need to un-set half of it.)
 #
-# Free deployment (ADR-0012 amended): this runs on your own machine and a
-# Cloudflare *quick tunnel* gives it a public HTTPS URL. No account, no domain,
-# no open router ports. The trade-off: it's only up while this machine is, and
-# the trycloudflare.com hostname changes whenever the tunnel container restarts.
+# Free deployment (ADR-0012 amended): this runs on your own machine. A
+# Cloudflare *named tunnel* for findash.us.ci reaches Caddy at
+# 127.0.0.1:8080, no open router ports. The tunnel is NOT a service in this
+# file: it runs as the host's systemd `cloudflared` service (installed with
+# `sudo cloudflared service install <token>`), with a published route
+# findash.us.ci -> http://localhost:8080 in Cloudflare Zero Trust. (Until
+# 2026-10-03 a quick-tunnel container lived here; its random URL died when the
+# connection dropped.) The trade-off: it's only up while this machine is.
 #
 # ── If you were serious about this ────────────────────────────────────────────
 #  * Always-on host: a ~$5-7/mo VPS (Hetzner, DigitalOcean). Same file works
@@ -91,17 +95,6 @@ services:
       # machine without exposing anything to your LAN. The public path is the
       # tunnel below, which reaches `web` over the Compose network.
       - "127.0.0.1:8080:80"
-
-  cloudflared:
-    image: cloudflare/cloudflared:latest
-    restart: unless-stopped
-    depends_on:
-      - web
-    # Quick tunnel: prints a https://<random>.trycloudflare.com URL in its logs —
-    #   scripts/prod.sh logs cloudflared | grep trycloudflare
-    # Cloudflare documents quick tunnels as for testing/dev, with no uptime
-    # guarantee — fine for a personal tool, not for anything you depend on.
-    command: tunnel --no-autoupdate --url http://web:80
 
 volumes:
   db-data:
