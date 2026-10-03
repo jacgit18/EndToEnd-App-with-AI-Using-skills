@@ -10,7 +10,13 @@
    steps. It catches missing carve-outs, unreachable steps and one-way sibling pointers by
    reading; it does not replace steps 3–4, which run the skill.
 3. **Isolation screen** — confirm a baseline (no skill) fails the way the skill exists to
-   fix, and that the skill fixes it.
+   fix, and that the skill fixes it. When the skill's claim is about outcomes (estimates,
+   verdicts, calls that later proved right or wrong), make the screen **outcome-grounded**:
+   first check there are real cases with recorded outcomes (about 3 minimum; none = park the
+   skill, don't test on invented ones); withhold the outcome from every arm; run a third arm
+   that gets the skill's rules as a plain prompt (otherwise the skill arm passes rules the
+   baseline was never told); score with a separate agent, and score range width, not just
+   containment. Parked candidates live in `.claude/skills/CANDIDATES.md`.
 4. **Interaction test** — run `skill-interaction-testing` against the sibling set.
    Record what you find: hand-off, absorption, chaining, or a fix for stacking /
    contradiction / silent override.
