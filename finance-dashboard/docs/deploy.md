@@ -1,14 +1,23 @@
 # Deploying (free path)
 
-Runs the app on your own machine and reaches it from the internet through a Cloudflare
-**quick tunnel**. Costs nothing, needs no account, no domain, no open router ports.
+Runs the app on your own machine and reaches it from the internet at **https://findash.us.ci**
+through a Cloudflare **named tunnel**. Costs nothing: a free Cloudflare account, a free
+domain from DNSHE with its nameservers pointed at Cloudflare, no open router ports.
+The tunnel runs as the host's systemd service, not in Docker (see "Tunnel" below).
 Files: [`compose.prod.yaml`](../compose.prod.yaml), [`Caddyfile.prod`](../Caddyfile.prod),
 [`frontend/Dockerfile.prod`](../frontend/Dockerfile.prod), [`scripts/backup-db.sh`](../scripts/backup-db.sh).
 This amends ADR-0012 (VPS + domain) — see the spec's drift log.
 
-**Limits you are accepting:** the app is up only while this machine and Docker are; the tunnel
-URL (`https://<random>.trycloudflare.com`) changes every time the `cloudflared` container
-restarts; Cloudflare documents quick tunnels as for testing, with no uptime guarantee.
+**Limits you are accepting:** the app is up only while this machine, Docker and the `cloudflared`
+service are. If the DNSHE domain lapses or its nameservers change, the site disappears.
+
+**Tunnel (set up 2026-10-03; it replaced a quick tunnel whose random URL died when the
+connection dropped, "Tunnel not found"):** Cloudflare Zero Trust > Networks > Tunnels > `findash`.
+Its one published route is `findash.us.ci` -> `http://localhost:8080` (Caddy's loopback port; `web:80`
+would not resolve, because the connector runs on the host, outside Docker's network). The connector
+is `sudo cloudflared service install <token>` on the host. The token is a secret (anyone holding it can
+run the tunnel); it is not stored in this repo. Check it with `systemctl status cloudflared`; logs with
+`journalctl -u cloudflared`.
 
 ## First run
 
@@ -30,8 +39,8 @@ restarts; Cloudflare documents quick tunnels as for testing, with no uptime guar
    **Use a real password, not the dev `devpassword`** — this stack is reachable from the internet.
 
 2. **Start.** `scripts/prod.sh up -d --build` (migrations run on backend start).
-3. **Find the URL.** `scripts/prod.sh logs cloudflared | grep trycloudflare`
-4. **Smoke test.** `curl https://<that-url>/health` → `{"status":"ok","db":"connected"}`, then sign in in a browser.
+3. **Check the tunnel.** `systemctl is-active cloudflared` should print `active`. The URL is `https://findash.us.ci`.
+4. **Smoke test.** `curl https://findash.us.ci/health` → `{"status":"ok","db":"connected"}`, then sign in in a browser.
    Local check without the tunnel: `http://localhost:8080`.
 5. **Stop.** `scripts/prod.sh down` (keeps the database volume; `down -v` deletes it).
 
@@ -99,7 +108,7 @@ Every cost decision in the project is tracked in [`paid-options.md`](paid-option
 | Free choice here | Upgrade | Roughly |
 |---|---|---|
 | Runs on your machine | Small VPS (Hetzner, DigitalOcean) — delete `cloudflared`, publish Caddy on 80/443 | $5–7/mo |
-| Random `trycloudflare.com` URL | Your own domain + a named Cloudflare tunnel (free once you own the domain) or an A record + Caddy's automatic Let's Encrypt | $10–12/yr |
+| Free DNSHE domain + host-run named tunnel | A paid domain (stable ownership) and/or an always-on VPS with an A record + Caddy's automatic Let's Encrypt | $10–12/yr domain; ~$5–7/mo VPS |
 | `pg_dump` cron to local disk | Managed Postgres with point-in-time restore (Neon, Supabase, RDS) or VPS snapshots | free tiers exist; paid ~$10–25+/mo |
 | Manual `docker compose up` | CI deploy (GitHub Actions is free for public repos, limited minutes for private) | $0 |
 
