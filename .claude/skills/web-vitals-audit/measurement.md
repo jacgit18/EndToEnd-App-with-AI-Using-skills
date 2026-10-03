@@ -63,3 +63,39 @@ Run at least three: ~375 px (phone), ~900–1000 px (where a desktop nav starts 
 1280+ px. With Playwright, loop over `page.setViewportSize({width, height: 900})` and run the
 `cls-diagnosis.md` observer at each.
 
+## Beyond one number: pages behind a login, the proxy, and what a 100 hides
+
+From a real audit of a login-gated app (7 routes, mobile and desktop). Reference for `SKILL.md` Steps 2 and 5.
+
+- **Audit login-gated pages without logging in.** Serve the production build through the *real* proxy
+  config (for Caddy: run the `caddy` image on a spare port with the project's Caddyfile, `sed` the
+  backend upstream to a small stub, mount `dist` read-only). The stub returns fixture JSON for the GET
+  routes the pages call (unknown GETs: `[]`). Playwright `page.route()` forces error, empty and
+  result states without changing the stub. Say in the report that the data is fixtures. Docker Desktop
+  does not share `/tmp`: keep the mounted config under `$HOME`; `--network host` does not reach the host.
+- **Audit the proxy, not just the app.** A first run scored SEO 82 and mobile Performance 91 with
+  zero application bugs: no compression (`encode zstd gzip`), no `Cache-Control: immutable` on
+  fingerprinted `/assets/*`, no `robots.txt` (the SPA fallback served HTML for it), no meta
+  description. Check headers with `curl -D- -H 'Accept-Encoding: gzip'` before blaming the code.
+- **A Lighthouse 100 is not an axe pass.** Lighthouse's accessibility score counts only the audits it
+  weighs. Pages scoring 100 still failed axe (no `main` or `h1`, heading order, unlabeled inputs,
+  empty table headers). Run `@axe-core/playwright` with tags `wcag2a, wcag2aa, wcag21a, wcag21aa,
+  wcag22aa, wcag2aaa, best-practice` at 1280px **and 320px** on every route and in every state
+  (edit rows, error messages, results), and read `document.documentElement.scrollWidth` against the
+  viewport (reflow; axe does not check it).
+- **Measure target size yourself.** axe checks 24px; AAA asks for 44px. Read `getBoundingClientRect()`
+  for every `a, button, select, input` (a checkbox's wrapping label is its target).
+- **Check forced colors and a dark scheme with a screenshot.** Playwright `forcedColors: "active"`.
+  Hard-coded dark chart text (Visx axes use `#222`/black) vanished on black; `svg text { fill:
+  currentColor }` fixed it. Computed styles will not show this; look at the picture.
+- **Tell noise from a regression.** Simulated mobile Performance moved 99 to 100 on identical builds.
+  Repeat a suspect page three times: a score that stays 99 with LCP 0.3 s worse is real. Here a
+  separate 0.4 kB stylesheet (a render-blocking request) did it; inlining the CSS in `index.html`
+  restored 100.
+- **A screen-reader-only utility needs a positioned scroll ancestor.** An absolutely positioned
+  `VisuallyHidden` inside a table's `overflow-x: auto` wrapper still counted toward page width until
+  the wrapper had `position: relative`.
+- **Pin the structure with a test** per page (one `main`, one `h1`, every control has an accessible
+  name via DOM queries because date inputs have no testing-library role, no empty `th`), and try a
+  mutation for each rule.
+

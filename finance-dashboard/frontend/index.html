@@ -38,6 +38,22 @@
         height: 24px;
         margin: 0;
       }
+      /* Visible keyboard focus (WCAG 2.2 AAA 2.4.13: at least 2px, 3:1 against the page). */
+      :focus-visible,
+      input:focus-within {
+        outline: 3px solid #0b57d0;
+        outline-offset: 2px;
+      }
+      /* Chart text and lines follow the page's text colour. Visx hard-codes dark grey/black,
+         which vanishes on a dark background or in forced-colors mode. Bar fills stay as is:
+         every charted value is also in the table under the chart. */
+      svg text {
+        fill: currentColor;
+      }
+      svg line,
+      svg path {
+        stroke: currentColor;
+      }
     </style>
   </head>
   <body>

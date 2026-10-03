@@ -1,4 +1,4 @@
-// Structure checks found by the 2026-10-03 axe audit (see ../ACCESSIBILITY.md): one main
+// Structure checks found by the 2026-10-03 axe audit (see /.claude/records/finance-dashboard-accessibility.md): one main
 // landmark and one h1 per page, every form control named, no empty table headers.
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, within } from "@testing-library/react";

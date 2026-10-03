@@ -20,7 +20,7 @@ Applies to any web UI built or changed from this repo (portfolio site, `finance-
   (NVDA/Firefox, VoiceOver/Safari), 200% and 400% zoom, forced colors, reading level and
   unusual words, third-party destinations, and a retest of the deployed HTTPS site.
 - Anything not yet manually verified goes in a "Manual review still required" list in the
-  project's `ACCESSIBILITY.md`, never silently dropped.
+  project's accessibility record, never silently dropped.
 
 ## Measuring
 
@@ -33,7 +33,19 @@ Applies to any web UI built or changed from this repo (portfolio site, `finance-
   Agentic Browsing 2/3) fails even when the numeric score reads 100, because zero-weight
   audits such as `llms.txt` drop out of the number.
 
+## Build to these from the first commit
+
+- One `<main>` and one `<h1>` per page; sections `<h2>`; every control has a real label
+  (`aria-label` at minimum; a placeholder is not a label); data-table action columns get
+  screen-reader header text.
+- Text colours at 7:1 on the background. Inline chart text and lines use `currentColor`.
+- 44px minimum for buttons, inputs, selects, links and checkbox labels; a 3px `:focus-visible` ring.
+- Form rows wrap; wide tables sit in a named, focusable scroll box so the page never scrolls sideways at 320px.
+- Serve with compression and `immutable` caching on fingerprinted assets; add `robots.txt` and a meta description.
+- Keep tiny CSS inline (a separate file is a render-blocking request).
+- A structure test per page; run axe (AAA tags, 1280px and 320px, every state) and Lighthouse on every route.
+
 ## Where the detail lives
 
-Fixing a score below target: `web-vitals-audit`. Keep per-project results and the manual
-checklist in that project's `ACCESSIBILITY.md`; this file holds only the standing policy.
+Fixing a score below target, or auditing login-gated pages and the proxy: `web-vitals-audit` (`measurement.md`, last section). Keep per-project results and the manual
+checklist in `.claude/records/<project>-accessibility.md` (outside `rules/` on purpose: files in `rules/` load into every session, a results record should not). This file holds only the standing policy.
