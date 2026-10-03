@@ -5,9 +5,10 @@
 # overlay that would need to un-set half of it.)
 #
 # Free deployment (ADR-0012 amended): this runs on your own machine and a
-# Cloudflare *quick tunnel* gives it a public HTTPS URL. No account, no domain,
-# no open router ports. The trade-off: it's only up while this machine is, and
-# the trycloudflare.com hostname changes whenever the tunnel container restarts.
+# Cloudflare *named tunnel* (free account, domain findash.us.ci) gives it a
+# stable public HTTPS URL, no open router ports. The trade-off: it's only up
+# while this machine is. (It used a random quick-tunnel URL until 2026-10-03;
+# that URL died when the connection dropped.)
 #
 # ── If you were serious about this ────────────────────────────────────────────
 #  * Always-on host: a ~$5-7/mo VPS (Hetzner, DigitalOcean). Same file works
@@ -97,11 +98,16 @@ services:
     restart: unless-stopped
     depends_on:
       - web
-    # Quick tunnel: prints a https://<random>.trycloudflare.com URL in its logs —
-    #   scripts/prod.sh logs cloudflared | grep trycloudflare
-    # Cloudflare documents quick tunnels as for testing/dev, with no uptime
-    # guarantee — fine for a personal tool, not for anything you depend on.
-    command: tunnel --no-autoupdate --url http://web:80
+    # Named tunnel (stable URL, findash.us.ci): the tunnel and its public
+    # hostname are configured in Cloudflare Zero Trust (Networks > Tunnels);
+    # this container only needs the tunnel's token. Put it in .env.prod
+    # (gitignored) as TUNNEL_TOKEN=... ; `scripts/prod.sh` passes that file to
+    # Compose. Compose refuses to start with a clear error if it is missing.
+    # The old quick tunnel (random trycloudflare.com URL, no account) was
+    # `command: tunnel --no-autoupdate --url http://web:80`.
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: ${TUNNEL_TOKEN:?set TUNNEL_TOKEN in finance-dashboard/.env.prod}
 
 volumes:
   db-data:

@@ -1,14 +1,21 @@
 # Deploying (free path)
 
 Runs the app on your own machine and reaches it from the internet through a Cloudflare
-**quick tunnel**. Costs nothing, needs no account, no domain, no open router ports.
+**named tunnel** on the domain `findash.us.ci` (free Cloudflare account; the domain is a free
+one from DNSHE with its nameservers pointed at Cloudflare). No open router ports. Until
+2026-10-03 it used a quick tunnel (random `trycloudflare.com` URL); that URL died when the
+connection dropped and could not be resumed.
 Files: [`compose.prod.yaml`](../compose.prod.yaml), [`Caddyfile.prod`](../Caddyfile.prod),
 [`frontend/Dockerfile.prod`](../frontend/Dockerfile.prod), [`scripts/backup-db.sh`](../scripts/backup-db.sh).
 This amends ADR-0012 (VPS + domain) — see the spec's drift log.
 
-**Limits you are accepting:** the app is up only while this machine and Docker are; the tunnel
-URL (`https://<random>.trycloudflare.com`) changes every time the `cloudflared` container
-restarts; Cloudflare documents quick tunnels as for testing, with no uptime guarantee.
+**Limits you are accepting:** the app is up only while this machine and Docker are. The URL is
+stable (the hostname set on the tunnel in Cloudflare Zero Trust), but if the DNSHE domain lapses
+or its nameservers change, the site disappears.
+
+**Tunnel setup (one-time):** Cloudflare dashboard > Zero Trust > Networks > Tunnels > create a
+tunnel > copy its token into `finance-dashboard/.env.prod` as `TUNNEL_TOKEN=...` (gitignored; treat
+it like a password). Add a public hostname for `findash.us.ci`, service `HTTP`, URL `web:80`.
 
 ## First run
 
@@ -30,8 +37,8 @@ restarts; Cloudflare documents quick tunnels as for testing, with no uptime guar
    **Use a real password, not the dev `devpassword`** — this stack is reachable from the internet.
 
 2. **Start.** `scripts/prod.sh up -d --build` (migrations run on backend start).
-3. **Find the URL.** `scripts/prod.sh logs cloudflared | grep trycloudflare`
-4. **Smoke test.** `curl https://<that-url>/health` → `{"status":"ok","db":"connected"}`, then sign in in a browser.
+3. **Check the tunnel.** `scripts/prod.sh logs cloudflared` should show `Registered tunnel connection`. The URL is `https://findash.us.ci`.
+4. **Smoke test.** `curl https://findash.us.ci/health` → `{"status":"ok","db":"connected"}`, then sign in in a browser.
    Local check without the tunnel: `http://localhost:8080`.
 5. **Stop.** `scripts/prod.sh down` (keeps the database volume; `down -v` deletes it).
 
