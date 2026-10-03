@@ -67,8 +67,7 @@ owns a fix, or says "no owner — drift only, needs a doc update." It never edit
 
 Needs no repo setup; the docs and test-command assumptions are in `SKILL.md` → Portability.
 The siblings it hands off to are listed in `SKILL.md` → Portability; if one isn't installed,
-`SKILL.md` says what to do inline. Not yet packaged as a plugin; `plugins/README.md` describes
-how catalog subsets are installed in other projects.
+`SKILL.md` says what to do inline. Project-only: not in any plugin (see `plugins/README.md`).
 
 ## Interaction with sibling skills
 

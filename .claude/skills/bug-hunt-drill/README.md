@@ -88,5 +88,4 @@ Answer: *"File: `jobs.py`, line 87. The bug: `tasks = [process(item) for ...]` c
 ## Dependencies
 
 Needs `git worktree` and a reproducible symptom or test suite. The siblings it hands off to are listed in `SKILL.md` → Portability; if one isn't installed,
-`SKILL.md` says what to do inline. Not yet packaged as a plugin; `plugins/README.md` describes
-how catalog subsets are installed in other projects.
+`SKILL.md` says what to do inline. Project-only: not in any plugin (see `plugins/README.md`).
