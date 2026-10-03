@@ -43,9 +43,29 @@ A test pins the landmark and heading structure (`DashboardPage.test.tsx`); rever
 - `unused-javascript` (about 42 KiB) and `network-dependency-tree-insight`: informational, score is 100 anyway.
 - `robots.txt` allows all crawlers. Every data route is behind login, so there is nothing to index; blocking crawlers would make Lighthouse's `is-crawlable` fail. Revisit if the owner prefers `Disallow: /` over the SEO score.
 
+## Other routes (run 2026-10-03, after the deploy; NOT yet fixed)
+
+Same setup as above (prod build, real Caddy with `Caddyfile.prod`, fixture API with 1 account, 3 categories, 2 budgets, 3 transactions, 1 import batch). Lighthouse mobile / desktop; axe at 1280px and 320px.
+
+| Route | Lighthouse mobile (P/A/BP/SEO) | desktop | axe 1280px | axe 320px |
+|---|---|---|---|---|
+| `/` Transactions | 100 / **85** / 100 / 100 | 100 / **85** / 100 / 100 | 4 violations | 4 violations, **page 819 px wide** |
+| `/accounts` | 100 / **95** / 100 / 100 | 100 / 100 / 100 / 100 | 4 | 5, page 585 px wide |
+| `/categories` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 | 4 | 5, page 382 px wide |
+| `/budgets` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 | 4 | 4, page 369 px wide |
+| `/import` | 100 / 100 / 100 / 100 | 100 / 100 / 100 / 100 | 3 | 3, page 533 px wide |
+
+Findings, all still open:
+
+- **Transactions `/`** (serious): the date filter input and the account `<select>` have no label (`label`, `select-name`, both critical); the "Backend: connected" text is seagreen `#2e8b57` on white at 4.24:1, below even AA 4.5:1 (`color-contrast`); one table header cell is empty (`empty-table-header`).
+- **Reflow at 320px fails on every route** (page is 369 to 819 px wide): fails the reflow criterion. Tables and forms need to wrap or scroll inside their own container.
+- **Landmarks and headings:** `/accounts`, `/categories`, `/budgets`, `/import` have no `<main>` and no `<h1>` (same fix as `/dashboard`), plus `region`.
+- **Empty table header** on accounts, categories and budgets (an actions column with no accessible text).
+- **Target size** below 24px on `/accounts` (2 nodes) and `/categories` (6 nodes) at 320px. The AAA target is 44px, so more would fail under a manual check.
+- Lighthouse scores of 100 on four routes hide these: its audit only counts the subset it weighs. axe is the better signal here.
+
 ## Not measured yet
 
-- Routes other than `/dashboard` and `/login` (`/`, `/accounts`, `/categories`, `/budgets`, `/import`) were not audited. They are likely to have the same structural issues (the home page uses inline styles and a `<main>`, the others were not checked).
 - The deployed HTTPS site (Cloudflare tunnel). Local loopback is not the live site.
 - Authenticated pages with real data and real volumes.
 
