@@ -25,6 +25,7 @@ Paths are relative to the project root (the repo containing `.claude/`).
 One dated file per day, alongside the prompt logs (`<date>.md`) that `log-prompt.sh` writes (the `prompt-archive` skill curates those; it does not touch the `*-skills.md` files). The hook is defensive: needs `jq`, prints nothing, always exits 0, never blocks the tool call. It only records skills invoked through the `Skill` tool in this project — not slash commands that don't resolve to a skill, and not skills used in other repos.
 
 - To pause it: remove the `PreToolUse` block in `.claude/settings.json`.
+- **Other projects (global mode).** A user-level `PreToolUse` hook in `~/.claude/settings.json` can run the same script with `SKILL_LOG_GLOBAL=1` and `SKILL_LOG_DIR` set to this repo's log dir. Lines from other projects carry `[project: <dir name>]` and no args, and a project that wires its own `log-skill.sh` is not logged twice. Only this repo has prompt logs, so the feedback (override) view stays this-repo only. To check it is installed, grep `~/.claude/settings.json` for `SKILL_LOG_GLOBAL`; to pause it, remove that block.
 - `logs/` can get large and may be gitignored locally — same tradeoff as the prompt logs. Mention it once; don't decide it for the user.
 
 ---
