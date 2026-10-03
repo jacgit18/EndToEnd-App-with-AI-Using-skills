@@ -28,7 +28,7 @@ For each candidate pair, write one prompt a real user would plausibly send about
 
 ## Step 3 — Run and observe
 
-Send each scenario to a fresh agent with the full project available — don't strip the skill set down to isolate the new one, since the failure only exists in combination, and a full skill set also catches the rare case where Step 1's scan under-scoped the pool (an unlisted skill fires anyway). Isolate the run (a background subagent via the `Agent` tool with `isolation: "worktree"`) so nothing lands in the repo uninvited. Watch for:
+Send each scenario to a fresh agent with the full project available — don't strip the skill set down to isolate the new one, since the failure only exists in combination, and a full skill set also catches the rare case where Step 1's scan under-scoped the pool (an unlisted skill fires anyway). Isolate the run (a background subagent via the `Agent` tool with `isolation: "worktree"`) so nothing lands in the repo uninvited. A worktree agent starts from `main`, not your current branch, so an edit that is not merged yet is not in it: to test an unmerged edit, run a read-only agent without isolation on the checked-out branch (or merge first), and confirm the agent actually sees the edit before trusting a result. Watch for:
 
 | Outcome | What it looks like |
 |---|---|
