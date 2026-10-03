@@ -246,3 +246,4 @@ The frontmatter `description` is truncated in the skill listing, so the full bou
 
 - Not for writing the changed file's own standing orientation/companion doc (role, public surface, edges, gotchas) — that's `codebase-file-orientation`; it documents the file, this traces what the change breaks elsewhere, and the two compose on one change.
 - Use when someone says "what could this change break", "am I missing anything before I ship this", "is this a breaking change", "we're removing this endpoint/column/feature — what do we need to check first", "before adding this feature, what should I think about", "PR review for blast radius", or names a dependency bump / config change / infra update.
+- Not for checking whether a repo's own docs, ADRs or CI claims are still true, or whether its build and tests actually run (`repo-reality-audit`); that is a read-only whole-codebase check, not this skill's job.
