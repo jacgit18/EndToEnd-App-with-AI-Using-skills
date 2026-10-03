@@ -67,16 +67,18 @@ Stops before the models, repositories, and query modules.
 Stacks *after* `database-architecture` (beneficial chaining — the source-of-truth ADR is this
 skill's prerequisite input) and *beside* `relational-modeling` (independent, same parent ADR).
 `tech-decision-walkthrough` routes its "data-access layer" decision here and folds the block
-into that decision's ADR. `learning-gate`'s "Database design" row lists it. Trigger wording
+into that decision's ADR. `learning-gate` routes ORM/access questions here. Trigger wording
 leans on "ORM / query builder / raw SQL / access approach" plus a settled source-of-truth call,
 to avoid catching requests that belong in `database-architecture` (source of truth) or
 `relational-modeling` (tables). Re-check overlap if any of those descriptions change.
 
-## Using it in another repo
+## Dependencies
 
-Repo-agnostic. Reads `docs/architecture/decisions/` for the prerequisite ADR, writes new ADRs
-there.
-
-```
-cp -r .claude/skills/data-access-layer /path/to/other-repo/.claude/skills/
-```
+Needs no repo setup. Reads the prerequisite source-of-truth ADR and writes its own ADR to
+`docs/architecture/decisions/` by default (use the repo's own convention if it has one), in
+`database-architecture`'s ADR format; if that skill isn't installed, `SKILL.md` carries an
+inline skeleton. Hands off to `database-architecture`, `relational-modeling`, `index-tuning`,
+`data-tier-operations`, `dimensional-modeling`, `problem-solving-gates`,
+`api-interface-style`, `deployment-strategy`, `caching-strategy`,
+`tech-decision-walkthrough`. If a named sibling isn't installed, `SKILL.md` says what to do
+inline.

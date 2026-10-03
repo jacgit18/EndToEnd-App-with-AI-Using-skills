@@ -1,5 +1,7 @@
 # Modeling Framework
 
+Contents: 1 analytical need · 2 business process · 3 grain · 4 dimensions · 5 measures · 6 schema shape · 7 SCD strategy · 8 fact-table type · 9 rollups · 10 load plan · 11 ERD and specs.
+
 Work these in order once the gate in `SKILL.md` is satisfied. Steps 2–5 are Kimball's four steps; the rest complete the design.
 
 ## 1. Confirm the analytical need is real and distinct from OLTP

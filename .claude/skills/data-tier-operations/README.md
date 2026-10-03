@@ -4,11 +4,10 @@ The third skill in the database family. `database-architecture` decides where th
 truth lives and which store; `relational-modeling` designs the tables; this one scales and
 distributes an existing store when it hits a wall.
 
-Built from the `Architecture/02. Backing Service Options/Databases/` notes — Database Sharding,
-Sharding & Pagination, Replication Strategies, Master-Slave Database Architecture, Leaderless
-Architecture, Distributed Transactions, Transaction, Transaction Locking, Connection Pooling,
-Database Points of Failure, Database Hosting — plus `Architecture/SAGA.md` (choreography vs
-orchestration, compensating transactions — in `consistency-and-transactions.md`).
+Covers sharding and pagination, replication strategies (single-leader, leaderless),
+distributed transactions and Saga (choreography vs orchestration, compensating transactions —
+in `consistency-and-transactions.md`), locking, connection pooling, points of failure, and
+hosting.
 
 ## Where it sits
 
@@ -16,7 +15,7 @@ orchestration, compensating transactions — in `consistency-and-transactions.md
 database-architecture   →  WHERE the schema lives + WHICH store            (ADR)
 relational-modeling      →  designs the tables for a relational store
 data-tier-operations     →  scales / distributes an existing store          (ADR)  ← this skill
-dimensional-modeling     →  star / snowflake / fact / dimension / warehouse  (built)
+dimensional-modeling     →  star / snowflake / fact / dimension / warehouse
 caching-strategy         →  cache layer + pattern + freshness + eviction    (ADR)
 ```
 
@@ -75,17 +74,18 @@ Stops before implementation (replication config, shard router, backfill).
   services only once they do.
 - **Defers to `problem-solving-gates`** (Rubber Duck) for debugging one slow query.
 - **`learning-gate`** hands off to this skill on scaling/distribution questions rather than
-  running its own rep gate (see `learning-gate` Step 3).
+  running its own rep gate.
+- **Hands off to `data-access-layer`** for how app code behaves under the chosen topology
+  (read/write splitting in the ORM, pool config, retry on failover).
 
-Run `skill-interaction-testing` after any trigger-description change here — the overlap risk is
-with `technical-cost-decision` (volume-stated system questions) and `microservices-decision`
+On a trigger-description change, the overlap risk is with `technical-cost-decision` (volume-stated system questions) and `microservices-decision`
 (cross-service data).
 
-## Using it in another repo
+## Dependencies
 
-Repo-agnostic. Reads and writes `docs/architecture/decisions/` alongside `database-architecture`
-and reuses its `adr-template.md`.
-
-```
-cp -r .claude/skills/data-tier-operations /path/to/other-repo/.claude/skills/
-```
+Needs no repo setup. Writes an ADR to `docs/architecture/decisions/` by default (use the
+repo's own convention if it has one), in `database-architecture`'s ADR format; if that skill
+isn't installed, `SKILL.md` carries an inline skeleton. Hands off to `database-architecture`,
+`relational-modeling`, `index-tuning`, `caching-strategy`, `technical-cost-decision`,
+`microservices-decision`, `resilience-strategy`, `problem-solving-gates`,
+`data-access-layer`. If a named sibling isn't installed, `SKILL.md` says what to do inline.

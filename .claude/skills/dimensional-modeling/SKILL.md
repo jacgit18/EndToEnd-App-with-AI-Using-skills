@@ -18,7 +18,8 @@ Design the analytical model: pick the business process, nail the grain, build th
 
 - **OLTP / transactional table design** — normalization, keys, indexes, constraints on the operational database → `relational-modeling`. This skill is the analytical (OLAP) counterpart; the two are different disciplines with opposite defaults (normalize vs denormalize).
 - **Whether a warehouse is warranted at all**, and **where it lives / which technology** — Redshift vs BigQuery vs Snowflake vs "just a schema in Postgres", who owns it, source-of-truth → `database-architecture`. The "one slow dashboard query, should we build a warehouse?" case in particular is not this skill — that's a rollup (`relational-modeling`) or a replica (`data-tier-operations`); see "Challenge the framing". If the warehouse is a real separate system whose platform isn't settled, settle it there first.
-- **Scaling or physically tuning an existing warehouse** (distribution keys, sort keys, cluster sizing, slow-query tuning on the warehouse) → not covered by any skill in this catalog; say so plainly. **The warehouse bill** → `technical-cost-decision`.
+- **Physically tuning an existing warehouse** (distribution keys, sort keys, clustering, cluster sizing) → no sibling skill covers it; say so plainly rather than improvising. **Replicas or partitioning topology** → `data-tier-operations`. **The warehouse bill** → `technical-cost-decision`.
+- **How the load or reporting code reads and writes these tables** (ORM vs query builder vs raw SQL) → `data-access-layer`.
 - **The ETL/ELT pipeline itself** — extraction, transformation code, orchestration (Airflow/dbt/Dagster), CDC. The skill produces a *load plan* (what must happen, cadence, how Type 2 changes land) but not the implementation.
 - **BI tool / dashboard / report layout**, and **ML feature stores**.
 
@@ -121,10 +122,13 @@ Probably the wrong skill. One slow query is a rollup table or an indexed view (`
 
 ## Portability
 
-Repo-agnostic. Reads the source schema and `docs/architecture/decisions/` for any warehouse ADR; writes `docs/data-model/analytics/`. Copy the `dimensional-modeling/` directory into another repo's `.claude/skills/` to use it there.
+Needs no repo setup. Reads the source schema and any warehouse ADR (default `docs/architecture/decisions/`); writes `docs/data-model/analytics/<slug>.md` by default; follow the repo's own convention if it has one.
+
+Depends on: `relational-modeling`, `database-architecture`, `data-tier-operations`, `index-tuning`, `data-access-layer`, `technical-cost-decision`. If a named sibling isn't installed, say so and give the one-line answer inline. The load-bearing ones: no `relational-modeling` and the request is really OLTP table design → say it is a different discipline (normalize, not denormalize) and answer only the OLAP part; no `technical-cost-decision` → name the warehouse's compute and storage as the line items to price and ask the user for the numbers.
 
 ## Routing boundaries (full)
 
 - Use this skill when someone needs a warehouse or data-mart model, asks "star or snowflake", "what's the grain", "how do I handle a dimension that changes over time / SCD", "fact and dimension tables for X", "how do I model this for reporting / BI / dashboards", or is designing a reporting layer over historical data.
 - Not for tuning the index set on an OLTP database — that is `index-tuning`.
-- Not for physical tuning of the warehouse or scaling topology (sort/distribution/clustering keys, replicas, partitioning) — that is `data-tier-operations`.
+- Not for scaling topology (replicas, partitioning) — that is `data-tier-operations`. Physical warehouse tuning (sort/distribution/clustering keys) has no sibling; say so plainly.
+- Not for how application code accesses the tables — that is `data-access-layer`.

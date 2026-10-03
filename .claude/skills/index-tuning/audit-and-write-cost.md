@@ -1,5 +1,7 @@
 # Audit and Write Cost
 
+Contents: what an index costs a write (+ write-cost budget) · redundancy pass · unused-index detection · dropping safely · rare-query playbook · online builds · Postgres bloat.
+
 Reference for steps 4, 5, 6, and 7 of the walk in `SKILL.md` — pricing a new index against
 the write workload, finding the dead indexes already on the table, handling a query that
 doesn't deserve a permanent index, and building on a live table without locking it.

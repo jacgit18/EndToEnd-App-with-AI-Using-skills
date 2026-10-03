@@ -4,9 +4,8 @@ The analytical (OLAP) counterpart to `relational-modeling`. Where that skill des
 normalized transactional store, this one designs the denormalized star: fact-table grain,
 dimensions, SCD strategy, schema shape, rollups, load plan.
 
-Built from the `Architecture/02. Backing Service Options/Databases/` notes — Data Warehouse,
-Data Mart, Data Mart vs Data Warehouse, Star Schema, Snowflake Schema, Fact Table, Dimension
-Table, Data Grain, Choosing Schema, plus Materialized Views for the rollup layer.
+Covers data warehouses and marts, star and snowflake schemas, fact and dimension tables,
+grain, and materialized views for the rollup layer.
 
 ## Where it sits
 
@@ -59,8 +58,9 @@ Stops before ETL/ELT implementation.
 
 - OLTP table design → `relational-modeling`.
 - Warehouse technology / ownership / source-of-truth → `database-architecture`.
-- Scaling or physically tuning an existing warehouse (dist keys, sort keys, cluster sizing) →
-  not covered by any skill in this catalog; the warehouse bill → `technical-cost-decision`.
+- Physically tuning an existing warehouse (dist keys, sort keys, cluster sizing) → no sibling
+  skill covers it; `SKILL.md` says so plainly. Replicas / partitioning topology →
+  `data-tier-operations`. The warehouse bill → `technical-cost-decision`.
 - The ETL/ELT pipeline code and orchestration (dbt/Airflow/Dagster/CDC) — the skill produces a
   *load plan*, not the implementation.
 - BI tool / dashboard design; ML feature stores.
@@ -73,17 +73,17 @@ Stops before ETL/ELT implementation.
   own paradigm/ownership decision.
 - **Chains to `technical-cost-decision`** for warehouse compute/storage cost.
 - **`learning-gate`** hands off to this skill on dimensional-modeling questions rather than
-  running its own rep gate (see `learning-gate` Step 3).
+  running its own rep gate.
+- **Hands off to `data-access-layer`** for how the load/reporting code reads and writes the
+  tables, once the model exists.
 
-Run `skill-interaction-testing` after any trigger-description change here — overlap risk is with
-`relational-modeling` ("how do I model X for reporting") and `database-architecture`
-("where should the warehouse live").
+Overlap risk on a trigger-description change is with `relational-modeling` ("how do I model
+X for reporting") and `database-architecture` ("where should the warehouse live").
 
-## Using it in another repo
+## Dependencies
 
-Repo-agnostic. Reads the source schema and `docs/architecture/decisions/`; writes
-`docs/data-model/analytics/`.
-
-```
-cp -r .claude/skills/dimensional-modeling /path/to/other-repo/.claude/skills/
-```
+Needs no repo setup. Reads the source schema and any warehouse ADR; writes
+`docs/data-model/analytics/<slug>.md` by default (use the repo's own convention if it has
+one). Hands off to `relational-modeling`, `database-architecture`, `data-tier-operations`,
+`index-tuning`, `data-access-layer`, `technical-cost-decision`. If a named sibling isn't
+installed, `SKILL.md` says what to do inline.

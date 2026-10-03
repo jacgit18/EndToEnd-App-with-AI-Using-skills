@@ -134,7 +134,9 @@ Gate is not satisfied — items 3–8 are all missing. Response: name what's mis
 
 ## Portability
 
-This skill is repo-agnostic. It reads and writes `docs/architecture/` relative to whatever repo it's invoked from. To use it in another project, copy the `architecture/` directory into that repo's `.claude/skills/`. See `README.md` in this directory for notes.
+Needs no repo setup. Reads and writes `docs/architecture/decisions/` relative to whatever repo it's invoked from (default; follow the repo's own ADR convention if it has one). First run creates the directory and starts numbering at `001`.
+
+Depends on: `relational-modeling`, `dimensional-modeling`, `data-access-layer`, `data-tier-operations`, `api-interface-style`, `migration-cutover`, `change-surface-audit`, `caching-strategy`, `tech-decision-walkthrough`, `api-tooling-selection`, `problem-solving-gates`. If a named sibling isn't installed, say so and give the one-line answer inline. The load-bearing ones: no `relational-modeling` → note that table design (normal form, keys, indexes) is the next step and stop at the ADR; no `change-surface-audit` and the decision removes or renames something consumers use → list the consumers before recommending.
 
 ## Routing boundaries (full)
 

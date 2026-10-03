@@ -93,7 +93,7 @@ Cheaper options:     <vertical / tuning / caching / pooling / replicas — which
 Scaling move:        <read replicas | table partitioning | sharding | none yet>
 Replication topology: <single-leader | multi-leader | leaderless | n/a> — <why>
 Shard key:           <the key + why it keeps hot queries single-shard, or "n/a">
-Isolation:           <level per workload, e.g. "Read Committed default; SELECT FOR UPDATE on the ledger write">
+Isolation:           <level per workload, e.g. "Read Committed default; SELECT FOR UPDATE on the balance-update write">
 Cross-boundary writes: <2PC | Saga | outbox | CDC | eventual | none> — <why>
 Change propagation:  <how a search index / cache / warehouse / downstream stays in sync: outbox | CDC | none needed> — <why, and never dual-write>
 Failover / backups:  <automatic promotion? backup cadence? — meeting RPO <x> / RTO <y>>
@@ -104,7 +104,7 @@ Not chosen because:  <one line per rejected topology>
 Cost follow-up:      <hand to technical-cost-decision: which line items to price>
 ```
 
-**2. On approval**, write an ADR to `docs/architecture/decisions/NNN-<slug>.md` using `database-architecture`'s `adr-template.md` (same directory and numbering — this is an architecture decision). If `database-architecture` produced a persistence/source-of-truth ADR, reference it. Fill the "Revisit when" section with the concrete trigger that reopens this — "write QPS on the primary passes X", "replication lag p95 exceeds the read-your-writes budget", "the shard key stops keeping query Y single-shard".
+**2. On approval**, write an ADR to `docs/architecture/decisions/NNN-<slug>.md` using `database-architecture`'s `adr-template.md` (same directory and numbering — this is an architecture decision). If `database-architecture` isn't installed, write the ADR from this skeleton: title `NNN. <decision>`; Status and Date; **Context** (the gate answers, plainly); **Decision** (the fields in the recommendation block, including **Application access**); **Consequences** (accepted costs, rejected alternatives); **Revisit when** (a concrete trigger). If `database-architecture` produced a persistence/source-of-truth ADR, reference it. Fill the "Revisit when" section with the concrete trigger that reopens this — "write QPS on the primary passes X", "replication lag p95 exceeds the read-your-writes budget", "the shard key stops keeping query Y single-shard".
 
 Then stop. Implementation is a separate, explicitly-started step.
 
@@ -130,17 +130,21 @@ Gate not satisfied — item 4 (no pressure, "before launch" is not a bottleneck)
 
 ## Portability
 
-Repo-agnostic. Reads and writes `docs/architecture/decisions/` alongside `database-architecture`, reusing its `adr-template.md`. Copy the `data-tier-operations/` directory into another repo's `.claude/skills/` to use it there.
+Needs no repo setup. Writes an ADR to `docs/architecture/decisions/` by default (follow the repo's own convention if it has one), in `database-architecture`'s ADR format.
+
+Depends on: `database-architecture`, `relational-modeling`, `index-tuning`, `caching-strategy`, `technical-cost-decision`, `microservices-decision`, `resilience-strategy`, `problem-solving-gates`, `migration-cutover`, `data-access-layer`, `dimensional-modeling`. If a named sibling isn't installed, say so and give the one-line answer inline. The load-bearing ones: no `index-tuning` or `caching-strategy` → "exhaust the indexes and a cache first, they are cheaper than any topology change"; no `technical-cost-decision` → name the recurring line items (replica instance-hours, cross-AZ transfer, managed-proxy fees) and ask the user to price them; no `problem-solving-gates` → ask for the measured bottleneck before recommending anything.
 
 ## Routing boundaries (full)
 
-The frontmatter `description` is truncated in the skill listing, so the full boundary rules live here (moved verbatim from the original description):
+The frontmatter `description` is truncated in the skill listing, so the full boundary rules live here:
 
 - It exists to stop distribution being adopted prematurely (the shard key is near-irreversible) or the wrong consistency model being discovered in production.
 - Not for whether the alerting or metrics on replica lag / failover are any good — that is `observability-strategy`.
 - Not for app-level overload protection in front of the store (a concurrency limit so the service sheds before the connection pool drains, circuit breakers on DB calls) — that is `resilience-strategy`, which leads when the reported symptom is requests timing out or a cascade under load, and complements the pooler here.
 - Not for a poll-based consumer (Lambda on DynamoDB Streams or Kinesis) stuck on one bad record — that is `serverless-execution-model`'s consumer-side retry/skip/redrive contract; this skill only leads once failures trace to a genuinely hot partition/shard key concentrating traffic, not a one-off poison-pill record.
 - Not for whether a database credential should rotate at all, or where it's stored — that is `config-and-secrets-management`; this skill only owns the datastore-side mechanics (e.g., RDS-managed rotation, connection-pool behavior during a rotation) once that decision is made.
-- Physical tuning of an analytical warehouse (sort/distribution keys, clustering, cluster sizing) is not covered by any skill in this catalog — say so plainly rather than improvising; the dimensional model itself is `dimensional-modeling`.
+- Physical tuning of an analytical warehouse (sort/distribution keys, clustering, cluster sizing) has no sibling skill — say so plainly rather than improvising; the dimensional model itself is `dimensional-modeling`.
+- Not for how application code accesses the database (ORM vs query builder vs raw SQL, read/write splitting in the data layer) — that is `data-access-layer`.
+- Non-fire: "this one page's query is slow" is not a scaling decision. Measure it (`problem-solving-gates`), then `index-tuning`; no topology change before a measured wall.
 - Use when someone says "we need to shard", "the database is the bottleneck", "should we add read replicas", "which isolation level", "how do we handle transactions across services/shards", "how do we keep our search index / cache / warehouse in sync with the database", "dual-write or outbox or CDC", "we need multi-region writes", "which shard / partition key", or proposes a topology to check.
 - Forces the pressure (a measured bottleneck, not "web scale someday"), current numbers, and per-operation consistency needs before recommending; records an ADR.
