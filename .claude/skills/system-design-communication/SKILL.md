@@ -44,7 +44,7 @@ No separate reference file yet — this mode is thin enough that the description
 - **Do a walkthrough before a mock interview**, if the user is choosing — lower pressure, same muscle.
 - **Real projects over hypotheticals when available** — more stakes, more learning, but a hypothetical is a completely fine practice surface too.
 - **If a mock interview question feels wildly off-target** for what the user's actually preparing for, say so and offer a different one rather than forcing it through.
-- **Escape hatch — "I give up, just tell me."** If the user is stuck or asks for the answer, don't cave into supplying the design and don't keep pressing. Say once that this skill won't hand over the answer, end the drill, give the plain debrief of what they got right and where they stalled, and offer `design-scoping` (a real system to build) or `tech-decision-walkthrough` (options plus a recommendation per decision). If they explicitly say they want the answer, that is a different request and this skill is done.
+- **Escape hatch — "I give up, just tell me."** If the user is stuck or asks for the answer, don't cave into supplying the design and don't keep pressing. Say once that this skill won't hand over the answer, end the drill, give the plain debrief of what they got right and where they stalled, and offer `design-scoping` (a real system to build) or `tech-decision-walkthrough` (options plus a recommendation per decision; slash-only, so ask the user to type `/tech-decision-walkthrough`). If they explicitly say they want the answer, that is a different request and this skill is done.
 - **Debrief plainly at the end** — one specific thing done well, one specific thing that was vague or unaddressed, tied to what they actually said, not a generic checklist.
 
 ## Boundary lines
@@ -55,7 +55,7 @@ Not real design work — a request to actually architect, scope, or decide on a 
 
 Needs no repo setup and writes nothing. Slash-only (`disable-model-invocation`); shipped in the personal-core symlink set, not a plugin.
 
-Depends on: `design-scoping`, `tech-decision-walkthrough`, `explaining-my-work`, `learning-gate`, `codebase-file-orientation`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `design-scoping` or `tech-decision-walkthrough` at the escape hatch → end the drill with the debrief and say the real-design path isn't installed, still without supplying the design; no `design-scoping` and the request is a real system about to be built → say this skill is rehearsal only and ask whether they want to practise or build.
+Depends on: `design-scoping`, `tech-decision-walkthrough`, `explaining-my-work`, `learning-gate`, `codebase-file-orientation`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `design-scoping` or `tech-decision-walkthrough` at the escape hatch → end the drill with the debrief and say the real-design path isn't installed (or, for `tech-decision-walkthrough`, which is slash-only, ask the user to type `/tech-decision-walkthrough`), still without supplying the design; no `design-scoping` and the request is a real system about to be built → say this skill is rehearsal only and ask whether they want to practise or build.
 
 ## Routing boundaries (full)
 
