@@ -1,6 +1,7 @@
 ---
 name: bug-hunt-drill
 description: Interview-style debugging exercise: inject hidden bugs into a temporary worktree, hunt them by symptom and layer, record your findings, then clean up. Triggers: "give me a debugging exercise", "set up a bug-hunting drill", "practice finding bugs", "interview debugging prep". Not `debugging-layer-selection` (which tool), `problem-solving-gates` Rubber Duck (real problem), or `test-case-discovery` (test coverage).
+disable-model-invocation: true
 ---
 
 # Bug Hunt Drill

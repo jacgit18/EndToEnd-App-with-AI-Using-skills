@@ -1,6 +1,7 @@
 ---
 name: problem-journal
 description: Two modes: Capture saves an error or stack trace verbatim as its own file; Journal writes a curated post-resolution entry (symptom/cause/fix, recurrence count, worth-learning verdict). Use when "log this error", "save this error", "have I hit this before". Not a live gate. NOT `problem-solving-gates` (live debugging), NOT `decision-journal` (judgment calls), NOT `prompt-archive`.
+disable-model-invocation: true
 ---
 
 # Problem Journal
@@ -13,13 +14,13 @@ learning from. Capture never guesses a verdict. Journal never guesses a resoluti
 
 | Ask | Mode |
 |---|---|
-| "log/save/capture this error", an error just appeared and is worth keeping a record of (resolved or not) | **Capture** — one file in `Finance/Error Log/` |
-| "log this problem", "was that worth learning from", "have I hit this before" — after a fix | **Journal** — one entry in `.claude/_Prompts/problems-log.md` |
+| "log/save/capture this error", an error just appeared and is worth keeping a record of (resolved or not) | **Capture** — one file in `<journal>/errors/` |
+| "log this problem", "was that worth learning from", "have I hit this before" — after a fix | **Journal** — one entry in `<journal>/problems-log.md` |
 
 If the ask is ambiguous, ask which one in a single line. Don't run both unless asked — though
 the natural chain (capture while debugging, journal once fixed) is common and covered below.
 
-**Error-log directory.** Everywhere below, `Finance/Error Log/` means that folder when it exists. If it does not (this repo has no `Finance/`), use `.claude/_Prompts/problem-journal/` instead (create it, with its `INDEX.md`) — do not create a `Finance/` tree. In that case the recurrence check has only one real corpus (the prompt logs, plus any files in the fallback folder), so say "single-corpus check" in the Recurrence line; the "both corpora" gate is then satisfied by searching what exists, and the count is a weaker signal — note that in the verdict.
+**Journal root.** `<journal>` below is one folder, resolved once per run: `$JOURNAL_DIR` if set; else the `Journal root:` line in `~/.claude/CLAUDE.md`; else `.claude/_Prompts/` in the current repo. Quote the path (it may contain spaces) and create `<journal>/errors/` (with its `INDEX.md`) on first use. If the recurrence check finds no `.claude/_Prompts/logs/` (the prompt-archive hook isn't in this repo), it has only one corpus (the capture files): say "single-corpus check" in the Recurrence line; the "both corpora" gate is then satisfied by searching what exists, and the count is a weaker signal — note that in the verdict.
 
 ---
 
@@ -64,7 +65,7 @@ top few frames, the failing assertion) rather than truncating to a vague descrip
 
 ### 2. Decide the filename
 
-Title Case, describing the error, `.md` extension, placed directly in `Finance/Error Log/`
+Title Case, describing the error, `.md` extension, placed directly in `<journal>/errors/`
 — e.g. `Stale Cache Read On
 Deploy.md`. Create a subfolder only if a clearly distinct topic cluster forms; don't
 subfolder for a single file. Check for a name collision first; if one exists, ask whether to
@@ -83,7 +84,7 @@ The canonical capture-file template is `references/capture-template.md` — use 
 
 ### 4. Index it
 
-Append a row to `Finance/Error Log/INDEX.md` (create with an `# Error Log Index` heading and
+Append a row to `<journal>/errors/INDEX.md` (create with an `# Error Log Index` heading and
 a table header if absent):
 
 ```markdown
@@ -118,17 +119,17 @@ Two things must come from the actual record, not be invented:
 1. **The problem itself** — symptom, root cause (if known), and the fix. Source this from
    **the current session's actual resolved context** whenever the problem was just worked
    through in this conversation — that's the only place the *resolution* is reliably known.
-   If a matching `Finance/Error Log/` Capture-mode file exists for this problem, use it and
+   If a matching `<journal>/errors/` Capture-mode file exists for this problem, use it and
    update it (see "Closing the loop" below) rather than starting from nothing. If asked to
    journal a problem from an **old session** with no Capture file and no resolution in the
    record, do not reconstruct the fix from guesswork — ask the user to state what the problem
    and fix actually were.
 2. **The recurrence count** — grep **both** `.claude/_Prompts/logs/*.md` (prompt-archive's
    raw prompt logs — a weak signal, since it only ever has what the user typed) **and**
-   `Finance/Error Log/*.md` (the `Error Messages` and `Description` fields — a much stronger
+   `<journal>/errors/*.md` (the `Error Messages` and `Description` fields — a much stronger
    signal, since it holds the actual error text) for the error signature, the concept name,
    or a close paraphrase. Report the actual count and which files it appeared in — "3 hits:
-   2 in `Finance/Error Log/` (`X.md`, `Y.md`), 1 phrasing match in
+   2 in `<journal>/errors/` (`X.md`, `Y.md`), 1 phrasing match in
    `.claude/_Prompts/logs/2026-08-29.md`" — never "this comes up a lot" without having
    actually searched both.
 
@@ -163,7 +164,7 @@ pass"** as a perfectly complete verdict — don't manufacture a lesson to seem t
 
 ### Closing the loop
 
-If a `Finance/Error Log/` file already exists for this problem (from Capture mode, or found
+If a `<journal>/errors/` file already exists for this problem (from Capture mode, or found
 during the recurrence search), update it rather than leaving it stale: set `Status:
 Resolved`, fill in `Resolution Steps`, and add a line under `Related Issues/References`
 pointing at the new `problems-log.md` entry. If no Capture file exists, don't retroactively
@@ -189,23 +190,18 @@ back into chat on top of the output block already shown.
   known.
 - An unconfirmed hypothesis from an active Rubber Duck session written into a Capture file
   as a stated root cause instead of labeled explicitly unconfirmed.
-- A resolved problem with a stale `Finance/Error Log/` file still marked `Status: Capture`.
+- A resolved problem with a stale `<journal>/errors/` file still marked `Status: Capture`.
 
 ---
 
 ## Portability
 
-Repo-agnostic, but assumes `.claude/_Prompts/logs/` (`prompt-archive`'s automatic hook). Capture
-files go in `Finance/Error Log/` if the vault has it, otherwise `.claude/_Prompts/problem-journal/`
-(see "Error-log directory" above). The canonical template is this skill's
-`references/capture-template.md`. Copy the `problem-journal/`
-directory into another repo's `.claude/skills/` to use it there, alongside `prompt-archive`, or
-point the skill at wherever that repo's equivalent error-log convention lives.
+Repo-agnostic. Writes only under the journal root (`$JOURNAL_DIR`, else `Journal root:` in `~/.claude/CLAUDE.md`, else `.claude/_Prompts/` — see "Journal root" above). The recurrence check also greps `.claude/_Prompts/logs/` (`prompt-archive`'s hook) when the repo has it. The canonical capture template is this skill's `references/capture-template.md`. Installed globally, it needs no per-repo setup.
 
 ## Routing boundaries (full)
 
-- Mode Capture — the moment an error/exception/stack trace appears, whether or not it's resolved yet, save it verbatim as its own file in `Finance/Error Log/` (or `.claude/_Prompts/problem-journal/` if that folder is absent) using the template in this skill's Capture section — "log this error", "save this error", "capture this".
-- Mode Journal — after a coding problem is resolved and the user wants a learning-worthiness read — "log this problem", "was that worth learning from", "have I hit this before" — write a curated entry to `.claude/_Prompts/problems-log.md`: symptom/cause/fix, a recurrence count grepped from BOTH the prompt-archive logs (`.claude/_Prompts/logs/*.md`) and the `Finance/Error Log/` files (a far more precise signal, since it holds the actual error text, not just what the user typed), a classification (recurring pattern vs. one-off; fundamental concept vs. environmental fluke), and a worth-learning verdict tied to that count — never asserted without it, the same discipline `technical-cost-decision` forces for dollar figures.
+- Mode Capture — the moment an error/exception/stack trace appears, whether or not it's resolved yet, save it verbatim as its own file in `<journal>/errors/` using the template in this skill's Capture section — "log this error", "save this error", "capture this".
+- Mode Journal — after a coding problem is resolved and the user wants a learning-worthiness read — "log this problem", "was that worth learning from", "have I hit this before" — write a curated entry to `<journal>/problems-log.md`: symptom/cause/fix, a recurrence count grepped from BOTH the prompt-archive logs (`.claude/_Prompts/logs/*.md`) and the `<journal>/errors/` files (a far more precise signal, since it holds the actual error text, not just what the user typed), a classification (recurring pattern vs. one-off; fundamental concept vs. environmental fluke), and a worth-learning verdict tied to that count — never asserted without it, the same discipline `technical-cost-decision` forces for dollar figures.
 - Neither mode is a live gate: Capture is mechanical recording (like `prompt-archive`'s Log mode, for errors instead of prompts), and Journal is a retrospective procedure that runs *after* a problem is already resolved.
 - Not for recording a judgment call with a confidence, a prediction and a review-by date, or for reviewing one later — that's `decision-journal`; a bug caused by a past decision can chain to it (this skill keeps the symptom / cause / fix, that one records the call and what its reasoning assumed).
 - Not for preserving in-progress session state so work can resume (that is `session-handoff`); a handoff may link to a Capture file, but never replaces it.

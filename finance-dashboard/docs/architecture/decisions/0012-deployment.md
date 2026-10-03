@@ -102,7 +102,7 @@ is in `docs/deploy.md`.
   with the user not watching. This stack is reachable. It is not yet unattended: it is up only
   while one machine, Docker and `cloudflared` are, and nothing alerts when it isn't.
 - **A backup is not a backup until it has been restored.** Dumps were scheduled nightly from
-  2026-09-25 but the cron job never fired (found 2026-10-03; see `TODO.md`), so the only dumps are
+  2026-09-25 but the cron job never fired (found 2026-10-03; see `~/Documents/TODO.md`), so the only dumps are
   manual ones, and the restore was never exercised. An untested backup is a hope, not a recovery plan.
   - **Restore drill:** restore the newest dump into a scratch database (never over live data),
     then check it matches: row counts per table, and one known dashboard figure for a month,

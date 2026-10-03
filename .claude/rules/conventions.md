@@ -4,6 +4,14 @@
   they do not push to `main`. Merging a PR is fine from the terminal — `scripts/git/land.sh`
   does it through `gh` (branch protection and checks still apply); that is merging a PR, not
   a direct push to `main`.
+- **Docs live in DevHiveMind (from 2026-10-03).** `finance-dashboard/docs/` (ADRs, specs,
+  backlog, paid-options, deploy, testing) and `Artifact/` (talking points, write-ups) are
+  edited **only** in `/home/jac/Videos/DevHiveMind/EndToEnd-App-with-AI-Using-skills/`, at the
+  same relative paths. The copies in this repo are frozen and go stale; do not edit them. Any
+  skill that writes to `docs/architecture/decisions/`, `docs/testing/` or similar and says
+  "follow the repo's own convention" means this: resolve `docs/…` for finance-dashboard to
+  `<that DevHiveMind root>/finance-dashboard/docs/…`, and `Artifact/…` to `<root>/Artifact/…`.
+  Quote the path (spaces elsewhere in DevHiveMind). Code, `.claude/` and `scripts/` stay here.
 - **`.gitignore`:** `*.csv` (personal financial exports) and `.claude/_Prompts/logs/` (the
   `UserPromptSubmit` hook's prompt logs) live in the working tree but are never committed.
 - **Commit messages** end with:
