@@ -64,9 +64,19 @@ done | awk '{ if(!f[$2]) f[$2]=$1; l[$2]=$1 } END { for(s in f) printf "%-32s %s
 
 ```bash
 comm -23 \
-  <(find ".claude/skills" -mindepth 2 -maxdepth 2 -type d -exec basename {} \; | sort -u) \
-  <(grep -hoE '`[^`]+`' .claude/_Prompts/logs/*-skills.md | tr -d '`' | sort -u)
+  <(find ".claude/skills" -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | sort -u) \
+  <(grep -hE '^- ' .claude/_Prompts/logs/*-skills.md | sed -E 's/^- [^`]*`([^`]+)`.*/\1/; s/^[a-z0-9-]+://' | sort -u)
 ```
+
+The `s/^[a-z0-9-]+://` strips a plugin namespace, since a skill used from a plugin in another
+project is logged as `architecture-skills:test-strategy`. Only the first backtick token per line
+is the skill name; counting every backtick would count names mentioned inside old `args` text.
+
+**Test agents pollute the log.** Skill calls made by subagents (for example the agents
+`skill-interaction-testing` spawns) are logged under the parent session's id, in this same file.
+When a test run happened, add a `# NOTE` line to that day's file naming the synthetic fires (the
+recipes only read `- ` lines, so a comment line is safe), and exclude them before calling a skill
+"used".
 
 Caveat every "never used" result: the log only starts when the `PreToolUse` hook was added,
 so it means "not invoked since logging began," not "never." Other projects are only
