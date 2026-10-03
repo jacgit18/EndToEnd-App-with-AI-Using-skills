@@ -66,13 +66,10 @@ files are written.
 - **Non-paginated formats** (`.docx`, `.md`, `.html`, `.txt`) — says they have no stable
   page numbers and skips.
 
-## Using it in another repo
+## Dependencies
 
-Repo-agnostic and self-contained — writes nothing, reads no `docs/` tree.
-
-```
-cp -r ".claude/skills/document-page-check" /path/to/other-repo/.claude/skills/
-```
+Needs no repo setup and is self-contained — writes nothing, reads no `docs/` tree, depends on no
+sibling. Installed in other projects via the personal-core symlink set in `plugins/README.md`.
 
 ## Interaction with sibling skills
 

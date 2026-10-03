@@ -204,13 +204,10 @@ locality), no procedure.
 
 ## Portability
 
-Repo-agnostic. Reads source and writes one `.md` per file at the repo's detected doc convention (or a
-sidecar beside the source). Touches no fixed `docs/` path of its own. Copy the directory into another
-repo's `.claude/skills/`. See `README.md` for where it sits among the siblings.
+Needs no repo setup. Reads source and writes one `.md` per file at the repo's detected doc convention
+(or a sidecar beside the source). Touches no fixed `docs/` path of its own.
 
-```
-cp -r ".claude/skills/codebase-file-orientation" /path/to/other-repo/.claude/skills/
-```
+Depends on: `ambiguity-gate`, `explaining-my-work`, `session-handoff`, `change-surface-audit`, `commit-and-push`, `spec-drift-gate`, `system-design-communication`, `problem-solving-gates`, `learning-gate`, `document-page-check`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `ambiguity-gate` and it is unclear whether the user wants a per-file doc, a commit message or a prose summary → ask that one question yourself, then proceed; any other sibling missing → still decline that job here, because a per-file doc written in its place is the failure this skill's carve-outs exist to prevent.
 
 ## Routing boundaries (full)
 
