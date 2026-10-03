@@ -4,6 +4,7 @@ Carried over from `.claude/handoffs/handoff-skill-catalog-wrapup-2026-10-03.md`.
 
 ## Finance dashboard
 
+- [ ] **Nightly backup and reconcile have not run.** Found 2026-10-03: `finance-dashboard/backups/` holds only manually taken dumps (none dated Sep 26 to Oct 2), and neither `backups/backup.log` nor `backups/reconcile.log` exists, although the cron lines (02:30 backup, 02:40 reconcile) are in the crontab and the machine was up Sep 27 to Oct 3. The syslog shows no cron firing at 02:30 on Oct 1, 2 or 3. Most likely cause: the machine suspends overnight (not confirmed). Until fixed, the only backups are the ones taken by hand before deploys, and nothing checks balances. Options: a systemd timer with `Persistent=true` (runs a missed job after wake), `anacron`, or turning off overnight suspend. Then run `scripts/prod.sh exec -T backend uv run python -m app.reconcile` once by hand and record the result.
 - [ ] **Public URL: https://findash.us.ci (named tunnel), 4 of 5 done.** Replaced the quick tunnel that died ("Tunnel not found").
   - [x] Domain `findash.us.ci` (free, DNSHE) on Cloudflare, nameservers Active.
   - [x] Tunnel `findash` with a published route to `http://localhost:8080`, run by the host's systemd `cloudflared` service (PRs #136 merged; #135 closed as superseded).
