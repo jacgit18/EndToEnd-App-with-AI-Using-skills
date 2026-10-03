@@ -35,6 +35,16 @@
 		reverse_proxy backend:8000
 	}
 
+	# Compress text responses (JS/CSS/HTML/JSON); without this the 290 kB bundle
+	# ships raw. Found by Lighthouse (uses-text-compression), 2026-10-03.
+	encode zstd gzip
+
+	# Vite fingerprints everything under /assets/ (the hash changes with the
+	# content), so it can be cached for a year. index.html is never fingerprinted
+	# and keeps Caddy's default (revalidate every time).
+	@assets path /assets/*
+	header @assets Cache-Control "public, max-age=31536000, immutable"
+
 	# Everything else is the built React app (frontend/Dockerfile.prod copies the
 	# Vite build into /srv). try_files makes client-side routes like /login fall
 	# back to index.html instead of a 404 on refresh.
