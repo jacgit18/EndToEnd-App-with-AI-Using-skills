@@ -20,7 +20,7 @@ This skill produces cases, not tests. It stops at the table.
 - **Test mix, levels, pipeline stages, TDD/BDD** → `test-strategy`. This skill suggests a level per case in one line; it does not decide the portfolio. When one message asks for both a strategy and the cases ("how should we test it, and what cases"), `test-strategy` resolves first and its questions cover the surface; the case table comes after, not as a second round of questions in the same turn.
 - **Writing tests for a specific unit when the user is building testing skill** ("write tests for this function", "what should I test here" about one function) → `test-practice-gate`, which makes the user state a charter first. If both match, that gate owns the turn; don't run discovery on top of it.
 - **Coverage number, metric, CI enforcement** → `coverage-policy`.
-- **What backs a database-touching test** (real instance, substitute, mock) → `database-test-tooling`.
+- **What backs a database-touching test** (real instance, substitute, mock) → `database-test-tooling`. Browser runner, pinned clock/storage, retry policy → `browser-test-tooling`.
 - **A test failing now** → `debugging-layer-selection` / `problem-solving-gates`.
 - **Which faults to inject in chaos/resilience testing** → `failure-mode-analysis`. This skill lists unhappy-path *cases*; it does not rank a failure register.
 - **Reviewing test code quality** (naming, structure, flakiness of the code itself) → `code-review`. Reviewing a suite for *missing cases* is this skill.
@@ -46,7 +46,7 @@ Ask one or two questions at a time. Do not dump the category checklist up front.
 
 1. **Pin down the subject.** What does it do, what goes in and out, what does it depend on, what calls it? For infrastructure: which resources, environments, failure domains. If the code or spec is in the repo, read it and show what you found for confirmation instead of asking.
 2. **Happy paths — the user first.** Ask for the intended successful flows. Then add any missing, labeled as suggestions.
-3. **Unhappy paths — the user first.** Ask for their cases. Then probe only the categories they haven't touched, one or two at a time, from `case-categories.md`. Skip categories that cannot apply to this subject and say you skipped them.
+3. **Unhappy paths — the user first.** (For UI workflows with saved state, always ask the persistence case: reload or reopen and confirm the change survived.) Ask for their cases. Then probe only the categories they haven't touched, one or two at a time, from `case-categories.md`. Skip categories that cannot apply to this subject and say you skipped them.
 4. **Prioritize.** Impact × likelihood. Note which cases are worth automating and which are not.
 5. **Summarize** as the case table below.
 

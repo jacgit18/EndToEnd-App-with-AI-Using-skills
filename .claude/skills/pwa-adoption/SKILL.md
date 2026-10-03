@@ -31,9 +31,9 @@ design, and writes an ADR.
 
 ## Out of scope — hand these off
 
+- **How browser e2e tests run around a service worker** (block it, or a spec of its own) → `browser-test-tooling`.
 - **Server-side cache** (Redis, CDN, reverse proxy, DB query cache) → `caching-strategy`.
-  How a service worker in the browser interprets and stores the `Cache-Control`/`ETag`
-  headers that skill sets is here; the two shouldn't set contradictory freshness rules.
+  How a service worker reads that skill's `Cache-Control`/`ETag` headers is here; keep freshness rules consistent.
 - **Rollout mechanism for a new deploy** (blue-green, canary, rollback trigger) →
   `deployment-strategy`. This skill owns the narrower, adjacent problem of how an
   already-installed service worker notices and activates a new build.

@@ -1,6 +1,6 @@
 ---
 name: test-strategy
-description: Gated decision for the test mix of a component or system: levels, effort split, pipeline stages, non-functional scope, TDD/BDD. Triggers: "how should we test this service", "what's our testing strategy for X", "do we need end-to-end tests here", "should we do TDD on this". Not `coverage-policy`, `test-practice-gate`, `test-case-discovery`, or `database-test-tooling`; rollout is `deployment-strategy`.
+description: Gated decision for the test mix of a component or system: levels, effort split, pipeline stages, non-functional scope, TDD/BDD. Triggers: "how should we test this service", "what's our testing strategy for X", "do we need end-to-end tests here", "should we do TDD on this". Not `coverage-policy`, `test-practice-gate`, `test-case-discovery`, `database-test-tooling`, or `browser-test-tooling`; rollout is `deployment-strategy`.
 ---
 
 # Test Strategy
@@ -12,14 +12,14 @@ Given something that needs testing — one module, one service, one feature that
 - The user is setting a testing approach for a **new** component/service/feature, or reworking one.
 - The user asks a level question directly: unit vs integration, "do we need E2E", contract tests yes/no, smoke tests where.
 - The user asks a workflow question: "should we do TDD here", "is BDD / Cucumber / Gherkin worth it".
-- The user reports a symptom that is really a strategy question: "our tests pass but prod keeps breaking", "the E2E suite is flaky and slow", "we have 400 unit tests and no confidence".
+- The user reports a symptom that is really a strategy question: "our tests pass but prod keeps breaking", "the E2E suite is flaky and slow" (if the tier is settled and the question is how browser tests stay deterministic → `browser-test-tooling`), "we have 400 unit tests and no confidence".
 - The user proposes a mix and wants it checked ("100% E2E", "unit tests are enough", "TDD everything").
 
 ## Out of scope — hand these off
 
 - **A coverage percentage and whether CI blocks on it** — statement/branch/function targets, the number, exclusions, gate-vs-track → `coverage-policy`. This skill decides *which tests exist and where*; that one decides *how much of the code they must touch*.
 - **The rep of writing one specific test** — "write tests for this function", "help me test this component" when the user should first name the behavior and risk → `test-practice-gate`.
-- **Framework / tool selection** — Jest vs Vitest, Playwright vs Cypress, k6 vs Gatling, which mocking library. Name that a choice is needed and defer it (no skill in this catalog owns framework/tool selection — say so plainly; on "set us up" with no tests, the strategy comes first and tooling is a separate step the user starts).
+- **Framework / tool selection** — Jest vs Vitest, k6 vs Gatling, which mocking library. Name that a choice is needed and defer it (no skill in this catalog owns general framework/tool selection — say so plainly; the browser/UI e2e runner and its determinism setup (Playwright vs Cypress, prod build, pinned clock) is `browser-test-tooling`, and the database seam is `database-test-tooling`; on "set us up" with no tests, the strategy comes first and tooling is a separate step the user starts).
 - **Whether a database-seam integration/contract test hits a real instance, a substitute engine, a shared test DB, or a mock** — once this skill has decided that test exists → `database-test-tooling`. This skill decides *that* the seam gets an integration-level test; that skill decides what backs it.
 - **Writing the tests, fixtures, or CI config.** This skill stops at a plan and an ADR.
 - **Whether to split into services** → `microservices-decision`. This skill tests the surfaces that exist.
@@ -47,7 +47,7 @@ Do not recommend a mix until these are answered. Split into what you may surface
 2. **Cost of failure, per area** — what actually happens when each part breaks in production: silent wrong data, a failed checkout, a cosmetic glitch, a compliance breach. If it varies across the surface, say where the expensive failures are. This is what decides where effort goes.
 3. **Consumers and contracts** — does anything depend on this interface staying stable — other services, external clients, a published API? A stable contract that others build on is the trigger for contract tests.
 4. **The pipeline stages that exist** — what actually runs between a commit and production: local pre-commit, PR CI, merge, staging deploy, production deploy, post-deploy checks. You cannot place a smoke test at a stage that does not exist.
-5. **Non-functional requirements, with numbers** — latency budget, throughput target, expected load and its shape, security/compliance surface — or an explicit "none specified." No numbers means performance/load/security testing is out of this plan, and that should be a stated choice, not an omission.
+5. **Non-functional requirements, with numbers** (an axe scan inside e2e is a regression check, not an accessibility conformance claim; the rest of WCAG stays a manual-review list) — latency budget, throughput target, expected load and its shape, security/compliance surface — or an explicit "none specified." No numbers means performance/load/security testing is out of this plan, and that should be a stated choice, not an omission.
 6. **Change rate and lifetime** — a throwaway spike, or a load-bearing system maintained for years? A prototype does not get the full pyramid; a system others depend on does.
 7. **Who maintains these, and the CI time budget** — who writes and fixes these tests, how long the suite is allowed to take, whether E2E infrastructure (browser grid, seeded environment) already exists or would be new.
 

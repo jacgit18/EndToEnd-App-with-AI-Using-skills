@@ -88,6 +88,7 @@ Groups are labels only — this file is the mapping. Add new skills here.
 
 ## Testing
 
+- `browser-test-tooling`
 - `bug-hunt-drill`
 - `coverage-policy`
 - `database-test-tooling`
