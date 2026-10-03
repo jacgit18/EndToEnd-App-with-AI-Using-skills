@@ -99,3 +99,4 @@ From a real audit of a login-gated app (7 routes, mobile and desktop). Reference
   name via DOM queries because date inputs have no testing-library role, no empty `th`), and try a
   mutation for each rule.
 
+The scripts from this audit are saved, with their app-specific parts marked, in `example-finance-dashboard/`.

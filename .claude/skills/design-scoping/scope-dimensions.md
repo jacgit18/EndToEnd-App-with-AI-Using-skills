@@ -96,7 +96,8 @@ The box the design must fit inside. From `Specifying Scope indepth.md` and `User
   platform already in use that the design must fit — or an explicit "greenfield, free to
   choose". "We're a Postgres shop on AWS ECS" removes a lot of the option space, usefully.
 - **Platforms** — the client environments that must be supported: browser matrix, mobile OS
-  floor, offline, low-bandwidth regions, screen-reader / accessibility obligations.
+  floor, offline, low-bandwidth regions, screen-reader / accessibility obligations (the
+  target level itself is recorded as its own non-functional line in `SKILL.md`).
 - **Compliance** — ask directly, because it is the most-forgotten and most-expensive-to-retrofit:
 
   | Regime | Triggers when | Forces into the design (examples) |

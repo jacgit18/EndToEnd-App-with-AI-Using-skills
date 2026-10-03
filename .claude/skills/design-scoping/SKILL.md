@@ -82,6 +82,11 @@ stated. **Do not invent them.** If any is missing, name it and stop.
    - **Error budget** — the acceptable error rate for the critical path.
    - **Cost cap** — a monthly infrastructure ceiling, or a unit-economics target
      (cost per user / per request / per GB).
+   - **Accessibility target** (only when the system has a UI) — the WCAG level to build to
+     (A / AA / AAA) or "not a constraint", and whether shared base styles are set before the
+     second page (hand-styled pages repeat the same missing-label, no-landmark and reflow
+     defects on every route). A non-blocking gap if unstated: record "not stated". The
+     build-time checklist is `.claude/rules/web-accessibility-and-lighthouse.md`.
    "Fast" and "reliable" are not targets. A number, or "we accept whatever the simple
    design gives us" — stated, not assumed.
 5. **Constraints** — the box the design lives in:
@@ -164,6 +169,7 @@ Non-functional targets:
   Availability:     <uptime target + cost of an hour down>
   Error budget:     <acceptable error rate on the critical path>
   Cost cap:         <monthly ceiling or unit-economics target>
+  Accessibility:    <WCAG level to build to, or "not a constraint" / "not stated" (UI systems only)>
 Constraints:        team <n, experience> · timeline <date, hard?> · stack <fixed parts> · platforms <clients> · compliance <regimes, or "none">
 Deep-dive now:      <the 1–2 decisions — each with its blast radius and why it can't wait>
 Acknowledged, deferred: <the rest — decided later, during implementation or a later design pass>

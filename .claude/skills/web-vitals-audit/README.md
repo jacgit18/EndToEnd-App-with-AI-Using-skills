@@ -43,7 +43,7 @@ reliability-math          →  server telemetry arithmetic
 - Server, query or code-path performance → `problem-solving-gates` Optimization.
 - Service-worker and offline design → `pwa-adoption`.
 - Field monitoring of web vitals → `observability-strategy`.
-- Accessibility audits — reported if Lighthouse surfaces them, not pursued.
+- Accessibility *conformance* claims. The measuring is in scope (axe with the AAA tag set at 1280px and 320px, target sizes, forced colors; `measurement.md`, last section) and the standing policy is `.claude/rules/web-accessibility-and-lighthouse.md`, but a passing score is never reported as conformance. An axe scan inside an e2e suite is `browser-test-tooling`.
 
 ## Dependencies
 
