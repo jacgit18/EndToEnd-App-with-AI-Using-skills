@@ -4,26 +4,27 @@ Packaged subsets of the skill catalog for use in other projects. Each plugin's `
 entries are relative symlinks to the canonical `.claude/skills/<name>/` directories, so a
 plugin never drifts from the catalog — edit the skill in `.claude/skills/`, not here.
 
-## data-skills
+## architecture-skills
 
-The six Data-cluster gates (`database-architecture`, `relational-modeling`,
-`dimensional-modeling`, `data-access-layer`, `index-tuning`, `data-tier-operations`) plus
-the three load-bearing siblings they hand off to (`change-surface-audit`,
-`technical-cost-decision`, `access-control-modeling`). Skills load namespaced:
-`data-skills:index-tuning`. Other hand-offs (`caching-strategy`, `problem-solving-gates`, …)
-fall back to an inline one-line answer when not installed — each skill's Portability
-section says how.
+28 skills: the Architecture and Architecture (Data) groups (see `.claude/skills/INDEX.md`),
+minus `tech-decision-walkthrough`, plus `technical-cost-decision`. They hand off to each other constantly, so they ship as one
+plugin. Skills load namespaced: `architecture-skills:index-tuning`. Hand-offs outside the
+plugin (testing skills, `tech-decision-walkthrough`, `model-routing-decision`, …) fall back to
+an inline one-line answer when not installed; each skill's Portability section says how.
 
 Install for every project (a "skills-dir" plugin, auto-loads next session):
 
 ```bash
-ln -s "$PWD/plugins/data-skills" ~/.claude/skills/data-skills
+ln -s "$PWD/plugins/architecture-skills" ~/.claude/skills/architecture-skills
 ```
 
-Try it for one session without installing: `claude --plugin-dir plugins/data-skills`.
+Upgrading from the earlier `data-skills` pilot: `rm ~/.claude/skills/data-skills` first (it
+was a symlink to the directory this plugin replaced).
 
-This repo's `.claude/settings.json` disables `data-skills@skills-dir`, so the plugin copies
-don't appear next to the project copies here.
+Try it for one session without installing: `claude --plugin-dir plugins/architecture-skills`.
+
+This repo's `.claude/settings.json` disables `architecture-skills@skills-dir`, so the plugin
+copies don't appear next to the project copies here.
 
 ## Personal core (not a plugin)
 
