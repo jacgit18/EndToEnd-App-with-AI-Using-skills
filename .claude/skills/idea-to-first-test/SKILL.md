@@ -70,9 +70,15 @@ First test: <what>  First action: <≤30 min>  Timebox/result date:
 
 "Skip the brainstorm, just ground it" → run Step 3 only; "already decided to build" still gets the riskiest-assumption tag but no spec questions (`spec-drift-gate` waits until a spec is asked for). "Just brainstorm" → run Step 2 only and say grounding is pending.
 
+## Portability
+
+Needs no repo setup and writes nothing; the output block is produced in chat.
+
+Depends on: `entry-point-first`, `design-scoping`, `ticket-evaluation`, `user-story-decomposition`, `spec-drift-gate`, `problem-solving-gates`, `learning-gate`, `database-architecture`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `design-scoping` or `spec-drift-gate` and the user wants to go further → stop at the output block and name the design or spec step as the next one, still with no plan or stage map, and if DEMAND is untested say so in that line; no `entry-point-first` and the user can't begin at all → skip the brainstorm and name one small first action.
+
 ## Example invocations
 
-> "Wild idea: my finance dashboard auto-negotiates my bills for me."
+> "Wild idea: an app that auto-negotiates my bills for me."
 
 Applies. Variants: negotiates every bill instantly for free; works for all users nationwide; "what would an airline do" → dynamic repricing alerts. Kernels: "I overpay and never notice." Grounding: riskiest assumption is DEMAND-side: providers may not move on price at all. Tag DEMAND, not BUILD; first test is calling about one bill by hand and noting the result.
 

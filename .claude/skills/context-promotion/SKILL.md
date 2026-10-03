@@ -72,4 +72,4 @@ Does not fire → `session-handoff`. Likewise "write a spec for the invoicing se
 
 ## Portability
 
-Repo-agnostic except the paths in `destinations.md` (`.claude/rules/`, `.claude/_Prompts/logs/`, the memory index). Copy the `context-promotion/` directory into another repo's `.claude/skills/` and adjust those paths.
+Repo-agnostic except the paths in `destinations.md` (`.claude/rules/`, `.claude/_Prompts/logs/`, the memory index). Project-only: not in any plugin; a repo without those paths needs them adjusted first.

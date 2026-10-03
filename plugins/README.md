@@ -63,13 +63,15 @@ Try it without installing: `claude --plugin-dir plugins/planning-skills`. This r
 
 Skills about how you work rather than about a project load as plain user skills via symlinks:
 the four request-shape gates, the writing trio (`explaining-my-work`, `delete-ai-words`,
-`software-carpentier-brand`), and the two Documents skills (`codebase-file-orientation`,
-`document-page-check`). Already installed ones are skipped:
+`software-carpentier-brand`), the two Documents skills (`codebase-file-orientation`,
+`document-page-check`), and three Prompts skills (`prompt-authoring`, `prompt-tester`,
+`idea-to-first-test`). Already installed ones are skipped:
 
 ```bash
 for s in ambiguity-gate learning-gate problem-solving-gates entry-point-first \
          explaining-my-work delete-ai-words software-carpentier-brand \
-         codebase-file-orientation document-page-check; do
+         codebase-file-orientation document-page-check \
+         prompt-authoring prompt-tester idea-to-first-test; do
   [ -e ~/.claude/skills/$s ] || ln -s "$PWD/.claude/skills/$s" ~/.claude/skills/$s
 done
 ```

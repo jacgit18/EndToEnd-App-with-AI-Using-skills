@@ -103,6 +103,12 @@ a few inputs?" / "archive it with `prompt-archive`?".
 4. Real content baked in (Case A), or a gathering step included (Case B).
 5. One code block, copy-and-send — and if the prompt contains its own code fences, the outer fence is longer than any inside it.
 
+## Portability
+
+Needs no repo setup and writes nothing; the prompt is delivered in chat as one code block.
+
+Depends on: `prompt-tester`, `prompt-archive`, `ambiguity-gate`, `learning-gate`, `skill-static-audit`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `prompt-tester` → the Step 5 offer becomes "try it on two or three realistic inputs?", run in chat, and never call the prompt tested until that has happened; no `prompt-archive` → offer to save it as a `.md` file wherever the user keeps prompts; no `ambiguity-gate` and the request itself has two readings → ask that one question before Step 2, since Step 2's batch is only for questions that change the prompt.
+
 ## Routing boundaries (full)
 
 - Use when the user wants a finished, ready-to-use prompt produced from a rough idea, a half-formed task description, or a draft they want sharpened — "write me a prompt that…", "turn this into a prompt", "rewrite / improve / optimize this prompt", "help me prompt this", "I want to ask Claude to…", or a pasted draft prompt with a request to make it better.
