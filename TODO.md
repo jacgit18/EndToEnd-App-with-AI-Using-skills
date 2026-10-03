@@ -4,9 +4,9 @@ Carried over from `.claude/handoffs/handoff-skill-catalog-wrapup-2026-10-03.md`.
 
 ## Finance dashboard
 
-- [ ] **Phase 7 close-out, owner steps.** Code and docs are done on branch `finance/phase7-closeout` (see `finance-dashboard/ACCESSIBILITY.md`). What is left:
+- [ ] **Phase 7 close-out, owner steps (1 of 4 done).** Code and docs merged in PR #132 (see `finance-dashboard/ACCESSIBILITY.md`). What is left:
   - [ ] Fill in the per-figure table in `finance-dashboard/docs/phase7-verification.md` from one real month (needs the real login).
-  - [ ] Deploy the `Caddyfile.prod` fixes (compression, asset caching). Needs a fresh "deploy to prod" in the session.
+  - [x] Deploy the `Caddyfile.prod` fixes (compression, asset caching). Deployed 2026-10-03 (backup `finance-20261003-143923.sql.gz` first). Checked on the local prod stack at 127.0.0.1:8080: `/health` ok, gzip + immutable cache on the bundle, `robots.txt` and meta description served, `/api/budgets` 401 without a session. Not yet checked: the public HTTPS URL, and `app.reconcile`.
   - [ ] Audit the other routes (`/`, `/accounts`, `/categories`, `/budgets`, `/import`) with Lighthouse and axe.
   - [ ] Work through the "Manual review still required" list in `ACCESSIBILITY.md` (screen readers, zoom, forced colors, target size, reading level), then retest on the deployed HTTPS site.
 - [ ] **Phase 8 (CI/CD hardening): ON HOLD until the owner says go.** Spec `finance-dashboard/docs/phase8-spec.md`, ADR-0019 to 0022. Slice 1 is the CI workflow. Build with `incremental-build-pacing`. Free-first; note paid options in `finance-dashboard/docs/paid-options.md`. A prod deploy needs an explicit fresh "deploy to prod".
