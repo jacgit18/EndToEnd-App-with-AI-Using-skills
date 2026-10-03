@@ -1,6 +1,6 @@
 {
   "enabledPlugins": {
-    "data-skills@skills-dir": false
+    "architecture-skills@skills-dir": false
   },
   "hooks": {
     "PreToolUse": [
