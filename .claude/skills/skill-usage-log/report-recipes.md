@@ -69,7 +69,18 @@ comm -23 \
 ```
 
 Caveat every "never used" result: the log only starts when the `PreToolUse` hook was added,
-so it means "not invoked since logging began," not "never."
+so it means "not invoked since logging began," not "never." Other projects are only
+logged from the day the user-level hook was installed; before that, a skill used only elsewhere
+looks unused here.
+
+### Per project (lines from other projects carry a `[project: name]` tag)
+
+```bash
+# fires per project; lines with no tag are this repo
+grep -hE '^- ' $LOGS | sed -E 's/.*\[project: ([^]]+)\].*/\1/; t; s/.*/(this repo)/' | sort | uniq -c | sort -rn
+# one project's skills, most-used first
+grep -h '\[project: myapp\]' $LOGS | grep -oE '`[^`]+`' | tr -d '`' | sort | uniq -c | sort -rn
+```
 
 ### Fires followed by an override phrase (feedback signal)
 
