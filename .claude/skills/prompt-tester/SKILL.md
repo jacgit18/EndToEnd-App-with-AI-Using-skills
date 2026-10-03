@@ -185,6 +185,12 @@ Does not apply — that is `prompt-authoring`. Offer to test the rewritten promp
 
 Does not apply — that is `skill-static-audit`.
 
+## Portability
+
+Needs no repo setup and writes nothing; the report is produced in chat. Reads a prompt pasted in or at a path the user names.
+
+Depends on: `prompt-authoring`, `skill-static-audit`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `prompt-authoring` and the user wants the prompt fixed → still don't rewrite it here; the report's weak spots are the hand-off, and the rewrite is a separate request; no `skill-static-audit` and the text is a skill's `description:` or SKILL.md → say it is a skill, not a prompt, and review it as a document rather than running test inputs through it. Where `/new-skill` doesn't exist, Step 8 names the container and stops.
+
 ## Routing boundaries (full)
 
 - This skill should be used when the user asks to "test this prompt", "does this prompt work", "try my prompt on a few examples", "check if this prompt does what it's supposed to", or pastes a prompt and asks whether it's any good.

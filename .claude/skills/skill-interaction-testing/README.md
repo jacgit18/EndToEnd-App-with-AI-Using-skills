@@ -31,12 +31,8 @@ recorded in project memory so pairs are not silently re-tested or skipped.
 Skip when the project has fewer than two skills or the edit does not change what triggers
 the skill (typos, polish, examples that do not widen or narrow scope).
 
-## Using it in another repo
+## Dependencies
 
-Repo-agnostic apart from the fixed cross-cutting list, which names skills from this catalog;
-adjust it to the target repo's own request-shape skills. Copy the directory into the other
-repo's `.claude/skills/`:
-
-```
-cp -r .claude/skills/skill-interaction-testing /path/to/other-repo/.claude/skills/
-```
+Repo-agnostic apart from the fixed cross-cutting list, which names this repo's request-shape
+skills; adjust it to the target repo's own. Project-only: not in any plugin (see
+`plugins/README.md`).
