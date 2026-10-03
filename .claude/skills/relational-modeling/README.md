@@ -5,18 +5,17 @@ question is settled and the store is relational, this skill designs the actual t
 normal form and exceptions, keys, constraints, indexes, lifecycle columns, relationship
 patterns.
 
-Built from the `Architecture/02. Backing Service Options/Databases/` notes — Normalization &
-Denormalization, Database Indexing, Database Core Functionality (constraints, referential
-actions, triggers), GUIDs, Record Life Cycle, Database Table Relationship Types, Self-joining
-relationships.
+Covers normalization and denormalization, indexing, constraints and referential actions,
+keys (surrogate, natural, UUID), record lifecycle, and table relationship types including
+self-joins.
 
 ## Where it sits
 
 ```
 database-architecture   →  decides WHERE the schema lives + WHICH store (ADR)
 relational-modeling      →  designs the tables for a relational store (this skill)
-data-tier-operations     →  sharding / replication / pooling / txn isolation   (built)
-dimensional-modeling     →  star / snowflake / fact / dimension / warehouse    (built)
+data-tier-operations     →  sharding / replication / pooling / txn isolation
+dimensional-modeling     →  star / snowflake / fact / dimension / warehouse
 ```
 
 The gate's **prerequisite** is the `database-architecture` ADR (or an explicit "we're on
@@ -55,18 +54,20 @@ Stops before migrations and ORM wiring.
 - ORM / query-builder / raw-SQL / typed-codegen choice → `data-access-layer` (parallel sibling
   off the same ADR; run both for a build, one gate at a time). Migration tooling stays out too.
 
-## Using it in another repo
+## Dependencies
 
-Repo-agnostic. Reads `docs/architecture/decisions/`, writes `docs/data-model/`.
+Needs no repo setup. Writes `docs/data-model/<slug>.md` by default (use the repo's own
+convention if it has one). Reads the `database-architecture` ADR when one exists.
 
-```
-cp -r .claude/skills/relational-modeling /path/to/other-repo/.claude/skills/
-```
+Hands off to: `database-architecture` (store not yet chosen), `data-tier-operations`,
+`index-tuning`, `dimensional-modeling`, `data-access-layer`, `access-control-modeling`
+(row-level security / tenant isolation). If a named sibling isn't installed, `SKILL.md`
+says what to do inline.
 
 ## Interaction with sibling skills
 
-Runs `skill-interaction-testing` territory: it stacks *after* `database-architecture`
-(beneficial chaining — the ADR is this skill's input) and must not claim the source-of-truth
-decision itself. The trigger wording leans on "model / normalize / index / key / soft delete"
-plus a stated relational store to avoid catching requests that belong in
-`database-architecture`. Re-check overlap if either skill's description changes.
+It stacks *after* `database-architecture` (beneficial chaining — the ADR is this skill's
+input) and must not claim the source-of-truth decision itself. The trigger wording leans on
+"model / normalize / index / key / soft delete" plus a stated relational store to avoid
+catching requests that belong in `database-architecture`. Re-check overlap if either skill's
+description changes.

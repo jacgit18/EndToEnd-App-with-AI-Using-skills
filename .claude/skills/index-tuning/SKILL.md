@@ -41,8 +41,8 @@ inputs get asked for.
   `data-tier-operations`. This skill will say "the honest fix for this monthly report is to
   run it on a replica" but does not design the replication topology.
 - **Physical tuning of an analytical warehouse** — sort keys, distribution keys, zone maps,
-  clustering keys on Redshift / Snowflake / BigQuery → not covered by any skill in this
-  catalog (`dimensional-modeling` covers the model itself, not physical layout). This skill is OLTP b-tree / secondary-index
+  clustering keys on Redshift / Snowflake / BigQuery → no sibling skill covers it
+  (`dimensional-modeling` covers the model itself, not physical layout); say so plainly. This skill is OLTP b-tree / secondary-index
   land; a columnar warehouse's physical layout is a different discipline.
 - **Whether the read path should touch the database at all** — a hot read whose result is
   cacheable → `caching-strategy`.
@@ -216,8 +216,9 @@ first — profile the endpoint, get the plan for the query that dominates. Come 
 
 ## Portability
 
-Repo-agnostic. Writes nothing; produces the output block in chat. Copy the `index-tuning/`
-directory into another repo's `.claude/skills/` to use it there.
+Needs no repo setup. Writes nothing; produces the output block in chat.
+
+Depends on: `problem-solving-gates` (measure first), `relational-modeling`, `data-tier-operations`, `change-surface-audit`, `caching-strategy`, `deployment-strategy`, `technical-cost-decision`, `dimensional-modeling`, `data-access-layer`. If a named sibling isn't installed, say so and give the one-line answer inline. The load-bearing ones: no `problem-solving-gates` → ask for the query and its `EXPLAIN` plan and propose nothing until both are in hand; no `change-surface-audit` → before any `DROP INDEX`, check for an FK-backing index, a `UNIQUE` that is also a constraint, and queries that rely on it, and prefer making the index invisible or monitoring before dropping; no `technical-cost-decision` → state the extra storage and write cost as numbers and leave the dollars to the user.
 
 ## Routing boundaries (full)
 

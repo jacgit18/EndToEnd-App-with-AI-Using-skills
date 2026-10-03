@@ -1,5 +1,7 @@
 # Index Mechanics
 
+Contents: b-tree access path · composite vs multiple single-column · covering indexes · partial indexes · expression indexes · why an index isn't used · non-b-tree types · clustered/heap implications.
+
 Reference for steps 2 and 3 of the walk in `SKILL.md` — deriving the access path for one
 query, then checking the planner will actually take it.
 

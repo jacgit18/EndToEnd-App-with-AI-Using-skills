@@ -1,15 +1,12 @@
-# architecture skill
+# database-architecture skill
 
 A gated decision process for data-architecture choices: where a piece of data's source of truth
 should live (database-first / code-first / contract-first), what the system boundaries are, and
 what gets generated from that — recorded as an ADR.
 
-Built from `database schema disscusiion.md`, plus `Architecture/02. Backing Service Options/File
-System Storage.md` (the `store-options.md` reference — object / block / DFS storage, blob-vs-row).
-It deliberately does **not** encode "always contract-first"; it encodes the process for deciding.
-The AWS service-name mapping tables in `store-options.md` were added `2026-09-04` from
-`Architecture/02. Backing Service Options/Cloud/AWS/Cloud Storage.md`, `Cloud Databases.md`,
-and `AWS/Cloud Storage & Databases.md`.
+`store-options.md` is the reference for object / block / distributed-file storage and
+blob-vs-row, with AWS service-name mapping tables (added `2026-09-04`). The skill
+deliberately does **not** encode "always contract-first"; it encodes the process for deciding.
 
 
 ADR = Architecture Decision Record (sometimes "Architectural Decision Record").
@@ -55,35 +52,29 @@ start explicitly after the ADR exists.
 - **Recommendation + ADR**, no separate project-context file. The ADRs themselves are the
   standing architectural memory.
 
-## Using it in another repo
+## Dependencies
 
-The skill is repo-agnostic — it reads and writes `docs/architecture/` relative to wherever it's
-invoked. To vendor it:
+Needs no repo setup. Reads and writes `docs/architecture/decisions/` relative to whatever repo
+it's invoked from (default; use the repo's own convention if it has one). First run creates
+the directory and starts numbering at `001`. Hands off to `relational-modeling`,
+`dimensional-modeling`, `data-access-layer`, `data-tier-operations`, `api-interface-style`,
+`migration-cutover`, `change-surface-audit`, `caching-strategy`, `tech-decision-walkthrough`,
+`api-tooling-selection`, `problem-solving-gates`. If a named sibling isn't installed,
+`SKILL.md` says what to do inline.
 
-```
-cp -r .claude/skills/database-architecture /path/to/other-repo/.claude/skills/
-```
+## Related skills and gaps
 
-Nothing else to configure. First run in a repo creates `docs/architecture/decisions/` and
-starts numbering at `001`.
-
-## Not built (yet)
-
-Relational modeling detail (normalization, indexes, constraints, keys, lifecycle columns) now
-lives in the **`relational-modeling`** sibling skill — this skill hands off to it after the
-ADR exists.
+Relational modeling detail (normalization, indexes, constraints, keys, lifecycle columns) lives
+in `relational-modeling` — this skill hands off to it after the ADR exists.
 
 Scaling and distribution (sharding, replication topology, transaction isolation, 2PC/Saga,
-pooling, failover) now live in the **`data-tier-operations`** sibling skill, which reuses this
-skill's `adr-template.md`.
+pooling, failover) live in `data-tier-operations`, which reuses this skill's `adr-template.md`.
 
-Analytical / dimensional modeling (star/snowflake, fact/dimension, grain, SCD, warehouses/marts)
-now lives in the **`dimensional-modeling`** sibling skill.
+Analytical / dimensional modeling (star/snowflake, fact/dimension, grain, SCD,
+warehouses/marts) lives in `dimensional-modeling`.
 
-Still not built: contract authoring (versioning, compatibility, DTO design). The source
-discussion also sketched an `implementation` agent. Those become sibling skills if they start
-needing their own repeatable process.
+Not covered by a sibling: contract authoring (versioning, compatibility, DTO design).
 
+## To try
 
-## To try 
-Invoke /architecture (or just start a data-modeling request) with a real feature. Fastest sanity check: give it "design the schema for X" with no context — it should name what's missing and stop, not draft anything. Then give it a fully-specified request like the billing example in SKILL.md and confirm the recommendation block + ADR come out the way you want. Adjust the gate list or ADR fields from there.
+Invoke the skill (or just start a data-modeling request) with a real feature. Fastest sanity check: give it "design the schema for X" with no context — it should name what's missing and stop, not draft anything. Then give it a fully-specified request like the billing example in SKILL.md and confirm the recommendation block + ADR come out the way you want. Adjust the gate list or ADR fields from there.

@@ -77,7 +77,7 @@ Do not name an approach until these are answered.
 
 **Prerequisite (check first):**
 
-- **The source-of-truth ADR exists.** Point to `docs/architecture/decisions/` or get the user
+- **The source-of-truth ADR exists.** Point to the repo's ADR directory (default `docs/architecture/decisions/`) or get the user
   to state the call: database-first, code-first, or contract-first, and which store. If that
   decision is open, stop — it is `database-architecture`'s job and it changes the candidate
   set here.
@@ -164,7 +164,7 @@ is code-first in feel over database-first in truth) and that **combining styles 
 Source of truth:      <from the database-architecture ADR — database-first | code-first | contract-first, and the store>
 Language / ecosystem: <and which styles it actually offers — note the ones ruled out as unavailable>
 Primary style:        <raw + SQL | query builder | micro-ORM | full ORM | typed codegen | compile-checked SQL>
-Secondary style:      <the escape hatch for the query shapes the primary fights — e.g. "SQLAlchemy Core + text() for the reporting endpoints and the ledger trigger maintenance" — or "none">
+Secondary style:      <the escape hatch for the query shapes the primary fights — e.g. "SQLAlchemy Core + text() for the reporting endpoints and the audit-table trigger maintenance" — or "none">
 Query-shape fit:      <how the primary handles CRUD / variable lists / analytical / DB-specific, and exactly where the secondary takes over>
 Refactor safety:      <build-time type checking | generate-time | runtime + tests only — and how schema drift is caught>
 Migration tooling:    <what this choice largely picks — name it, defer the workflow detail>
@@ -176,7 +176,7 @@ Not chosen because:   <one line per rejected style>
 
 **2. On the user's approval**, write an ADR to `docs/architecture/decisions/NNN-<slug>.md`
 using `database-architecture`'s `adr-template.md` (same directory and numbering — this is an
-architecture decision). Reference the source-of-truth ADR. The template's **Application
+architecture decision). If `database-architecture` isn't installed, write the ADR from this skeleton: title `NNN. <decision>`; Status and Date; **Context** (the gate answers, plainly); **Decision** (the fields in the recommendation block, including **Application access**); **Consequences** (accepted costs, rejected alternatives); **Revisit when** (a concrete trigger). Reference the source-of-truth ADR. The template's **Application
 access** field is exactly this skill's Primary/Secondary output; fill **Database modeling**
 by reference to `relational-modeling` if that hasn't run yet. Fill "Revisit when" with the
 concrete trigger that reopens this — "the reporting module's share of DB work passes ~half and
@@ -205,16 +205,17 @@ recommendation block for the walkthrough to fold into its ADR.
 
 ## Example invocations
 
+**Non-fire:** "design the tables for orders" is `relational-modeling`, not this skill. "Our ORM query is slow" with no plan goes to `problem-solving-gates`, then `index-tuning`.
+
 **Read `example-invocations.md`** for three worked invocations: a satisfied gate (Python/FastAPI mixed workload), a bare "should we use an ORM" that fails the gate, and a single slow query that routes away.
 
 ---
 
 ## Portability
 
-Repo-agnostic. Reads `docs/architecture/decisions/` for the prerequisite source-of-truth ADR,
-writes new ADRs there, reusing `database-architecture`'s `adr-template.md`. Copy the
-`data-access-layer/` directory into another repo's `.claude/skills/` to use it there. See
-`README.md` for where it sits among the sibling `Architecture/Data` skills.
+Needs no repo setup. Reads the prerequisite source-of-truth ADR and writes its own ADR to `docs/architecture/decisions/` by default; follow the repo's own convention if it has one.
+
+Depends on: `database-architecture` (prerequisite and ADR format), `relational-modeling`, `index-tuning`, `data-tier-operations`, `dimensional-modeling`, `problem-solving-gates`, `api-interface-style`, `deployment-strategy`, `caching-strategy`, `tech-decision-walkthrough`. If a named sibling isn't installed, say so and give the one-line answer inline. The load-bearing ones: no `database-architecture` → ask the user to state the store and who owns the schema in one line, then proceed; no `problem-solving-gates` and the question is one slow query → "measure it with `EXPLAIN` first; the access style is rarely the cause."
 
 ## Routing boundaries (full)
 

@@ -1,5 +1,7 @@
 # Access Styles — the spectrum
 
+Contents: raw driver + SQL · query builder · micro-ORM · full ORM · schema-first typed codegen · compile-time-checked inline SQL · quick map (priority to primary style).
+
 The reference for `selection-framework.md`. Ordered from "you write every byte of SQL" to
 "you rarely see SQL". Two framing notes before the styles:
 

@@ -9,7 +9,7 @@ Given a relational database that is already the chosen store, design the tables:
 
 ## When to use
 
-- The source-of-truth / persistence decision is **already made** — an ADR exists in `docs/architecture/decisions/`, or the user says plainly "we're on Postgres/MySQL/SQL Server and staying there" — and now the tables need designing.
+- The source-of-truth / persistence decision is **already made** — an ADR exists (default `docs/architecture/decisions/`), or the user says plainly "we're on Postgres/MySQL/SQL Server and staying there" — and now the tables need designing.
 - The user asks a modeling question: normalization level, key choice, index strategy, constraint placement, soft-delete/lifecycle, junction vs nullable FK, self-referencing hierarchy.
 - An existing schema needs a modeling review — over/under-normalized, keys that will not scale, a first-cut index list that was never revised against real access patterns. (Tuning the index set on a *deployed, populated* schema against real query plans, column statistics, and write rates — redundant/unused-index cleanup, `EXPLAIN`-driven revision, write-cost budgeting — is `index-tuning`, not this skill.)
 
@@ -103,6 +103,8 @@ If the user has already modeled it — entities settled, normal form chosen with
 
 Gate satisfied (prerequisite ADR, entities, relationships with cardinality, access patterns, volume, lifecycle). Work `modeling-framework.md`: `enrollments` is the junction table (student_id, course_id, status, enrolled_at, dropped_at); 3NF throughout; surrogate `bigint` keys with a `UNIQUE(student_id, course_id, term_id)`; indexes on `enrollments(student_id, status)` and `enrollments(course_id)`; drops kept as status transitions with timestamps rather than row deletion. Write `docs/data-model/course-enrollment.md`.
 
+**Non-fire:** "our enrollment report takes 40 seconds" is not a modeling request. Get the query and its plan first (`problem-solving-gates` Optimization), then `index-tuning`; come back here only if the plan shows the schema itself is the problem.
+
 > "Design the database for our app."
 
 Gate not satisfied on multiple axes, and possibly the wrong skill — there's no evidence the source-of-truth decision was made. Response: ask whether `database-architecture` has been run, and name the gate items 1–5 that are missing. Do not produce tables.
@@ -111,11 +113,13 @@ Gate not satisfied on multiple axes, and possibly the wrong skill — there's no
 
 ## Portability
 
-Repo-agnostic. Reads `docs/architecture/decisions/` for the prerequisite ADR, writes `docs/data-model/`. Copy the `relational-modeling/` directory into another repo's `.claude/skills/` to use it there.
+Needs no repo setup. Writes `docs/data-model/<slug>.md` by default; follow the repo's own convention if it has one. Reads the `database-architecture` ADR (default `docs/architecture/decisions/`) when one exists.
+
+Depends on: `database-architecture` (prerequisite), `data-tier-operations`, `index-tuning`, `dimensional-modeling`, `data-access-layer`, `access-control-modeling`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off. The load-bearing ones: no `database-architecture` and the store isn't stated → stop and ask which database; no `access-control-modeling` and the request is the role/permission structure itself → say that is a separate decision from table design and model only the entities the user already named.
 
 ## Routing boundaries (full)
 
-The frontmatter `description` is trimmed for the skill listing budget; the original description follows verbatim, one sentence per bullet:
+The frontmatter `description` is trimmed for the skill listing budget; the fuller trigger and routing rules follow, one sentence per bullet:
 
 - Use this skill after the source-of-truth / persistence decision is made (by `database-architecture` or because a relational store already exists) and the user needs the schema itself: "model the schema for X", "how should I normalize this", "what should I index", "surrogate or natural key", "how do I handle soft deletes", "one table or two for this".
 - Turns a settled "we're using a relational database" into an actual table design.

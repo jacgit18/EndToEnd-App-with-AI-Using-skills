@@ -1,5 +1,7 @@
 # Store Options — Where Non-Row Data Lives
 
+Contents: the three storage shapes · blob in object storage vs row · large-binary patterns · compliance note (HIPAA / GDPR / PCI) · concrete service names (AWS).
+
 Reference for the "When persistence isn't decided yet" section of `SKILL.md`. The paradigm
 list there (relational / document / key-value / wide-column / graph / time-series / ledger /
 search / vector) answers "what kind of database". It does **not** answer "where do the large
