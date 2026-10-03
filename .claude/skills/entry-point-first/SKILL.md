@@ -102,7 +102,7 @@ Doesn't apply. The user is not stuck at the door; that is `ticket-evaluation`.
 
 ## Portability
 
-Repo-agnostic. Writes no project files; the entry proposals and re-evaluate prompt happen in chat. Copy the `entry-point-first/` directory into another repo's `.claude/skills/` to use it there; the Step 4 hand-off table names sibling skills that may not exist there — drop the rows for skills you don't have.
+Repo-agnostic. Writes no project files; the entry proposals and re-evaluate prompt happen in chat. Installed user-wide by symlink (see `plugins/README.md`). The Step 4 hand-off table names sibling skills that may not exist in another project: if one isn't installed, say so and give that row's one-line next step inline instead of dropping the hand-off. When a sibling is installed under a plugin namespace, hand off by that name.
 
 ## Routing boundaries (full)
 

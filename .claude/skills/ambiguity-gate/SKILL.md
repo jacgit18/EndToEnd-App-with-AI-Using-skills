@@ -115,6 +115,12 @@ Each of these means you are on the wrong exit:
   elsewhere — the mismatch belongs before the work, not in a closing note.
 - A closing paragraph explaining assumptions the work already depends on.
 
+## Portability
+
+Needs no repo setup and writes no project files.
+
+Depends on: `design-scoping`, `user-story-decomposition`, `prompt-authoring`, `spec-drift-gate`, `test-practice-gate`, `problem-solving-gates`, `change-surface-audit`. If a named sibling isn't installed, say so and ask that skill's single most important question yourself, still under the Step 3 one-question contract, instead of dropping the hand-off. The load-bearing one: no `spec-drift-gate` and intent is settled on a multi-file build → ask for three bullets of scope (what's in, what's out, how done is checked) before building, not a second clarifying question about wording.
+
 ## Routing boundaries (full)
 
 - Use when a request could reasonably be read more than one way and acting on the wrong reading would waste real work — vague verbs ("clean up", "fix this", "make it better", "shorter", "more professional"), or an unstated scope, format, audience, time frame, or level of detail.

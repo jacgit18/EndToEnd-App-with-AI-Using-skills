@@ -116,6 +116,12 @@ Reference → answer directly. No gate, no "what do you think?".
 
 Execution → do it. Optionally one line: "there's a learning path on transaction isolation if you ever want it" — then drop it.
 
+## Portability
+
+Needs no repo setup and writes no project files. Its companions (`concept-learning.md`, `guided-walkthrough.md`, `step3-rows.md`, `assistance-levels.md`) ship in this directory.
+
+Depends on: almost every row of the Step 3 "Defer to" column names a sibling, and most other projects will have only some of them. If a named sibling isn't installed, say so and run that row's "Next rep" column here as the gate, at the Step 4 level, instead of dropping the hand-off. The load-bearing ones: no `problem-solving-gates` → apply the Debugging / Optimization / Knowledge Checker reps from the table directly (hypothesis, measurement, own-words explanation) before helping; no `entry-point-first` → propose two or three small reversible entry reps yourself and ask the user to pick one, without asking the Step 1 intent question first. When a sibling is installed under a plugin namespace (`data-skills:relational-modeling`), hand off by that name.
+
 ## Routing boundaries (full)
 
 - Use this whenever a request involves learnable engineering material and it's not obvious the user just wants the answer to move forward: "what is X", "how does X work", "how do I do X", "help me understand X", "I'm trying to learn X", or open-ended design/debug/modelling questions.
