@@ -228,14 +228,9 @@ signal" in the same conversation would be this skill.
 
 ## Portability
 
-Repo-agnostic. Reads and writes `docs/architecture/decisions/` alongside
-`database-architecture` and `caching-strategy`, reusing `database-architecture`'s
-`adr-template.md`. Copy the `pwa-adoption/` directory into another repo's
-`.claude/skills/` to use it there.
+Needs no repo setup. Writes an ADR to `docs/architecture/decisions/` by default (follow the repo's own convention if it has one), in `database-architecture`'s ADR format; if `database-architecture` isn't installed, use this skeleton: title `NNN. <decision>`; Status and Date; **Context** (the gate answers, plainly); **Decision** (the recommendation block); **Consequences** (accepted costs, rejected alternatives); **Revisit when** (a concrete trigger).
 
-```
-cp -r ".claude/skills/pwa-adoption" /path/to/other-repo/.claude/skills/
-```
+Depends on: `caching-strategy`, `deployment-strategy`, `resilience-strategy`, `web-vitals-audit`, `browser-test-tooling`, `api-interface-style`, `data-access-layer`, `observability-strategy`, `test-case-discovery`, `database-architecture`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `caching-strategy` → design only the service-worker cache and name any server-side cache as a separate decision; no `deployment-strategy` → the service-worker update lifecycle is still covered here, the server rollout is not; no `web-vitals-audit` → for a poor Lighthouse number, measure the production build with the service worker bypassed first.
 
 ## Routing boundaries (full)
 

@@ -7,9 +7,8 @@ bulk load + CDC / dual-write + backfill + reconcile), the verification bar that 
 the flip, the rollback window and its point of no return, and the consumer sequence. Not the
 choice of target store, not scaling a store that's staying, not a routine version release.
 
-Built from the `Architecture/01. System Design/Migration Plan.md` note (objective, inventory,
-risk, data-migration strategy, rollback plan, deployment strategy — phased / parallel /
-cutover — and post-migration support), sharpened into a gate.
+Covers the migration plan (objective, inventory, risk, data-move strategy, rollback plan,
+phased / parallel / cutover deployment, post-migration support), sharpened into a gate.
 
 ## Where it sits
 
@@ -87,15 +86,13 @@ Stops before implementation (backfill job, CDC pipeline, dual-write shim, reconc
 - **`learning-gate`** hands off here on migration questions rather than running its own rep
   gate (see `learning-gate` Step 3).
 
-Run `skill-interaction-testing` after any trigger-description change here — the overlap risk
+Re-check overlap after any trigger-description change here — the overlap risk
 is with `deployment-strategy` (blue-green / canary phrasing), `data-tier-operations` (store
 moves), and `database-architecture` (target choice).
 
-## Using it in another repo
+## Dependencies
 
-Repo-agnostic. Reads and writes `docs/architecture/decisions/` alongside `database-architecture`
-and reuses its `adr-template.md`.
-
-```
-cp -r ".claude/skills/migration-cutover" /path/to/other-repo/.claude/skills/
-```
+Needs no repo setup; output paths are defaults the repo's own convention overrides. The
+siblings it hands off to are listed in `SKILL.md` → Portability; if one isn't installed,
+`SKILL.md` says what to do inline. Installed in other projects via the plugin described in
+`plugins/README.md`.

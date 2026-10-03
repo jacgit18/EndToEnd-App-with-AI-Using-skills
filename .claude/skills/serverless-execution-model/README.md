@@ -10,23 +10,12 @@ DLQ/failure destination, idempotency). Not service boundaries or team ownership 
 `cloud-iam-boundary`), not overload/cascade defense on a live path (that's
 `resilience-strategy`), not dollar cost (that's `technical-cost-decision`).
 
-Built from the `Architecture/02. Backing Service Options/Cloud/` notes — `Lambda vs
-Fargate.md`, `Microservices vs FaaS.md`, `Lambda Invocation Models.md`, `AWS/AWS Async Vs
-Sync.md`, `AWS/Step function.md`, `AWS/Step Function Extension.md`, `Step Function Catch
-Blocks.md`, `Failure States.md`, `AWS Parallel State.md`, `AWS/DLQ.md`, `AWS/DLQ
-Drainer.md`, `AWS/AWS SQS.md`, `AWS/Amazon Kinesis Data Streams vs Amazon Kinesis Data
-Firehose.md`, `Scalable Messaging Architecture.md` (the SNS-fanning-out-to-per-consumer-SQS
-pattern), and `Qsink.md` (the general sink/stream-consumer vocabulary, used to frame Firehose
-as an ingest-to-destination sink with no custom processing step).
+Covers Lambda vs. Fargate, microservices vs. FaaS, invocation models (sync, async,
+event-source mapping), Step Functions orchestration with catch/failure states and parallel
+states, DLQs and drainers, SQS/SNS fan-out, and Kinesis Data Streams vs. Firehose.
 
-Also added `2026-09-04` (second pass, closing a gap noted in `SKILL-BACKLOG.md`): the
-state-to-state data-contract note in `orchestration-and-failure-handling.md`, from `Req and
-RES.md`'s point about JSONPath data flow between Step Functions states being a contract like
-any API boundary.
-
-Note: `Lambda Invocation.md` in the same folder is about generic programming-language lambda
-expressions (Python/JavaScript closures), not AWS Lambda invocation — it was not used as a
-source here despite the name; don't confuse the two when re-reading the vault notes.
+The state-to-state data-contract note in `orchestration-and-failure-handling.md` treats
+JSONPath data flow between Step Functions states as a contract, like any API boundary.
 
 ## Where it sits
 
@@ -93,7 +82,7 @@ Stops before implementation (the state machine definition, IaC, handler code).
   there ("what compute primitive runs one already-scoped service").
 - **Hands off to `cloud-iam-boundary`** — this skill names what a Task/function needs to call;
   that skill designs the role and network placement. The two are typically worked together
-  when standing up a new workload; `skill-interaction-testing` confirmed this composes as a
+  when standing up a new workload; interaction testing confirmed this composes as a
   clean hand-off with no duplicate questions.
 - **Composes with `resilience-strategy`** — that skill's retry-budget-under-load concern and
   this skill's per-invocation retry/DLQ contract are different questions that share
@@ -102,7 +91,7 @@ Stops before implementation (the state machine definition, IaC, handler code).
   clean chaining under test; a disambiguating clause was added to this skill's description so
   entry point isn't a coin-flip between the two trigger phrasings.
 - **Feeds `technical-cost-decision`** — the chosen primitive and concurrency ceiling are the
-  usage-driver inputs; this skill doesn't price them. `skill-interaction-testing` found the
+  usage-driver inputs; this skill doesn't price them. Interaction testing found the
   hand-off worked only because of an exact phrase match ("Lambda vs Fargate"); fixed by
   widening `technical-cost-decision`'s description to route any bare primitive-cost question
   through this skill's fit gate first, regardless of phrasing.
@@ -117,21 +106,13 @@ Stops before implementation (the state machine definition, IaC, handler code).
 - **Absorbed by `deployment-strategy`** for rollout-mechanism questions (canary/blue-green) —
   confirmed no overlap; this skill has no rollout vocabulary and correctly doesn't fire.
 
-Fixed after `skill-interaction-testing` (2026-09-04, see
-`skill-interaction-cloud-iam-and-serverless-execution.md`): the frontmatter's bare "Lambda vs
-Fargate" trigger phrase risked firing the full gate on a pure conceptual comparison with no
+Fixed after interaction testing (2026-09-04): the frontmatter's bare "Lambda vs Fargate" trigger phrase risked firing the full gate on a pure conceptual comparison with no
 named workload — qualified the phrase and added an explicit "answered directly, no gate" carve-out
 for bare comparisons.
 
-## Using it in another repo
+## Dependencies
 
-Repo-agnostic. Reads and writes `docs/architecture/decisions/` alongside
-`database-architecture` and reuses its `adr-template.md`. Written in AWS vocabulary (Lambda,
-Fargate, Step Functions, SQS/Kinesis); swap the platform-specific limits and mechanics in the
-reference files for Azure Functions/Container Apps/Durable Functions or GCP Cloud
-Functions/Cloud Run/Workflows if this repo targets a different cloud — the gate items and
-decision structure carry over unchanged.
-
-```
-cp -r ".claude/skills/serverless-execution-model" /path/to/other-repo/.claude/skills/
-```
+Needs no repo setup; output paths are defaults the repo's own convention overrides. The
+siblings it hands off to are listed in `SKILL.md` → Portability; if one isn't installed,
+`SKILL.md` says what to do inline. Installed in other projects via the plugin described in
+`plugins/README.md`.

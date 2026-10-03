@@ -128,7 +128,9 @@ Gate not satisfied — item 4 (no measured pressure — is there downtime today,
 
 ## Portability
 
-Repo-agnostic. Reads and writes `docs/architecture/decisions/` alongside the other architecture skills, reusing `database-architecture`'s `adr-template.md`. Copy the `deployment-strategy/` directory into another repo's `.claude/skills/` to use it there. See `README.md` for where it sits among the sibling skills.
+Needs no repo setup. Writes an ADR to `docs/architecture/decisions/` by default (follow the repo's own convention if it has one), in `database-architecture`'s ADR format; if `database-architecture` isn't installed, use this skeleton: title `NNN. <decision>`; Status and Date; **Context** (the gate answers, plainly); **Decision** (the recommendation block); **Consequences** (accepted costs, rejected alternatives); **Revisit when** (a concrete trigger).
+
+Depends on: `migration-cutover`, `change-surface-audit`, `test-strategy`, `observability-strategy`, `technical-cost-decision`, `microservices-decision`, `bff-gateway-placement`, `config-and-secrets-management`, `tech-decision-walkthrough`, `pwa-adoption`, `database-architecture`, `service-mesh-adoption`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `observability-strategy` → the rollback trigger still needs a named metric and threshold, so ask which signals already exist; no `migration-cutover` → moving to a different system is a separate decision, say so; no `test-strategy` → name the pre-deploy gates only, not the test mix.
 
 ## Routing boundaries (full)
 

@@ -125,7 +125,9 @@ Gate not satisfied — item 2 (how many services, what's the call pattern), item
 
 ## Portability
 
-Repo-agnostic. Reads and writes `docs/architecture/decisions/` alongside the other architecture skills, reusing `database-architecture`'s `adr-template.md`. Vocabulary (mesh, sidecar, mTLS) is provider-neutral; platform-specific mechanics (Kubernetes sidecar injection vs a VM-based install) are named in the gate rather than assumed. Copy the `service-mesh-adoption/` directory into another repo's `.claude/skills/` to use it there.
+Needs no repo setup. Writes an ADR to `docs/architecture/decisions/` by default (follow the repo's own convention if it has one), in `database-architecture`'s ADR format; if `database-architecture` isn't installed, use this skeleton: title `NNN. <decision>`; Status and Date; **Context** (the gate answers, plainly); **Decision** (the recommendation block); **Consequences** (accepted costs, rejected alternatives); **Revisit when** (a concrete trigger). Vocabulary (mesh, sidecar, mTLS) is provider-neutral; platform mechanics (Kubernetes sidecar injection, VM installs) are named in the gate.
+
+Depends on: `microservices-decision`, `resilience-strategy`, `bff-gateway-placement`, `cloud-iam-boundary`, `deployment-strategy`, `serverless-execution-model`, `observability-strategy`, `design-scoping`, `database-architecture`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `microservices-decision` → take the service count and topology as the user states them; no `bff-gateway-placement` → north-south traffic is out of scope here, say so; no `resilience-strategy` → name which protections the mesh would carry, not their thresholds.
 
 ## Routing boundaries (full)
 

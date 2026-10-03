@@ -8,12 +8,9 @@ platforms, compliance regime), and which one or two decisions are worth designin
 now. Its output is a written **scope statement** that then sequences into the specialist
 Architecture skills.
 
-Consolidated from three source notes — `Architecture/01. System Design/Specifying Scope
-indepth.md` (purpose/audience, functional vs additional, the scope-question method),
-`Architecture/01. System Design/Userbase.md` (user-base characterization + the compliance
-checklist), `Architecture/Define system threshold.md` (the non-functional numeric targets)
-— plus the blast-radius / who-cares / migration-tell classifier from `Architecture/
-Boundaries of LLD and HLD.md`, used as the significance filter for the deep-dive selection.
+Covers purpose and audience, functional vs. additional requirements, user-base
+characterization and a compliance checklist, numeric non-functional targets, and a
+blast-radius / who-cares / migration-tell filter for picking the deep-dive features.
 
 ## Where it sits
 
@@ -77,7 +74,7 @@ design ask.
 ## Interaction with sibling skills
 
 - **Defers to `ambiguity-gate`** — for "what does this request even mean"; takes over once
-  "design a system/feature" is established. If `skill-interaction-testing` shows
+  "design a system/feature" is established. If interaction testing shows
   `ambiguity-gate` still swallows system-design requests, a one-line hand-off clause goes
   into `ambiguity-gate` pointing them here.
 - **Distinct from `ticket-evaluation`** — defined ticket → that skill; under-specified
@@ -96,15 +93,14 @@ design ask.
 - **`learning-gate`** Step 3 routes "how do I scope a system design" here rather than
   running its own rep gate.
 
-Run `skill-interaction-testing` after any trigger-description change here — the overlap risk
+Re-check overlap after any trigger-description change here — the overlap risk
 is with `ambiguity-gate` (vague request vs system-design scope decomposition — the sharp
 one), `ticket-evaluation` (defined vs under-specified), and the downstream specialist skills
 (scope vs the deep design each owns).
 
-## Using it in another repo
+## Dependencies
 
-Repo-agnostic. Writes a living scope statement to `docs/architecture/scope/`.
-
-```
-cp -r ".claude/skills/design-scoping" /path/to/other-repo/.claude/skills/
-```
+Needs no repo setup; output paths are defaults the repo's own convention overrides. The
+siblings it hands off to are listed in `SKILL.md` → Portability; if one isn't installed,
+`SKILL.md` says what to do inline. Installed in other projects via the plugin described in
+`plugins/README.md`.

@@ -8,11 +8,9 @@ public/private network placement. Not the compute primitive a workload runs on (
 `resilience-strategy`), not encryption or secrets management (unowned — name and defer), not
 code-level vulnerability scanning (that's `security-review`).
 
-Built from the `Architecture/02. Backing Service Options/Cloud/` notes — `IAM Principles.md`,
-`Hierarchy of Policies in AWS.md`, `AWS/IAM Policies and Role Types in AWS.md`, `AWS/IAM Role
-Creation Process.md`, `AWS/Managing IAM.md`, `AWS IAM Monitoring, Auditing, & Automation.md`,
-`AWS/Server-less & Permission.md`, `AWS/serverless IAM Stuff.md`, `AWS/AWS Security Token
-Service.md`, `AWS/VPC & IGW.md`, `AWS/AWS Shield.md`, and `Cloud Security Best Practices.md`.
+Covers IAM principles and the policy hierarchy, role types and creation, permissions
+boundaries and SCPs, STS, access monitoring and auditing, serverless execution roles,
+VPC/subnet placement, and edge protection (Shield).
 
 ## Where it sits
 
@@ -72,7 +70,7 @@ policy simulator runs).
 - **Feeds `serverless-execution-model`** — the execution role for whatever compute primitive
   that skill chooses is designed here first (or alongside it); this skill states the
   principal and the permission set, that skill states what runs under it.
-  `skill-interaction-testing` confirmed this composes cleanly on a real end-to-end workload —
+  interaction testing confirmed this composes cleanly on a real end-to-end workload —
   no duplicate questions, each skill reused the other's facts.
 - **Hands off to `resilience-strategy`** — a resource placed on the public internet by this
   skill's network-exposure decision still needs edge defense (WAF, Shield, rate limiting);
@@ -89,19 +87,14 @@ policy simulator runs).
 - **No skill owns encryption/secrets yet** — name the requirement (KMS, Secrets Manager
   rotation) and defer rather than improvising a design inside this skill's scope.
 
-Run `skill-interaction-testing` after any trigger-description change here — the overlap risk
+Re-check overlap after any trigger-description change here — the overlap risk
 is with `serverless-execution-model` (who designs the role vs who consumes it),
 `resilience-strategy` (edge protection on a publicly-placed resource), and `security-review`
 (altitude: account/network boundary vs code-level vulnerability).
 
-## Using it in another repo
+## Dependencies
 
-Repo-agnostic. Reads and writes `docs/architecture/decisions/` alongside
-`database-architecture` and reuses its `adr-template.md`. Written in AWS vocabulary
-(IAM, VPC, SCPs); swap `iam-mechanics.md` and `network-boundary.md` for Azure RBAC/VNet or
-GCP IAM/VPC vocabulary if this repo targets a different cloud — the gate items and process
-carry over unchanged.
-
-```
-cp -r ".claude/skills/cloud-iam-boundary" /path/to/other-repo/.claude/skills/
-```
+Needs no repo setup; output paths are defaults the repo's own convention overrides. The
+siblings it hands off to are listed in `SKILL.md` → Portability; if one isn't installed,
+`SKILL.md` says what to do inline. Installed in other projects via the plugin described in
+`plugins/README.md`.

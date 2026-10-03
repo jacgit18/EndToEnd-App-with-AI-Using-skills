@@ -125,7 +125,9 @@ Gate not satisfied — item 2 (how many client types, and what's different about
 
 ## Portability
 
-Repo-agnostic. Reads and writes `docs/architecture/decisions/` alongside the other architecture skills, reusing `database-architecture`'s `adr-template.md`. Vocabulary (gateway, BFF, edge) is provider-neutral and transfers across cloud/on-prem. Copy the `bff-gateway-placement/` directory into another repo's `.claude/skills/` to use it there.
+Needs no repo setup. Writes an ADR to `docs/architecture/decisions/` by default (follow the repo's own convention if it has one), in `database-architecture`'s ADR format; if `database-architecture` isn't installed, use this skeleton: title `NNN. <decision>`; Status and Date; **Context** (the gate answers, plainly); **Decision** (the recommendation block); **Consequences** (accepted costs, rejected alternatives); **Revisit when** (a concrete trigger). Vocabulary (gateway, BFF, edge) is provider-neutral.
+
+Depends on: `api-interface-style`, `access-control-modeling`, `microservices-decision`, `service-mesh-adoption`, `resilience-strategy`, `technical-cost-decision`, `cloud-iam-boundary`, `design-scoping`, `deployment-strategy`, `capacity-estimation`, `caching-strategy`, `database-architecture`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `microservices-decision` → take the service topology as the user states it; no `access-control-modeling` → still decide here where auth checks sit, and name the role/permission model itself as a separate decision; no `resilience-strategy` → name where rate limiting sits, not its limits or algorithm.
 
 ## Routing boundaries (full)
 

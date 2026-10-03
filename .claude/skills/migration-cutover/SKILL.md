@@ -127,7 +127,9 @@ Gate not satisfied — item 4 (no driver — "moving to the new database" is a r
 
 ## Portability
 
-Repo-agnostic. Reads and writes `docs/architecture/decisions/` alongside the other architecture skills, reusing `database-architecture`'s `adr-template.md`. Copy the `migration-cutover/` directory into another repo's `.claude/skills/` to use it there. See `README.md` for where it sits among the sibling skills.
+Needs no repo setup. Writes an ADR to `docs/architecture/decisions/` by default (follow the repo's own convention if it has one), in `database-architecture`'s ADR format; if `database-architecture` isn't installed, use this skeleton: title `NNN. <decision>`; Status and Date; **Context** (the gate answers, plainly); **Decision** (the recommendation block); **Consequences** (accepted costs, rejected alternatives); **Revisit when** (a concrete trigger).
+
+Depends on: `deployment-strategy`, `database-architecture`, `deprecation-sunset`, `data-tier-operations`, `technical-cost-decision`, `test-strategy`, `microservices-decision`, `change-surface-audit`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `database-architecture` and the target store isn't stated → stop and ask which store; no `deployment-strategy` → releasing a new version of the same unit is a separate decision, say so; no `deprecation-sunset` → retiring the old system's consumers needs a dated window and a straggler check, name both.
 
 ## Routing boundaries (full)
 

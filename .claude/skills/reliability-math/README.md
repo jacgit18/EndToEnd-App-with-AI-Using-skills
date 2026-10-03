@@ -90,16 +90,15 @@ skill owns the next step. Writes no files.
   profile** — → `problem-solving-gates`, directly; this skill is for before either exists.
 - **The dollar cost of headroom or the observability stack** — → `technical-cost-decision`.
 
-## Using it in another repo
+## Dependencies
 
-Repo-agnostic and self-contained — writes nothing, reads no `docs/` tree.
-
-```
-cp -r ".claude/skills/reliability-math" /path/to/other-repo/.claude/skills/
-```
+Needs no repo setup; output paths are defaults the repo's own convention overrides. The
+siblings it hands off to are listed in `SKILL.md` → Portability; if one isn't installed,
+`SKILL.md` says what to do inline. Installed in other projects via the plugin described in
+`plugins/README.md`.
 
 ## Interaction with sibling skills
 
 Screened and tested 2026-09-05 — see project memory for the isolation-screen result and the
-`skill-interaction-testing` scenarios run against `capacity-estimation`, `observability-
+interaction testing scenarios run against `capacity-estimation`, `observability-
 strategy`, `resilience-strategy`, and `problem-solving-gates`.

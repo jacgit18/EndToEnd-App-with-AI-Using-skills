@@ -9,12 +9,10 @@ integration, dependency, security, operational, human/process), records each as
 emits a **prioritized failure-mode register** plus a high-severity watchlist and a set of
 handoffs.
 
-Built from `Architecture/01. System Design/Failure Modes.md` (the nine categories and the
-failure-mode / bug / incident distinction) plus the chaos / fault-injection thread in
-`Architecture/Monitoring & Observability.md`. The source note explains *what* failure modes
-are but gives **no repeatable procedure, no scoring rubric, and no register format** — the
-skill adds all three (`SKILL.md` the walk order, `scoring-and-register.md` the rubric and
-layout, `nine-categories.md` the per-category probe questions).
+Covers the nine failure-mode categories, the failure-mode / bug / incident distinction, and
+chaos / fault injection, with a repeatable procedure, scoring rubric and register format
+(`SKILL.md` the walk order, `scoring-and-register.md` the rubric and layout,
+`nine-categories.md` the per-category probe questions).
 
 ## Where it sits
 
@@ -100,14 +98,13 @@ Stops before designing the mitigations, the alerts, or the tests.
 - **Coarse security only** — the security category is a sweep for obvious gaps; a real
   threat model / STRIDE / pen-test is a separate, deeper exercise.
 
-Run `skill-interaction-testing` after any trigger-description change here — the overlap risk
+Re-check overlap after any trigger-description change here — the overlap risk
 is with `resilience-strategy` (enumerate-all vs mechanism-for-one), `problem-solving-gates`
 (proactive vs one-bug-now), and `test-strategy` (target list vs test mix).
 
-## Using it in another repo
+## Dependencies
 
-Repo-agnostic. Writes a living register to `docs/architecture/failure-modes/`.
-
-```
-cp -r ".claude/skills/failure-mode-analysis" /path/to/other-repo/.claude/skills/
-```
+Needs no repo setup; output paths are defaults the repo's own convention overrides. The
+siblings it hands off to are listed in `SKILL.md` → Portability; if one isn't installed,
+`SKILL.md` says what to do inline. Installed in other projects via the plugin described in
+`plugins/README.md`.

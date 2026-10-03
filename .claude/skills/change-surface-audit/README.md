@@ -106,16 +106,14 @@ rollout — those are separate, explicitly started steps that consume this repor
 - **Not `code-review` / `security-review`** — those assess the diff's own correctness and
   quality; this skill assesses what the change breaks elsewhere in the system.
 
-Run `skill-interaction-testing` after any trigger-description change here — the overlap
+Re-check overlap after any trigger-description change here — the overlap
 risk is with `failure-mode-analysis` (one-change vs. whole-design), `deployment-strategy`
 (pre-flight vs. rollout-mechanics, both mention expand-contract), and `migration-cutover`
 (feature removal vs. system migration, both use "point of no return").
 
-## Using it in another repo
+## Dependencies
 
-Repo-agnostic. Writes a deprecation record only for removals with a live deprecation
-window, to `docs/engineering/deprecations/`.
-
-```
-cp -r ".claude/skills/change-surface-audit" /path/to/other-repo/.claude/skills/
-```
+Needs no repo setup; output paths are defaults the repo's own convention overrides. The
+siblings it hands off to are listed in `SKILL.md` → Portability; if one isn't installed,
+`SKILL.md` says what to do inline. Installed in other projects via the plugin described in
+`plugins/README.md`.

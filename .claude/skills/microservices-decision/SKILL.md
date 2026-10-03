@@ -176,6 +176,12 @@ This changes the depth of discussion. It does not move the Readiness Block, and 
 - **Does not fire → `migration-cutover`:** "we've picked the service boundaries; how do we extract the billing module with no downtime" — execution of an agreed extraction.
 - **Does not fire → `design-scoping`:** "design a new platform from scratch" with no purpose, load targets, or headcount — scope first; it sequences back here.
 
+## Portability
+
+Needs no repo setup. Writes an ADR to `docs/architecture/decisions/` by default (follow the repo's own convention if it has one), in `database-architecture`'s ADR format; if `database-architecture` isn't installed, use this skeleton: title `NNN. <decision>`; Status and Date; **Context** (the gate answers, plainly); **Decision** (the recommendation block); **Consequences** (accepted costs, rejected alternatives); **Revisit when** (a concrete trigger).
+
+Depends on: `migration-cutover`, `design-scoping`, `api-interface-style`, `deployment-strategy`, `technical-cost-decision`, `serverless-execution-model`, `bff-gateway-placement`, `observability-strategy`, `resilience-strategy`, `service-mesh-adoption`, `tech-decision-walkthrough`, `data-tier-operations`, `access-control-modeling`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `migration-cutover` → for splitting a live monolith, say the cutover is a separate decision (big-bang, phased, parallel run or strangler fig, chosen from the downtime budget and coupling) and don't pick one here; no `data-tier-operations` → a shared database across services is flagged as the coupling to resolve, not designed here; no `deployment-strategy` → per-service rollout is a separate decision.
+
 ## Routing boundaries (full)
 
 - Use when someone is deciding whether to adopt microservices, split a monolith, extract or add another service, or design service boundaries — including when the decision is presented as already made ("our CTO decided", "we've made the call", "don't relitigate it", "just tell me how to split it"), when repos or CI for services are already scaffolded, or when the ask is for a service list, service boundaries, data ownership across services, how many services to have, or a decomposition ordering (which service first; cutover mechanics are `migration-cutover`).

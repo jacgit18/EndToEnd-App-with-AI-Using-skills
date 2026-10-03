@@ -57,17 +57,16 @@ Stops before the spans, dashboards, alert rules, and collector config.
   skill in this catalog. PII-in-logs and audit retention are *inputs* here, not the design.
 - Implementation of any kind.
 
-## Using it in another repo
+## Dependencies
 
-Repo-agnostic. Reads and writes `docs/architecture/decisions/`.
-
-```
-cp -r ".claude/skills/observability-strategy" /path/to/other-repo/.claude/skills/
-```
+Needs no repo setup; output paths are defaults the repo's own convention overrides. The
+siblings it hands off to are listed in `SKILL.md` → Portability; if one isn't installed,
+`SKILL.md` says what to do inline. Installed in other projects via the plugin described in
+`plugins/README.md`.
 
 ## Interaction with sibling skills
 
-Run `skill-interaction-testing` when this skill or a sibling's description changes. Known
+Re-check overlap when this skill or a sibling's description changes. Known
 boundaries to hold:
 
 - **vs `problem-solving-gates` (Rubber Duck / Optimization)** — that skill diagnoses one

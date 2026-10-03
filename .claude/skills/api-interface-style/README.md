@@ -6,12 +6,8 @@ exist, the skill makes the user state its consumers, the interaction shape, and 
 latency / real-time needs before any style is named, then recommends a primary style (plus a
 secondary for a sub-case where needed) and writes an ADR.
 
-Built from the `Architecture/02. Backing Service Options/API/` notes — API Architecture
-Styles, API Design Basics (the REST / GraphQL / gRPC paradigm comparison), rest & Websockets,
-Designing APIs with WebHooks, Evolution of APIs (data vs service/RPC APIs), API Call
-(frontend vs backend). The AppSync "managed implementations" note in `style-tradeoffs.md`'s
-GraphQL section was added `2026-09-04` from `Architecture/02. Backing Service Options/Cloud/
-AWS/AppSync.md`.
+Covers REST, GraphQL, gRPC, WebSockets, SSE, webhooks and async messaging; data vs. RPC-style
+APIs; frontend vs. backend callers; and managed GraphQL (AppSync) in `style-tradeoffs.md`.
 
 ## Where it sits
 
@@ -63,17 +59,16 @@ Stops before the contract, handlers, resolvers, and SDKs.
   `bff-gateway-placement`.
 - Implementation of any kind.
 
-## Using it in another repo
+## Dependencies
 
-Repo-agnostic. Reads and writes `docs/architecture/decisions/`.
-
-```
-cp -r .claude/skills/api-interface-style /path/to/other-repo/.claude/skills/
-```
+Needs no repo setup; output paths are defaults the repo's own convention overrides. The
+siblings it hands off to are listed in `SKILL.md` → Portability; if one isn't installed,
+`SKILL.md` says what to do inline. Installed in other projects via the plugin described in
+`plugins/README.md`.
 
 ## Interaction with sibling skills
 
-Run `skill-interaction-testing` when this skill or a sibling's description changes. Known
+Re-check overlap when this skill or a sibling's description changes. Known
 boundaries to hold:
 
 - **vs `database-architecture`** — that skill's description also mentions "API shape" and

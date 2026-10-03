@@ -132,7 +132,9 @@ Gate not satisfied — item 4 (no incident or measured ceiling — "before marke
 
 ## Portability
 
-Repo-agnostic. Reads and writes `docs/architecture/decisions/` alongside the other architecture skills, reusing `database-architecture`'s `adr-template.md`. Copy the `resilience-strategy/` directory into another repo's `.claude/skills/` to use it there. See `README.md` for where it sits among the sibling skills.
+Needs no repo setup. Writes an ADR to `docs/architecture/decisions/` by default (follow the repo's own convention if it has one), in `database-architecture`'s ADR format; if `database-architecture` isn't installed, use this skeleton: title `NNN. <decision>`; Status and Date; **Context** (the gate answers, plainly); **Decision** (the recommendation block); **Consequences** (accepted costs, rejected alternatives); **Revisit when** (a concrete trigger).
+
+Depends on: `observability-strategy`, `reliability-math`, `data-tier-operations`, `caching-strategy`, `technical-cost-decision`, `capacity-estimation`, `failure-mode-analysis`, `serverless-execution-model`, `bff-gateway-placement`, `cloud-iam-boundary`, `change-surface-audit`, `pwa-adoption`, `database-architecture`, `microservices-decision`, `service-mesh-adoption`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `observability-strategy` → still name the overload signal each protection reacts to (queue depth, p99 latency, error rate); no `data-tier-operations` → for connection-pool exhaustion, add the upstream concurrency limit here and name pool sizing as separate; no `caching-strategy` → a stale-serve fallback is named, not designed.
 
 ## Routing boundaries (full)
 

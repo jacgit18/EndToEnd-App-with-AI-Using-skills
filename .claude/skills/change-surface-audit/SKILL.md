@@ -237,8 +237,7 @@ default.
 
 ## Portability
 
-Repo-agnostic. Writes a deprecation record only for removals with a live deprecation window, to `docs/engineering/deprecations/`. Copy the `change-surface-audit/` directory
-into another repo's `.claude/skills/` to use it there. See `README.md` for where it sits among the sibling skills.
+Needs no repo setup. Writes a deprecation record only for removals with a live deprecation window, to `docs/engineering/deprecations/` by default (follow the repo's own convention). Depends on: `deployment-strategy`, `spec-drift-gate`, `deprecation-sunset`, `disclosure-gap-audit`, `failure-mode-analysis`, `migration-cutover`, `resilience-strategy`, `relational-modeling`, `database-architecture`, `data-tier-operations`, `api-interface-style`, `config-and-secrets-management`, `access-control-modeling`, `document-page-check`, `codebase-file-orientation`, `repo-reality-audit`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `deployment-strategy` → state the rollout constraint the audit implies (expand/contract order, what must ship first, the rollback trigger) and stop there; no `deprecation-sunset` → write the record and list notice, window and a straggler check as the next steps; no `migration-cutover` → name moving a workload between systems as a separate decision.
 
 ## Routing boundaries (full)
 

@@ -212,8 +212,9 @@ Handoff:               resilience-strategy (headroom/shedding at this ceiling) f
 
 ## Portability
 
-Repo-agnostic. Writes nothing; produces the output block in chat. Copy the
-`reliability-math/` directory into another repo's `.claude/skills/` to use it there.
+Needs no repo setup. Writes nothing; produces the output block in chat.
+
+Depends on: `capacity-estimation`, `observability-strategy`, `resilience-strategy`, `failure-mode-analysis`, `technical-cost-decision`, `debugging-layer-selection`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `capacity-estimation` → an a-priori sizing needs workload assumptions; say so and do only the arithmetic on numbers the user supplies; no `observability-strategy` → turning the reading into alerts is a separate decision.
 
 ## Routing boundaries (full)
 

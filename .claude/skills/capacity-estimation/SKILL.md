@@ -220,10 +220,9 @@ proposed number checked against the method.
 
 ## Portability
 
-Repo-agnostic. Writes an ADR to `docs/architecture/decisions/` only when the estimate will
-be designed against, reusing `database-architecture`'s `adr-template.md`. Copy the
-`capacity-estimation/` directory into another repo's `.claude/skills/` to use it there. See
-`README.md` for where it sits among the sibling skills.
+Needs no repo setup. Writes an ADR only when the estimate will be designed against, to `docs/architecture/decisions/` by default (follow the repo's own convention), in `database-architecture`'s ADR format; if that skill isn't installed, use: title, Status/Date, **Context** (workload assumptions), **Decision** (the sized numbers), **Consequences**, **Revisit when**.
+
+Depends on: `technical-cost-decision`, `reliability-math`, `model-routing-decision`, `data-tier-operations`, `resilience-strategy`, `observability-strategy`, `failure-mode-analysis`, `design-scoping`, `database-architecture`, `tech-decision-walkthrough`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `technical-cost-decision` → list the sized resources (instances, GB stored, GB egress) and ask the user to price them; no `reliability-math` → reading live utilization or latency numbers is out of scope here, so ask for the measurement and do only the a-priori estimate; no `design-scoping` → ask for the traffic driver and peak:average directly.
 
 ## Routing boundaries (full)
 

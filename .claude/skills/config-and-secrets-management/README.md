@@ -49,17 +49,16 @@ system):
 Then it recommends one of four mechanisms (env var / orchestrator-native / secrets manager /
 dynamic config service), names the rotation path, and writes an ADR.
 
-## Using it in another repo
+## Dependencies
 
-Repo-agnostic. Reads and writes `docs/architecture/decisions/`.
-
-```
-cp -r .claude/skills/config-and-secrets-management /path/to/other-repo/.claude/skills/
-```
+Needs no repo setup; output paths are defaults the repo's own convention overrides. The
+siblings it hands off to are listed in `SKILL.md` → Portability; if one isn't installed,
+`SKILL.md` says what to do inline. Installed in other projects via the plugin described in
+`plugins/README.md`.
 
 ## Interaction with sibling skills
 
-Run `skill-interaction-testing` when this skill or a sibling's description changes. Known
+Re-check overlap when this skill or a sibling's description changes. Known
 boundaries to hold:
 
 - **vs `cloud-iam-boundary`** — this skill decides where a value lives and how it's

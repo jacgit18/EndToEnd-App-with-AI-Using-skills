@@ -20,7 +20,7 @@ Take a value that a running application needs but that shouldn't be hardcoded in
 
 - **Who or what is authorized to read a secret once it's stored** — the IAM policy granting a service access to a Vault path or a Secrets Manager entry → `cloud-iam-boundary`. This skill decides where the value lives; that skill designs the grant to read it. The two compose on nearly every real secret.
 - **Application-level end-user authorization** — which end user may view/edit/delete which resource → `access-control-modeling`. A completely different principal (an app user, not a service or a config value).
-- **General encryption-at-rest of a datastore's disk**, unrelated to config/secrets specifically — still unowned in this catalog; name it and defer.
+- **General encryption-at-rest of a datastore's disk**, unrelated to config/secrets specifically — no sibling skill covers it; name it and defer.
 - **A specific datastore's own managed-rotation mechanics** (e.g., AWS RDS-managed credential rotation, the connection-pool behavior during a rotation) → `data-tier-operations`, once this skill has decided the value needs rotation at all.
 - **Feature-flag-driven experimentation or A/B-testing methodology** — this skill decides the delivery mechanism for a config value (env var, secrets manager, dynamic config service); it does not design the experiment built on top of a flag.
 - **Build/release/run pipeline mechanics** — how config gets baked into a release artifact vs injected at runtime → `deployment-strategy`, which this skill's storage-mechanism choice feeds.
@@ -133,7 +133,9 @@ Gate not satisfied — item 2 (which secret, specifically — there's rarely one
 
 ## Portability
 
-Repo-agnostic. Reads and writes `docs/architecture/decisions/` alongside the other architecture skills, reusing `database-architecture`'s `adr-template.md`. Vocabulary (secrets manager, dynamic config, rotation) is provider-neutral; platform-specific mechanics (ECS task-definition secrets vs Kubernetes Secrets vs Vault) are named in the gate rather than assumed. Copy the `config-and-secrets-management/` directory into another repo's `.claude/skills/` to use it there.
+Needs no repo setup. Writes an ADR to `docs/architecture/decisions/` by default (follow the repo's own convention if it has one), in `database-architecture`'s ADR format; if `database-architecture` isn't installed, use this skeleton: title `NNN. <decision>`; Status and Date; **Context** (the gate answers, plainly); **Decision** (the recommendation block); **Consequences** (accepted costs, rejected alternatives); **Revisit when** (a concrete trigger). Vocabulary (secrets manager, dynamic config, rotation) is provider-neutral; platform mechanics (ECS task-definition secrets, Kubernetes Secrets, Vault) are named in the gate.
+
+Depends on: `cloud-iam-boundary`, `access-control-modeling`, `data-tier-operations`, `deployment-strategy`, `design-scoping`, `disclosure-gap-audit`, `change-surface-audit`, `database-architecture`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `cloud-iam-boundary` → state the read permission the consumer needs (one principal, the specific secret path, read-only) and flag the policy as unreviewed; no `access-control-modeling` → app-user permissions are out of scope, say so.
 
 ## Routing boundaries (full)
 

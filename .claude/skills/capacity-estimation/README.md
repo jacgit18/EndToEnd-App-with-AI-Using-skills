@@ -9,10 +9,8 @@ replica topology given the numbers (that's `data-tier-operations`), not a measur
 bottleneck (that's `problem-solving-gates`). It is the estimate produced *before* the
 system or its telemetry exists.
 
-Built from the `Architecture/01. System Design/` notes — `Bandwidth Estimation.md`,
-`Questions/Capacity Estimation.md` (DAU, storage/traffic/cache/server walk, unit tables),
-`Questions/Music Streaming Service Estimation.md` — with the self-flagged arithmetic errors
-in those notes (`#todo Double check calculations`) corrected in `estimation-method.md`.
+Covers back-of-the-envelope sizing (DAU to QPS, storage, bandwidth, cache, server count) with
+unit tables and a worked streaming-service estimate in `estimation-method.md`.
 
 ## Where it sits
 
@@ -89,15 +87,13 @@ Stops before pricing, topology, and overload design.
 - **Consumes `design-scoping`** — takes the non-functional scale targets (RPS ceiling,
   concurrency, growth) as the assumption set to estimate from.
 
-Run `skill-interaction-testing` after any trigger-description change here — the overlap risk
+Re-check overlap after any trigger-description change here — the overlap risk
 is with `technical-cost-decision` (volume sizing — physical vs dollar) and
 `problem-solving-gates` (a-priori estimate vs measured bottleneck).
 
-## Using it in another repo
+## Dependencies
 
-Repo-agnostic. Writes an ADR to `docs/architecture/decisions/` only when the estimate will
-be designed against, reusing `database-architecture`'s `adr-template.md`.
-
-```
-cp -r ".claude/skills/capacity-estimation" /path/to/other-repo/.claude/skills/
-```
+Needs no repo setup; output paths are defaults the repo's own convention overrides. The
+siblings it hands off to are listed in `SKILL.md` → Portability; if one isn't installed,
+`SKILL.md` says what to do inline. Installed in other projects via the plugin described in
+`plugins/README.md`.
