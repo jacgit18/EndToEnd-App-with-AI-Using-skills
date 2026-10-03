@@ -37,6 +37,8 @@ what is slow, or route to `problem-solving-gates` Optimization if it is not a pa
 Re-run the measurement and get the reported number back. **A fix you cannot measure before
 and after is a guess.** Repeat visits hide almost every page-load problem, so check each:
 
+(Login-gated pages, proxy headers, accessibility beyond the Lighthouse number: `measurement.md`, last section.)
+
 - **First visit.** Service worker bypassed, cache disabled, fresh profile. A PWA's warm runs
   look perfect and prove nothing about a first visit.
 - **Throttling actually applied.** A sub-second load on "Slow 4G" means throttling did not
@@ -92,7 +94,7 @@ of the score — splitting bundles moves little while the page still jumps.
 
 Re-run the exact Step 2 conditions. Report before → after per metric and per width, which
 fix moved which number, and what you deliberately left alone (see below). If a deploy is
-involved, the final measurement is on the live URL, not the local build.
+involved, the final measurement is on the live URL, not the local build. A score that wobbles by a point on an unchanged build is noise: repeat three times before calling a regression or a fix.
 
 ## What not to change
 

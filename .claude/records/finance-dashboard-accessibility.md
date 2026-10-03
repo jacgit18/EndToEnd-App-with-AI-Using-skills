@@ -1,6 +1,6 @@
-# Accessibility and Lighthouse record
+# Accessibility and Lighthouse record: finance-dashboard
 
-Policy lives in `.claude/rules/web-accessibility-and-lighthouse.md` (target: WCAG 2.2 AAA, Lighthouse 100 in all four categories). This file holds the results and what is still unverified. **Nothing here is a conformance claim.**
+Results and open manual-review items for `finance-dashboard/`. Lives here, not in the project, so the lessons can feed the skills and rules; it is not auto-loaded. Policy lives in `.claude/rules/web-accessibility-and-lighthouse.md` (target: WCAG 2.2 AAA, Lighthouse 100 in all four categories). This file holds the results and what is still unverified. **Nothing here is a conformance claim.**
 
 ## Automated results (regression evidence only)
 
@@ -71,19 +71,38 @@ Final measurement, same setup, after the fixes:
 
 **Not covered by this run.** Pages were measured in their loaded, default state only: the account and category edit rows, the Import page after a file is chosen, and error messages were not audited. The fixture API is not real data. Deploy status: see TODO.md.
 
+## States and manual-review items run by script (2026-10-03, second pass)
+
+Same setup (prod build, real Caddy, fixture API; Playwright intercepts requests to force error and result states).
+
+**Other page states, axe at 1280px and 320px, with scrollWidth equal to the viewport:** account edit row, account create error, bad starting balance, show-archived; category edit row, create error; budgets copy-forward error and cleared month; home create error and backend-unreachable; dashboard API error, cleared month, empty month; login wrong password; Import after choosing a file, with columns chosen, in account-column mode (after picking the column), the success result panel (with a rejected row listed) and the error result. **0 violations in all of them.**
+
+| Manual-review item | Result |
+|---|---|
+| 200% text scaling | `html { font-size: 200% }` at 1280px and 640px on all 7 routes: no sideways scroll, no clipped text boxes, axe clean |
+| 400% zoom | Same as 320px width (1280 / 4): all routes and states pass reflow |
+| Keyboard | Every focusable element on all 7 routes is reached by Tab, no traps. **Fixed:** date and month inputs showed no focus ring, and the default ring was 1px. Now a 3px `#0b57d0` ring on `:focus-visible` and `input:focus-within` |
+| Forced colors / dark scheme (Chromium emulation) | **Defect found and fixed:** chart axis labels, ticks, the zero line and the budget markers were hard-coded dark and vanished on black. Now `svg text { fill: currentColor }` and `svg line, svg path { stroke: currentColor }`. Bars keep their colours, and every charted value is also in the table under the chart. Not tested in real Windows High Contrast |
+| Reduced motion | No animation or transition anywhere in the code, so nothing to reduce |
+| Target size 44px | Measured on every route: all links, buttons, inputs, selects and checkbox labels are 44px or more |
+| Third-party destinations | Every route loads only from its own origin (no fonts, scripts or analytics). Confirm on the deployed site |
+| Reading level / unusual words | See below |
+
+Reading-level notes (open, owner decision): the page text is short and plain. The terms an ordinary reader may not know are **Void** (a button; its confirm dialog explains it), **Net**, **Kind** (income or expense), **Archive**, **Skipped duplicates**, **Rejected**, **Starting balance**, and **Uncategorized**. A plain-language supplement (a short help line, or a longer label such as "Net (income minus spending)") would meet WCAG AAA 3.1.3; changing visible labels also changes tests, so it was left for the owner.
+
 ## Not measured yet
 
-- Edit states (account and category edit rows), the Import page after a file is chosen, and error states.
 - The deployed HTTPS site (Cloudflare tunnel). Local loopback is not the live site.
 - Authenticated pages with real data and real volumes.
 
 ## Manual review still required
 
 - [ ] Screen reader pass: NVDA with Firefox, VoiceOver with Safari. Check that the chart tables are announced in a sensible order and that the SVG charts do not add noise.
-- [ ] 200% text scaling and 400% zoom.
-- [ ] Forced colors (Windows High Contrast): the over-budget red tick and the green/red trend bars carry meaning; the text tables already repeat every value, confirm the tick/bar distinction is not lost.
-- [ ] Reduced motion (the app has no animation today; re-check when any is added).
-- [ ] 44px target size on the month picker, nav links, and buttons (axe does not cover the AAA target-size criterion fully).
-- [ ] Reading level and unusual words (labels such as "Uncategorized", "Net").
-- [ ] Third-party destinations: none loaded by the page (no external fonts or scripts); confirm on the deployed site.
-- [ ] Retest on the deployed HTTPS site after the next deploy.
+- [x] 200% text scaling and 400% zoom (scripted, see above).
+- [x] Forced colors, Chromium emulation (see above). [ ] Real Windows High Contrast, by hand.
+- [x] Reduced motion: no animation exists. Re-check when any is added.
+- [x] 44px target size, measured on every route.
+- [ ] Reading level and unusual words: findings above, owner to decide on plain-language supplements.
+- [x] Third-party destinations: none on any route locally. [ ] Confirm on the deployed site.
+- [ ] Keyboard check by hand (the script covers reachability and ring size, not whether the order feels sensible).
+- [ ] Retest on the deployed HTTPS site after the next deploy (this pass's fixes, the focus ring and chart colours, are not deployed yet).
