@@ -200,10 +200,12 @@ then assemble); parts 2 and 3 of this contract still apply to the finished capti
 
 ## Portability
 
-Repo-agnostic. Writes nothing unless the user asks for a file; produces the draft in chat. Copy the
-`software-carpentier-brand/` directory into another repo's `.claude/skills/` to use it there. The
-proof-point table and the optional post recipe are specific to this user's real career facts as of
-2026 — when a new role, a new metric, or a materially longer tenure exists, this file needs a real
+Needs no repo setup. Writes nothing unless the user asks for a file; produces the draft in chat.
+
+Depends on: `explaining-my-work`, `delete-ai-words`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `explaining-my-work` and the copy is about recent work → ask what was built, when it shipped and one sourced outcome before drafting, and invent no number; no `delete-ai-words` → the voice rules here are the only prose pass, and say the separate de-AI audit hasn't run.
+
+The proof-point table and the optional post recipe are specific to this user's real career facts
+as of 2026 — when a new role, a new metric, or a materially longer tenure exists, this file needs a real
 update, not copy that quietly outgrows it.
 
 ## Routing boundaries (full)

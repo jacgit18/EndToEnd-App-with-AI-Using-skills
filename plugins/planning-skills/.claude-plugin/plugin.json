@@ -1,0 +1,12 @@
+{
+  "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
+  "name": "planning-skills",
+  "version": "0.1.0",
+  "description": "Backlog planning: turn a feature or epic into user stories or a use case with acceptance criteria and Definition of Ready, and give a written ticket a sprint verdict (analyze, size, prioritize, go/no-go).",
+  "author": {
+    "name": "jacgit18"
+  },
+  "skills": [
+    "./skills/"
+  ]
+}

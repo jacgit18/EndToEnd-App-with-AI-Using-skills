@@ -176,6 +176,12 @@ Where a recommendation depends on an unknown, state the branch: "proceed if the 
 
 **All of these mean: the rubric got filled instead of applied. Go back to what the ticket actually says.**
 
+## Portability
+
+Needs no repo setup and writes nothing; the verdict is produced in chat from a pasted ticket or one the user links.
+
+Depends on: `design-scoping`, `user-story-decomposition`, `entry-point-first`, `idea-to-first-test`, `deprecation-sunset`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `design-scoping` and the ticket is a bare system name → ask for purpose, scale and acceptance criteria and give no verdict until they exist; no `user-story-decomposition` and the ticket is a bare feature name → ask for the actor, the action and the acceptance criteria, and if the user insists, give the provisional verdict the Out of scope rule describes.
+
 ## Routing boundaries (full)
 
 The frontmatter `description` is trimmed for the skill listing budget; the original description follows verbatim, one sentence per bullet:

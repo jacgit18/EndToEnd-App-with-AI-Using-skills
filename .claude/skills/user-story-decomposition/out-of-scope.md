@@ -19,7 +19,7 @@ Full reasoning behind the one-line summary in `SKILL.md`.
   `microservices-decision`, `access-control-modeling`, etc.) rather than deciding it here.
 - **Running the elicitation conversation** — the stakeholder interview, workshop, or survey
   that produces the raw requirement in the first place (question ordering, meeting
-  structure, stakeholder mapping). Not owned by any skill in this catalog yet — if asked to
+  structure, stakeholder mapping). No sibling skill owns it — if asked to
   run that conversation, say so rather than silently treating a first-pass guess as the
   requirement.
 - **Drawing the UML diagrams** — a use case, sequence, or activity diagram. This skill's

@@ -50,6 +50,12 @@ No separate reference file yet — this mode is thin enough that the description
 
 Not real design work — a request to actually architect, scope, or decide on a system that will get built is `design-scoping`'s front door (its scope statement is a real deliverable with real stakes; this skill's output is rehearsal). Not the real technology decisions for a build — walking a build's stack choices with a recommendation and an ADR per decision is `tech-decision-walkthrough`; Mode 3 here only stress-tests a choice already made and declares no winner. Not a written deliverable for a real audience about real completed work — that's `explaining-my-work`. Not a second learning-intent gate on top of the mode already chosen — this skill's own no-answer-giving discipline in each mode above already sets the coaching level `learning-gate` would otherwise be deciding.
 
+## Portability
+
+Needs no repo setup and writes nothing. Project-only: not in any plugin.
+
+Depends on: `design-scoping`, `tech-decision-walkthrough`, `explaining-my-work`, `learning-gate`, `codebase-file-orientation`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `design-scoping` or `tech-decision-walkthrough` at the escape hatch → end the drill with the debrief and say the real-design path isn't installed, still without supplying the design; no `design-scoping` and the request is a real system about to be built → say this skill is rehearsal only and ask whether they want to practise or build.
+
 ## Routing boundaries (full)
 
 The frontmatter `description` is trimmed for the skill listing budget; the original description follows verbatim, one sentence per bullet:

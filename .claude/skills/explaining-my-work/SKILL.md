@@ -198,6 +198,12 @@ The second column is *also* the business framing. Naming the specific failure a 
 
 **All of these mean: go back to what actually happened and write from that.**
 
+## Portability
+
+Needs no repo setup. Writes one `talking-points-<topic>-<date>.md` file (Part 5), placed by the rule there.
+
+Depends on: `delete-ai-words`, `software-carpentier-brand`, `user-story-decomposition`, `system-design-communication`, `codebase-file-orientation`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `delete-ai-words` or `software-carpentier-brand` → deliver the draft, say the de-AI pass and the career-claim check have not run, and add no career-wide claim (years, production scope) the Evidence Block can't source; no `user-story-decomposition` → "When it shipped" comes from the commit or PR merge date, never the drafting date; no `system-design-communication` and the user wants to rehearse out loud → the Part 3 script is the hand-off, and say live mock practice isn't installed.
+
 ## Routing boundaries (full)
 
 The frontmatter `description` is trimmed for the skill listing budget; the original description follows verbatim, one sentence per bullet:

@@ -226,9 +226,10 @@ Handoffs:             <specialist Architecture skill, if a story surfaced a load
 
 ## Portability
 
-Repo-agnostic. Writes no files; produces the story/use-case text and an optional Definition-
-of-Ready gap list in chat. Copy the `user-story-decomposition/` directory into another repo's
-`.claude/skills/` to use it there.
+Needs no repo setup. Writes no files; produces the story/use-case text and an optional Definition-
+of-Ready gap list in chat.
+
+Depends on: `design-scoping`, `ticket-evaluation`, `explaining-my-work`, `ambiguity-gate`, `database-architecture`, `api-interface-style`, `microservices-decision`, `access-control-modeling`, `technical-cost-decision`, `idea-to-first-test`, `entry-point-first`, `software-carpentier-brand`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `design-scoping` and no scoped system exists → ask for the in-scope feature list and don't scope the system here; no `ticket-evaluation` → stop at Definition of Ready and give no sprint verdict; a specialist Architecture skill missing → list the design question the story implies as an open item, don't decide it.
 
 ## Routing boundaries (full)
 

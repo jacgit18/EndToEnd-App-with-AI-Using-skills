@@ -130,6 +130,12 @@ When more than one option is on the table, produce one Surface per candidate (or
 
 Where the Surface shows the spend is immaterial, say that plainly and stop. "Roughly USD 200/month at your volume — this is not worth optimizing until you have customers" is a complete and useful answer.
 
+## Portability
+
+Needs no repo setup and writes nothing; the Cost Surface and recommendation are produced in chat.
+
+Depends on: `capacity-estimation`, `serverless-execution-model`, `observability-strategy`, `ticket-evaluation`, `user-story-decomposition`, `tech-decision-walkthrough`, `design-scoping`, and the Architecture decision skills that call it for their cost axis. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `capacity-estimation` and the request is also a sizing question → do the sizing inline from usage drivers the user states (the exception above still holds: don't assume them); no `serverless-execution-model` and the choice is between compute primitives → ask duration, statefulness and peak concurrency before pricing; no `observability-strategy` and the bill is telemetry → size it and name the dominant line, then list signals, sampling and retention as the levers without choosing among them.
+
 ## Routing boundaries (full)
 
 - Covers AWS/GCP/Azure bills, egress and data transfer, per-request and per-token API pricing, storage growth, and managed-service premiums.
