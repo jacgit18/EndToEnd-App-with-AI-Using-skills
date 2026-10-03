@@ -136,6 +136,12 @@ That's a valid precondition — a profile with a dominant cost identified. Claud
 
 The value in all four modes is location of effort: the hypothesis, the option-scan, the explanation attempt, and the measurement have to originate from the user's own reasoning or work, not from Claude, or the rep doesn't happen — fluency in reading Claude's answer gets mistaken for having done the thinking. Claude's contribution is deliberately limited to reflection, gap-checking, and completeness-checking, never generation of the core content. When in doubt about whether a precondition is "met enough," err toward asking for more, not toward proceeding.
 
+## Portability
+
+Needs no repo setup and writes no project files. The worked examples in `examples/` ship in this directory.
+
+Depends on: the specialist gates named under "Specialist gates own their decision" and in Routing boundaries; `ambiguity-gate`, `entry-point-first`, `learning-gate` (the personal core, usually installed alongside). If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off. The load-bearing ones: no specialist Architecture gate for the decision → Options Generator owns it here (the "only when no specialist fits" rule is then met); no `debugging-layer-selection` and the open question is where to look → ask which layer the symptom was seen in (browser, server logs, network), then Rubber Duck on the hypothesis; no testing sibling (`test-practice-gate`, `test-strategy`, `test-case-discovery`) → this skill still does not gate test-writing, so say the rep that skill would ask for (name the risk the test protects) and proceed. When a sibling is installed under a plugin namespace (`data-skills:index-tuning`), hand off by that name.
+
 ## Routing boundaries (full)
 
 - Use this skill whenever the user is debugging, making an architecture/design decision, trying to verify they understood something they just read, or trying to make something faster — especially if they ask "what's wrong with my code," "what should I do," "am I right that X," "how do I speed this up," or similar, without having shown their own attempt first (or, for optimization, a measurement of where the time actually goes).
