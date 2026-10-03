@@ -18,6 +18,7 @@ Groups are labels only — this file is the mapping. Add new skills here.
 - `cloud-iam-boundary`
 - `config-and-secrets-management`
 - `deployment-strategy`
+- `deprecation-sunset`
 - `design-scoping`
 - `disclosure-gap-audit`
 - `failure-mode-analysis`

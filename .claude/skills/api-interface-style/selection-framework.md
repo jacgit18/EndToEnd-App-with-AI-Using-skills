@@ -60,7 +60,7 @@ If one sub-case genuinely doesn't fit the primary (CRUD API that also needs a li
 Name each downstream decision this surface still needs, and where it goes:
 
 - **Contract source-of-truth** — is OpenAPI / the GraphQL schema / the `.proto` authoritative, or generated from code? → `database-architecture`.
-- **Versioning strategy** — URI vs header vs query, deprecation policy. → its own decision; note it's needed.
+- **Versioning strategy** — URI vs header vs query. → its own decision; note it's needed. **Deprecation policy** — how long an old version lives and how it is retired → `deprecation-sunset`.
 - **Auth scheme** — API key, OAuth2, mTLS, session — by consumer class and data sensitivity. → its own decision.
 - **Gateway / BFF** — does a gateway or backend-for-frontend sit in front, and does it own auth / rate limiting / aggregation? → `bff-gateway-placement`, which decides the topology; `technical-cost-decision` if it's purely about managed-vs-self-hosted cost once a topology is chosen.
 - **Cost at volume** — if the call/event rate is large enough to drive infrastructure cost. → `technical-cost-decision`.

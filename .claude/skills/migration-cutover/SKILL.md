@@ -1,6 +1,6 @@
 ---
 name: migration-cutover
-description: Gated decision for moving a live workload from one system to another: cutover pattern, data-move mechanic, verification evidence, rollback trigger and window, consumer sequencing. Use for "we're migrating from X to Y", "cut over to the new database", "lift-and-shift to the cloud". Not for releasing a new version of an existing unit (`deployment-strategy`) or choosing the target store (`database-architecture`).
+description: Gated decision for moving a live workload from one system to another: cutover pattern, data-move mechanic, verification evidence, rollback trigger and window, consumer sequencing. Use for "we're migrating from X to Y", "cut over to the new database", "lift-and-shift to the cloud". Not for releasing a new version of an existing unit (`deployment-strategy`), choosing the target store (`database-architecture`), or sunsetting one capability (`deprecation-sunset`).
 ---
 
 # Migration & Cutover
@@ -132,4 +132,4 @@ Repo-agnostic. Reads and writes `docs/architecture/decisions/` alongside the oth
 ## Routing boundaries (full)
 
 - Use when someone says "we're migrating from X to Y", "we need to move off the old system", "cut over to the new database", "replatform this", "lift-and-shift to the cloud", "the legacy system is being retired", "how do we move the data without downtime", "replace the API gateway / ingress / reverse proxy", "swap the load balancer", or proposes a migration approach and wants it checked.
-- Not for retiring one endpoint, column, flag, or UI route inside a system that isn't itself moving — that is `change-surface-audit`, whose "point of no return" is one feature's own removal at a much smaller scale; this skill is for the datastore, application, or hosting *system* being retired wholesale.
+- Not for retiring one endpoint, column, flag, or UI route inside a system that isn't itself moving — that is `change-surface-audit`, whose "point of no return" is one feature's own removal at a much smaller scale; this skill is for the datastore, application, or hosting *system* being retired wholesale. When the retirement is one endpoint, API version, or feature that has consumers who need notice, a window, and enforcement — not a whole system moving — that is `deprecation-sunset`.

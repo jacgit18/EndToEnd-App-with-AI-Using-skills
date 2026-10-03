@@ -29,6 +29,7 @@ change-surface-audit   →  walk ONE proposed change across 6 surfaces, classify
       ├─ overload/dependency risk this surfaces         →  resilience-strategy
       ├─ schema/table design once confirmed             →  relational-modeling / database-architecture
       ├─ scaling change sizing                           →  data-tier-operations
+      ├─ running a removal's sunset window / notices     →  deprecation-sunset
       ├─ API versioning scheme / DTO shape               →  api-interface-style
       ├─ config value's storage/rotation                 →  config-and-secrets-management
       ├─ permissions/roles/tenancy touched               →  access-control-modeling

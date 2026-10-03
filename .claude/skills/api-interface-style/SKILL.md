@@ -1,6 +1,6 @@
 ---
 name: api-interface-style
-description: Gated decision for the interaction style of one API surface: REST, GraphQL, gRPC, WebSocket, SSE, webhooks, or async messaging, plus sync-vs-async and push-vs-pull. Triggers: "REST or GraphQL", "should we use gRPC", "webhooks vs polling". Not for where the API contract lives — `database-architecture`. Not for gateway/BFF topology — `bff-gateway-placement`.
+description: Gated decision for the interaction style of one API surface: REST, GraphQL, gRPC, WebSocket, SSE, webhooks, or async messaging, plus sync-vs-async and push-vs-pull. Triggers: "REST or GraphQL", "should we use gRPC", "webhooks vs polling". Not for where the API contract lives — `database-architecture`. Not for gateway/BFF topology — `bff-gateway-placement`. Not for when an old version dies — `deprecation-sunset`.
 ---
 
 # API Interface Style
@@ -24,6 +24,7 @@ Given an API surface that needs to exist — one service's external interface, o
 - **Schema / table design** behind the API → `relational-modeling` (OLTP) or `dimensional-modeling` (analytical).
 - **Replication, sharding, connection pooling, transaction patterns** behind the API → `data-tier-operations`.
 - **Implementation** — writing the OpenAPI spec, the `.proto`, resolvers, handlers, client SDKs. This skill stops at a recommendation and an ADR.
+- **When an old API version is retired** — the sunset window, notice, brownouts, and stragglers → `deprecation-sunset`. Naming and numbering versions stays a deferred decision here.
 - **Versioning mechanics** (URI vs header vs query) and **auth-scheme selection** (API key vs OAuth2 vs mTLS). Name that each is needed and defer it; don't decide it here.
 - **Gateway / BFF placement** — whether a shared gateway or a backend-for-frontend sits in front of multiple services or client types → `bff-gateway-placement`. This skill decides one surface's protocol; that skill decides whether a layer exists at all, and this skill picks up again for that layer's own client-facing surface once its topology is chosen.
 - **How an AI agent should call an existing API** (REST vs MCP vs plain tool function) → `api-tooling-selection`.

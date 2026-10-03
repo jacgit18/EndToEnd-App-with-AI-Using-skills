@@ -182,4 +182,5 @@ The frontmatter `description` is trimmed for the skill listing budget; the origi
 
 - Triggers include "should we pull this into the sprint," "is this worth doing," "evaluate this ticket," "how would you prioritize this," "what's the risk on this one," backlog grooming, and comparing several tickets against each other.
 - Also use when someone asks for a verdict on a ticket immediately and does not want to answer questions first.
+- Not for running a retirement once the ticket is approved — a "deprecate the legacy X" ticket gets its sprint verdict here, then the notice window, brownouts, and straggler policy are `deprecation-sunset`.
 - Not for someone who cannot yet get started on the work at all ("I don't know where to start", "overwhelmed by this codebase") — that is `entry-point-first`, which finds a low-resistance entry rep and then hands the which-matters-most call back here once they are moving.
