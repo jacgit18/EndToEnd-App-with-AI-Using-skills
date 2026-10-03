@@ -10,7 +10,7 @@ Carried over from `.claude/handoffs/handoff-skill-catalog-wrapup-2026-10-03.md`.
   - [x] Tunnel `findash` with a published route to `http://localhost:8080`, run by the host's systemd `cloudflared` service (PRs #136 merged; #135 closed as superseded).
   - [x] Verified over HTTPS: `/health` ok, gzip + immutable cache, `/api` 401 without a session, owner signed in (2026-10-03).
   - [x] Old quick-tunnel container removed (`up -d --remove-orphans`).
-  - [ ] **Reboot check:** after the next reboot, confirm `systemctl is-active cloudflared` is `active`, `docker ps` shows the three `finance-prod-*` containers, and https://findash.us.ci/health answers. Settings are right (cloudflared and docker enabled, containers `unless-stopped`); a real reboot is untested.
+  - [x] **Reboot check:** after the next reboot, confirm `systemctl is-active cloudflared` is `active`, `docker ps` shows the three `finance-prod-*` containers, and https://findash.us.ci/health answers. Settings are right (cloudflared and docker enabled, containers `unless-stopped`); a real reboot is untested.
   - [ ] Check how the DNSHE domain renews and note the expiry date in `finance-dashboard/docs/paid-options.md`.
 - [ ] **Phase 7 close-out, owner steps (5 of 8 done).** Code and docs merged in PR #132 (see `.claude/records/finance-dashboard-accessibility.md`). What is left:
   - [ ] Fill in the per-figure table in `finance-dashboard/docs/phase7-verification.md` from one real month (needs the real login).
