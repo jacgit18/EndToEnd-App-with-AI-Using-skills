@@ -81,7 +81,7 @@ end. Writes no file.
   boundary clause was added there distinguishing its written-deliverable job from this
   skill's live-practice job.
 - **`learning-gate`** — not registered in its Step 3 table. Unlike every other new domain
-  skill in this catalog, this one doesn't need a rep deferred to it — it fires on its own
+  skill here, this one doesn't need a rep deferred to it — it fires on its own
   distinct request shape (practice/interview-prep framing) rather than being reached through
   learning-gate's intent classification, the same reasoning that kept `skill-interaction-testing`
   and `catalog-drift-audit` off that table.
@@ -94,10 +94,7 @@ Converted by inspection, not run through a full isolation-screen / multi-agent
 the only real changes made were the two reciprocal boundary clauses above. Worth a real
 `skill-interaction-testing` pass the next time this skill's description changes.
 
-## Using it in another repo
+## Dependencies
 
-Repo-agnostic. Writes nothing.
-
-```
-cp -r ".claude/skills/system-design-communication" /path/to/other-repo/.claude/skills/
-```
+Needs no repo setup and writes nothing. The siblings it hands off to are listed in `SKILL.md` → Portability; if one isn't installed,
+`SKILL.md` says what to do inline. Project-only: not in any plugin (see `plugins/README.md`).

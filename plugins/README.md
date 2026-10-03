@@ -42,13 +42,33 @@ ln -s "$PWD/plugins/testing-skills" ~/.claude/skills/testing-skills
 Try it without installing: `claude --plugin-dir plugins/testing-skills`. This repo's
 `.claude/settings.json` disables `testing-skills@skills-dir` for the same reason as above.
 
-## Personal core (not a plugin)
+## planning-skills
 
-The four request-shape gates load as plain user skills via symlinks:
+2 skills from the Business group: `user-story-decomposition` (feature or epic → stories or a
+use case, acceptance criteria, Definition of Ready) and `ticket-evaluation` (a written ticket →
+proceed / defer / needs more info / reconsider). They hand off to each other, so they ship
+together. The rest of Business is split by job: `technical-cost-decision` ships in
+`architecture-skills`, the writing trio is in the personal core below, and
+`system-design-communication` stays project-only. Hand-offs to `design-scoping` and the
+Architecture decision skills fall back inline when `architecture-skills` is absent.
 
 ```bash
-for s in ambiguity-gate learning-gate problem-solving-gates entry-point-first; do
-  ln -s "$PWD/.claude/skills/$s" ~/.claude/skills/$s
+ln -s "$PWD/plugins/planning-skills" ~/.claude/skills/planning-skills
+```
+
+Try it without installing: `claude --plugin-dir plugins/planning-skills`. This repo's
+`.claude/settings.json` disables `planning-skills@skills-dir` for the same reason as above.
+
+## Personal core (not a plugin)
+
+Skills about how you work rather than about a project load as plain user skills via symlinks:
+the four request-shape gates, plus the writing trio (`explaining-my-work`, `delete-ai-words`,
+`software-carpentier-brand`). Already installed ones are skipped:
+
+```bash
+for s in ambiguity-gate learning-gate problem-solving-gates entry-point-first \
+         explaining-my-work delete-ai-words software-carpentier-brand; do
+  [ -e ~/.claude/skills/$s ] || ln -s "$PWD/.claude/skills/$s" ~/.claude/skills/$s
 done
 ```
 

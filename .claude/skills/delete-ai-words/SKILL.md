@@ -152,6 +152,12 @@ Run silently:
 9. Cut the ending if it only repeats the point.
 10. Ask: does this sound useful, or overworked? Return the cleaner version.
 
+## Portability
+
+Needs no repo setup. Rewrites the text it is given, in chat or in the file the user names; writes nothing else.
+
+Depends on: `software-carpentier-brand`, `explaining-my-work`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing one: the precedence exemptions above (the carpenter device, the resume dash clause) cover only text those skills produced; with neither installed and no voice file in context, apply the bans as written.
+
 ## Routing boundaries (full)
 
 The frontmatter `description` is trimmed for the skill listing budget; the original description follows verbatim, one sentence per bullet:

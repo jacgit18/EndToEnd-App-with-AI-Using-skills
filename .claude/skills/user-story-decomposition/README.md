@@ -42,10 +42,8 @@ Stakeholder elicitation is unowned, and UML diagrams are out of scope.
 Stories (or a use case) with acceptance criteria in chat, plus quality-bar and Definition of
 Ready gap lists. It writes no files.
 
-## Using it in another repo
+## Dependencies
 
-Repo-agnostic. Copy the directory into the other repo's `.claude/skills/`:
-
-```
-cp -r .claude/skills/user-story-decomposition /path/to/other-repo/.claude/skills/
-```
+Needs no repo setup. The siblings it hands off to are listed in `SKILL.md` → Portability; if one isn't installed,
+`SKILL.md` says what to do inline. Installed in other projects via the `planning-skills` plugin
+described in `plugins/README.md`.
