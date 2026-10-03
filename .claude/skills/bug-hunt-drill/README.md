@@ -14,7 +14,7 @@
 ### Downstream
 
 - **`problem-journal`** records each bug you find (method, time, root cause, confidence). Use it to debrief and track your debugging patterns.
-- **`diagnostic-injection`** (in development) uses mutation to test hypotheses on *real issues*. That's active troubleshooting; drills are practice rounds.
+- **`diagnostic-injection`** uses mutation to test hypotheses on *real issues*. That's active troubleshooting; drills are practice rounds.
 
 ### No overlap
 
@@ -49,7 +49,7 @@ Typical flow for interview prep:
 
 For practicing on your own codebase:
 
-1. **Setup:** Invoke `bug-hunt-drill` with 2–3 bugs in `finance-dashboard/backend` (or another project).
+1. **Setup:** Invoke `bug-hunt-drill` with 2–3 bugs in your own project's backend.
 2. **Hunt:** Find them. This time you know the codebase, so it's easier — good for a first drill.
 3. **Debrief:** Record findings.
 4. **Compare:** How much faster than an unfamiliar repo? What methods worked best?
@@ -69,7 +69,7 @@ For practicing on your own codebase:
 
 ## Examples
 
-> "Set up a debugging exercise with 3 bugs in finance-dashboard/backend. I want to practice using the debugger, so make the bugs subtle (not typos). Let the tests pass."
+> "Set up a debugging exercise with 3 bugs in my project's backend. I want to practice using the debugger, so make the bugs subtle (not typos). Let the tests pass."
 
 Injects 3 medium-hard bugs (missing await, race condition, wrong variable) that the test suite doesn't catch. Gives you the symptom; you hunt using breakpoints and tracing.
 
@@ -84,3 +84,9 @@ Hint: *"The bug is in how the coroutine is created, not how it's awaited. Look f
 > "I give up on the third one."
 
 Answer: *"File: `jobs.py`, line 87. The bug: `tasks = [process(item) for ...]` creates coroutines but doesn't schedule them. The fix: `tasks = [asyncio.create_task(process(item)) for ...]`. Root cause: coroutines are created lazily; you must explicitly schedule them."*
+
+## Dependencies
+
+Needs `git worktree` and a reproducible symptom or test suite. The siblings it hands off to are listed in `SKILL.md` → Portability; if one isn't installed,
+`SKILL.md` says what to do inline. Not yet packaged as a plugin; `plugins/README.md` describes
+how catalog subsets are installed in other projects.

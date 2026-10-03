@@ -19,7 +19,7 @@ Given something that needs testing — one module, one service, one feature that
 
 - **A coverage percentage and whether CI blocks on it** — statement/branch/function targets, the number, exclusions, gate-vs-track → `coverage-policy`. This skill decides *which tests exist and where*; that one decides *how much of the code they must touch*.
 - **The rep of writing one specific test** — "write tests for this function", "help me test this component" when the user should first name the behavior and risk → `test-practice-gate`.
-- **Framework / tool selection** — Jest vs Vitest, k6 vs Gatling, which mocking library. Name that a choice is needed and defer it (no skill in this catalog owns general framework/tool selection — say so plainly; the browser/UI e2e runner and its determinism setup (Playwright vs Cypress, prod build, pinned clock) is `browser-test-tooling`, and the database seam is `database-test-tooling`; on "set us up" with no tests, the strategy comes first and tooling is a separate step the user starts).
+- **Framework / tool selection** — Jest vs Vitest, k6 vs Gatling, which mocking library. Name that a choice is needed and defer it (no sibling skill owns general framework/tool selection — say so plainly; the browser/UI e2e runner and its determinism setup (Playwright vs Cypress, prod build, pinned clock) is `browser-test-tooling`, and the database seam is `database-test-tooling`; on "set us up" with no tests, the strategy comes first and tooling is a separate step the user starts).
 - **Whether a database-seam integration/contract test hits a real instance, a substitute engine, a shared test DB, or a mock** — once this skill has decided that test exists → `database-test-tooling`. This skill decides *that* the seam gets an integration-level test; that skill decides what backs it.
 - **Writing the tests, fixtures, or CI config.** This skill stops at a plan and an ADR.
 - **Whether to split into services** → `microservices-decision`. This skill tests the surfaces that exist.
@@ -123,7 +123,9 @@ Gate not satisfied — items 1–7 all missing, and it is unclear whether this i
 
 ## Portability
 
-Repo-agnostic. Reads `docs/architecture/decisions/` and the CI config for context; writes a plan to `docs/testing/` and an ADR to `docs/architecture/decisions/`. Copy the `test-strategy/` directory into another repo's `.claude/skills/` to use it there. See `README.md` for where it sits among the sibling skills.
+Needs no repo setup. Reads `docs/architecture/decisions/` and the CI config for context; writes a plan to `docs/testing/` and an ADR to `docs/architecture/decisions/` by default (follow the repo's own convention), using this skill's `adr-template.md`.
+
+Depends on: `coverage-policy`, `test-practice-gate`, `test-case-discovery`, `database-test-tooling`, `browser-test-tooling`, `failure-mode-analysis`, `api-interface-style`, `microservices-decision`, `technical-cost-decision`, `deployment-strategy`, `migration-cutover`, `repo-reality-audit`, `debugging-layer-selection`, `problem-solving-gates`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `browser-test-tooling` or `database-test-tooling` → name the tool decision as the next step and keep runners and DB mechanisms out of the ADR; no `failure-mode-analysis` and the user wants fault-injection tests → ask for the three failure modes they fear most before placing tests; no `technical-cost-decision` → list the CI drivers (runner minutes, parallel workers, e2e environment hours) and ask the user to price them.
 
 ## Routing boundaries (full)
 

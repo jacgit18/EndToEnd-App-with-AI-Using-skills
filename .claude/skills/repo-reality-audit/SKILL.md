@@ -5,11 +5,11 @@ description: Read-only whole-codebase check that the repo's docs/ADRs/CI claims 
 
 # Repo Reality Audit
 
-Docs and ADRs describe a system's intent. Code is what actually runs. Nothing else in this
-catalog closes that loop by executing commands and diffing claims against the current tree —
+Docs and ADRs describe a system's intent. Code is what actually runs. No sibling skill closes
+that loop by executing commands and diffing claims against the current tree —
 `code-review` reads one diff, `change-surface-audit` reasons about one proposed change before
 it happens, `spec-drift-gate` checkpoints one tracked build against its own spec, `sync-catalog`
-is scoped to this skill catalog. This skill is a **procedure, not a gate**: it withholds
+is scoped to a skill catalog. This skill is a **procedure, not a gate**: it withholds
 nothing, runs two checks against a whole codebase as it stands right now, and reports.
 
 It never fixes anything and never judges security, error-handling, structure, or observability
@@ -20,7 +20,7 @@ build/test/run clean when you try it.**
 ## Step 1 — Scope
 
 Ask if unstated: **which repo or directory**, and whether the scan is the whole tree or one
-deployable unit inside a monorepo (a `finance-dashboard/`-style subdirectory). This is read +
+deployable unit inside a monorepo (an `apps/api/`-style subdirectory). This is read +
 execute only — any command run (test suite, linter, build) must not mutate committed state.
 Running tests/migrations against a throwaway or already-running dev DB is fine; never run
 destructive commands, never touch git, never open a PR.
@@ -122,6 +122,12 @@ Does not apply — that's `test-strategy` (mix decision, not execution/drift).
 > "Audit whether our skill catalog is stale — any skills missing README rows or backlog markers left open?"
 
 Does not apply — that's `catalog-drift-audit` (this skill catalog's own hygiene, not the general codebase this skill checks).
+
+## Portability
+
+Needs no repo setup; read + execute only, produces no files. Step 2 assumes an ADR-style decisions directory and a README/docs folder — adjust the search if the repo keeps decisions elsewhere (issue tracker, wiki). Step 3 assumes a documented test-run command; if there is none, say so and stop.
+
+Depends on: `change-surface-audit`, `spec-drift-gate`, `test-strategy`, `observability-strategy`, `database-test-tooling`, `catalog-drift-audit`, `ambiguity-gate`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `ambiguity-gate` and the ask is a bare "audit my codebase" → ask one question: docs-vs-code drift and does-it-run (this skill), or a quality review; no specialist for a finding outside the two checks → name the concern (security, structure, observability) and leave it unjudged.
 
 ## Routing boundaries (full)
 

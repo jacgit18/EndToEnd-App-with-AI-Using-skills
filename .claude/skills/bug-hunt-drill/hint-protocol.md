@@ -26,7 +26,7 @@ Hints work by narrowing vertically (which layer) or horizontally (which part of 
 
 ## Example session
 
-User: *"Set up a debugging exercise with 2 medium-difficulty bugs in finance-dashboard backend."*
+User: *"Set up a debugging exercise with 2 medium-difficulty bugs in my project's backend."*
 
 [Skill injects bugs and shows symptoms]
 

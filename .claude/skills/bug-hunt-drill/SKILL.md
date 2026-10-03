@@ -18,7 +18,7 @@ Interview debugging rounds present an unfamiliar repo and a failing behavior. Yo
 
 - **Which debugging tool to reach for** (DevTools, backend observability, network tab, database GUI) → `debugging-layer-selection`. Use that first to narrow the layer; come back here to practice if you want repetition.
 - **Thinking through a bug in your own code** → `problem-solving-gates` Rubber Duck. That's synchronous reasoning. This skill is a scored exercise.
-- **Testing a hypothesis with a code mutation** (slow endpoint, cache not working) → `diagnostic-injection` (when available). That's hypothesis-driven, real-world troubleshooting.
+- **Testing a hypothesis with a code mutation** (slow endpoint, cache not working) → `diagnostic-injection`. That's hypothesis-driven, real-world troubleshooting.
 - **Finding edge cases to test** → `test-case-discovery`.
 - **The build or test suite is broken** → `repo-reality-audit`.
 
@@ -26,7 +26,7 @@ Interview debugging rounds present an unfamiliar repo and a failing behavior. Yo
 
 ### Step 1 — Choose the target and difficulty
 
-1. **Target repository or module:** Your own codebase (e.g., `finance-dashboard/backend`), a cloned public repo, or a simplified example. For a first drill, your own code is safer; for interview prep, a repo you've never read teaches the real skill.
+1. **Target repository or module:** Your own codebase (e.g., your project's `backend/`), a cloned public repo, or a simplified example. For a first drill, your own code is safer; for interview prep, a repo you've never read teaches the real skill.
 2. **Number of bugs:** typically 2–5. Fewer if the surface is small; more if you want to raise difficulty.
 3. **Difficulty mix:** choose from:
    - **Easy:** typos, inverted conditionals, `None` vs `False`, obvious off-by-one.
@@ -84,7 +84,7 @@ The worktree is deleted. `main` is untouched. The branch never existed in the re
 
 ## Example invocations
 
-> "Set up a debugging exercise with 3 bugs in finance-dashboard/backend. Make them medium difficulty, and I want the tests to still pass."
+> "Set up a debugging exercise with 3 bugs in my project's backend. Make them medium difficulty, and I want the tests to still pass."
 
 Fires. Creates a worktree, injects 3 bugs (cache key, missing index, wrong variable) that the test suite doesn't catch, gives you the symptom (slow endpoint, missing records), and steps back for you to hunt.
 
@@ -103,6 +103,8 @@ Does not fire: the first is a real problem (use `problem-solving-gates`), the se
 ## Portability
 
 This skill works best with `git worktree` (standard in modern git) and requires a test suite or a way to reproduce the symptom. It's agnostic to language, stack, and repo layout.
+
+Depends on: `debugging-layer-selection`, `problem-solving-gates`, `diagnostic-injection`, `test-case-discovery`, `repo-reality-audit`, `problem-journal`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `problem-journal` → debrief in chat (per bug: time, method, root cause, confidence) and offer to save it as a markdown file; no `repo-reality-audit` and the suite doesn't run clean before injection → stop and say so, since a drill needs a working baseline.
 
 ## References
 

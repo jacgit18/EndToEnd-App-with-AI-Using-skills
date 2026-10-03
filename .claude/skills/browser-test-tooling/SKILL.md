@@ -17,7 +17,7 @@ description: Gated decision for what a browser/UI end-to-end test runs against a
 | Writing one specific test, or stating its charter | Test rep | `test-practice-gate` |
 | What backs a database-touching test | DB seam | `database-test-tooling` |
 | A Lighthouse/CWV number | Page-quality evidence | `web-vitals-audit` |
-| An axe scan inside the e2e suite: its tags, and whether a pass means conformance | Browser-test config | This skill (Step 3 row); policy in `web-accessibility-and-lighthouse.md` |
+| An axe scan inside the e2e suite: its tags, and whether a pass means conformance | Browser-test config | This skill (Step 3 row); the repo's accessibility policy if it has one (see Portability) |
 | Service-worker design (offline scope, caching, update lifecycle) | PWA decision | `pwa-adoption` — this skill only keeps tests honest around it; if that is the only question, answer it here and do not run `pwa-adoption`'s gate |
 | Whether a coverage % blocks CI | Coverage policy | `coverage-policy` |
 | Whether an agent drives a browser (e.g. Playwright MCP) as a live tool | Agent tooling | `api-tooling-selection` |
@@ -67,6 +67,12 @@ Concrete config keys and runner differences are in `tool-landscape.md`; read it 
 
 - **Fires:** "Our Playwright suite passes locally and flakes on CI — what do we change?" Gate on build target, clock/storage pinning, wait signal and retry policy before touching timeouts.
 - **Does not fire:** "Which flows should our e2e suite cover?" → `test-case-discovery`. "Should we have e2e tests at all?" → `test-strategy`. "This one spec fails with a timeout, why?" → `problem-solving-gates`.
+
+## Portability
+
+Needs no repo setup; produces no files. If the repo keeps an accessibility/Lighthouse policy (here, `.claude/rules/web-accessibility-and-lighthouse.md`), its targets apply; without one, an axe pass is still regression evidence, never conformance.
+
+Depends on: `test-strategy`, `test-case-discovery`, `test-practice-gate`, `database-test-tooling`, `web-vitals-audit`, `pwa-adoption`, `coverage-policy`, `api-tooling-selection`, `problem-solving-gates`, `debugging-layer-selection`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `test-strategy` and the e2e tier isn't settled → say whether an e2e tier should exist is the prior decision and stop at a runner shortlist; no `problem-solving-gates` and one spec fails with a trace → ask for the user's hypothesis about that failure before changing config; no `pwa-adoption` → block the service worker in tests and say its design is a separate decision.
 
 ## Routing boundaries (full)
 

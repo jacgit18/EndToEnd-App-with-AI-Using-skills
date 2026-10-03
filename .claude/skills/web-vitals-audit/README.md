@@ -45,16 +45,20 @@ reliability-math          →  server telemetry arithmetic
 - Field monitoring of web vitals → `observability-strategy`.
 - Accessibility audits — reported if Lighthouse surfaces them, not pursued.
 
-## Using it in another repo
+## Dependencies
 
-Repo-agnostic. Needs Node (`npx lighthouse`) and a Chromium; Playwright is optional but makes
-the height-diff and multi-width runs scriptable.
-
-```
-cp -r .claude/skills/web-vitals-audit /path/to/other-repo/.claude/skills/
-```
+Needs Node (`npx lighthouse`) and a Chromium; Playwright is optional.
+The siblings it hands off to are listed in `SKILL.md` → Portability; if one isn't installed,
+`SKILL.md` says what to do inline. Not yet packaged as a plugin; `plugins/README.md` describes
+how catalog subsets are installed in other projects.
 
 ## Interaction with sibling skills
 
-Tested via `skill-interaction-testing` at build time — see the build commit and project memory
-for scenarios and fixes.
+- **vs `problem-solving-gates` (Optimization)** — backend slowness with a measurement in hand
+  is there; a page-load metric is here.
+- **vs `debugging-layer-selection`** — a failing or hanging request is a network question,
+  there.
+- **vs `pwa-adoption`** — service-worker design is there.
+- **vs `browser-test-tooling`** — an axe scan inside the e2e suite is there.
+
+Re-check overlap after any trigger-description change here.

@@ -7,7 +7,7 @@ description: Gated decision for a codebase's code-coverage policy: metric, targe
 
 Given a codebase or module, decide its coverage policy: the metric, the number, the exclusions, and how (or whether) CI enforces it. The skill makes the user state where coverage is now, what kind of code this is, and what has actually broken before any target is named, then writes a policy document.
 
-The governing fact, from the "Code Coverage Best Practices" source note (a PersonalBrain-vault note that is not in this checkout; it carries the "no universal number" principle and Google's 60/75/90 guideline — treat it as the origin of those claims, not a file to open): **there is no universal ideal coverage number.** It depends on business criticality, change frequency, complexity, and lifespan. A policy that ignores those and mandates one percentage everywhere is the anti-pattern this skill exists to prevent.
+The governing fact (Google Testing Blog, "Code Coverage Best Practices", 2020): **there is no universal ideal coverage number.** It depends on business criticality, change frequency, complexity, and lifespan. A policy that ignores those and mandates one percentage everywhere is the anti-pattern this skill exists to prevent.
 
 ## When to use
 
@@ -21,7 +21,7 @@ The governing fact, from the "Code Coverage Best Practices" source note (a Perso
 - **Which test levels exist and how effort splits across them** → `test-strategy`. That skill decides the portfolio; this one sets how much of the code it must touch. Run `test-strategy` first.
 - **The rep of writing one specific test** → `test-practice-gate`.
 - **A go/no-go or prioritization verdict on a ticket that proposes a coverage change** → `ticket-evaluation`. It owns the verdict; this skill designs the metric / target / enforcement only once that verdict is "proceed" (and often "proceed, but not as written").
-- **Coverage tool selection** (Istanbul/nyc, JaCoCo, Coverage.py, ...) — name that a choice is needed and defer it (no skill in this catalog owns tool selection — say so plainly and answer from general knowledge only if asked).
+- **Coverage tool selection** (Istanbul/nyc, JaCoCo, Coverage.py, ...) — name that a choice is needed and defer it (no sibling skill owns tool selection — say so plainly and answer from general knowledge only if asked).
 - **Mutation testing setup** — named here as the quality check that coverage isn't; its adoption is its own decision.
 - **Writing the tests to raise coverage.**
 - **Adjacent handlers:** what backs a DB-touching test → `database-test-tooling`; a failing test or live symptom → `debugging-layer-selection` / `problem-solving-gates`.
@@ -117,7 +117,9 @@ Gate not satisfied — items 1–5 all missing. Response: name what's missing, a
 
 ## Portability
 
-Repo-agnostic. Scans the repo's coverage config for the current number; writes `docs/testing/coverage-policy.md` and optionally an ADR. Copy the `coverage-policy/` directory into another repo's `.claude/skills/` to use it there. See `README.md` for where it sits among the siblings.
+Needs no repo setup. Scans the repo's coverage config for the current number; writes `docs/testing/coverage-policy.md` by default (follow the repo's own convention) and optionally an ADR in the repo's existing ADR format; if the repo has no ADR format, use this skeleton: title `NNN. <decision>`; Status and Date; **Context** (the gate answers, plainly); **Decision** (the recommendation block); **Consequences** (accepted costs, rejected alternatives); **Revisit when** (a concrete trigger).
+
+Depends on: `test-strategy`, `test-practice-gate`, `test-case-discovery`, `ticket-evaluation`, `database-test-tooling`, `debugging-layer-selection`, `problem-solving-gates`, `technical-cost-decision`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `test-strategy` → ask in one line which test levels exist and where they run before setting any number, since the policy segments by them; no `ticket-evaluation` and the ask is a ticket proposing a coverage change → design the policy, but say whether to do the work at all is a separate call.
 
 ## Routing boundaries (full)
 

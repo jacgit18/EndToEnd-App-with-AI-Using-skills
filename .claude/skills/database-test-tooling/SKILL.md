@@ -52,6 +52,12 @@ Concrete tool names, versions and per-engine caveats for each mechanism are in `
 - Answered a "what test levels do we need" question as if it were this skill's mechanism call
 - Treated an agent-driven database GUI/MCP tool question as this skill's territory instead of `api-tooling-selection`'s
 
+## Portability
+
+Needs no repo setup; produces no files.
+
+Depends on: `test-strategy`, `test-practice-gate`, `test-case-discovery`, `coverage-policy`, `data-access-layer`, `api-tooling-selection`, `database-architecture`, `browser-test-tooling`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `test-strategy` and the user can't say whether the seam needs an integration-level test → say that level decision comes first; if they settle on unit level, a mocked repository is correct as-is (Step 2); no `data-access-layer` → how production code queries the database is a separate decision, say so and stop.
+
 ## Routing boundaries (full)
 
 - Use when someone asks "can Beekeeper be used for testing a database", "should we mock the database in our tests", "in-memory DB vs a real one for tests", "our integration tests hit a shared DB and it's flaky", "how do I test my repository/DAO layer", "Testcontainers vs SQLite", "is Beekeeper part of a testing workflow", or proposes a mechanism and wants it checked.

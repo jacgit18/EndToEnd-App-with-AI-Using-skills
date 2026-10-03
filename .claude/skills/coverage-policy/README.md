@@ -50,19 +50,17 @@ Stops before CI wiring and before writing tests to raise the number.
 - Mutation testing adoption — named as the quality check coverage isn't; its own decision.
 - Writing tests.
 
-## Using it in another repo
+## Dependencies
 
-Repo-agnostic. Scans the repo's coverage config for the current number; writes
-`docs/testing/coverage-policy.md`.
-
-```
-cp -r .claude/skills/coverage-policy /path/to/other-repo/.claude/skills/
-```
+Needs no repo setup; output paths are defaults the repo's own convention overrides.
+The siblings it hands off to are listed in `SKILL.md` → Portability; if one isn't installed,
+`SKILL.md` says what to do inline. Not yet packaged as a plugin; `plugins/README.md` describes
+how catalog subsets are installed in other projects.
 
 ## Interaction with sibling skills
 
-Run `skill-interaction-testing` when this skill or a sibling's description changes. Known
-boundaries to hold:
+Re-check overlap when this skill or a sibling's description changes. Known boundaries to
+hold:
 
 - **vs `test-strategy`** — both fire on "how should we test X". Split: portfolio and
   placement (there) vs percentage and enforcement (here). Both descriptions carry a

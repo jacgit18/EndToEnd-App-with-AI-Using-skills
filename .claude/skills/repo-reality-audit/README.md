@@ -7,7 +7,7 @@ quality — it only checks whether the repo's *current claims about itself* are 
 
 ## Why this exists, not a broader "codebase audit" skill
 
-Built after a manual six-dimension audit of `finance-dashboard/` (structure, dependency/config
+Built after a manual six-dimension audit of a real full-stack repo (structure, dependency/config
 hygiene, test posture, error handling, security surface, operability). Most findings mapped
 cleanly onto existing specialists once pointed at the right file — `security-review`,
 `observability-strategy`, `test-strategy`, `code-review` would each catch their own dimension
@@ -63,19 +63,20 @@ owns a fix, or says "no owner — drift only, needs a doc update." It never edit
 - **Which test levels should exist and how much effort each gets** → `test-strategy`. This
   skill only reports how the *existing* suite behaves when run.
 
-## Using it in another repo
+## Dependencies
 
-Mostly repo-agnostic. Step 2 assumes an ADR-style decisions directory and a README/docs
-folder — adjust the search if the target repo keeps decisions elsewhere (issue tracker,
-wiki). Step 3 assumes a documented test-run command exists somewhere; if not, say so and stop.
-
-```
-cp -r .claude/skills/repo-reality-audit /path/to/other-repo/.claude/skills/
-```
+Needs no repo setup; the docs and test-command assumptions are in `SKILL.md` → Portability.
+The siblings it hands off to are listed in `SKILL.md` → Portability; if one isn't installed,
+`SKILL.md` says what to do inline. Not yet packaged as a plugin; `plugins/README.md` describes
+how catalog subsets are installed in other projects.
 
 ## Interaction with sibling skills
 
-Tested via `skill-interaction-testing` (worktree agent) at build time. See the skill's own
-commit message / project memory for the scenarios run and any fixes applied — this section is
-refreshed only when a later change reopens a specific pair, per that skill's own "don't
-re-test without a new reason" rule.
+- **vs `ambiguity-gate`** — a bare "audit my codebase" goes there first.
+- **vs `code-review` / `change-surface-audit`** — one diff, or one proposed change, is there;
+  the whole tree as it stands is here.
+- **vs `spec-drift-gate`** — one tracked build against its own spec is there.
+- **vs `catalog-drift-audit`** — a skill catalog's own consistency is there.
+- **vs `test-strategy`** — whether the suite runs is here; what the suite should contain is there.
+
+Re-check overlap after any trigger-description change here.

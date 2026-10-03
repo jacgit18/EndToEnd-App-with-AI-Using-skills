@@ -161,8 +161,9 @@ evidence points at the wire. Wireshark/tshark on both hosts.
 
 ## Portability
 
-Repo-agnostic; names no project-specific files or paths. Copy the
-`debugging-layer-selection/` directory into another repo's `.claude/skills/` to use it there.
+Needs no repo setup; produces no files (the Step 0 bug record stays in chat unless the user asks to save it).
+
+Depends on: `problem-solving-gates`, `observability-strategy`, `reliability-math`, `web-vitals-audit`, `failure-mode-analysis`, `bug-hunt-drill`, `diagnostic-injection`, `entry-point-first`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `problem-solving-gates` → once the chosen layer's evidence is in hand, ask the user for their hypothesis before proposing a cause; no `observability-strategy` → if triage keeps landing on "we can't see this", say durable instrumentation is a separate decision and don't design it mid-incident; no `web-vitals-audit` → for a page-load metric, reproduce it cold (first visit, mobile throttling) before changing code.
 
 ## Routing boundaries (full)
 
