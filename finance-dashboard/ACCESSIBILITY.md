@@ -36,7 +36,7 @@ Lighthouse's own "Agentic Browsing" category (and the `llms.txt` audit) did not 
 
 A test pins the landmark and heading structure (`DashboardPage.test.tsx`); reverting one heading level is caught.
 
-**Not yet on prod.** The `Caddyfile.prod` change only takes effect after a deploy, which needs a fresh "deploy to prod". Until then the live site still has no compression or cache headers.
+**Deployed to prod 2026-10-03.** Header changes confirmed on the local prod stack (gzip, immutable cache on `/assets/*`, `robots.txt`, meta description). Lighthouse was not re-run against the deployed HTTPS URL.
 
 ### Left as is, with reasons
 
