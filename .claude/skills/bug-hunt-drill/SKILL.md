@@ -70,7 +70,7 @@ For each bug found:
 - **Root cause explanation** (in your own words). This is what interviewers score: can you explain *why* the code is wrong and what the correct behavior should be?
 - **Confidence** (certain / likely / guessing).
 
-Record each to `problem-journal` as a drill session entry, or to your own notes for later review.
+Record each in the debrief as a drill session entry. To save them, the user runs `/problem-journal` (slash-only: you cannot invoke it, and do not recreate its workflow); otherwise they keep their own notes.
 
 ### Step 5 — Cleanup
 
@@ -95,7 +95,7 @@ Fires. Clones a public repo, injects 2–3 bugs, describes the symptom, and hand
 
 > "I found all 3 bugs in 40 minutes. Walk me through what I did well and what I missed."
 
-Fires. Replay and debrief from your `problem-journal` entries. This is the reflection phase.
+Fires. Replay and debrief from the recorded entries (or the user's `/problem-journal` entries, if they saved any). This is the reflection phase.
 
 > "The test suite is failing" / "Which debugging tool should I use?"
 
@@ -105,7 +105,7 @@ Does not fire: the first is a real problem (use `problem-solving-gates`), the se
 
 This skill works best with `git worktree` (standard in modern git) and requires a test suite or a way to reproduce the symptom. It's agnostic to language, stack, and repo layout.
 
-Depends on: `debugging-layer-selection`, `problem-solving-gates`, `diagnostic-injection`, `test-case-discovery`, `repo-reality-audit`, `problem-journal`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `problem-journal` → debrief in chat (per bug: time, method, root cause, confidence) and offer to save it as a markdown file; no `repo-reality-audit` and the suite doesn't run clean before injection → stop and say so, since a drill needs a working baseline.
+Depends on: `debugging-layer-selection`, `problem-solving-gates`, `diagnostic-injection`, `test-case-discovery`, `repo-reality-audit`, `problem-journal`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: `problem-journal` and `repo-reality-audit` are slash-only (`disable-model-invocation`): you cannot invoke them, so ask the user to type `/name` and never recreate their workflow. No `problem-journal` (not installed, or not run) → debrief in chat (per bug: time, method, root cause, confidence) and tell the user `/problem-journal` saves it; the baseline needs no audit skill: run the suite yourself, and if it doesn't run clean before injection → stop and say so, since a drill needs a working baseline (offer `/repo-reality-audit` to find out why).
 
 ## References
 
