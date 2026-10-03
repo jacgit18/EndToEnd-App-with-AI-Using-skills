@@ -55,6 +55,12 @@ A bare "what's the difference between Postman and MCP" with no real integration 
 - Hand-wrote a tool schema or MCP tool definition when an OpenAPI contract already existed to generate it from
 - Treated this as a protocol-design question (REST vs GraphQL vs gRPC) instead of handing off to `api-interface-style`
 
+## Portability
+
+Needs no repo setup and writes nothing; the output is a recommendation in the conversation. Reads an existing OpenAPI spec or Postman collection if the repo has one.
+
+Depends on: `api-interface-style`, `database-architecture`, `data-access-layer`, `database-test-tooling`, `browser-test-tooling`, `model-routing-decision`, `technical-cost-decision`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `data-access-layer` and the question is app code reaching a production database ("MCP server vs a driver in the app") → say it is an application data-access choice, not an agent tool, and don't recommend an MCP tool for it; no `api-interface-style` → name protocol design as out of scope rather than picking REST/GraphQL/gRPC here; no `technical-cost-decision` → list the drivers (tool calls per month, tokens per call, any paid Postman or MCP-hosting tier) and ask the user to price them.
+
 ## Routing boundaries (full)
 
 - Triggers: "should my agent use Postman", "is Postman part of an AI workflow", "does MCP replace calling the API directly", "how should my agent call this API", "should I hook my agent up to Beekeeper's MCP server to explore/verify data or migrations", "what's the difference between Postman, OpenAPI and MCP", or proposes a stack and wants it checked ("I'll have the agent hit Postman collections directly in production").
