@@ -1,5 +1,5 @@
 ---
-description: Build a new skill end-to-end per .claude/rules/adding-a-skill.md — scaffold, static audit, isolation screen, interaction test, reciprocal edits, bookkeeping, commit.
+description: Build a new skill end-to-end per .claude/rules/adding-a-skill.md — scaffold, static audit, isolation screen, interaction test, reciprocal edits, portability + packaging, bookkeeping, commit.
 argument-hint: "<name> [Group]  (e.g. foo Prompts; the directory is flat: .claude/skills/<name>/)"
 ---
 
@@ -32,7 +32,10 @@ Execution notes for running this well:
   concept). Run scenarios via a worktree agent. Fixes are one-line description edits.
 - **Reciprocal edits (step 5).** Apply sibling pointer edits **both directions** — a
   one-directional pointer is the single most common finding.
-- **Bookkeeping (step 6).** `README.md` row; `SKILL-BACKLOG.md` `[x] Built <date>` with the
+- **Portability + packaging (step 6).** Dependency-list Portability section with fallbacks
+  checked against the body, then ask where it ships (plugin / personal core / project-only)
+  and wire that in. Don't pick for the user — packaging has gone all three ways.
+- **Bookkeeping (step 7).** `README.md` row; `SKILL-BACKLOG.md` `[x] Built <date>` with the
   isolation + interaction results inline; `memory/skill-added-<name>.md` + its `MEMORY.md`
   index line.
 - **Then** open a PR to `main` if the user wants one — this command does not push to `main`

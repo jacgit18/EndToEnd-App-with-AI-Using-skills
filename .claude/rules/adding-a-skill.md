@@ -22,7 +22,18 @@
    contradiction / silent override.
 5. **Reciprocal edits** — apply the sibling `description` changes and cross-pointers the
    interaction test surfaced, both directions.
-6. **Bookkeeping** — add/refresh the skill's row in `README.md`; mark the `SKILL-BACKLOG.md`
+6. **Portability + packaging** — add a `## Portability` section just above `## Routing
+   boundaries (full)`, in the shape every packaged skill uses (copy one, e.g. `test-strategy`):
+   what setup it needs and what it writes; `Depends on:` the siblings it hands off to (leave out
+   catalog tooling; list a core gate only when its hand-off carries weight); the standard
+   missing-sibling sentence; then 2–3 load-bearing fallbacks, each checked against the skill
+   body (overreaches get caught this way). No `cp -r` block. Then ask the user where it ships —
+   an existing plugin (relative symlink in `plugins/<plugin>/skills/`, bump its `plugin.json`
+   version), the personal-core loop in `plugins/README.md`, or project-only — and say which in
+   the skill's `README.md` if it has one. Update the counts in `plugins/README.md` and
+   `repo-map.md`. Claude can't write `~/.claude/skills/`, so a new personal-core skill needs the
+   user to run its `ln -s`; say so.
+7. **Bookkeeping** — add/refresh the skill's row in `README.md`; mark the `SKILL-BACKLOG.md`
    entry `[x] Built` with the test result inline; leave the auto-memory marker
    (`memory/MEMORY.md` index line + a file). Where `README.md` has no catalog table or
    `SKILL-BACKLOG.md` is absent (this working subset), skip those two and say so.
