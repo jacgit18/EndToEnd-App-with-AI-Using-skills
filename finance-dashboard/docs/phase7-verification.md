@@ -16,7 +16,9 @@ Closes the gap noted in `phase7-spec.md` slices 5b/5c ("no detailed per-figure r
 
 Slice 5b (dev stack) and 5c (prod), 2026-09-25: tiles, both charts and the recent list render; the net tile matched the Transactions list; the month picker refetches; narrow width fits. **No per-figure numbers were written down at the time and cannot be reconstructed.** They are not claimed here.
 
-## Still to do (owner, needs the real login)
+## Still to do (optional, owner, needs the real login)
+
+Low priority while the data is static (2026-10-03: one manually uploaded file, no automated import). Until this table is filled in, the dashboard figures are backed by tests only.
 
 Pick one month with real data and fill this in. It takes about five minutes and closes the item.
 
