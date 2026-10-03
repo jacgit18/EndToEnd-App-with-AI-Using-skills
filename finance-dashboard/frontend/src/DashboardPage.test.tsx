@@ -65,6 +65,20 @@ beforeEach(() => {
 afterEach(() => vi.useRealTimers());
 
 describe("DashboardPage", () => {
+  // axe: landmark-one-main, page-has-heading-one, heading-order (2026-10-03 audit).
+  it("has one main landmark, one h1, and section headings that are h2", async () => {
+    renderPage();
+    await screen.findByTestId("tile-net");
+    expect(screen.getAllByRole("main")).toHaveLength(1);
+    expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
+    expect(screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent)).toEqual([
+      "Spending by category",
+      "Net, last six months",
+      "Recent transactions",
+    ]);
+    expect(screen.queryAllByRole("heading", { level: 3 })).toHaveLength(0);
+  });
+
   it("defaults to the current local month and asks the API for it", async () => {
     renderPage();
     await screen.findByTestId("tile-net");

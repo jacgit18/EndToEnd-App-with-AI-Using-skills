@@ -28,11 +28,11 @@ export default function DashboardPage() {
   const data = dashboard.data;
 
   return (
-    <section style={{ fontFamily: "system-ui, sans-serif", padding: "2rem" }}>
+    <main style={{ fontFamily: "system-ui, sans-serif", padding: "2rem" }}>
       <p>
         <Link to="/">← Transactions</Link>
       </p>
-      <h2>Dashboard</h2>
+      <h1>Dashboard</h1>
 
       <label>
         Month <input type="month" value={month} onChange={(e) => setMonth(e.target.value)} />
@@ -46,16 +46,16 @@ export default function DashboardPage() {
         <p>Loading…</p>
       ) : (
         <>
-          <div style={{ display: "flex", gap: "2rem", margin: "1rem 0" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem 2rem", margin: "1rem 0" }}>
             <Tile label="Income" value={data.income} />
             <Tile label="Expense" value={data.expense} />
             <Tile label="Net" value={data.net} />
           </div>
 
-          <h3>Spending by category</h3>
+          <h2>Spending by category</h2>
           <CategoryChart categories={data.categories} />
 
-          <h3>Net, last six months</h3>
+          <h2>Net, last six months</h2>
           {trend.isError ? (
             <p role="alert" style={{ color: "crimson" }}>{(trend.error as Error).message}</p>
           ) : trend.data ? (
@@ -64,7 +64,7 @@ export default function DashboardPage() {
             <p>Loading…</p>
           )}
 
-          <h3>Recent transactions</h3>
+          <h2>Recent transactions</h2>
           {data.recent.length === 0 ? (
             <p>No transactions this month.</p>
           ) : (
@@ -89,7 +89,7 @@ export default function DashboardPage() {
           )}
         </>
       )}
-    </section>
+    </main>
   );
 }
 
