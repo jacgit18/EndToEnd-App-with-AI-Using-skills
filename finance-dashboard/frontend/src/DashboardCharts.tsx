@@ -4,6 +4,7 @@ import { scaleBand, scaleLinear } from "@visx/scale";
 import { Bar } from "@visx/shape";
 
 import type { DashboardCategory, TrendPoint } from "./api/client";
+import { ScrollTable } from "./a11y";
 
 // Money travels as strings and is never added or compared for display. Number() is used
 // below only to place and colour marks; every value a reader needs is printed as the
@@ -72,7 +73,7 @@ export function CategoryChart({ categories }: { categories: DashboardCategory[] 
           <AxisBottom scale={x} top={ROW * categories.length} numTicks={5} />
         </Group>
       </svg>
-      <table>
+      <ScrollTable label="Spending by category values"><table>
         <thead>
           <tr>
             <th style={{ textAlign: "left" }}>Category</th>
@@ -89,7 +90,7 @@ export function CategoryChart({ categories }: { categories: DashboardCategory[] 
             </tr>
           ))}
         </tbody>
-      </table>
+      </table></ScrollTable>
     </div>
   );
 }
@@ -135,7 +136,7 @@ export function TrendChart({ points }: { points: TrendPoint[] }) {
           <AxisBottom scale={x} top={innerH} />
         </Group>
       </svg>
-      <table>
+      <ScrollTable label="Net by month values"><table>
         <thead>
           <tr>
             <th style={{ textAlign: "left" }}>Month</th>
@@ -150,7 +151,7 @@ export function TrendChart({ points }: { points: TrendPoint[] }) {
             </tr>
           ))}
         </tbody>
-      </table>
+      </table></ScrollTable>
     </div>
   );
 }

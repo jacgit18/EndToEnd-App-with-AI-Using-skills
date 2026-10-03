@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 
 import { api } from "./api/client";
 import { CategoryChart, TrendChart } from "./DashboardCharts";
+import { ERROR_TEXT, ScrollTable } from "./a11y";
 
 // Local calendar month as YYYY-MM (toISOString would be UTC and can be a day off).
 function currentMonth(): string {
@@ -41,7 +42,7 @@ export default function DashboardPage() {
       {month === "" ? (
         <p>Pick a month.</p>
       ) : dashboard.isError ? (
-        <p role="alert" style={{ color: "crimson" }}>{(dashboard.error as Error).message}</p>
+        <p role="alert" style={{ color: ERROR_TEXT }}>{(dashboard.error as Error).message}</p>
       ) : !data ? (
         <p>Loading…</p>
       ) : (
@@ -57,7 +58,7 @@ export default function DashboardPage() {
 
           <h2>Net, last six months</h2>
           {trend.isError ? (
-            <p role="alert" style={{ color: "crimson" }}>{(trend.error as Error).message}</p>
+            <p role="alert" style={{ color: ERROR_TEXT }}>{(trend.error as Error).message}</p>
           ) : trend.data ? (
             <TrendChart points={trend.data.points} />
           ) : (
@@ -68,7 +69,7 @@ export default function DashboardPage() {
           {data.recent.length === 0 ? (
             <p>No transactions this month.</p>
           ) : (
-            <table>
+            <ScrollTable label="Recent transactions"><table>
               <thead>
                 <tr>
                   <th style={{ textAlign: "left" }}>Date</th>
@@ -85,7 +86,7 @@ export default function DashboardPage() {
                   </tr>
                 ))}
               </tbody>
-            </table>
+            </table></ScrollTable>
           )}
         </>
       )}

@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { api, type Transaction, type TransactionCreate } from "./api/client";
+import { ERROR_TEXT, ScrollTable, VisuallyHidden } from "./a11y";
 
 const emptyForm: TransactionCreate = {
   account_id: 0,
@@ -60,8 +61,9 @@ export default function Transactions() {
     <section style={{ fontFamily: "system-ui, sans-serif", padding: "2rem" }}>
       <h2>Transactions</h2>
 
-      <form onSubmit={handleSubmit} style={{ display: "flex", gap: "0.5rem", marginBottom: "1.5rem" }}>
+      <form onSubmit={handleSubmit} style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginBottom: "1.5rem" }}>
         <select
+          aria-label="Account"
           required
           value={form.account_id || ""}
           onChange={(e) => setForm({ ...form, account_id: Number(e.target.value) })}
@@ -77,6 +79,7 @@ export default function Transactions() {
         </select>
         <input
           type="date"
+          aria-label="Date"
           required
           value={form.date}
           onChange={(e) => setForm({ ...form, date: e.target.value })}
@@ -86,6 +89,7 @@ export default function Transactions() {
         <input
           type="text"
           inputMode="decimal"
+          aria-label="Amount (- for expense)"
           placeholder="Amount (- for expense)"
           required
           value={form.amount}
@@ -107,6 +111,7 @@ export default function Transactions() {
         </select>
         <input
           type="text"
+          aria-label="Description"
           placeholder="Description"
           required
           value={form.description}
@@ -118,10 +123,10 @@ export default function Transactions() {
       </form>
 
       {createTransaction.isError && (
-        <p style={{ color: "crimson" }}>{(createTransaction.error as Error).message}</p>
+        <p style={{ color: ERROR_TEXT }}>{(createTransaction.error as Error).message}</p>
       )}
 
-      <div style={{ display: "flex", gap: "0.5rem", marginBottom: "0.5rem" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginBottom: "0.5rem" }}>
         <label>
           Month <input type="month" value={month} onChange={(e) => setMonth(e.target.value)} />
         </label>
@@ -142,14 +147,14 @@ export default function Transactions() {
         </label>
       </div>
 
-      <table>
+      <ScrollTable label="Transactions"><table>
         <thead>
           <tr>
             <th style={{ textAlign: "left" }}>Date</th>
             <th style={{ textAlign: "left" }}>Description</th>
             <th style={{ textAlign: "left" }}>Category</th>
             <th style={{ textAlign: "right" }}>Amount</th>
-            <th />
+            <th><VisuallyHidden>Actions</VisuallyHidden></th>
           </tr>
         </thead>
         <tbody>
@@ -166,7 +171,7 @@ export default function Transactions() {
             />
           ))}
         </tbody>
-      </table>
+      </table></ScrollTable>
     </section>
   );
 }
@@ -217,7 +222,7 @@ function TransactionRow({
           </button>
         )}
         {voidTx.isError && (
-          <span role="alert" style={{ color: "crimson" }}> {(voidTx.error as Error).message}</span>
+          <span role="alert" style={{ color: ERROR_TEXT }}> {(voidTx.error as Error).message}</span>
         )}
       </td>
     </tr>

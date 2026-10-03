@@ -9,6 +9,7 @@ import DashboardPage from "./DashboardPage";
 import ImportPage from "./ImportPage";
 import LoginPage from "./LoginPage";
 import Transactions from "./Transactions";
+import { ERROR_TEXT, OK_TEXT } from "./a11y";
 
 // /login is the only public page. Everything else is the dashboard, and it
 // isn't gated here: the API is what enforces auth (every /api call but login
@@ -65,7 +66,7 @@ function Dashboard() {
       </nav>
       <p>
         Backend:{" "}
-        <strong style={{ color: status === "connected" ? "seagreen" : "crimson" }}>
+        <strong style={{ color: status === "connected" ? OK_TEXT : ERROR_TEXT }}>
           {status}
         </strong>
       </p>

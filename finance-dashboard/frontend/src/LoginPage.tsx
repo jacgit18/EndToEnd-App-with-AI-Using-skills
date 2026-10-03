@@ -3,6 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 
 import { ApiError, api } from "./api/client";
+import { ERROR_TEXT } from "./a11y";
 
 // Maps the backend's status codes to what the owner should read. The 401 text
 // is deliberately the same for a wrong email and a wrong password — the API
@@ -61,7 +62,7 @@ export default function LoginPage() {
           {login.isPending ? "Signing in…" : "Sign in"}
         </button>
         {login.isError && (
-          <p role="alert" style={{ color: "crimson", margin: 0 }}>
+          <p role="alert" style={{ color: ERROR_TEXT, margin: 0 }}>
             {errorMessage(login.error)}
           </p>
         )}
