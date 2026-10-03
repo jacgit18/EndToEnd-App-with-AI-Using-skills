@@ -20,10 +20,11 @@ description: Gated decision for how an AI agent integrates with an external syst
 | Deciding whether OpenAPI/GraphQL schema/protobuf is the authoritative definition of the data or API | Source-of-truth architecture | `database-architecture` |
 | *Application code itself* reading/writing a relational database in production (ORM, query builder, raw SQL) | Data access | `data-access-layer` |
 | What an automated test suite uses as its database (real instance, substitute engine, mock) | Test-DB mechanism | `database-test-tooling` |
+| A repeatable browser e2e suite (runner, determinism, CI policy) | Browser-test mechanism | `browser-test-tooling` (an agent that drives a browser live as a tool, e.g. Playwright MCP, stays this skill's call) |
 | Which LLM/model handles a given call | Model selection | `model-routing-decision` |
 | Pricing the integration once volume and token/request counts are known | Cost | `technical-cost-decision` |
 
-If the request lands in one of the last six rows, say so and hand off — do not build a Postman-vs-MCP recommendation for a question that's actually about protocol design, contract ownership, production database access, test infrastructure, or cost.
+If the request lands in a row owned by another skill (not "This skill"), say so and hand off — do not build a Postman-vs-MCP recommendation for a question that's actually about protocol design, contract ownership, production database access, test infrastructure, or cost.
 
 ## Step 2 — Gate: name these before recommending a stack
 
