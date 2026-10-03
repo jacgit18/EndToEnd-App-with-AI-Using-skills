@@ -127,7 +127,7 @@ Does not apply. Whole-catalog mechanical check → `catalog-drift-audit`.
 
 ## Portability
 
-Repo-agnostic except Step 3, which names this catalog's conventions (`learning-gate`, a README table, `/new-skill`). Copy the directory into another repo's `.claude/skills/`; in a repo without those conventions, drop Step 3's wiring bullets and the hand-off names you don't have.
+Repo-agnostic except Step 3, which names this catalog's conventions (`learning-gate`, a README table, `/new-skill`). Project-only: not in any plugin. In a repo without those conventions, drop Step 3's wiring bullets and the hand-off names you don't have.
 
 ## Routing boundaries (full)
 

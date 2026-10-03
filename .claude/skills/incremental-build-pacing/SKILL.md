@@ -164,9 +164,10 @@ The user performs it end to end → `learning-gate` → `guided-walkthrough.md`,
 
 ## Portability
 
-Repo-agnostic. Writes no project files of its own; produces the increment list and the paced
-delivery in chat. Copy the `incremental-build-pacing/` directory into another repo's
-`.claude/skills/` to use it there.
+Needs no repo setup. Writes no project files of its own; produces the increment list and the paced
+delivery in chat.
+
+Depends on: `spec-drift-gate`, `design-scoping`, `tech-decision-walkthrough`, `learning-gate`, `problem-solving-gates`, `entry-point-first`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `spec-drift-gate` and no slice is settled → ask for the slice in a few lines (what it does, which files, what done looks like) and treat that as the spec before mapping increments; no `spec-drift-gate` at Step 5 → name the drift, ask whether to amend the slice or pull back, and keep building only after the answer; no `learning-gate` and the user will do a procedure end to end themselves → say this skill paces Claude's writing, not their moves, and coach the steps instead of writing them.
 
 ## Routing boundaries (full)
 
