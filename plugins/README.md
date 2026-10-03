@@ -6,10 +6,10 @@ plugin never drifts from the catalog — edit the skill in `.claude/skills/`, no
 
 ## architecture-skills
 
-28 skills: the Architecture and Architecture (Data) groups (see `.claude/skills/INDEX.md`),
-minus `tech-decision-walkthrough`, plus `technical-cost-decision`. They hand off to each other constantly, so they ship as one
+30 skills: the Architecture, Architecture (Data) and AI Engineering groups (see
+`.claude/skills/INDEX.md`), minus `tech-decision-walkthrough`, plus `technical-cost-decision`. They hand off to each other constantly, so they ship as one
 plugin. Skills load namespaced: `architecture-skills:index-tuning`. Hand-offs outside the
-plugin (the `testing-skills` plugin below, `tech-decision-walkthrough`, `model-routing-decision`, …) fall back to
+plugin (the `testing-skills` plugin below, `tech-decision-walkthrough`, `spec-drift-gate`, …) fall back to
 an inline one-line answer when not installed; each skill's Portability section says how.
 
 Install for every project (a "skills-dir" plugin, auto-loads next session):

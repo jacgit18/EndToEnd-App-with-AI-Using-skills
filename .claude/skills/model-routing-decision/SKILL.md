@@ -87,9 +87,15 @@ For a step in a live session there is no volume or architecture to gate on, and 
 - (In-session mode) Delegated a small, context-loaded step and paid brief overhead that exceeded the step itself
 - (In-session mode) Escalated more than one tier on a single failure, or spawned a subagent for work an existing named agent already covers
 
+## Portability
+
+Needs no repo setup and writes nothing. In-session mode assumes Claude Code's subagent `model` parameter; in a harness without one, name the tier the step should run on and tell the user to switch, never claim to have switched.
+
+Depends on: `technical-cost-decision`, `capacity-estimation`, `learning-gate`, `problem-solving-gates`, `spec-drift-gate`, `incremental-build-pacing`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `technical-cost-decision` → list tiers × calls per month × tokens per call, ask the user to price them from the providers' current pricing pages, and still make no savings claim without that arithmetic; no `capacity-estimation` → ask for calls per day directly and label any estimate as an assumption; no `spec-drift-gate` → the In-session brief rules here stand alone (self-contained brief, stated assumptions, re-run the tests yourself), and the Step 3a / Step 4 references drop out.
+
 ## Routing boundaries (full)
 
 - Use when someone wants to route calls to an LLM across more than one model — tiering by task type (cheap/fast model for simple work, strongest model for hard reasoning), picking across providers (Claude vs. GPT vs. Gemini), adopting a proxy (OpenRouter, Claude Code Router, RelayPlane or similar), or asking "when should I use Haiku vs. Sonnet vs. Opus" / "should I build a model router" / "is a routing proxy worth it." "Model routing" is used loosely for several distinct problems, and only some of them are actually about picking a model — this skill's first job is placing the request correctly before recommending anything.
-- Whether a step should be delegated at all (who owns the decision, how load-bearing it is) is a who-owns-the-decision question (how load-bearing and reversible the choices are), not a model-tier one, and no skill here owns it; handing a settled spec's slice to `spec-executor` is `spec-drift-gate` Step 3a.
+- Whether a step should be delegated at all (who owns the decision, how load-bearing it is) is a who-owns-the-decision question (how load-bearing and reversible the choices are), not a model-tier one, and this skill does not own it; handing a settled spec's slice to `spec-executor` is `spec-drift-gate` Step 3a.
 - A bare "what agent framework should I use" with no per-call model-tier question is `problem-solving-gates` (Options Generator), not this skill.
 - Also covers the live-session version: mid-task in Claude Code (or similar), "which model or agent should run this step," "use a cheaper model for this," "switch models," "escalate" — see In-session mode.
