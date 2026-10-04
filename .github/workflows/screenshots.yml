@@ -1,0 +1,132 @@
+# Screenshots of the finance-dashboard for visual review (ADR-0023).
+#   push to main  -> regenerate and publish them as the baseline: screenshots-data:main/
+#   pull request  -> regenerate, diff against that baseline with pixelmatch, publish
+#                    before/after/diff to screenshots-data:pr-<n>/<sha>/, and keep one PR
+#                    comment showing them, updated in place on later pushes.
+# Nothing is committed to main or to the PR branch: a bot commit gets no PR-linked CI run,
+# and main's required checks would then block the merge.
+# Only runs when the frontend changed. Free while the repo is public (see paid-options.md).
+# Seed data only (e2e/seed.js): no real financial data can reach a screenshot.
+name: Screenshots
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+    paths: [finance-dashboard/frontend/**, .github/workflows/screenshots.yml]
+  push:
+    branches: [main]
+    paths: [finance-dashboard/frontend/**, .github/workflows/screenshots.yml]
+  workflow_dispatch: # run on main to re-seed the baseline
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: screenshots-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  screenshots:
+    # A fork PR's token is read-only, so there is nothing this job could publish: skip it.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: finance-dashboard/frontend/package-lock.json
+
+      - name: Build and screenshot
+        working-directory: finance-dashboard/frontend
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+          npm run build
+          node tools/screenshots.mjs "$RUNNER_TEMP/shots"
+
+      - name: Check out screenshots-data
+        run: |
+          if git fetch --depth=1 origin screenshots-data 2>/dev/null; then
+            git worktree add -B screenshots-data "$RUNNER_TEMP/data" FETCH_HEAD
+          else
+            git worktree add --orphan -b screenshots-data "$RUNNER_TEMP/data"
+          fi
+          # Commit and push to screenshots-data, rebasing once if another run pushed first.
+          cat > "$RUNNER_TEMP/publish.sh" <<'EOF'
+          set -e
+          cd "$RUNNER_TEMP/data"
+          git add -A -- "$1"
+          if git diff --cached --quiet; then echo "Nothing new to publish."; exit 0; fi
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -qm "$2"
+          git push origin screenshots-data || { git fetch --depth=1 origin screenshots-data && git rebase FETCH_HEAD && git push origin screenshots-data; }
+          EOF
+
+      - name: Publish as main's baseline
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        run: |
+          rm -rf "$RUNNER_TEMP/data/main"
+          mkdir -p "$RUNNER_TEMP/data/main"
+          cp "$RUNNER_TEMP"/shots/*.png "$RUNNER_TEMP/data/main/"
+          bash "$RUNNER_TEMP/publish.sh" main "Baseline screenshots from main @ ${GITHUB_SHA::7}"
+
+      - name: Diff against main's baseline and publish
+        if: github.event_name == 'pull_request'
+        id: publish
+        env:
+          PR: ${{ github.event.pull_request.number }}
+          SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          [ -d "$RUNNER_TEMP/data/main" ] && echo "baseline=yes" >> "$GITHUB_OUTPUT"
+          node finance-dashboard/frontend/tools/visual-diff.mjs "$RUNNER_TEMP/data/main" "$RUNNER_TEMP/shots" "$RUNNER_TEMP/visual-diff"
+          count=$(node -e 'console.log(require(process.argv[1]).filter(r => r.status !== "unchanged").length)' "$RUNNER_TEMP/visual-diff/summary.json")
+          [ "$count" = 0 ] && exit 0
+          dest="pr-$PR/${SHA::7}"
+          mkdir -p "$RUNNER_TEMP/data/$dest"
+          cp -r "$RUNNER_TEMP/visual-diff/." "$RUNNER_TEMP/data/$dest/"
+          bash "$RUNNER_TEMP/publish.sh" "$dest" "Screenshots for PR #$PR @ ${SHA::7}"
+          echo "dest=$dest" >> "$GITHUB_OUTPUT"
+
+      - name: Comment on the PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        env:
+          DEST: ${{ steps.publish.outputs.dest }}
+          BASELINE: ${{ steps.publish.outputs.baseline }}
+          SHA: ${{ github.event.pull_request.head.sha }}
+        with:
+          script: |
+            const fs = require("fs");
+            const summary = JSON.parse(fs.readFileSync(`${process.env.RUNNER_TEMP}/visual-diff/summary.json`, "utf8"));
+            const { owner, repo } = context.repo;
+            const pr = context.payload.pull_request.number;
+            const marker = "<!-- finance-dashboard-screenshots -->";
+            const touched = summary.filter((r) => r.status !== "unchanged");
+            const raw = (sub, name) => `https://raw.githubusercontent.com/${owner}/${repo}/screenshots-data/${process.env.DEST}/${sub}/${name}`;
+            const img = (sub, name) => `<img src="${raw(sub, name)}" width="280">`;
+
+            let body = `${marker}\n### Screenshots vs \`main\` (at ${process.env.SHA.slice(0, 7)})\n\n`;
+            if (!process.env.BASELINE) {
+              body += "No baseline yet: main's screenshots are published when a frontend change lands on main. Everything shows as added.\n\n";
+            }
+            if (touched.length === 0) {
+              body += `No visual changes in ${summary.length} screenshots.`;
+            } else {
+              body += `${touched.length} of ${summary.length} differ. Diff = changed pixels in red.\n\n`;
+              body += "| Screenshot | Before (main) | After (this PR) | Diff |\n|---|---|---|---|\n";
+              for (const r of touched) {
+                const label = r.status === "changed" ? `${r.name}<br>${r.percent}% of pixels` : `${r.name}<br>${r.status}`;
+                const before = r.status === "added" ? "–" : img("before", r.name);
+                const after = r.status === "removed" ? "–" : img("after", r.name);
+                const diff = r.status === "changed" ? img("diff", r.name) : "–";
+                body += `| ${label} | ${before} | ${after} | ${diff} |\n`;
+              }
+            }
+
+            const comments = await github.paginate(github.rest.issues.listComments, { owner, repo, issue_number: pr });
+            const existing = comments.find((c) => c.body?.includes(marker));
+            if (existing) await github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body });
+            else await github.rest.issues.createComment({ owner, repo, issue_number: pr, body });

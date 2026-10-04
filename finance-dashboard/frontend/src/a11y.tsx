@@ -35,3 +35,8 @@ export function ScrollTable({ label, children }: { label: string; children: Reac
 // Text colours chosen for 7:1 on white (WCAG AAA 1.4.6).
 export const ERROR_TEXT = "#a00000";
 export const OK_TEXT = "#1b5e20";
+
+// Voided, reversal and archived rows. A grey text colour, not opacity: opacity also fades
+// the row's buttons, and at 0.55 it took text below 7:1 and buttons below 4.5:1 (axe,
+// e2e/a11y.spec.js). #4d4d4d is 8.5:1 on white; the "(voided)"/"(archived)" text carries the meaning.
+export const MUTED_ROW = { color: "#4d4d4d" };

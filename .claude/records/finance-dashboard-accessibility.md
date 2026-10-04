@@ -90,6 +90,21 @@ Same setup (prod build, real Caddy, fixture API; Playwright intercepts requests 
 
 Reading-level notes (open, owner decision): the page text is short and plain. The terms an ordinary reader may not know are **Void** (a button; its confirm dialog explains it), **Net**, **Kind** (income or expense), **Archive**, **Skipped duplicates**, **Rejected**, **Starting balance**, and **Uncategorized**. A plain-language supplement (a short help line, or a longer label such as "Net (income minus spending)") would meet WCAG AAA 3.1.3; changing visible labels also changes tests, so it was left for the owner.
 
+## Automated axe in CI (2026-10-03, third pass)
+
+`frontend/e2e/a11y.spec.js` now reruns axe on every PR (ADR-0023): 15 views (7 routes plus
+login error, transaction error, dashboard empty month, account edit row, accounts and
+categories with archived shown, import preview) × 1440px and 320px × light and dark = 60
+scans, same tag set as above, plus a page-width check. Playwright 1.63.0, Chromium (Playwright
+build 1243), `@axe-core/playwright` 4.13, production build via `vite preview`, API mocked in the page.
+
+**Defect found and fixed:** voided and reversal transaction rows and archived account and
+category rows were dimmed with `opacity: 0.55`. That took their text below 7:1
+(`color-contrast-enhanced`) and their buttons below 4.5:1 (`color-contrast`, an AA failure).
+The earlier passes missed it because their fixture had no voided rows and no archived
+accounts. Now a `#4d4d4d` text colour (8.5:1), `MUTED_ROW` in `src/a11y.tsx`; the
+"(voided)"/"(archived)" text carries the state. After the fix: 0 violations in all 60.
+
 ## Not measured yet
 
 - The deployed HTTPS site (Cloudflare tunnel). Local loopback is not the live site.
