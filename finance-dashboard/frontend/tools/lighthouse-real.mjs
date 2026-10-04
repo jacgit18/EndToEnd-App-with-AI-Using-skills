@@ -3,6 +3,10 @@
 //
 //   npm run lighthouse:real [-- --routes /,/dashboard] [-- --out lighthouse-reports]
 //
+// Against the deployed site (read-only navigation, creates nothing): set
+// REAL_STACK_URL=https://findash.us.ci. /login needs no credentials (--routes /login);
+// the other routes need your real REAL_STACK_EMAIL / REAL_STACK_PASSWORD in your shell.
+//
 // Login-gated routes: Playwright's Chromium signs in, then Lighthouse attaches to that same
 // browser over the debugging port with storage reset disabled, so the session cookie stays.
 // /login is audited first, while signed out. Seed rows come from the smoke spec (run it first)
@@ -31,8 +35,9 @@ const routes = arg("routes", ALL_ROUTES.join(",")).split(",");
 const outDir = arg("out", "lighthouse-reports");
 const email = process.env.REAL_STACK_EMAIL;
 const password = process.env.REAL_STACK_PASSWORD;
-if (!email || !password) {
-  console.error("REAL_STACK_EMAIL / REAL_STACK_PASSWORD not set (run scripts/real-stack.sh up)");
+const needsLogin = routes.some((r) => r !== "/login");
+if (needsLogin && (!email || !password)) {
+  console.error("REAL_STACK_EMAIL / REAL_STACK_PASSWORD not set (run scripts/real-stack.sh up), or pass --routes /login");
   process.exit(2);
 }
 
