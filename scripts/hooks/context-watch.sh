@@ -40,7 +40,8 @@ sid_short="${sid:0:8}"
 # Tokens live on each assistant line's .message.usage. Stream the file (no -s so a
 # long transcript isn't slurped whole), emit one running-total per assistant turn,
 # keep the last — that's the current context size.
-used="$(jq -r 'select(.type=="assistant") | .message.usage
+used="$(jq -R -r 'fromjson? | select(type=="object" and .type=="assistant" and (.message.usage | type)=="object")
+        | .message.usage
         | ((.input_tokens // 0)
            + (.cache_read_input_tokens // 0)
            + (.cache_creation_input_tokens // 0))' \

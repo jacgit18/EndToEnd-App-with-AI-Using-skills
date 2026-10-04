@@ -7,7 +7,8 @@ There is no build, lint, or test runner. The operational scripts live in `script
 scripts/git/state.sh
 
 # Commit: stage exactly these paths, sanity-check the staged set, append the
-# Co-Authored-By trailer, commit. Never pushes, never `git add -A`.
+# Co-Authored-By trailer, commit. Never pushes, never a blanket add (whole-tree
+# pathspecs like `.`, `:/`, `*`, `..` are rejected; deleted paths can be named).
 scripts/git/commit.sh -m "Subject line" -m "Optional body para" -- path/one path/two
 
 # Push with a timeout + HTTP/1.1 fallback + one retry, so a stalled push fails fast.
@@ -32,7 +33,8 @@ guard, confirm-before-push); these scripts are the mechanism it calls.
 Skill catalog lint (read-only; python3): `scripts/skills/lint.sh [--strict] [--quiet] [--errors-only]
 [--pairs]`. Errors are structural (frontmatter shape, description naming a nonexistent skill);
 warnings are description length over 1536 chars (the official skill-listing truncation), SKILL.md over 250 lines, unreferenced companion
-files, and a count of one-way description pointers (`--pairs` lists them; many are legitimate hub
+files, a separate "listing-budget" warning class for descriptions over 430 chars (the catalog's real
+listing budget; `--errors-only` drops it, `--quiet` ignores it), and a count of one-way description pointers (`--pairs` lists them; many are legitimate hub
 fan-out). `--strict` exits 1 on errors. The `SessionStart` hook surfaces errors only.
 
 Skill profile (personal, `.claude/settings.local.json`, gitignored): `scripts/skills/profile.sh core|all|status`.

@@ -85,11 +85,34 @@ done
 [ "${#msgs[@]}" -gt 0 ]  || { echo "commit.sh: need at least one -m \"message\"" >&2; exit 2; }
 [ "${#paths[@]}" -gt 0 ] || { echo "commit.sh: name at least one pathspec (never blanket-add)" >&2; exit 2; }
 
-# 1. Stage the named pathspecs.
-if ! git add -- "${paths[@]}"; then
-  echo "commit.sh: git add failed for the named paths — nothing committed." >&2
-  exit 1
-fi
+# Whole-tree pathspecs would stage everything — the blanket add this script exists to prevent.
+for p in "${paths[@]}"; do
+  case "$p" in
+    .|./|./.|..|../*|:|:/|:/.|:\(*\)|:\(*\).|\*|\*\*|./\*|:/\*|:\(glob\)\*\*)
+      echo "commit.sh: refusing whole-tree pathspec '$p' — name the files or directories explicitly." >&2
+      exit 2 ;;
+  esac
+  if [ -d "$p" ] && [ "$(cd "$p" 2>/dev/null && pwd -P)" = "$(pwd -P)" ]; then
+    echo "commit.sh: refusing whole-tree pathspec '$p' — name the files or directories explicitly." >&2
+    exit 2
+  fi
+done
+
+# 1. Stage the named pathspecs. -A so a deleted path can be committed; the pathspec
+#    still limits it to exactly the named paths.
+#    A path already removed from both disk and index (`git rm`) makes git add fail, so
+#    that case is accepted when HEAD still has the path.
+for p in "${paths[@]}"; do
+  if ! git add -A -- "$p" 2>/dev/null; then
+    if [ ! -e "$p" ] && [ -n "$(git ls-tree -r --name-only HEAD -- "$p" 2>/dev/null)" ]; then
+      git rm -r -q --cached --ignore-unmatch -- "$p" || exit 1
+    else
+      git add -A -- "$p"   # re-run to show git's own error
+      echo "commit.sh: git add failed for the named paths — nothing committed." >&2
+      exit 1
+    fi
+  fi
+done
 
 # Nothing staged? Stop.
 if git diff --cached --quiet; then
@@ -127,6 +150,8 @@ while IFS= read -r -d '' f; do
     fi
     # A conflict needs both an opening and a closing marker; a bare `=======`
     # is ordinary markdown/rst (setext heading underline, a rule).
+    # Binary files (numstat shows '-') are skipped: no text to scan, and bash warns on NULs.
+    if git diff --cached --numstat -- "$f" | grep -q '^-'$'\t''-'$'\t'; then continue; fi
     blob="$(git show ":$f" 2>/dev/null)"
     if printf '%s\n' "$blob" | grep -qE '^<<<<<<<([[:space:]]|$)' \
        && printf '%s\n' "$blob" | grep -qE '^>>>>>>>([[:space:]]|$)'; then

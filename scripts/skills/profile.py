@@ -30,8 +30,11 @@ def core():
 
 def load():
     if os.path.exists(SETTINGS):
-        with open(SETTINGS) as f:
-            return json.load(f)
+        try:
+            with open(SETTINGS) as f:
+                return json.load(f)
+        except json.JSONDecodeError as e:
+            sys.exit(f"profile.py: {SETTINGS} is not valid JSON ({e}); left unchanged")
     return {}
 
 
@@ -48,7 +51,7 @@ def main():
     ov = cfg.get("skillOverrides", {})
     if mode == "toggle":
         # Flip based on what is actually in settings, not on a remembered mode.
-        mode = "all" if any(n in ov for n in names) else "core"
+        mode = "all" if any(ov.get(n) == "name-only" for n in names) else "core"
         print(f"toggle: {'some skills overridden' if mode == 'all' else 'all skills fully listed'} -> switching to {mode}")
     if mode == "core":
         keep = core()
@@ -56,13 +59,16 @@ def main():
         if unknown:
             print("warning: CORE.txt names no such skill:", ", ".join(unknown), file=sys.stderr)
         for n in names:
+            # Only this script's own "name-only" is ours to change; keep any other value (e.g. "off").
             if n in keep:
-                ov.pop(n, None)
-            else:
+                if ov.get(n) == "name-only":
+                    del ov[n]
+            elif n not in ov or ov[n] == "name-only":
                 ov[n] = "name-only"
     elif mode == "all":
         for n in names:
-            ov.pop(n, None)
+            if ov.get(n) == "name-only":
+                del ov[n]
     elif mode != "status":
         sys.exit(__doc__)
     if mode in ("core", "all"):
@@ -70,7 +76,8 @@ def main():
             cfg["skillOverrides"] = ov
         else:
             cfg.pop("skillOverrides", None)
-        save(cfg)
+        if cfg or os.path.exists(SETTINGS):
+            save(cfg)
     mine = {n: ov[n] for n in names if n in ov}
     on = len(names) - len(mine)
     print(f"catalog skills: {len(names)} | fully listed: {on} | overridden: {len(mine)} "
