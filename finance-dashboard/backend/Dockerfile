@@ -1,4 +1,4 @@
-FROM python:3.13-slim
+FROM python:3.14-slim
 
 # uv is a single static binary — copying it from its own published image is
 # the fastest way to get it into this one, no pip/curl install step needed.
