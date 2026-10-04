@@ -4,12 +4,18 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api, type Transaction, type TransactionCreate } from "./api/client";
 import { ERROR_TEXT, MUTED_ROW, ScrollTable, VisuallyHidden } from "./a11y";
 
-const emptyForm: TransactionCreate = {
-  account_id: 0,
-  date: new Date().toISOString().slice(0, 10),
-  amount: "",
-  description: "",
-};
+// Today as the owner's local calendar date (toISOString would be UTC, a day ahead
+// in the evening), read when the form is made so it doesn't go stale overnight.
+function emptyForm(): TransactionCreate {
+  const d = new Date();
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return {
+    account_id: 0,
+    date: `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`,
+    amount: "",
+    description: "",
+  };
+}
 
 export default function Transactions() {
   const queryClient = useQueryClient();
@@ -48,7 +54,7 @@ export default function Transactions() {
       // a guess at the new shape — the source of truth is the database.
       queryClient.invalidateQueries({ queryKey: ["transactions"] });
       queryClient.invalidateQueries({ queryKey: ["accounts"] });
-      setForm(emptyForm);
+      setForm(emptyForm());
     },
   });
 

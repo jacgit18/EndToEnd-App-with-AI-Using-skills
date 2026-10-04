@@ -15,6 +15,17 @@ test("the date field defaults to today in local time", async ({ page }) => {
   await expect(page.getByLabel("Date")).toHaveValue("2026-10-15");
 });
 
+test.describe("late evening", () => {
+  test.use({ startPath: null });
+
+  // 22:00 in New York is already the next day in UTC; toISOString() used to default to that.
+  test("the date field still shows the local day", async ({ page }) => {
+    await page.clock.setSystemTime(new Date("2026-10-15T22:00:00-04:00"));
+    await page.goto("/");
+    await expect(page.getByLabel("Date")).toHaveValue("2026-10-15");
+  });
+});
+
 test("the backend badge reports the connection", async ({ page, api }) => {
   await expect(page.getByText("Backend: connected")).toBeVisible();
 
