@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { api, type Transaction, type TransactionCreate } from "./api/client";
 import { ERROR_TEXT, MUTED_ROW, ScrollTable, VisuallyHidden } from "./a11y";
+import { formatNumberWithCommas, stripCommas } from "./numberFormatting";
 
 // Today as the owner's local calendar date (toISOString would be UTC, a day ahead
 // in the evening), read when the form is made so it doesn't go stale overnight.
@@ -60,7 +61,11 @@ export default function Transactions() {
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    createTransaction.mutate({ ...form, description: form.description.trim() });
+    createTransaction.mutate({
+      ...form,
+      amount: stripCommas(form.amount),
+      description: form.description.trim()
+    });
   }
 
   return (
@@ -98,8 +103,8 @@ export default function Transactions() {
           aria-label="Amount (- for expense)"
           placeholder="Amount (- for expense)"
           required
-          value={form.amount}
-          onChange={(e) => setForm({ ...form, amount: e.target.value })}
+          value={formatNumberWithCommas(form.amount)}
+          onChange={(e) => setForm({ ...form, amount: stripCommas(e.target.value) })}
         />
         <select
           aria-label="Category"
