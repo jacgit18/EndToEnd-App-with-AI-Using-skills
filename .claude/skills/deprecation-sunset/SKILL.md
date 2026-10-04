@@ -1,6 +1,6 @@
 ---
 name: deprecation-sunset
-description: Gated decision for running the retirement of a feature, endpoint, API version or module you own that has consumers: keep/freeze/sunset, usage evidence, notice, enforcement ladder (warn, brownout, remove), stragglers. Triggers: "we want to sunset X", "how do we deprecate this API", "how long should the deprecation window be". Not a bare "delete X, what do I check" — `change-surface-audit` first. Not moving a system — `migration-cutover`.
+description: Gated decision for retiring a feature, endpoint, API version or module you own that has consumers: keep/freeze/sunset, usage evidence, notice, enforcement ladder (warn, brownout, remove), stragglers. Triggers: "we want to sunset X", "how do we deprecate this API", "how long should the window be". Bare "delete X, what do I check" is `change-surface-audit` first. Not moving a system — `migration-cutover`.
 ---
 
 # Deprecation & Sunset
