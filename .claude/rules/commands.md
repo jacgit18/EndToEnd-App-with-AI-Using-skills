@@ -30,6 +30,13 @@ See `conventions.md` for the staging and prompt-log-rides-along rules these enco
 `commit-and-push` skill drives the conversational version (message from the diff, branch
 guard, confirm-before-push); these scripts are the mechanism it calls.
 
+Smoke tests for this repo's own machinery (hooks, `scripts/git/*`, skill lint/profile; plain bash, no
+bats, ~10s): `scripts/tests/run.sh [name-fragment]`. Every case runs in a throwaway temp dir/repo with
+`HOME` and `CLAUDE_PROJECT_DIR` pointed at it, so real logs and `settings.local.json` are never touched
+(the runner fails if they change). Needs `jq` and `python3` (their files skip cleanly without). It also
+runs `lint.sh --strict` on the real catalog. Add a case to the matching `scripts/tests/test_*.sh` when
+you fix a script bug; `SCRIPTS_DIR=<copy of scripts/>` points the suite at a modified copy.
+
 Skill catalog lint (read-only; python3): `scripts/skills/lint.sh [--strict] [--quiet] [--errors-only]
 [--pairs]`. Errors are structural (frontmatter shape, description naming a nonexistent skill);
 warnings are description length over 1536 chars (the official skill-listing truncation), SKILL.md over 250 lines, unreferenced companion
