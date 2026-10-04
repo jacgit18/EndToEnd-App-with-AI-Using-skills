@@ -5,3 +5,6 @@ dist/
 playwright-report/
 test-results/
 screenshots/
+playwright-report-real/
+test-results-real/
+lighthouse-reports/

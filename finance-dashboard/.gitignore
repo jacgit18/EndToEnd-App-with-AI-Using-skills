@@ -1,3 +1,5 @@
 .env
 backups/
 .env.prod
+.real-stack.env
+lighthouse-reports/

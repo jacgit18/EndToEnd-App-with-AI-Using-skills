@@ -128,3 +128,53 @@ jobs:
             finance-dashboard/frontend/playwright-report
             finance-dashboard/frontend/test-results
           retention-days: 7
+
+  real-stack:
+    # The production stack for real (Postgres + FastAPI + Caddy from compose.prod.yaml, a
+    # random per-run login): one browser smoke path, then Lighthouse on every route, both
+    # form factors, signed in. Closes the gap ADR-0023 left open. No repo secrets needed.
+    name: Real-stack smoke + Lighthouse
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: finance-dashboard
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: finance-dashboard/frontend/package-lock.json
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: finance-dashboard/backend/uv.lock
+      - run: npm ci
+        working-directory: finance-dashboard/frontend
+      - run: npx playwright install --with-deps chromium
+        working-directory: finance-dashboard/frontend
+      - name: Start the stack (build images, migrate, wait for /health)
+        run: scripts/real-stack.sh up
+      - name: Smoke (browser -> Caddy -> FastAPI -> Postgres)
+        run: npm run e2e:real
+        working-directory: finance-dashboard/frontend
+      - name: Lighthouse, every route, mobile and desktop
+        run: npm run lighthouse:real
+        working-directory: finance-dashboard/frontend
+      - name: Stack logs on failure
+        if: failure()
+        run: scripts/real-stack.sh logs --tail 200
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: real-stack-reports
+          path: |
+            finance-dashboard/frontend/lighthouse-reports
+            finance-dashboard/frontend/playwright-report-real
+            finance-dashboard/frontend/test-results-real
+          retention-days: 14
+      - name: Tear down
+        if: always()
+        run: scripts/real-stack.sh down

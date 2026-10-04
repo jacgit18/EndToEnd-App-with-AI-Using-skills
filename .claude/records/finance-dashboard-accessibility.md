@@ -90,6 +90,10 @@ Same setup (prod build, real Caddy, fixture API; Playwright intercepts requests 
 
 Reading-level notes (open, owner decision): the page text is short and plain. The terms an ordinary reader may not know are **Void** (a button; its confirm dialog explains it), **Net**, **Kind** (income or expense), **Archive**, **Skipped duplicates**, **Rejected**, **Starting balance**, and **Uncategorized**. A plain-language supplement (a short help line, or a longer label such as "Net (income minus spending)") would meet WCAG AAA 3.1.3; changing visible labels also changes tests, so it was left for the owner.
 
+## Lighthouse on the real stack in CI (2026-10-03, fourth pass)
+
+`npm run lighthouse:real` (CI job `real-stack`) audits all 7 routes, mobile and desktop, signed in, against the production compose stack with the **real backend and Postgres** (not a fixture stub) and a smoke-created account and transaction. Lighthouse 12.8.2, Playwright Chromium, simulated throttling, local loopback. First run: **100 / 100 / 100 / 100 on all 14**. Final URLs checked, so gated routes were audited signed in. A route under 100 is retried twice and the median judged (mobile Performance flicker above); it fails the job otherwise. Reports upload as the `real-stack-reports` artifact. Still local loopback / CI runner, not the deployed HTTPS site: the "retest on the deployed site" item below stays open.
+
 ## Automated axe in CI (2026-10-03, third pass)
 
 `frontend/e2e/a11y.spec.js` now reruns axe on every PR (ADR-0023): 15 views (7 routes plus
