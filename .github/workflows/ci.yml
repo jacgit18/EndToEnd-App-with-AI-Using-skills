@@ -7,9 +7,6 @@ on:
   pull_request:
   push:
     branches: [main]
-  # screenshots.yml dispatches this after its bot commit: pushes made with GITHUB_TOKEN
-  # trigger no workflows, and main requires these checks on the PR's head commit.
-  workflow_dispatch:
 
 permissions:
   contents: read

@@ -1,10 +1,11 @@
 // Screenshots of the built app for PR review (npm run screenshots, after npm run build).
 // Serves dist/ on a throwaway local port, answers the API from the E2E mock (seed data
-// only, never real finances), freezes the clock, and writes PNGs to screenshots/.
+// only, never real finances), freezes the clock, and writes PNGs to screenshots/
+// (gitignored) or the folder given as the first argument.
 //
-// The committed screenshots are generated in CI (.github/workflows/screenshots.yml).
-// A local run uses your machine's fonts, so it will not match CI pixel for pixel; use
-// it to preview, and let CI commit.
+// The reviewed screenshots come from CI (.github/workflows/screenshots.yml), which keeps
+// main's as the baseline on the screenshots-data branch. A local run uses your machine's
+// fonts, so it will not match CI pixel for pixel: use it to preview.
 import { createServer } from "node:http";
 import { mkdir, readFile, rm } from "node:fs/promises";
 import { extname, join, normalize, resolve } from "node:path";
@@ -36,9 +37,8 @@ const SHOTS = [
   ["dashboard-mobile", "/dashboard", "mobile", "light"],
   ["transactions-mobile", "/", "mobile", "light"],
   ["login-mobile", "/login", "mobile", "light"],
-  // Dark scheme: the app has no dark theme, but chart text/lines follow currentColor and
-  // native controls switch; this shot catches a regression in either.
-  ["dashboard-desktop-dark", "/dashboard", "desktop", "dark"],
+  // No dark-scheme shots yet: the app declares no color-scheme, so a dark shot is
+  // pixel-identical to the light one. Add ["…-dark", route, size, "dark"] with a dark theme.
   ["account-edit-desktop", "/accounts", "desktop", "light", async (page) => {
     await page.getByRole("button", { name: "Edit" }).first().click();
     await page.getByRole("button", { name: "Cancel" }).waitFor();

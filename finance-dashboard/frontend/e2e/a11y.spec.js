@@ -1,6 +1,8 @@
 // axe on every route and the main non-default states, at desktop and 320px widths, in
-// light and dark colour schemes. Tag set follows rules/web-accessibility-and-lighthouse.md
-// (AAA target), wider than the usual AA-only set. A pass here is regression evidence,
+// light and dark colour schemes (dark renders the same as light until the app declares a
+// color-scheme; the runs are there so a dark theme is scanned from its first commit).
+// Tag set follows rules/web-accessibility-and-lighthouse.md (AAA target), wider than the
+// usual AA-only set. A pass here is regression evidence,
 // not a conformance claim: the manual checklist lives in
 // .claude/records/finance-dashboard-accessibility.md.
 import AxeBuilder from "@axe-core/playwright";

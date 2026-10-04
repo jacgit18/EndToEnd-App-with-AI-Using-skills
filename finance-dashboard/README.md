@@ -90,8 +90,8 @@ Opens on `http://localhost:5173` (Vite's default). The dev server proxies `/api/
 
 Tests (no backend needed for either): `npm test` (Vitest unit/component), `npm run e2e`
 (Playwright against the production build with the API mocked in the page, plus axe on every
-route). `npm run screenshots` writes preview PNGs to `screenshots/`; the committed ones come
-from CI. See `docs/testing/running-tests.md` and ADR-0023.
+route). `npm run screenshots` writes preview PNGs to `screenshots/` (gitignored); PRs get a
+before/after/diff comment from CI. See `docs/testing/running-tests.md` and ADR-0023.
 
 ## Option 2: Full stack in Docker (Compose)
 
