@@ -46,7 +46,7 @@ A bare "what is Playwright" is a definitional question: answer it, do not gate i
 |---|---|
 | New suite, no runner yet | Pick on the gate answers, not preference: Playwright when multi-browser, parallelism and built-in tracing matter; Cypress when its in-browser debugging loop is what the team values and one engine suffices; the choice is rarely decisive, so name the one gate answer that tipped it. |
 | App has a build step | Run against the production build and preview server. Say what that costs (build time before the first test) and who reuses a running server locally. |
-| Tests depend on date/time | Install a fake clock at a fixed instant and pin the timezone; pick an instant that exercises the boundary the logic cares about (week start, month end) rather than "now". |
+| Tests depend on date/time | Install a fake clock at a fixed instant and pin the timezone; pick an instant that exercises the boundary the logic cares about (week start, month end) rather than "now" (a late-evening local instant catches UTC date rollover, e.g. `toISOString()` defaulting to tomorrow). |
 | Tests depend on persisted state | Seed storage in a fixture before first load; one fixture, shared by all specs, so the starting state is written down once. |
 | Service worker present but not under test | Block it in config so cached assets cannot mask a change; test it deliberately in its own spec if it matters (`pwa-adoption` owns the design). |
 | Flaky suite | Find the nondeterminism source from the gate list before adding retries. A retry budget of 1 on CI is acceptable only if retried passes are reported as flaky, not green. |
