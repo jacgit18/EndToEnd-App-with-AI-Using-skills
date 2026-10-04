@@ -1,6 +1,6 @@
 ---
 name: design-scoping
-description: Front-door gate for system design: refuses to design until purpose, audience, scope, numeric non-functional targets, constraints and deep-dive features are stated; outputs a scope statement routed to specialists. Use for "design a system for X", "I'm building X, where do I start", "scope this project" (stalled user: `entry-point-first`). Not for vague asks (`ambiguity-gate`), whether anyone would pay (`idea-to-first-test`), or interview practice (`system-design-communication`).
+description: Front-door gate for system design: refuses to design until purpose, audience, scope, numeric non-functional targets, constraints and deep-dive features are stated; outputs a scope statement. Use for "design a system for X", "I'm building X, where do I start". Not vague asks (`ambiguity-gate`), stalled starts (`entry-point-first`), demand (`idea-to-first-test`), or interview practice (`system-design-communication`).
 ---
 
 # Design Scoping
@@ -42,7 +42,7 @@ Each is NOT this skill; route to the sibling (full reasoning and boundary cases 
 - The deep design of the 1–2 chosen features → the specialist skills above, one at a time.
 - Cost of reversing a decision → `technical-cost-decision`; sizing a stated cost cap → `technical-cost-decision`.
 - Auditing a shipped product against its public claims → `disclosure-gap-audit`.
-- Candidate-by-candidate technology comparison and ADRs → `tech-decision-walkthrough`; gating a build behind a spec → `spec-drift-gate`; pacing file-by-file delivery → `incremental-build-pacing`.
+- Candidate-by-candidate technology comparison and ADRs → `tech-decision-walkthrough` (slash-only: suggest `/tech-decision-walkthrough`); gating a build behind a spec → `spec-drift-gate`; pacing file-by-file delivery → `incremental-build-pacing`.
 
 **Read `out-of-scope.md`** when a request sits near one of these boundaries and the one-liner does not settle it.
 
@@ -85,7 +85,7 @@ stated. **Do not invent them.** If any is missing, name it and stop.
    - **Accessibility target** (only when the system has a UI) — the WCAG level to build to
      (A / AA / AAA) or "not a constraint", and whether shared base styles are set before the
      second page (hand-styled pages repeat the same missing-label, no-landmark and reflow
-     defects on every route). A non-blocking gap if unstated: record "not stated". The
+     defects on every route). A non-blocking gap if unstated: where the repo has a standing policy (here, AAA in the rules file named below) record that as the default; otherwise "not stated". The
      build-time checklist is `.claude/rules/web-accessibility-and-lighthouse.md`.
    "Fast" and "reliable" are not targets. A number, or "we accept whatever the simple
    design gives us" — stated, not assumed.
@@ -177,7 +177,7 @@ Sequence:           <ordered list of which specialist skill runs next on which d
 ```
 
 **2. On approval**, write the scope statement to
-`docs/architecture/scope/<system-slug>.md` (create the directory if absent). This is a
+`docs/architecture/scope/<system-slug>.md` (create the directory if absent; where project docs live outside the project folder — here, the DevHiveMind docs root per `conventions.md` — write it there). This is a
 living document — it gets updated as scope changes — not an ADR. Each of the 1–2 deep-dive
 decisions gets its *own* ADR later, from the specialist skill that owns it.
 

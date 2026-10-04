@@ -19,8 +19,8 @@ You have a live issue, a hypothesis about which layer or component is broken, an
 - **Choosing which tool to use** (debugger, logs, tracer, profiler) → `debugging-layer-selection`. Use that first; come back here if you want to test a hypothesis faster than the tool allows.
 - **Forming a hypothesis about root cause** by reasoning through a symptom → `problem-solving-gates` Rubber Duck. That skill helps you *think through* the bug; this skill helps you *test* a guess you've already formed.
 - **Writing test cases** to expose a bug → `test-case-discovery`.
-- **A debugging exercise with injected bugs** → `bug-hunt-drill`. That's practice; this is live troubleshooting.
-- **The build or test suite is broken** → `repo-reality-audit`.
+- **A debugging exercise with injected bugs** → `bug-hunt-drill` (slash-only: suggest `/bug-hunt-drill`). That's practice; this is live troubleshooting.
+- **The build or test suite is broken** → `repo-reality-audit` (slash-only: suggest `/repo-reality-audit`).
 
 ## The procedure
 
@@ -87,7 +87,7 @@ Once you've narrowed to the right layer, you have options:
 - **Keep mutations minimal.** One line changed is better than three. The goal is isolation, not a full fix.
 - **The symptom must be reproducible.** If you can't reliably trigger it, you can't reliably see whether the mutation changed it.
 - **Mutations should be *different* from the fix.** A diagnostic mutation forces a behavior to test the hypothesis; the real fix addresses the root cause. Example: injecting `return None` on cache retrieval is not the same as fixing the cache key (which is the real fix).
-- **Record your hypothesis and result.** Write it down inline or in a session note so you don't repeat the same test twice. If you want a full post-resolution record with recurrence analysis and verdicts, use `problem-journal` Journal mode once the bug is fixed.
+- **Record your hypothesis and result.** Write it down inline or in a session note so you don't repeat the same test twice. If you want a full post-resolution record with recurrence analysis and verdicts, ask the user to type `/problem-journal` (slash-only; you cannot invoke it) once the bug is fixed.
 
 ## Example invocations
 

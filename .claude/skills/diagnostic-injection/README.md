@@ -13,7 +13,7 @@
 
 ### Downstream
 
-- **`problem-journal`** records bugs you find and root causes. Use it to track the debugging journey (hypothesis → injection → result → insight).
+- **`problem-journal`** records bugs you find and root causes. The user types it (slash-only) to track the debugging journey (hypothesis → injection → result → insight).
 - **When you find the bug:** form a test case (`test-case-discovery`) or a fix and test it.
 
 ### No overlap
@@ -48,7 +48,7 @@ Typical flow for live troubleshooting:
 5. **Root cause:** Once you've narrowed to the right layer and cause, either:
    - Fix it directly and commit.
    - Write a test case (`test-case-discovery`) to catch this class of bug in the future.
-6. **Record:** Use `problem-journal` to log the debugging journey (hypothesis → injection → result → fix).
+6. **Record:** suggest the user type `/problem-journal` (slash-only) to log the debugging journey (hypothesis → injection → result → fix).
 
 ## When diagnostic injection is overkill
 

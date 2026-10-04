@@ -41,10 +41,10 @@ Full reasoning behind the one-line out-of-scope summary in `SKILL.md`. Read when
   against its commitments. Scope here, audit there.
 - **Walking the whole technology decision list candidate-by-candidate** — presenting the
   options, tradeoffs, and a recommendation for each stack choice, system-design-interview
-  style, and recording an ADR per decision → `tech-decision-walkthrough`, downstream of this
+  style, and recording an ADR per decision → `tech-decision-walkthrough` (slash-only: suggest `/tech-decision-walkthrough`), downstream of this
   skill. This skill picks *which* one or two decisions deserve deep design and states the
   targets; it does not run the comparison for every choice. Chain: `design-scoping` →
-  `tech-decision-walkthrough` → `spec-drift-gate` → `incremental-build-pacing`.
+  `tech-decision-walkthrough` (user-typed, slash-only) → `spec-drift-gate` → `incremental-build-pacing`.
 - **The delivery cadence of the build that follows** — building the scoped system slowly,
   one file at a time, so the user learns it → `incremental-build-pacing`, after
   `spec-drift-gate` turns this scope statement into a build spec and names the first slice.

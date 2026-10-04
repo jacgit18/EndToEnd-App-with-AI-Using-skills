@@ -11,7 +11,8 @@ instead of downloading Chrome:
 # Find Playwright's Chromium (path varies by version and OS)
 CHROME_PATH=$(ls -d ~/.cache/ms-playwright/chromium-*/chrome-linux/chrome | tail -1)
 
-# Mobile, real request delays, JSON for before/after diffs
+# Mobile, real request delays, JSON for before/after diffs.
+# --only-categories=performance is for chasing CLS/LCP; the repo target is all four categories at 100, so drop it for the policy run.
 CHROME_PATH="$CHROME_PATH" npx lighthouse "$URL" \
   --form-factor=mobile \
   --throttling-method=devtools \

@@ -1,13 +1,13 @@
 ---
 name: problem-solving-gates
-description: Four gated modes that force the user's own reasoning first: Rubber Duck (debugging), Options Generator (architecture), Knowledge Checker (understanding), Optimization (needs a measurement). Use for "what's wrong with my code", "what should I do", "how do I speed this up" with no attempt shown. Not stalled starts (`entry-point-first`), symptoms (`debugging-layer-selection`), page-load metrics (`web-vitals-audit`), or `learning-gate` routing.
+description: Four gated modes that make the user reason first: Rubber Duck (debugging), Options Generator (architecture), Knowledge Checker (understanding), Optimization (needs a measurement). Use for "what's wrong with my code", "how do I speed this up" with no attempt shown. Not stalled starts (`entry-point-first`), symptoms (`debugging-layer-selection`), page-load metrics (`web-vitals-audit`), or `learning-gate` routing.
 ---
 
 # Problem-Solving Gates
 
 Four modes, one shared shape: each requires evidence of prior independent effort before Claude does anything, and each keeps Claude's own contribution deliberately narrow so the user keeps doing the actual thinking. Determine which mode applies from context (debugging vs. architecture decision vs. checking understanding vs. making something faster), then apply that mode's gate.
 
-If none of the three situations apply — the user is asking Claude to write new code from scratch, or wants a code review of a finished draft — this skill doesn't apply. (Code review has its own separate skill. Writing *tests* for a piece of code has its own rep gate — `test-practice-gate`.)
+If none of the four modes' situations apply — the user is asking Claude to write new code from scratch, or wants a code review of a finished draft — this skill doesn't apply. (Code review is the built-in `code-review` skill. Writing *tests* for a piece of code has its own rep gate — `test-practice-gate`.)
 
 Worked examples for each mode live in `examples/` (`example-rubber-duck.md`, `example-options-generator.md`, `example-knowledge-checker.md`, `example-optimization.md`) — read the one for the active mode when unsure how strict to be on a borderline precondition.
 
@@ -49,7 +49,7 @@ a new codebase, an intimidating ticket — is `entry-point-first`, not this mode
 
 **Escape hatch:** If they've genuinely tried (multiple hypotheses tested and falsified, meaningful time spent) and are stuck, you can say so and ask if they want to switch out of Rubber Duck mode into direct help — but that's an explicit mode switch they opt into, not a default you slide into. "Genuinely tried" means hypotheses they actually formed and falsified, not time elapsed without one.
 
-**Once the bug is actually fixed**, this mode's job is done — if the user wants it recorded (recurrence checked, a worth-learning verdict), that's `problem-journal`, a separate retrospective step, not something this mode does itself.
+**Once the bug is actually fixed**, this mode's job is done — if the user wants it recorded (recurrence checked, a worth-learning verdict), that's `problem-journal` (slash-only: suggest `/problem-journal`), a separate retrospective step, not something this mode does itself.
 
 **Example invocation:**
 > "I'm debugging a race condition in my caching layer. My hypothesis: we're not invalidating the cache on concurrent writes, so a stale read wins after a write. Can you rubber-duck this with me?"
