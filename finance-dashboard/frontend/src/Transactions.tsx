@@ -2,7 +2,7 @@ import { useState, type FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { api, type Transaction, type TransactionCreate } from "./api/client";
-import { ERROR_TEXT, ScrollTable, VisuallyHidden } from "./a11y";
+import { ERROR_TEXT, MUTED_ROW, ScrollTable, VisuallyHidden } from "./a11y";
 
 const emptyForm: TransactionCreate = {
   account_id: 0,
@@ -205,7 +205,7 @@ function TransactionRow({
   }
 
   return (
-    <tr style={voided || isReversal ? { opacity: 0.55 } : undefined}>
+    <tr style={voided || isReversal ? MUTED_ROW : undefined}>
       <td>{t.date}</td>
       <td style={voided ? { textDecoration: "line-through" } : undefined}>
         {t.description}

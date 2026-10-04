@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 
 import { ACCOUNT_TYPES, api, type Account, type AccountType, type AccountUpdate } from "./api/client";
-import { ERROR_TEXT, ScrollTable, VisuallyHidden } from "./a11y";
+import { ERROR_TEXT, MUTED_ROW, ScrollTable, VisuallyHidden } from "./a11y";
 
 // Same shape the backend enforces (app/schemas/_money.py): optional minus, up to 12
 // integer digits, up to 2 decimals. Checked here so the user sees the problem next to
@@ -172,7 +172,7 @@ function AccountRow({ account: a }: { account: Account }) {
     update.mutate(body);
   }
 
-  const muted = a.is_archived ? { opacity: 0.55 } : undefined;
+  const muted = a.is_archived ? MUTED_ROW : undefined;
 
   if (!editing) {
     return (

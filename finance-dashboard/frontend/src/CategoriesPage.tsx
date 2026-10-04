@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 
 import { api, CATEGORY_KINDS, type Category, type CategoryCreate, type CategoryKind, type CategoryUpdate } from "./api/client";
-import { ERROR_TEXT, ScrollTable, VisuallyHidden } from "./a11y";
+import { ERROR_TEXT, MUTED_ROW, ScrollTable, VisuallyHidden } from "./a11y";
 
 export const KIND_LABELS: Record<CategoryKind, string> = {
   expense: "Expense",
@@ -124,7 +124,7 @@ function CategoryRow({ category: c }: { category: Category }) {
 
   if (!editing) {
     return (
-      <tr style={c.is_archived ? { opacity: 0.55 } : undefined}>
+      <tr style={c.is_archived ? MUTED_ROW : undefined}>
         <td>
           {c.name}
           {c.is_archived && " (archived)"}

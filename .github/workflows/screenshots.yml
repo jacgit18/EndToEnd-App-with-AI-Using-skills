@@ -1,0 +1,141 @@
+# Regenerates the finance-dashboard screenshots on every push to a feature branch,
+# diffs them against main's, and (ADR-0023):
+#   1. publishes before/after/diff images to the `screenshots-data` branch,
+#   2. posts one PR comment showing them, updated in place on later pushes,
+#   3. commits the new screenshots to the feature branch, so merging the PR updates main's.
+# Only runs when the frontend changed. Free while the repo is public (see paid-options.md).
+# Seed data only (e2e/seed.js): no real financial data can reach a screenshot.
+name: Screenshots
+
+on:
+  pull_request:
+    types: [opened, reopened]
+    paths: [finance-dashboard/frontend/**]
+  push:
+    branches-ignore: [main, screenshots-data]
+    paths: [finance-dashboard/frontend/**]
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write # to dispatch CI for the bot's commit (last step)
+
+concurrency:
+  group: screenshots-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  screenshots:
+    # A fork PR's token is read-only, so there is nothing this job could write: skip it.
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      BRANCH: ${{ github.head_ref || github.ref_name }}
+      SHOTS: finance-dashboard/frontend/screenshots
+    steps:
+      # The branch tip, not the PR merge commit, so the bot's commit can be pushed back.
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: baseline
+          sparse-checkout: finance-dashboard/frontend/screenshots
+      - id: head
+        run: echo "sha=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: finance-dashboard/frontend/package-lock.json
+
+      - name: Build and screenshot
+        working-directory: finance-dashboard/frontend
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+          npm run build
+          npm run screenshots
+          node tools/visual-diff.mjs "$GITHUB_WORKSPACE/baseline/$SHOTS" screenshots "$RUNNER_TEMP/visual-diff"
+
+      - name: Publish comparison images to screenshots-data
+        id: publish
+        env:
+          SHA: ${{ steps.head.outputs.sha }}
+        run: |
+          count=$(node -e 'console.log(require(process.argv[1]).filter(r => r.status !== "unchanged").length)' "$RUNNER_TEMP/visual-diff/summary.json")
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+          [ "$count" = 0 ] && exit 0
+          dest="$BRANCH/$SHA"
+          pub="$RUNNER_TEMP/pub"
+          if git fetch --depth=1 origin screenshots-data 2>/dev/null; then
+            git worktree add -B screenshots-data "$pub" FETCH_HEAD
+          else
+            git worktree add --orphan -b screenshots-data "$pub"
+          fi
+          mkdir -p "$pub/$dest"
+          cp -r "$RUNNER_TEMP/visual-diff/." "$pub/$dest/"
+          git -C "$pub" add -- "$dest"
+          git -C "$pub" -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -qm "Screenshots for $BRANCH @ $SHA"
+          git -C "$pub" push origin screenshots-data
+          echo "dest=$dest" >> "$GITHUB_OUTPUT"
+
+      - name: Comment on the PR
+        uses: actions/github-script@v7
+        env:
+          DEST: ${{ steps.publish.outputs.dest }}
+          SHA: ${{ steps.head.outputs.sha }}
+        with:
+          script: |
+            const fs = require("fs");
+            const summary = JSON.parse(fs.readFileSync(`${process.env.RUNNER_TEMP}/visual-diff/summary.json`, "utf8"));
+            const { owner, repo } = context.repo;
+            let pr = context.payload.pull_request?.number;
+            if (!pr) {
+              const { data } = await github.rest.pulls.list({ owner, repo, head: `${owner}:${process.env.BRANCH}`, state: "open" });
+              pr = data[0]?.number;
+            }
+            if (!pr) return core.info("No open PR for this branch yet; the PR's `opened` run will comment.");
+
+            const marker = "<!-- finance-dashboard-screenshots -->";
+            const touched = summary.filter((r) => r.status !== "unchanged");
+            const path = (process.env.DEST || "").split("/").map(encodeURIComponent).join("/");
+            const raw = (sub, name) => `https://raw.githubusercontent.com/${owner}/${repo}/screenshots-data/${path}/${sub}/${name}`;
+            const img = (sub, name) => `<img src="${raw(sub, name)}" width="280">`;
+
+            let body = `${marker}\n### Screenshots vs \`main\` (at ${process.env.SHA})\n\n`;
+            if (touched.length === 0) {
+              body += `No visual changes in ${summary.length} screenshots.`;
+            } else {
+              body += `${touched.length} of ${summary.length} differ. Diff = changed pixels in red.\n\n`;
+              body += "| Screenshot | Before (main) | After (this branch) | Diff |\n|---|---|---|---|\n";
+              for (const r of touched) {
+                const label = r.status === "changed" ? `${r.name}<br>${r.percent}% of pixels` : `${r.name}<br>${r.status}`;
+                const before = r.status === "added" ? "–" : img("before", r.name);
+                const after = r.status === "removed" ? "–" : img("after", r.name);
+                const diff = r.status === "changed" ? img("diff", r.name) : "–";
+                body += `| ${label} | ${before} | ${after} | ${diff} |\n`;
+              }
+            }
+
+            const comments = await github.paginate(github.rest.issues.listComments, { owner, repo, issue_number: pr });
+            const existing = comments.find((c) => c.body?.includes(marker));
+            if (existing) await github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body });
+            else await github.rest.issues.createComment({ owner, repo, issue_number: pr, body });
+
+      # Pushes made with GITHUB_TOKEN trigger no workflows, so this cannot loop; it also
+      # means CI would never run on the new head commit and main's required checks would
+      # block the merge. workflow_dispatch is exempt from that rule, so dispatch CI here.
+      - name: Commit updated screenshots to the branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git add -- "$SHOTS"
+          if git diff --cached --quiet; then echo "Screenshots already up to date."; exit 0; fi
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -qm "Screenshots: regenerate for ${{ steps.head.outputs.sha }}"
+          git push origin "HEAD:$BRANCH"
+          gh workflow run ci.yml --ref "$BRANCH"

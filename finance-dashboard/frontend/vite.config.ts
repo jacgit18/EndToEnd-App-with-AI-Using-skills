@@ -35,6 +35,8 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     setupFiles: ["./src/test/setup.ts"],
+    // Unit tests live in src/; e2e/*.spec.js are Playwright's (npm run e2e).
+    include: ["src/**/*.test.{ts,tsx}"],
   },
   server: {
     // Lets the Docker MCP Playwright container reach this dev server via
