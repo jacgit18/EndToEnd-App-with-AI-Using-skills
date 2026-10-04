@@ -74,8 +74,13 @@ jobs:
           export AUTH_PASSWORD_HASH="$(uv run python -c 'from argon2 import PasswordHasher; print(PasswordHasher().hash("ci"))')"
           PYTHONPATH=. uv run alembic upgrade head
       - name: Tests
-        # -v + faulthandler: a hang prints the stuck test's stack after 120 s instead of timing out silently.
-        run: timeout 600 uv run pytest -v -o faulthandler_timeout=120
+        # Step timeout + output to a file: a hang is killed after 6 min and the next step prints the tail.
+        # faulthandler dumps the stuck test's stack after 90 s.
+        timeout-minutes: 6
+        run: uv run pytest -v -o faulthandler_timeout=90 2>&1 | tee /tmp/pytest.log
+      - name: Test log tail (on failure or timeout)
+        if: always()
+        run: tail -n 80 /tmp/pytest.log || true
 
   frontend:
     name: Frontend tests + build
