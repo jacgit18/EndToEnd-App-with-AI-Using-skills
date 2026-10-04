@@ -54,7 +54,7 @@ shows for free.
 
 ## The procedure
 
-**CI-only failure.** If it fails only in CI, reproduce locally first: same runtime version, clean env, no `.env`, each test file run alone. Add sampling, timeouts or faulthandler only after that, and cap the experiment pushes (about three) before stepping back; each push costs a full CI round trip.
+**CI-only failure.** (A flaky browser/e2e suite goes to `browser-test-tooling`.) If it fails only in CI, reproduce locally first: same runtime version, clean env, no `.env`, each test file run alone. Add sampling, timeouts or faulthandler only after that, and cap the experiment pushes (about three) before stepping back; each push costs a full CI round trip.
 
 **Step 0 — Bug record.** Before picking a layer, capture the symptom well enough to reproduce
 without follow-up questions: repro steps, expected vs. actual, verbatim error output,
