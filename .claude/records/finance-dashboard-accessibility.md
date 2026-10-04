@@ -122,6 +122,6 @@ accounts. Now a `#4d4d4d` text colour (8.5:1), `MUTED_ROW` in `src/a11y.tsx`; th
 - [x] Reduced motion: no animation exists. Re-check when any is added.
 - [x] 44px target size, measured on every route.
 - [ ] Reading level and unusual words: findings above, owner to decide on plain-language supplements.
-- [x] Third-party destinations: none on any route locally. [ ] Confirm on the deployed site.
+- [x] Third-party destinations: none on any route locally. **Deployed site: NOT clean.** `https://findash.us.ci/login` loads `static.cloudflareinsights.com/beacon.min.js` (Cloudflare Web Analytics, injected by the edge, not by this app). Owner decision: switch off Web Analytics for the zone in the Cloudflare dashboard (matches the no-third-party design and clears the console error below), or accept and document it.
 - [ ] Keyboard check by hand (the script covers reachability and ring size, not whether the order feels sensible).
-- [ ] Retest on the deployed HTTPS site after the next deploy (this pass's fixes, the focus ring and chart colours, are not deployed yet).
+- [ ] Retest on the deployed HTTPS site after the next deploy (this pass's fixes, the focus ring and chart colours, are not deployed yet). Partly done 2026-10-03: `/login` only (the other routes need the owner's login: `REAL_STACK_URL=https://findash.us.ci REAL_STACK_EMAIL=… REAL_STACK_PASSWORD=… npm run lighthouse:real`). Lighthouse 12.8.2, Playwright Chromium, simulated throttling, from the dev machine: mobile and desktop Performance 100, Accessibility 100, SEO 100, **Best Practices 96** on all 3 runs. Cause: the Cloudflare beacon above failed to load (`ERR_ADDRESS_UNREACHABLE`, may be this machine's network) and logged a console error. Not an app defect; no app change made.
