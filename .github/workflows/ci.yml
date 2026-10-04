@@ -70,7 +70,8 @@ jobs:
       - name: Migrate
         run: PYTHONPATH=. uv run alembic upgrade head
       - name: Tests
-        run: uv run pytest -q
+        # -v + faulthandler: a hang prints the stuck test's stack after 120 s instead of timing out silently.
+        run: timeout 600 uv run pytest -v -o faulthandler_timeout=120
 
   frontend:
     name: Frontend tests + build
