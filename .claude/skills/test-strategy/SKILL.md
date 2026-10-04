@@ -75,6 +75,8 @@ Flag the load-bearing assumption as a question ("is 'prod keeps breaking' someth
 
 Once the gate is satisfied, work `selection-framework.md` in order: map the surface and its seams, rate the failure risk per area, classify what each test level buys *here*, assign the effort budget (start from 70/20/10 and adjust for risk and surface shape), place each level in a real pipeline stage, choose the functional technique (black/white/grey box) and the data strategy (fixtures vs data-driven), decide the non-functional scope with thresholds or an explicit "none", answer the TDD/BDD workflow question, and list what you are deferring.
 
+**Isolation and parity lens.** Every test must pass alone, in any order, with an empty environment and no gitignored file (`.env`) behind it, and the runtime version must match across image, local and CI. Before blaming CI for a hang or a failure, run each test file alone locally with a clean env.
+
 `test-levels.md` backs it: each level (unit, integration, system integration, contract, end-to-end, smoke, acceptance/UAT, and the non-functional family) in one entry — what it buys, what it costs, its failure mode when over- or under-used, and where it runs — plus the pyramid note and a note that **manual testing still has a place** for exploratory and one-off acceptance checks.
 
 ---

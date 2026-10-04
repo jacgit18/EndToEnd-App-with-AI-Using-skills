@@ -79,6 +79,7 @@ Work `deployment-framework.md` in order once the gate is satisfied. In short: co
 Reference files:
 
 - `rollout-patterns.md` — the mechanisms (recreate, rolling, blue-green, canary, feature-flag / dark launch): what each does to downtime, blast radius, rollback speed, cost, and infra requirement, plus the failure mode of each. Expand/contract (parallel-change) for backward-compatible schema and message evolution, step by step. Environment-progression patterns and what makes a stage actually gate. Automated rollback and the signals worth gating on.
+- **CI-writes lens.** Automation never commits back to a PR branch: a `GITHUB_TOKEN` push gets no PR-linked CI run and blocks the merge. Publish artifacts (screenshot baselines, reports) to a side branch or a PR comment instead.
 - `deployment-framework.md` — the 8-step process, worked once the gate is satisfied.
 
 ---
