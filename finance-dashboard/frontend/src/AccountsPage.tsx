@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 
 import { ACCOUNT_TYPES, api, type Account, type AccountType, type AccountUpdate } from "./api/client";
 import { ERROR_TEXT, MUTED_ROW, ScrollTable, VisuallyHidden } from "./a11y";
+import { formatNumberWithCommas, stripCommas } from "./numberFormatting";
 
 // Same shape the backend enforces (app/schemas/_money.py): optional minus, up to 12
 // integer digits, up to 2 decimals. Checked here so the user sees the problem next to
@@ -56,7 +57,7 @@ export default function AccountsPage() {
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
     if (balanceError) return;
-    const start = startingBalance.trim();
+    const start = stripCommas(startingBalance.trim());
     createAccount.mutate({
       name: name.trim(),
       type,
@@ -91,9 +92,9 @@ export default function AccountsPage() {
             type="text"
             inputMode="decimal"
             placeholder="0.00"
-            value={startingBalance}
+            value={formatNumberWithCommas(startingBalance)}
             aria-invalid={balanceError !== null}
-            onChange={(e) => setStartingBalance(e.target.value)}
+            onChange={(e) => setStartingBalance(stripCommas(e.target.value))}
           />
         </label>
         <button type="submit" disabled={createAccount.isPending || balanceError !== null}>
@@ -150,7 +151,7 @@ function AccountRow({ account: a }: { account: Account }) {
     },
   });
 
-  const startError = moneyError(start) ?? (start.trim() === "" ? "Required" : null);
+  const startError = moneyError(stripCommas(start)) ?? (start.trim() === "" ? "Required" : null);
 
   function startEditing() {
     setName(a.name);
@@ -167,7 +168,8 @@ function AccountRow({ account: a }: { account: Account }) {
     if (type !== a.type) body.type = type;
     // Compare as numbers-in-strings would mislead ("5" vs "5.00"), so send whenever the
     // text differs from what the server returned; the server normalizes to 2dp.
-    if (start.trim() !== a.starting_balance) body.starting_balance = start.trim();
+    const cleanStart = stripCommas(start.trim());
+    if (cleanStart !== a.starting_balance) body.starting_balance = cleanStart;
     if (Object.keys(body).length === 0) return setEditing(false);
     update.mutate(body);
   }
@@ -218,9 +220,9 @@ function AccountRow({ account: a }: { account: Account }) {
         <input
           aria-label="Starting balance"
           inputMode="decimal"
-          value={start}
+          value={formatNumberWithCommas(start)}
           aria-invalid={startError !== null}
-          onChange={(e) => setStart(e.target.value)}
+          onChange={(e) => setStart(stripCommas(e.target.value))}
         />
       </td>
       <td style={{ textAlign: "right" }}>{a.balance}</td>

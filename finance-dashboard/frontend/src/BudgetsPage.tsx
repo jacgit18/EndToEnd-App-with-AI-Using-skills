@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 
 import { api, type Budget, type Category } from "./api/client";
 import { ERROR_TEXT, ScrollTable, VisuallyHidden } from "./a11y";
+import { formatNumberWithCommas, stripCommas } from "./numberFormatting";
 
 // Local calendar month as YYYY-MM (toISOString would be UTC and can be a day off).
 function currentMonth(): string {
@@ -94,7 +95,7 @@ function BudgetRow({ month, category: c, budget }: { month: string; category: Ca
 
   const refresh = () => queryClient.invalidateQueries({ queryKey: ["budgets", month] });
   const save = useMutation({
-    mutationFn: () => api.setBudget(month, c.id, amount.trim()),
+    mutationFn: () => api.setBudget(month, c.id, stripCommas(amount.trim())),
     onSuccess: refresh,
   });
   const clear = useMutation({
@@ -113,12 +114,12 @@ function BudgetRow({ month, category: c, budget }: { month: string; category: Ca
           aria-label={`Budget for ${c.name}`}
           inputMode="decimal"
           placeholder="none"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
+          value={formatNumberWithCommas(amount)}
+          onChange={(e) => setAmount(stripCommas(e.target.value))}
         />
       </td>
       <td>
-        <button onClick={() => save.mutate()} disabled={busy || amount.trim() === "" || amount.trim() === budget?.amount}>
+        <button onClick={() => save.mutate()} disabled={busy || amount.trim() === "" || stripCommas(amount.trim()) === budget?.amount}>
           Save
         </button>{" "}
         <button onClick={() => clear.mutate()} disabled={busy || budget === undefined}>
