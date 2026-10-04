@@ -1,0 +1,62 @@
+[
+  {
+    "name": "account-edit-desktop.png",
+    "status": "added"
+  },
+  {
+    "name": "accounts-desktop.png",
+    "status": "added"
+  },
+  {
+    "name": "budgets-copied-desktop.png",
+    "status": "added"
+  },
+  {
+    "name": "budgets-desktop.png",
+    "status": "added"
+  },
+  {
+    "name": "categories-desktop.png",
+    "status": "added"
+  },
+  {
+    "name": "dashboard-desktop-dark.png",
+    "status": "added"
+  },
+  {
+    "name": "dashboard-desktop.png",
+    "status": "added"
+  },
+  {
+    "name": "dashboard-mobile.png",
+    "status": "added"
+  },
+  {
+    "name": "import-desktop.png",
+    "status": "added"
+  },
+  {
+    "name": "import-preview-desktop.png",
+    "status": "added"
+  },
+  {
+    "name": "login-desktop.png",
+    "status": "added"
+  },
+  {
+    "name": "login-error-mobile.png",
+    "status": "added"
+  },
+  {
+    "name": "login-mobile.png",
+    "status": "added"
+  },
+  {
+    "name": "transactions-desktop.png",
+    "status": "added"
+  },
+  {
+    "name": "transactions-mobile.png",
+    "status": "added"
+  }
+]
