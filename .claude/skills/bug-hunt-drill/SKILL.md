@@ -40,8 +40,9 @@ Interview debugging rounds present an unfamiliar repo and a failing behavior. Yo
 The skill injects bugs into a temporary git worktree on a `drill/*` branch. This branch is **never merged or pushed**.
 
 - Bugs are added as small, surgical diffs.
-- The answer key (file, line, fix, reasoning) is saved to a file in the scratchpad, outside the repo.
-- The conversation does not know the answers and cannot leak them.
+- Injection runs in a **subagent** (Agent tool, `isolation: "worktree"`). It returns only the branch name, bug count and symptom(s), and writes the answer key (file, line, fix, reasoning) to a temp file outside the repo that the conversation never reads.
+- Hints and answers also come from a short-lived subagent that reads the key and returns just the hint (or the answer, once the hint protocol allows it), so the main conversation stays blind.
+- No subagent tool available: say the drill cannot be blind; the user can open the key file themselves for hints, and a peeked key spoils that bug.
 - The worktree is deleted after you finish.
 
 ### Step 3 — The hunt
@@ -74,12 +75,12 @@ Record each in the debrief as a drill session entry. To save them, the user runs
 
 ### Step 5 — Cleanup
 
-The worktree is deleted. `main` is untouched. The branch never existed in the remote.
+The worktree is deleted (`git worktree remove <path>`, then `git branch -D drill/<name>`). `main` is untouched. The branch never existed in the remote.
 
 ## Rules
 
 - **Never merge or push a drill branch.** The exercise is sandboxed. If you accidentally push, delete the remote branch immediately (`git push origin --delete drill/...`).
-- **The answer key is off-repo.** If you see the answer key in the conversation, the exercise is spoiled. The skill injects bugs, then steps aside so the conversation can't accidentally leak them.
+- **The answer key is off-repo.** If you see the answer key in the conversation, the exercise is spoiled. The injecting subagent returns only symptoms, so the conversation can't accidentally leak them.
 - **Timeout is optional.** Some interview rounds have a 45-minute clock; most don't. Set a timer if you want one, else work at your pace.
 - **Real interviews are messy.** Tests might not catch the bug. The error message might be cryptic. You might need to read a library's source. This exercise includes that noise.
 

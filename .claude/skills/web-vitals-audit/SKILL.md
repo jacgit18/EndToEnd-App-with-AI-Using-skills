@@ -1,6 +1,6 @@
 ---
 name: web-vitals-audit
-description: Procedure for a poor Lighthouse or Core Web Vitals number, or an axe/accessibility audit of a site: reproduce cold (first visit, throttling verified, several widths), find layout shift element by element, rank fixes by cost. Triggers: "my Lighthouse score is low", "fix our CLS", "audit this site's accessibility", "run axe on every page". Not backend slowness (`problem-solving-gates`), service workers (`pwa-adoption`), a network symptom (`debugging-layer-selection`), or axe inside e2e (`browser-test-tooling`).
+description: Procedure for a poor Lighthouse or Core Web Vitals number, or an axe/accessibility audit of a site: reproduce cold, find layout shift element by element, rank fixes by cost. Triggers: "my Lighthouse score is low", "fix our CLS", "run axe on every page". Not backend slowness (`problem-solving-gates`), service workers (`pwa-adoption`), a network symptom (`debugging-layer-selection`), or axe inside e2e (`browser-test-tooling`).
 ---
 
 # Web Vitals Audit
@@ -27,7 +27,7 @@ Ask if unstated, in one message:
 If the user names no threshold, the default target is the repo's standing policy if it has
 one (here, `.claude/rules/web-accessibility-and-lighthouse.md`: 100 in every Lighthouse
 category on mobile and desktop); with none, propose the Core Web Vitals "good" thresholds
-above and confirm. A 100 is regression evidence, never a WCAG AAA conformance claim.
+above and confirm. A 100 is regression evidence, never a WCAG AAA conformance claim. Under the repo policy a fractional pass count (e.g. Agentic Browsing 2/3) fails even when the numeric score reads 100, because zero-weight audits drop out of the number.
 
 No number and no symptom ("make the site faster") is not this skill yet — ask which page and
 what is slow, or route to `problem-solving-gates` Optimization if it is not a page-load metric.
@@ -39,6 +39,7 @@ and after is a guess.** Repeat visits hide almost every page-load problem, so ch
 
 (Login-gated pages, proxy headers, accessibility beyond the Lighthouse number: `measurement.md`, last section.)
 
+- **Production build, not the dev server.** Serve the `npm run build` output (preview server). Dev-server runs include hot reload and unminified modules and score far lower (56 and a 19 s LCP in one recorded case). Local loopback is not the live site.
 - **First visit.** Service worker bypassed, cache disabled, fresh profile. A PWA's warm runs
   look perfect and prove nothing about a first visit.
 - **Throttling actually applied.** A sub-second load on "Slow 4G" means throttling did not
@@ -92,7 +93,7 @@ of the score — splitting bundles moves little while the page still jumps.
 
 ## Step 5 — Re-measure and report
 
-Re-run the exact Step 2 conditions. Report before → after per metric and per width, which
+Re-run the exact Step 2 conditions. Record the Lighthouse version, browser, form factor and throttling with every result; it applies to that build and environment only. Report before → after per metric and per width, which
 fix moved which number, and what you deliberately left alone (see below). If a deploy is
 involved, the final measurement is on the live URL, not the local build. A score that wobbles by a point on an unchanged build is noise: repeat three times before calling a regression or a fix.
 
@@ -163,5 +164,7 @@ Depends on: `problem-solving-gates`, `pwa-adoption`, `debugging-layer-selection`
 - NOT `reliability-math` / `observability-strategy` — server telemetry and what to instrument
   long-term. Setting up field RUM for web vitals is `observability-strategy`'s call.
 - NOT `caching-strategy` — a server-side cache.
-- Accessibility findings from the same Lighthouse run (e.g. label-in-name, WCAG 2.5.3) are
-  real bugs — report them, but they are not this skill's subject.
+- Accessibility *measurement* (axe runs, the Lighthouse accessibility category, keyboard / zoom /
+  forced-colors checks) is in scope — `measurement.md`, last section. Accessibility *conformance
+  claims* are not: a 100 or a clean axe run is regression evidence, never "AAA conformant"; the
+  manual review in the rules file comes first.
