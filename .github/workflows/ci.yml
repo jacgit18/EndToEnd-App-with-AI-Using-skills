@@ -54,8 +54,9 @@ jobs:
           --health-retries 10
     env:
       DATABASE_URL: postgresql+psycopg://finance:finance@localhost:5433/finance
-      AUTH_EMAIL: ci@example.com
-      SESSION_SECRET: ci-session-secret
+      # AUTH_* are deliberately NOT set here: each test module sets its own login
+      # credentials with os.environ.setdefault, and a job-level value would override
+      # them (every login 401s). They are passed to the Migrate step only.
       # CI must never silently skip the integration suite.
       REQUIRE_DB: "1"
     steps:
@@ -65,10 +66,13 @@ jobs:
           enable-cache: true
           cache-dependency-glob: finance-dashboard/backend/uv.lock
       - run: uv sync --frozen
-      - name: Throwaway login hash for the config validator
-        run: echo "AUTH_PASSWORD_HASH=$(uv run python -c 'from argon2 import PasswordHasher; print(PasswordHasher().hash("ci"))')" >> "$GITHUB_ENV"
-      - name: Migrate
-        run: PYTHONPATH=. uv run alembic upgrade head
+      - name: Migrate (Settings validates the login vars even for alembic)
+        env:
+          AUTH_EMAIL: ci@example.com
+          SESSION_SECRET: ci-session-secret
+        run: |
+          export AUTH_PASSWORD_HASH="$(uv run python -c 'from argon2 import PasswordHasher; print(PasswordHasher().hash("ci"))')"
+          PYTHONPATH=. uv run alembic upgrade head
       - name: Tests
         # -v + faulthandler: a hang prints the stuck test's stack after 120 s instead of timing out silently.
         run: timeout 600 uv run pytest -v -o faulthandler_timeout=120
