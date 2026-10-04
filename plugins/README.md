@@ -1,5 +1,8 @@
 # plugins/
 
+**New machine?** Clone the repo and run `scripts/setup/install.sh` (add `--dry-run` to preview,
+`--claude-md` to also write `~/.claude/CLAUDE.md`). It does everything below plus the user-level settings.
+
 Packaged subsets of the skill catalog for use in other projects. Each plugin's `skills/`
 entries are relative symlinks to the canonical `.claude/skills/<name>/` directories, so a
 plugin never drifts from the catalog — edit the skill in `.claude/skills/`, not here.
