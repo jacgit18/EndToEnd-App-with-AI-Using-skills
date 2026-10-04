@@ -1,6 +1,6 @@
 ---
 name: change-surface-audit
-description: Pre-flight procedure for one proposed add/modify/remove or silent change: walks six blast-radius surfaces, audits hidden dependents, classifies backward-compatible vs breaking. Triggers: "what could this change break", "is this a breaking change", "what do I check before I delete this endpoint". Not for diff correctness — `code-review`. Not rollout — `deployment-strategy`; not build specs — `spec-drift-gate`. Running a removal's sunset window and notices — `deprecation-sunset`.
+description: Pre-flight procedure for one proposed add/modify/remove or silent change: walks six blast-radius surfaces, audits hidden dependents, classifies backward-compatible vs breaking. Triggers: "what could this change break", "what do I check before I delete this endpoint". Not diff correctness (`code-review`), rollout (`deployment-strategy`), build specs (`spec-drift-gate`), or a removal's sunset window (`deprecation-sunset`).
 ---
 
 # Change Surface Audit

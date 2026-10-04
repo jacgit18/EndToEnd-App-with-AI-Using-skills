@@ -22,7 +22,7 @@ The README's per-group tables say which is which.
 
 Skills with `disable-model-invocation: true` (the seven in the user's global CLAUDE.md) are invisible to routing: Claude cannot invoke them and never sees their descriptions. When a request matches one, or a sibling's "NOT for X" carve-out names one, suggest the user type `/name`; do not recreate its workflow. A gate that waits on one must say what to do when the user does not run it.
 
-What each is for (match on the request, not the name): `/bug-hunt-drill` quiz or practice debugging; `/decision-journal` log a judgment call; `/problem-journal` log a fixed bug or error; `/context-promotion` context the user keeps retyping; `/repo-reality-audit` docs or ADRs versus the real repo, or a build that won't run; `/tech-decision-walkthrough` walk through a build's tech choices; `/system-design-communication` mock system-design interview.
+What each is for (match on the request, not the name): `/bug-hunt-drill` quiz or practice debugging; `/decision-journal` log a judgment call; `/problem-journal` log a fixed bug or error; `/context-promotion` context the user keeps retyping; `/repo-reality-audit` docs or ADRs versus the real repo, whether CI is real or just documented, or a build that won't run; `/tech-decision-walkthrough` walk through a build's tech choices; `/system-design-communication` mock system-design interview.
 
 ## Cross-cutting meta-skills
 

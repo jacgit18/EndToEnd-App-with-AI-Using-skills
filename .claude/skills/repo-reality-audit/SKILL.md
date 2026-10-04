@@ -1,6 +1,6 @@
 ---
 name: repo-reality-audit
-description: Read-only whole-codebase check that the repo's docs/ADRs/CI claims are still true now, and that the build/test suite actually runs clean. Triggers: "does this repo still match its docs", "are our ADRs still accurate", "does the test suite actually pass", "is our CI real or just documented". Bare "audit my codebase" is `ambiguity-gate` first. Not one diff (`code-review`), one change (`change-surface-audit`), or the skill catalog (`catalog-drift-audit`).
+description: Read-only check that the repo's docs/ADRs/CI claims are still true and the build/test suite actually runs clean. Triggers: "does this repo still match its docs", "are our ADRs still accurate", "does the test suite actually pass". Bare "audit my codebase" is `ambiguity-gate` first. Not one diff (`code-review`), one change (`change-surface-audit`), or the skill catalog (`catalog-drift-audit`).
 disable-model-invocation: true
 ---
 
