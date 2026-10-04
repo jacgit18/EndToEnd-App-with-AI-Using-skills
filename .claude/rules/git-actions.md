@@ -25,5 +25,7 @@ Global copy lives in `~/.claude/CLAUDE.md`; this file is the version-controlled 
   me to proceed") and wait. Don't attempt it silently.
 - The risk with a smaller model is the destructive commands: `reset --hard`, force-push, deleting
   branches. A wrong call there is costly, so confirm first on any model.
+- This repo's `.claude/settings.json` enforces that with `permissions.ask` entries for `git reset --hard`,
+  force-push variants, `git branch -D` and remote branch deletion. `land.sh` is unaffected.
 - Report outcomes exactly: a PR that is open but not merged is "open, not merged", not "done".
 - In this repo the simple branch → PR → merge flow is routine; use `scripts/git/*` (`conventions.md`).

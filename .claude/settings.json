@@ -4,6 +4,16 @@
     "testing-skills@skills-dir": false,
     "planning-skills@skills-dir": false
   },
+  "permissions": {
+    "ask": [
+      "Bash(git reset --hard:*)",
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(git push --force-with-lease:*)",
+      "Bash(git branch -D:*)",
+      "Bash(git push origin --delete:*)"
+    ]
+  },
   "hooks": {
     "PreToolUse": [
       {
