@@ -10,7 +10,9 @@
     "test": "vitest run",
     "e2e": "playwright test",
     "screenshots": "node tools/screenshots.mjs",
-    "visual-diff": "node tools/visual-diff.mjs"
+    "visual-diff": "node tools/visual-diff.mjs",
+    "e2e:real": "playwright test -c playwright.real.config.js",
+    "lighthouse:real": "node tools/lighthouse-real.mjs"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.56.0",
@@ -32,6 +34,7 @@
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
     "jsdom": "^25.0.0",
+    "lighthouse": "^12.8.2",
     "pixelmatch": "^7.2.0",
     "pngjs": "^7.0.0",
     "typescript": "^5.5.4",
