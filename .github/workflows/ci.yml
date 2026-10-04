@@ -1,0 +1,91 @@
+# CI for the repo's own machinery and the finance-dashboard.
+# Free: the repo is public, so Actions minutes cost nothing. If it ever goes private,
+# these jobs use GitHub-hosted minutes (see docs/paid-options.md in the DevHiveMind copy).
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  scripts:
+    name: Scripts smoke tests + skill lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Smoke suite (hooks, git helpers, lint, profile)
+        run: scripts/tests/run.sh
+      - name: Skill catalog lint (errors fail, warnings print)
+        run: scripts/skills/lint.sh --strict
+      - name: Plugin symlinks resolve
+        run: |
+          broken="$(find plugins -xtype l)"
+          if [ -n "$broken" ]; then echo "Broken symlinks:"; echo "$broken"; exit 1; fi
+
+  backend:
+    name: Backend tests (real Postgres)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: finance-dashboard/backend
+    services:
+      db:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: finance
+          POSTGRES_PASSWORD: finance
+          POSTGRES_DB: finance
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd "pg_isready -U finance"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql+psycopg://finance:finance@localhost:5433/finance
+      AUTH_EMAIL: ci@example.com
+      SESSION_SECRET: ci-session-secret
+      # CI must never silently skip the integration suite.
+      REQUIRE_DB: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: finance-dashboard/backend/uv.lock
+      - run: uv sync --frozen
+      - name: Throwaway login hash for the config validator
+        run: echo "AUTH_PASSWORD_HASH=$(uv run python -c 'from argon2 import PasswordHasher; print(PasswordHasher().hash("ci"))')" >> "$GITHUB_ENV"
+      - name: Migrate
+        run: PYTHONPATH=. uv run alembic upgrade head
+      - name: Tests
+        run: uv run pytest -q
+
+  frontend:
+    name: Frontend tests + build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: finance-dashboard/frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: finance-dashboard/frontend/package-lock.json
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
