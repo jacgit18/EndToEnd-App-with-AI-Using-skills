@@ -6,7 +6,7 @@ Two things live in this repo:
 2. **`finance-dashboard/`** — a personal finance app: FastAPI + Postgres backend, React/Vite/TypeScript frontend, deployed via Docker Compose + Caddy.
 
 Standing rules are in `.claude/rules/` and load automatically — read them, don't duplicate them here:
-`repo-map.md` (what's tracked vs. absent in this working subset), `conventions.md` (branches, commits, staging, docs location, prod deploys), `commands.md` (git scripts, lint, tests), `skill-architecture.md`, `adding-a-skill.md`, `agents.md`, `web-accessibility-and-lighthouse.md`.
+`repo-map.md` (what's tracked vs. absent in this working subset), `conventions.md` (branches, commits, staging, docs location, prod deploys), `commands.md` (git scripts, lint, tests), `git-actions.md` (which model for which git work; confirm destructive commands), `skill-architecture.md`, `adding-a-skill.md`, `agents.md`, `web-accessibility-and-lighthouse.md`.
 
 ## Hard rules (details in `conventions.md`)
 

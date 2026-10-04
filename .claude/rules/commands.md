@@ -26,7 +26,7 @@ DRY_RUN=1 scripts/git/batch-git-push.sh            # preview only
 INCLUDE_MODIFIED=1 scripts/git/batch-git-push.sh   # also stage modified/deleted, not just untracked
 ```
 
-See `conventions.md` for the staging and prompt-log-rides-along rules these encode. The
+See `git-actions.md` for which model suits which git work. See `conventions.md` for the staging and prompt-log-rides-along rules these encode. The
 `commit-and-push` skill drives the conversational version (message from the diff, branch
 guard, confirm-before-push); these scripts are the mechanism it calls.
 
