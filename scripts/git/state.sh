@@ -18,7 +18,9 @@ n="${1:-3}"
 
 branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
 upstream="$(git rev-parse --abbrev-ref --symbolic-full-name '@{u}' 2>/dev/null || true)"
-if [ -n "$upstream" ]; then
+if ! git rev-parse --verify -q HEAD >/dev/null 2>&1; then
+  printf 'branch: %s (no commits yet)\n' "$(git symbolic-ref --short -q HEAD || echo HEAD)"
+elif [ -n "$upstream" ]; then
   ab="$(git rev-list --left-right --count "${upstream}...HEAD" 2>/dev/null || echo '? ?')"
   behind="${ab%%[[:space:]]*}"
   ahead="${ab##*[[:space:]]}"

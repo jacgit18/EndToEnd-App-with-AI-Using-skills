@@ -3,5 +3,8 @@
 #   scripts/skills/lint.sh [--strict] [--quiet] [--pairs]
 set -u
 cd "${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}" || exit 0
-command -v python3 >/dev/null 2>&1 || { echo "lint.sh: python3 not found" >&2; exit 0; }
+command -v python3 >/dev/null 2>&1 || {
+  echo "lint.sh: python3 not found" >&2
+  case " $* " in *" --strict "*) exit 1 ;; *) exit 0 ;; esac
+}
 exec python3 "$(dirname "$0")/lint.py" "$@"

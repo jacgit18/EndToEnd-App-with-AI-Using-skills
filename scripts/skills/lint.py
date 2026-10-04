@@ -7,6 +7,8 @@ Errors (exit 1 with --strict):
   - `$<digit>` / `$ARGUMENTS` in a SKILL.md body (the Skill tool substitutes these with the invocation args)
 Warnings:
   - description length over --desc-warn chars (default 1536)
+  - separate "LISTING-BUDGET" class: description over --budget-warn chars (default 430, the catalog's
+    real listing budget); ignored by --quiet's silence check and dropped by --errors-only
   - SKILL.md longer than --lines-warn lines (default 250)
   - companion *.md in a skill dir never mentioned in that SKILL.md
   - one-way pointers: A's description names skill B, but B's SKILL.md never mentions A
@@ -62,12 +64,18 @@ def main():
     ap.add_argument("--pairs", action="store_true")
     ap.add_argument("--errors-only", action="store_true", help="drop warnings and pointer counts")
     ap.add_argument("--desc-warn", type=int, default=1536)
+    ap.add_argument("--budget-warn", type=int, default=430, help="listing-budget description length")
     ap.add_argument("--lines-warn", type=int, default=250)
     a = ap.parse_args()
 
-    paths = sorted(glob.glob(os.path.join(a.root, "**", "SKILL.md"), recursive=True))
+    paths = []
+    for dp, dns, fns in os.walk(a.root):  # os.walk does not follow symlinks; also drop symlinked dirs
+        dns[:] = [d for d in dns if not os.path.islink(os.path.join(dp, d))]
+        if "SKILL.md" in fns:
+            paths.append(os.path.join(dp, "SKILL.md"))
+    paths.sort()
     skills = {os.path.basename(os.path.dirname(p)): p for p in paths}
-    errors, warns = [], []
+    errors, warns, budget = [], [], []
     body = {}
     descs = {}
     for n, p in skills.items():
@@ -81,6 +89,8 @@ def main():
         body[n] = open(p, encoding="utf-8").read()
         if len(desc) > a.desc_warn:
             warns.append(f"{rel}: description {len(desc)} chars (> {a.desc_warn})")
+        if len(desc) > a.budget_warn:
+            budget.append(f"{rel}: description {len(desc)} chars (> {a.budget_warn})")
         if nlines > a.lines_warn:
             warns.append(f"{rel}: {nlines} lines (> {a.lines_warn}) — split candidate")
         if re.search(r"\$(?:\d|ARGUMENTS\b|\{)", body[n]):
@@ -110,12 +120,13 @@ def main():
                 oneway.append((a_, b))
 
     if a.errors_only:
-        warns, oneway = [], []
+        warns, oneway, budget = [], [], []
     total_desc = sum(len(d) for d in descs.values())
     if a.quiet and not errors and not warns:
         return 0
     print(f"skills: {len(skills)}   description total: {total_desc} chars (~{total_desc // 4} tokens)")
-    for title, items in (("ERRORS", errors), ("WARNINGS", warns)):
+    for title, items in (("ERRORS", errors), ("WARNINGS", warns),
+                         (f"LISTING-BUDGET WARNINGS (description > {a.budget_warn} chars)", budget)):
         if items:
             print(f"\n{title} ({len(items)})")
             for i in items:
