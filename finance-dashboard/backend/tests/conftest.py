@@ -23,6 +23,17 @@ HINT = (
     "(cd finance-dashboard/backend && PYTHONPATH=. uv run alembic upgrade head)"
 )
 
+# App settings are read at import time (app.config), so any test module that imports app code
+# needs these set before collection. Set once here instead of relying on whichever DB test
+# module happens to be imported first (test_money.py failed alone without them). setdefault: a
+# real environment still wins. The email/password match the constants the DB test modules use.
+from argon2 import PasswordHasher  # noqa: E402
+
+os.environ.setdefault("DATABASE_URL", DEFAULT_URL)
+os.environ.setdefault("AUTH_EMAIL", "test-owner@example.com")
+os.environ.setdefault("AUTH_PASSWORD_HASH", PasswordHasher().hash("test-password"))
+os.environ.setdefault("SESSION_SECRET", "test-session-secret")
+
 _problem: str | None = None  # set in pytest_configure; None = DB is usable
 
 
