@@ -73,22 +73,8 @@ jobs:
         run: |
           export AUTH_PASSWORD_HASH="$(uv run python -c 'from argon2 import PasswordHasher; print(PasswordHasher().hash("ci"))')"
           PYTHONPATH=. uv run alembic upgrade head
-      - name: Tests (full suite, sampled while diagnosing a hang)
-        timeout-minutes: 8
-        run: |
-          set +e
-          export PGPASSWORD=finance
-          (while true; do
-             echo "--- sample $(date -u +%T)"
-             free -m | sed -n 2p
-             ps -eo pid,pcpu,pmem,nlwp,stat,etime,cmd --sort=-pcpu | head -6 | cut -c1-150
-             psql -h localhost -p 5433 -U finance -d finance -Atc "select pid,state,wait_event_type,wait_event,now()-xact_start as xact,left(query,70) from pg_stat_activity where datname='finance' and pid<>pg_backend_pid()" 2>&1 | head -15
-             sleep 15
-           done) &
-          # EXPERIMENT: output NOT piped (the hung runs streamed pytest output straight to the step)
-          timeout -s KILL 150 uv run pytest -q -o faulthandler_timeout=60
-          echo "pytest rc=$?"
-          exit 0
+      - name: Tests
+        run: uv run pytest -q
 
   frontend:
     name: Frontend tests + build
