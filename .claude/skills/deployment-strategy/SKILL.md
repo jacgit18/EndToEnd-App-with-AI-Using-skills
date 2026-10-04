@@ -67,6 +67,7 @@ If the user opens with the mechanism already chosen, put their reasoning under t
 - **"rolling update, it's the default"** — often right. But rolling runs old and new versions simultaneously for the duration — is that safe for this unit (item 8: shared schema, message formats)? What are the readiness/liveness probes, and does "ready" actually mean "serving correctly" or just "process up"? What's `maxUnavailable` / `maxSurge` against your capacity headroom?
 - **"we'll deploy the migration with the code"** — if the new schema isn't readable by the old code, a rollback of the code now fails against the migrated database. Split it: expand (add the column/table, backward-compatible) → deploy code that writes both → backfill → deploy code that reads new → contract (drop the old) — each step independently rollback-safe. See `rollout-patterns.md`.
 - **"just push to prod on green CI, no staging"** — sometimes correct (strong tests, fast rollback, low blast radius). Does your rollback meet item 7 without a staging catch? What's the smoke check immediately post-deploy, and does it run before real users hit the new version?
+- **"CI commits the artifacts back to the PR branch"** (screenshots, reports, lockfiles) — a `GITHUB_TOKEN` push gets no PR-linked CI run, so required checks never report and the merge blocks. Publish to a side branch or a PR comment instead.
 
 Flag the load-bearing assumption as a question, not a correction.
 
@@ -79,7 +80,6 @@ Work `deployment-framework.md` in order once the gate is satisfied. In short: co
 Reference files:
 
 - `rollout-patterns.md` — the mechanisms (recreate, rolling, blue-green, canary, feature-flag / dark launch): what each does to downtime, blast radius, rollback speed, cost, and infra requirement, plus the failure mode of each. Expand/contract (parallel-change) for backward-compatible schema and message evolution, step by step. Environment-progression patterns and what makes a stage actually gate. Automated rollback and the signals worth gating on.
-- **CI-writes lens.** Automation never commits back to a PR branch: a `GITHUB_TOKEN` push gets no PR-linked CI run and blocks the merge. Publish artifacts (screenshot baselines, reports) to a side branch or a PR comment instead.
 - `deployment-framework.md` — the 8-step process, worked once the gate is satisfied.
 
 ---
