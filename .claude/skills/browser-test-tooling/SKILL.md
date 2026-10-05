@@ -1,6 +1,6 @@
 ---
 name: browser-test-tooling
-description: Gated decision for what a browser/UI end-to-end test runs against and how it stays deterministic: runner, prod build vs dev server, clock/storage controls, retry and wait policy. Triggers: "Playwright or Cypress", "our e2e tests are flaky", "set up e2e for this app", or a runner already decided. Not test mix — `test-strategy`. Not cases — `test-case-discovery`. Not one failing spec — `problem-solving-gates`.
+description: Gated decision for what a browser/UI end-to-end test runs against and how it stays deterministic: runner, prod build vs dev server, clock/storage controls, retry and wait policy. Triggers: "Playwright or Cypress", "our e2e tests are flaky", "set up e2e for this app". Not test mix — `test-strategy`. Not cases — `test-case-discovery`. Not one failing spec — `problem-solving-gates`.
 ---
 
 # Browser Test Tooling
@@ -36,7 +36,12 @@ Hand off on any row not marked "This skill"; do not recommend a runner for a que
 
 **Already decided is not answered.** A runner or dev server the user has chosen, or "don't ask questions", does not skip the gate: give the config with the dev-server cost stated and ask only the decisive unanswered items.
 
-**Proceed on stated facts.** Facts the user already gave (symptoms, config, build target) count as answered. If they point at likely sources, give a provisional Step 3 recommendation for those now and ask only the unanswered gate items that would change it (at most three, most decisive first: build target, clock/storage ownership, wait signal). Do not return a bare question list. A dev server needs a stated reason such as dev-only env or a proxy; "it was the default" is not one. Worker count and `fullyParallel` belong under data ownership: parallel workers sharing state is a gate answer, not an afterthought.
+**Proceed on stated facts.** Facts the user already gave (symptoms, config, build target) count as answered. Give a provisional Step 3 recommendation for them now, then ask only the unanswered gate items that would change it (at most three, most decisive first: build target, clock/storage ownership, wait signal). This is the one rule for both cases above: a decided runner changes what you recommend, never whether you gate.
+
+- Do not return a bare question list.
+- A dev server needs a stated reason such as dev-only env or a proxy; "it was the default" is not one.
+- Worker count and `fullyParallel` belong under data ownership: parallel workers sharing state is a gate answer, not an afterthought.
+- If the user cannot answer any gate item and has no config, give the production-build default with each unknown listed as a risk, not a refusal.
 
 A bare "what is Playwright" is a definitional question: answer it, do not gate it.
 
