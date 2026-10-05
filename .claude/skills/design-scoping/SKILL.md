@@ -140,6 +140,8 @@ If the user opens with scope already sketched (a design doc, a set of requiremen
 
 **Read `scope-challenges.md`** for the six standard pushbacks (all-functional requirements, "everything is v1", no out-of-scope list, compliance unmentioned, jumped to technology, ten "critical" features).
 
+Plan is UI-first with local or document storage and a server "later"? Ask: which rules (identity, uniqueness, merge, validation, deletion) is the client quietly becoming the owner of? List them as backend scope now; they are cheap to write down while the client is small.
+
 ---
 
 ## The process

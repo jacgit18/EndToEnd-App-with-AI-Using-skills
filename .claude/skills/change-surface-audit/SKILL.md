@@ -107,7 +107,7 @@ From `surface-checklist.md`: **API, Data, State, Performance, Security, Observab
 For each — does this change touch it, what's the specific risk here, what question
 resolves it. Applies to Add and Modify directly; for Remove and Silent changes, walk the
 same six surfaces against the *thing being removed or changed*, not just the code diff.
-Mark a surface `n/a — <reason>` rather than silently skipping it.
+Mark a surface `n/a — <reason>` rather than silently skipping it. For features sharing state, keep a numbered conflict register (feature × feature, one line each), updated in the same PR as the change.
 
 ### 3. For Modify — classify compatible vs. breaking
 

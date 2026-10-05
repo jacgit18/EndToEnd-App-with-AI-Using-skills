@@ -50,6 +50,7 @@ datastore before data-access layer, deployment target before packaging specifics
 before frontend data layer. Show the ordered list once, and tag each with its Step 3 depth class
 (load-bearing / structural / routine) in the same table — classifying while you order is fine,
 the step numbers are the read order, not a strict sequence. One decision per exchange.
+UI-first build with the server deferred: add "which rules is the client silently owning (identity, uniqueness, merge, validation, deletion)?" as a decision, so the later backend inherits them as a spec.
 
 ## Step 2 — The per-decision loop
 
