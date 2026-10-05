@@ -24,6 +24,16 @@ command -v jq >/dev/null 2>&1 || exit 0
 PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$PWD}"
 STATE_DIR="$PROJECT_DIR/.claude/_Prompts/logs"   # already gitignored
 
+# Global mode (CONTEXT_WATCH_GLOBAL=1, set by the user-level hook in ~/.claude/settings.json),
+# same pattern as log-skill.sh: defer to a project that wires this hook itself, and keep the
+# once-per-session flag in CONTEXT_WATCH_STATE_DIR so no other repo gets a stray log folder.
+# Handoffs still go to <that project>/.claude/handoffs/.
+if [ "${CONTEXT_WATCH_GLOBAL:-}" = "1" ]; then
+  [ -x "$PROJECT_DIR/scripts/hooks/context-watch.sh" ] && exit 0
+  [ -n "${CONTEXT_WATCH_STATE_DIR:-}" ] || exit 0
+  STATE_DIR="$CONTEXT_WATCH_STATE_DIR"
+fi
+
 limit="${CONTEXT_LIMIT:-200000}"
 ratio="${HANDOFF_RATIO:-0.60}"
 
@@ -63,12 +73,18 @@ flag="$STATE_DIR/.handoff-armed-${sid_short}"
 pct="$(awk -v u="$used" -v l="$limit" 'BEGIN{printf "%d", (u * 100) / l}')"
 stamp="$(date +%Y-%m-%d)"
 
+if [ -x "$PROJECT_DIR/scripts/session/resume.sh" ]; then
+  resume_line="tell them to run  scripts/session/resume.sh  in a new terminal to continue in a fresh session"
+else
+  resume_line="tell them to start a new session and paste the handoff file's path to continue"
+fi
+
 cat <<EOF
 [context-watch] Estimated context ~${used}/${limit} tokens (~${pct}%), at or past the ${ratio} handoff threshold.
 Before responding to this prompt, run the \`session-handoff\` skill:
   - write the handoff to .claude/handoffs/handoff-<short-task-name>-${stamp}.md
   - present it to the user
-  - tell them to run  scripts/session/resume.sh  in a new terminal to continue in a fresh session
+  - ${resume_line}
 Then address the user's prompt as normal. (This fires once per session.)
 EOF
 exit 0
