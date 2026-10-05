@@ -84,6 +84,7 @@ Never silently expand ("while I'm in here, I'll also...") without naming that it
 - "It's basically the same thing" is used to fold a new piece of work into an already-approved scope instead of naming it as an amendment.
 - A `spec-executor` report on a nontrivial slice has nothing in its "flagged — not in spec" section and that absence is trusted at face value instead of being checked.
 - A `spec-executor` result got merged or pushed on the strength of the subagent's own report, with no Step 4 diff performed by whoever's reviewing it.
+- A PR is called "shipped" but only added tests or docs; the behavior was never observed. Check the feature exists before calling it done.
 
 ## Routing boundaries (full)
 

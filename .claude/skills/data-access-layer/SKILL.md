@@ -134,6 +134,7 @@ then test the specific claim against `access-styles.md`:
 - **"Prisma / SQLModel / \<the popular one\>"** — reasoned or cargo-culted? What does it hide
   that you will need back — a raw-SQL escape hatch, explicit transaction control, decoupled
   migrations, multi-database support? Try to name the first query you expect to fight it on.
+- **"offline or multi-device clients write directly"** — sync-conflict lens: does each row carry a version or `updatedAt` for optimistic concurrency? What does the layer do with a stale write (reject, re-fetch, re-apply merge rules)? Last-writer-wins on whole documents loses edits.
 
 Flag the load-bearing assumption as a question, not a correction.
 

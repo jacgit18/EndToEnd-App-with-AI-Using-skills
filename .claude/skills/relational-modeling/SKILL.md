@@ -53,6 +53,7 @@ If the user opens with the design half-made ("just give me the tables, fully nor
 - **"UUID everywhere"** — do you actually need client-generated or cross-system-unique ids, or is this cargo-culted? UUID primary keys cost index size and, for random UUIDs, write locality on the clustered index. A surrogate `bigint` plus a `UNIQUE` external id is often the better split.
 - **"one big table"** — how many of the columns are null for any given row? Wide sparse tables are a normalization smell. What made you avoid the join?
 - **"no foreign keys, the app handles it"** — every writer goes through that app? Forever? FK constraints are the cheapest integrity you will ever get; dropping them is a decision, not a default.
+- **"store it like the client does" (a document or blob per list)** — row-identity check: does every repeated item have a stable id, `createdAt`/`updatedAt`, a soft-delete (`deletedAt`) so a merge can tell "removed" from "never seen", and a unique constraint for each uniqueness rule the client enforces? Is each field user-authored (store it) or derived (compute it, or it goes stale and doubles on merge)?
 
 Flag the assumption as a question, not a correction.
 

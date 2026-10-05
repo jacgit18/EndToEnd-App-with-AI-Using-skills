@@ -65,6 +65,7 @@ If the user opens with the plan already chosen, put their reasoning under the ga
 - **"strangler fig — the new service takes over endpoints one at a time"** — what sits in front routing per-capability (a proxy, a facade), and does the old and new share a database during the transition or is each capability's data moved with its endpoint? Strangler is for replacing an application over months; it is not a data-store move mechanic on its own.
 - **"CDC will keep them in sync"** — CDC replicates *changes*; what does the initial bulk load, and how do you guarantee no change is lost in the gap between the bulk snapshot and the CDC stream starting? How is the transform in item 7 applied to the stream? What is the replication lag at the flip and does item 8's RPO tolerate it?
 - **"we tested it in staging, we're good"** — staging data volume and staging traffic vs item 6. Verification (item 11) is a production-parity measurement, not a staging smoke test.
+- **"import the app's existing documents / local data"** — legacy rows with no ids need a deterministic id (e.g. a hash of their content) so a re-import or older backup is recognised, not duplicated. Stamp a schema version and bump it when a stored shape changes. Rows that fail validation go to quarantine, never deleted. Deletions the old merge couldn't express need tombstones on the target.
 
 Flag the load-bearing assumption as a question, not a correction.
 
