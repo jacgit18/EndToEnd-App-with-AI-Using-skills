@@ -1,6 +1,6 @@
 ---
 name: spec-drift-gate
-description: Gate before substantial multi-file or multi-session AI-assisted builds with no written spec, plus mid-build drift checkpoints. Triggers: "make me a dashboard", "write me a script that…", vague one-line build asks. Not a fully-specified one-shot, `design-scoping`, `ambiguity-gate`, `change-surface-audit`, `incremental-build-pacing`, or an untested idea (`idea-to-first-test`); settled-spec slices go to `spec-executor`.
+description: Gate before substantial multi-file or multi-session AI-assisted builds with no written spec, plus mid-build drift checkpoints. Triggers: "make me a dashboard", "ready to merge / shipped?" on a spec-gated build, vague one-line build asks. Not a one-shot, `design-scoping`, `ambiguity-gate`, `change-surface-audit`, `incremental-build-pacing`, or an untested idea (`idea-to-first-test`); settled-spec slices go to `spec-executor`.
 ---
 
 # Spec Drift Gate
@@ -15,6 +15,7 @@ Long AI-assisted builds fail less often from a wrong first answer than from a sl
 | A request to design, architect, or redesign a whole system | `design-scoping` owns that front door. Once its scope statement is settled, treat it as this skill's Step 2 items 1 and 3 (problem framing, scope boundary) satisfied — but items 2 and 4 (tradeoffs actually weighed, a controlled-experiment slice) are not design-scoping's job and are still required before moving to Step 3. |
 | Substantial implementation about to start — multiple files, multiple turns, or multiple sessions expected — and no written spec exists | Continue to Step 2. |
 | Mid-build: a new phase is starting, a session is resuming after a gap, or a proposed action touches something the original spec never mentioned | Skip to Step 4. |
+| Mid-build: a PR or slice is ready to merge, or is being called "done" / "shipped" | Step 4b. |
 | Mid-build: the user wants the remaining slices delivered slowly / file by file to learn the codebase | Hand the *delivery* to `incremental-build-pacing` once a slice is named; the spec and the Step 4 drift checks stay here. |
 
 ## Step 2 — The gate: refuse to start writing code until a spec exists
@@ -60,13 +61,26 @@ Brief the subagent with exactly three things: the written spec, the precision in
 
 Don't reach for this by default. A slice small enough to finish in the current conversation, or one where the next move genuinely depends on a judgment call only the user can make, stays inline.
 
-## Step 4b — E2E Verification Checkpoint (before marking "shipped")
+## Step 4 — Drift check at each checkpoint
+
+At a checkpoint, diff the proposed or actual work against the written spec:
+
+- **Inside the stated scope?** Proceed.
+- **Not in the spec?** This is a decision, not a default. Say so out loud, and do one of two things — never neither:
+  - **Amend the spec** — write down what's expanding and why the boundary is moving. If the amendment changes something that already works, record its behavior **before → after**, and once it lands confirm the "after" by observing it, not by rereading the diff.
+  - **Pull back** to what was actually scoped.
+
+Never silently expand ("while I'm in here, I'll also...") without naming that it's happening. A silent expansion is exactly the failure this step exists to catch.
+
+**A `spec-executor` report is a checkpoint, not an approval.** Run the same diff against it: check its "still in scope" claim against the actual spec rather than trusting the subagent's own assessment, and treat every "flagged — not in spec" item as a real Step 4 decision (amend or pull back) — the subagent surfaces drift, it doesn't resolve it.
+
+## Step 4b — E2E verification before "shipped" or merge
 
 When a PR or slice is ready to merge, run this checkpoint: **was the feature's actual behavior observed?**
 
-For **UI features:** Tested in a real browser (not just test runner). Name the route, the action, the observable result.
+For **UI features:** Tested in a real browser (not just test runner). Name the route, the action, the observable result. A green e2e run in a real browser that exercises that route and action counts.
 
-For **multi-client features:** Behavior tested with the intended concurrency (two browser tabs, simulated parallel writes). If the spec's test-case section includes property cases ("idempotence," "commutativity," "undo restores exactly"), at least one was verified manually or in e2e, not just unit tests.
+For **multi-client features:** Behavior tested with the intended concurrency (two browser tabs, simulated parallel writes). If property cases exist (from the spec or `test-case-discovery`: idempotence, commutativity, "undo restores exactly"), at least one was run against the real app, by hand or as an e2e test, not only as a unit test.
 
 For **data invariants:** If the spec's Step 2 item 5 named a reconciliation invariant (dashboard total = sum of items), verify it still holds after the feature runs. Before and after counts should match the stated equation.
 
@@ -84,18 +98,7 @@ For **tripwires from Step 3:** Any discovery tripwire (nullable/required choice,
 - [ ] Result: PASS, ship it.
 ```
 
-## Step 4 — Drift check at each checkpoint
-
-At a checkpoint, diff the proposed or actual work against the written spec:
-
-- **Inside the stated scope?** Proceed.
-- **Not in the spec?** This is a decision, not a default. Say so out loud, and do one of two things — never neither:
-  - **Amend the spec** — write down what's expanding and why the boundary is moving. If the amendment changes something that already works, record its behavior **before → after**, and once it lands confirm the "after" by observing it, not by rereading the diff.
-  - **Pull back** to what was actually scoped.
-
-Never silently expand ("while I'm in here, I'll also...") without naming that it's happening. A silent expansion is exactly the failure this step exists to catch.
-
-**A `spec-executor` report is a checkpoint, not an approval.** Run the same diff against it: check its "still in scope" claim against the actual spec rather than trusting the subagent's own assessment, and treat every "flagged — not in spec" item as a real Step 4 decision (amend or pull back) — the subagent surfaces drift, it doesn't resolve it.
+**A pre-authorized `land.sh` merge does not skip this.** On a spec-gated build, "verified" means 4b passed or the PR says "E2E verification needed".
 
 ## Red flags — this gate is not doing its job
 

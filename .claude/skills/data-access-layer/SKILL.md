@@ -171,7 +171,7 @@ Refactor safety:      <build-time type checking | generate-time | runtime + test
 Migration tooling:    <what this choice largely picks — name it, defer the workflow detail>
 Mapping boundary:     <DB row -> domain -> DTO, or "none — single internal consumer" — carried from the database-architecture ADR>
 Agent legibility:     <does this choice leave an artifact an agent editing this codebase can read directly — generated types from typed codegen, a versioned migration history — or does an agent have to run the ORM to observe what it actually does>
-Sync model:           <single-source-of-truth | multi-writer with conflict rules — rule owner (client/server/shared)>
+Sync model:           <single-writer | multi-writer — from the "offline or multi-device" challenge answer, else "TBD owner", never a new question; merge rule is decided in tech-decision-walkthrough (not run: record it as an open decision), offline queue/replay in pwa-adoption>
 Tradeoffs accepted:   <2-4 concrete costs of this choice>
 Not chosen because:   <one line per rejected style>
 ```

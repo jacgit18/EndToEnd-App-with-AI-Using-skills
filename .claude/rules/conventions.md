@@ -21,6 +21,9 @@
 
 ## Standing preferences
 
+- **`land.sh` on a spec-gated build** is preceded by `spec-drift-gate` Step 4b (feature observed
+  working in a real browser, not just tests green) or the PR notes "E2E verification needed". "Verified PR" means that.
+
 - **Prod deploys** need an explicit, fresh "deploy to prod" from the user in the current
   session. A spec, an earlier approval, or the pre-authorized `land.sh` merge never stands in
   for it.

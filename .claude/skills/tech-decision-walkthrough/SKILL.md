@@ -17,8 +17,9 @@ register, how much of the reasoning Claude does); this skill runs the loop at th
 
 ## Step 0 — Preconditions (light)
 
-- **A scope exists** — what's being built, for whom, rough constraints — from `design-scoping`,
-  a spec, or the conversation. A whole-system one-liner with none of this → `design-scoping`
+- **A scope exists** — what's being built, for whom, rough constraints — from `design-scoping`
+  (its doc is `docs/architecture/scope/<slug>.md`, resolved to the DevHiveMind docs root per
+  `conventions.md`; read it, including any `Client-owned rules` table), a spec, or the conversation. A whole-system one-liner with none of this → `design-scoping`
   first, then come back.
 - **Check `docs/architecture/decisions/`** — including `_archived/` and any superseded entries —
   for prior leanings and re-derivation notes. A decision already recorded in a *live* ADR the
@@ -55,10 +56,12 @@ the step numbers are the read order, not a strict sequence. One decision per exc
 
 When you walk this decision in Step 2:
 - **Frame:** "The client is already enforcing these rules. Which become backend responsibilities?"
-- **Candidates:** (a) Client owns, backend trusts | (b) Client enforces, backend validates | (c) Backend owns, client hints
+- **Candidates:** per rule area, `client` (backend trusts) | `validates` (client enforces, backend checks) | `owns` (backend decides, client hints)
 - **Axes:** Blast radius (single-client vs multi-client sync), reversibility (can you change them later?), audit/compliance
-- **Output:** A backend-owner call on each major rule (identity generation, merge, validation, deletion)
-- **Input:** Use the checklist from `design-scoping` if available, or draft it here
+- **Output:** Fill the table's `Backend owner` column for every row (identity, merge, validation, deletion); no `TBD` left
+- **Input:** The `Client-owned rules` table from the scope doc; if there is none, draft the same four rows here
+
+**Several writers (multi-device, offline, shared), UI-first or not?** Add "Merge rule" as its own [Load-bearing] decision: field-level last-writer-wins / row-level / 3-way merge, plus the version or `updatedAt` it needs. This skill is the single owner; `pwa-adoption` decides only offline queue and replay around it.
 
 This feeds the "Sync Model" ADR, so the backend team inherits a spec, not guesses.
 
