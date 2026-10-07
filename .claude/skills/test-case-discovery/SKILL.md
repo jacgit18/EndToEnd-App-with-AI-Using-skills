@@ -65,7 +65,7 @@ Ask one or two questions at a time. Do not dump the category checklist up front.
 
 - **Type:** happy / unhappy / edge.
 - **Source of expected result:** `spec`, `user`, `code (as written — confirm intended)`, or `open`. A case with `open` is a question, not a test.
-- **Level (suggestion):** unit / integration / e2e in one word. Not a plan — `test-strategy` decides that.
+- **Level (suggestion):** unit / integration / e2e / manual in one word. Not a plan — `test-strategy` decides that.
 - For an unhappy case on an API, the Expected result names the status and body shape. Take them from the API's error contract (`api-interface-style` "Error contract" field, or the spec); statuses the contract does not list stay `open`; with no contract, mark the source `open`. Never pick a status code yourself, except as an explicit `open — proposed default`. A contract the user approved (ADR or pasted) counts as `spec`/`user`.
 - For a UI-facing case, WCAG 2.1 success criteria at level AAA count as `spec` for the expected result (contrast ratio, keyboard operability, accessible name, error identification) — cite the criterion (e.g. "1.4.6 Contrast (Enhanced)"). Don't invent a stricter or looser bar than AAA yourself; a stated AA (or lower) target is `user`/`spec` instead.
 - Mark any case that rests on an assumption (dependency always up, clock in UTC, single writer) in the Setup column with `assumes: …`.
@@ -79,7 +79,7 @@ Follow with: assumptions list, open questions, and what was left out.
 - Fewer, justified cases beat exhaustive lists. Do not pad with low-value cases; a category with no real risk is skipped, not filled.
 - Flag a happy path that hides an assumption (dependency always available, input always well-formed).
 - If cases overlap, say so and merge them.
-- Rearranging, moving or merging features (board order, import merge): propose property cases, not just examples. Seeded random inputs; nothing lost or duplicated; fixed parts unchanged; undo restores exactly. Mutation-check by breaking the code on purpose.
+- Rearranging, moving or merging features (board order, import merge): propose property cases, not just examples. Seeded random inputs; nothing lost or duplicated; fixed parts unchanged; undo restores exactly. Mutation-check by breaking the code on purpose. Give the strongest property case `Level: manual` or `e2e` and say under the table it is the one to run against the real app before shipping (if `spec-drift-gate` is in use, that is its Step 4b check).
 - **When the user says "just fill in the expected results yourself"** (no spec, out of time): keep the proposals, but label each `open — proposed default` and say plainly that none is a confirmed requirement. Offer "accept defaults" — only when the user says it does a proposed default become `user`. Do not present invented status codes or behavior as spec.
 - Stop at the table. Do not write test code, fixtures, or a test plan.
 
@@ -103,7 +103,7 @@ Does not fire: writing tests is `test-practice-gate`, the DB mechanism is `datab
 
 Needs no repo setup; produces no files.
 
-Depends on: `test-strategy`, `test-practice-gate`, `coverage-policy`, `database-test-tooling`, `browser-test-tooling`, `debugging-layer-selection`, `problem-solving-gates`, `failure-mode-analysis`, `api-interface-style`, `bug-hunt-drill`, `ambiguity-gate`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `test-strategy` → the level column stays a one-word suggestion and the mix is a separate decision, say so; no `test-practice-gate` and the ask is one function from someone practicing → ask them to name the risk the tests protect before drafting; no `api-interface-style` → take an API's error statuses from the spec or the user, never pick them yourself.
+Depends on: `spec-drift-gate` (optional, Step 4b), `test-strategy`, `test-practice-gate`, `coverage-policy`, `database-test-tooling`, `browser-test-tooling`, `debugging-layer-selection`, `problem-solving-gates`, `failure-mode-analysis`, `api-interface-style`, `bug-hunt-drill`, `ambiguity-gate`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `test-strategy` → the level column stays a one-word suggestion and the mix is a separate decision, say so; no `test-practice-gate` and the ask is one function from someone practicing → ask them to name the risk the tests protect before drafting; no `api-interface-style` → take an API's error statuses from the spec or the user, never pick them yourself.
 
 ## Routing boundaries (full)
 

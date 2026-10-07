@@ -140,7 +140,16 @@ If the user opens with scope already sketched (a design doc, a set of requiremen
 
 **Read `scope-challenges.md`** for the six standard pushbacks (all-functional requirements, "everything is v1", no out-of-scope list, compliance unmentioned, jumped to technology, ten "critical" features).
 
-Plan is UI-first with local or document storage and a server "later"? Ask: which rules (identity, uniqueness, merge, validation, deletion) is the client quietly becoming the owner of? List them as backend scope now; they are cheap to write down while the client is small.
+**UI-first with local or document storage and a server "later"?** Ask which rules the client is quietly becoming the owner of, and record them as the `Client-owned rules` table in the scope statement (cheap to write down while the client is small; the backend inherits it as a spec):
+
+| Rule area | What the client does today | Backend owner |
+|---|---|---|
+| Identity & lifecycle (ids, ordering, soft-delete, timestamps) | | TBD |
+| Merge & concurrency (two clients, same row, conflict rule) | | TBD |
+| Validation & uniqueness (immutable fields, unique keys, derived vs authored) | | TBD |
+| Deletion & history (cascade, undo, audit) | | TBD |
+
+Backend owner: `client` / `validates` / `owns` / `TBD` (leave TBD; `tech-decision-walkthrough` settles it). No client code yet: write the intended behavior.
 
 ---
 
@@ -174,6 +183,7 @@ Non-functional targets:
   Accessibility:    <WCAG level to build to, or "not a constraint" / "not stated" (UI systems only)>
 Constraints:        team <n, experience> · timeline <date, hard?> · stack <fixed parts> · platforms <clients> · compliance <regimes, or "none">
 Deep-dive now:      <the 1–2 decisions — each with its blast radius and why it can't wait>
+Client-owned rules: <the table from "Challenge a proposed scope" — UI-first + deferred-server only, else omit>
 Acknowledged, deferred: <the rest — decided later, during implementation or a later design pass>
 Sequence:           <ordered list of which specialist skill runs next on which decision>
 ```
@@ -194,7 +204,7 @@ Then hand off to the first skill in the sequence. Typical order:
 6. `cloud-iam-boundary` — who/what gets access to each resource, and its network placement.
 7. `failure-mode-analysis` — the failure surface of the resulting design, before sign-off.
 
-Not every design needs all seven, and the sequence is not a closed list — name the skills this scope actually needs, in dependency order. **Read `extra-handoffs.md`** for the additional skills a scope can pull in (`data-tier-operations`, `caching-strategy`, `access-control-modeling`, `bff-gateway-placement`, `service-mesh-adoption`, `config-and-secrets-management`, …) and when.
+When stack choice is next, tell the user to run `/tech-decision-walkthrough` (slash-only); the scope doc, including `Client-owned rules`, is its input. Not every design needs all seven, and the sequence is not a closed list — name the skills this scope actually needs, in dependency order. **Read `extra-handoffs.md`** for the additional skills a scope can pull in (`data-tier-operations`, `caching-strategy`, `access-control-modeling`, `bff-gateway-placement`, `service-mesh-adoption`, `config-and-secrets-management`, …) and when.
 
 Separately from the deep-dive sequence above, the settled **in-scope functional list** from
 item 3 is what `user-story-decomposition` turns into sprint-ready backlog stories — that

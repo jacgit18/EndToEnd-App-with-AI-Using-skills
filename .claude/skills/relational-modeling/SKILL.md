@@ -83,6 +83,7 @@ DB-enforced:        <the constraints the database owns: NOT NULL, UNIQUE, FK + a
 App-enforced:       <invariants the schema can't express, and where they live>
 Indexes:            <one line per index: table(columns) — the query it serves>
 Lifecycle:          <soft-delete / audit / versioning approach, or "hard delete, no history">
+Sync assumptions:   <schema needs for multi-client merges (version/updatedAt, soft-delete, uniqueness rules); the merge rule is decided in `tech-decision-walkthrough` (not run: ask the user for it, list it as an open decision here); offline queue/replay is `pwa-adoption`; "n/a — single writer" otherwise>
 Deferred:           <what this design will eventually need — sharding, partitioning, an OLAP copy — with the trigger>
 ```
 

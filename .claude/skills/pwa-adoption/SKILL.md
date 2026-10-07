@@ -73,7 +73,7 @@ version of the same one).
    service worker (installable, no caching risk) already satisfies it.
 2. **Offline scope, per feature area** — unavailable, read-only-from-cache (staleness shown
    to the user), or read/write with a sync queue. Read/write offline needs an idempotent
-   replay (see `test-case-discovery`'s concurrency category). For a finance app: an
+   replay (see `test-case-discovery`'s concurrency category). This skill owns queue and replay behavior only; the merge/conflict rule for the data is decided in `tech-decision-walkthrough` and taken as given here. For a finance app: an
    offline-queued financial write (a transfer, a submitted payment) is a different risk
    class from a queued local-preference write — the user must say which each mutation is.
 3. **Staleness tolerance per data class** — same shape as `caching-strategy`'s question, at
