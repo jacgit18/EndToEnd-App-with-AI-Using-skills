@@ -83,6 +83,7 @@ DB-enforced:        <the constraints the database owns: NOT NULL, UNIQUE, FK + a
 App-enforced:       <invariants the schema can't express, and where they live>
 Indexes:            <one line per index: table(columns) — the query it serves>
 Lifecycle:          <soft-delete / audit / versioning approach, or "hard delete, no history">
+Sync assumptions:   <what the schema requires for multi-client merges — version/updatedAt on each row, soft-delete for detecting removal vs never-seen, uniqueness rules the app enforces>
 Deferred:           <what this design will eventually need — sharding, partitioning, an OLAP copy — with the trigger>
 ```
 

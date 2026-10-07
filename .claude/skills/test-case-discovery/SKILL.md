@@ -80,6 +80,7 @@ Follow with: assumptions list, open questions, and what was left out.
 - Flag a happy path that hides an assumption (dependency always available, input always well-formed).
 - If cases overlap, say so and merge them.
 - Rearranging, moving or merging features (board order, import merge): propose property cases, not just examples. Seeded random inputs; nothing lost or duplicated; fixed parts unchanged; undo restores exactly. Mutation-check by breaking the code on purpose.
+- **Property-based and stateful features:** For each property case (idempotence, commutativity, undo restores exactly), note one case to verify manually or in e2e before shipping — not just in unit tests. This becomes the Step 4b anchor in `spec-drift-gate`.
 - **When the user says "just fill in the expected results yourself"** (no spec, out of time): keep the proposals, but label each `open — proposed default` and say plainly that none is a confirmed requirement. Offer "accept defaults" — only when the user says it does a proposed default become `user`. Do not present invented status codes or behavior as spec.
 - Stop at the table. Do not write test code, fixtures, or a test plan.
 

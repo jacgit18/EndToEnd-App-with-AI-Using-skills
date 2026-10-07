@@ -107,7 +107,7 @@ From `surface-checklist.md`: **API, Data, State, Performance, Security, Observab
 For each — does this change touch it, what's the specific risk here, what question
 resolves it. Applies to Add and Modify directly; for Remove and Silent changes, walk the
 same six surfaces against the *thing being removed or changed*, not just the code diff.
-Mark a surface `n/a — <reason>` rather than silently skipping it. For features sharing state, keep a numbered conflict register (feature × feature, one line each), updated in the same PR as the change.
+Mark a surface `n/a — <reason>` rather than silently skipping it. For features sharing state, keep a numbered conflict register (feature × feature, one line each), updated in the same PR as the change. When you walk this register: Do both features agree on the sync model (single-source-of-truth vs multi-writer)? If multi-writer, do they use the same conflict rule (last-writer-wins field-level, row-level, 3-way merge)? If they disagree, that's a defect waiting to happen — flag it as a design risk before merging.
 
 ### 3. For Modify — classify compatible vs. breaking
 

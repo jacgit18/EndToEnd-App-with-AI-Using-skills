@@ -140,7 +140,20 @@ If the user opens with scope already sketched (a design doc, a set of requiremen
 
 **Read `scope-challenges.md`** for the six standard pushbacks (all-functional requirements, "everything is v1", no out-of-scope list, compliance unmentioned, jumped to technology, ten "critical" features).
 
-Plan is UI-first with local or document storage and a server "later"? Ask: which rules (identity, uniqueness, merge, validation, deletion) is the client quietly becoming the owner of? List them as backend scope now; they are cheap to write down while the client is small.
+**When the plan is UI-first with local or document storage and a deferred server:**
+
+Ask: which rules (identity, uniqueness, merge, validation, deletion) is the client quietly becoming the owner of? 
+
+**Output the "Client-Owned Rules Checklist"** alongside the scope statement. This becomes the input to `tech-decision-walkthrough`'s decision on "Client-Owned Rules" later (preventing the month-4 surprise when the backend discovers what rules it must own).
+
+The checklist has five sections (yes/no/TBD on backend ownership):
+1. **Identity & Lifecycle** — how rows are identified, can they be rearranged/soft-deleted, timestamped?
+2. **Merge & Concurrency** — can two clients edit the same row, reorder together, conflict rule?
+3. **Validation & Uniqueness** — immutable fields, unique constraints, user-authored vs derived?
+4. **Deletion & History** — cascading deletes, reversible via undo, audit trails kept?
+5. **Observed in code** — link to the client's actual implementation that enforces each rule.
+
+Mark which rules are "client owns", "backend validates", or "backend owns" in the Backend Owner column. Leave TBD for the `tech-decision-walkthrough` phase.
 
 ---
 
@@ -174,6 +187,7 @@ Non-functional targets:
   Accessibility:    <WCAG level to build to, or "not a constraint" / "not stated" (UI systems only)>
 Constraints:        team <n, experience> · timeline <date, hard?> · stack <fixed parts> · platforms <clients> · compliance <regimes, or "none">
 Deep-dive now:      <the 1–2 decisions — each with its blast radius and why it can't wait>
+Client-owned rules: <checklist with backend-owner column, if UI-first + deferred-server pattern>
 Acknowledged, deferred: <the rest — decided later, during implementation or a later design pass>
 Sequence:           <ordered list of which specialist skill runs next on which decision>
 ```

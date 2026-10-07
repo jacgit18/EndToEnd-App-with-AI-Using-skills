@@ -50,7 +50,17 @@ datastore before data-access layer, deployment target before packaging specifics
 before frontend data layer. Show the ordered list once, and tag each with its Step 3 depth class
 (load-bearing / structural / routine) in the same table — classifying while you order is fine,
 the step numbers are the read order, not a strict sequence. One decision per exchange.
-UI-first build with the server deferred: add "which rules is the client silently owning (identity, uniqueness, merge, validation, deletion)?" as a decision, so the later backend inherits them as a spec.
+
+**UI-first build with the server deferred?** Add "Client-Owned Rules" as a decision in this list, tagged [Load-bearing]. It goes before the sync-model decision.
+
+When you walk this decision in Step 2:
+- **Frame:** "The client is already enforcing these rules. Which become backend responsibilities?"
+- **Candidates:** (a) Client owns, backend trusts | (b) Client enforces, backend validates | (c) Backend owns, client hints
+- **Axes:** Blast radius (single-client vs multi-client sync), reversibility (can you change them later?), audit/compliance
+- **Output:** A backend-owner call on each major rule (identity generation, merge, validation, deletion)
+- **Input:** Use the checklist from `design-scoping` if available, or draft it here
+
+This feeds the "Sync Model" ADR, so the backend team inherits a spec, not guesses.
 
 ## Step 2 — The per-decision loop
 

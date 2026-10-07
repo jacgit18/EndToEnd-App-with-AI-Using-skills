@@ -60,6 +60,30 @@ Brief the subagent with exactly three things: the written spec, the precision in
 
 Don't reach for this by default. A slice small enough to finish in the current conversation, or one where the next move genuinely depends on a judgment call only the user can make, stays inline.
 
+## Step 4b — E2E Verification Checkpoint (before marking "shipped")
+
+When a PR or slice is ready to merge, run this checkpoint: **was the feature's actual behavior observed?**
+
+For **UI features:** Tested in a real browser (not just test runner). Name the route, the action, the observable result.
+
+For **multi-client features:** Behavior tested with the intended concurrency (two browser tabs, simulated parallel writes). If the spec's test-case section includes property cases ("idempotence," "commutativity," "undo restores exactly"), at least one was verified manually or in e2e, not just unit tests.
+
+For **data invariants:** If the spec's Step 2 item 5 named a reconciliation invariant (dashboard total = sum of items), verify it still holds after the feature runs. Before and after counts should match the stated equation.
+
+For **integrations:** Tested against the real service, not a mock (or if a mock, verified against the real service separately).
+
+For **tripwires from Step 3:** Any discovery tripwire (nullable/required choice, retention rule, PII handling) was resolved and verified, not deferred.
+
+**If any is unchecked:** Either complete the verification now (the cost of a 15-minute manual test is smaller than a bug in production) or open an issue marked "E2E verification needed" and link it in the PR. Don't mark "shipped" if the behavior was never observed.
+
+**Example:** Feature is "sync items across clients." Reconciliation invariant: "total items = sum of non-deleted items."
+```
+- [ ] Opened app in two browsers, edited item in both simultaneously
+- [ ] Refreshed both — same state (conflict resolved correctly)
+- [ ] Counted: 12 total, 1 deleted, 11 non-deleted. Invariant holds.
+- [ ] Result: PASS, ship it.
+```
+
 ## Step 4 — Drift check at each checkpoint
 
 At a checkpoint, diff the proposed or actual work against the written spec:
@@ -85,6 +109,7 @@ Never silently expand ("while I'm in here, I'll also...") without naming that it
 - A `spec-executor` report on a nontrivial slice has nothing in its "flagged — not in spec" section and that absence is trusted at face value instead of being checked.
 - A `spec-executor` result got merged or pushed on the strength of the subagent's own report, with no Step 4 diff performed by whoever's reviewing it.
 - A PR is called "shipped" but only added tests or docs; the behavior was never observed. Check the feature exists before calling it done.
+- E2E verification was skipped ("tests pass so we're good") on a feature with concurrent writes, data invariants, or property-based logic. Step 4b exists to catch this.
 
 ## Routing boundaries (full)
 
