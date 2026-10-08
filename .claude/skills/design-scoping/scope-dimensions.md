@@ -1,5 +1,14 @@
 # Scope Dimensions
 
+## Contents
+
+- [1. Purpose and audience](#1-purpose-and-audience)
+- [2. Functional requirements + the out-of-scope list](#2-functional-requirements--the-out-of-scope-list)
+- [3. Non-functional numeric targets](#3-non-functional-numeric-targets)
+- [4. Constraints](#4-constraints)
+- [5. The 1–2 deep-dive decisions](#5-the-12-deep-dive-decisions)
+- [Assembling the scope statement](#assembling-the-scope-statement)
+
 The five things the gate in `SKILL.md` requires, expanded — what to ask, and what each
 answer drives downstream.
 

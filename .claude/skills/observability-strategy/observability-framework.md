@@ -1,5 +1,18 @@
 # Observability Framework
 
+## Contents
+
+- [1. Confirm the pressure, name the unanswerable questions](#1-confirm-the-pressure-name-the-unanswerable-questions)
+- [2. Define SLIs, then decide on SLOs](#2-define-slis-then-decide-on-slos)
+- [3. Choose signal investment against the architecture](#3-choose-signal-investment-against-the-architecture)
+- [4. Instrumentation approach](#4-instrumentation-approach)
+- [5. Sampling and cardinality budget](#5-sampling-and-cardinality-budget)
+- [6. Alerting policy](#6-alerting-policy)
+- [7. Retention tiers per signal](#7-retention-tiers-per-signal)
+- [8. Placement — self-hosted vs managed](#8-placement--self-hosted-vs-managed)
+- [9. Observe the observability, set the revisit trigger](#9-observe-the-observability-set-the-revisit-trigger)
+- [10. Recommend and record](#10-recommend-and-record)
+
 Work these in order once the gate in `SKILL.md` is satisfied. Each step produces a written line; the collected lines become the recommendation block and the ADR's Context and Decision.
 
 ## 1. Confirm the pressure, name the unanswerable questions

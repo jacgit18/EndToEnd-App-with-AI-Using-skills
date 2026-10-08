@@ -1,5 +1,13 @@
 # Layout-shift diagnosis
 
+## Contents
+
+- [1. Record every shift and what moved](#1-record-every-shift-and-what-moved)
+- [2. Lay out twice: fonts blocked vs loaded](#2-lay-out-twice-fonts-blocked-vs-loaded)
+- [3. Font swap or the app's own rendering?](#3-font-swap-or-the-apps-own-rendering)
+- [4. Measure fallback-font metrics (never copy them)](#4-measure-fallback-font-metrics-never-copy-them)
+- [5. Preload only the one font that matters](#5-preload-only-the-one-font-that-matters)
+
 Reference for `SKILL.md` Step 3 and Step 4. All snippets run in the page (DevTools console,
 or Playwright's `page.evaluate` / `page.addInitScript`).
 

@@ -1,5 +1,12 @@
 # The Significance Filter
 
+## Contents
+
+- [The three tests](#the-three-tests)
+- [Worked examples](#worked-examples)
+- [What this filter is NOT](#what-this-filter-is-not)
+- [Feeding the scope statement](#feeding-the-scope-statement)
+
 For gate item 6 in `SKILL.md` — deciding which one or two decisions get designed deeply and
 written down *now*, and which are acknowledged and deferred to implementation time.
 

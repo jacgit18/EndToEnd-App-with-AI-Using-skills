@@ -1,5 +1,15 @@
 # IAM Mechanics
 
+## Contents
+
+- [Entities and policy types](#entities-and-policy-types)
+- [Corrected evaluation model](#corrected-evaluation-model)
+- [Principal types](#principal-types)
+- [ARN structure](#arn-structure)
+- [Temporary credentials over long-lived keys](#temporary-credentials-over-long-lived-keys)
+- [Authoring least privilege](#authoring-least-privilege)
+- [Auditing the boundary itself](#auditing-the-boundary-itself)
+
 The vocabulary and evaluation model behind the gate in `SKILL.md`. Written in AWS terms;
 the concepts map directly onto Azure RBAC (role assignments, deny assignments, management
 groups) and GCP IAM (roles, deny policies, organization policies) if this repo targets a

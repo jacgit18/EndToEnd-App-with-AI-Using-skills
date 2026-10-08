@@ -1,5 +1,11 @@
 # Execution Model Decision
 
+## Contents
+
+- [Compute primitive: FaaS vs container task vs long-running service](#compute-primitive-faas-vs-container-task-vs-long-running-service)
+- [Invocation models and their built-in failure handling](#invocation-models-and-their-built-in-failure-handling)
+- [Choosing what carries an event between steps](#choosing-what-carries-an-event-between-steps)
+
 The compute-primitive and invocation-model comparisons behind gate items 3–5 in `SKILL.md`.
 Written in AWS terms (Lambda / Fargate / ECS / API Gateway); the shapes transfer to Azure
 Functions/Container Apps or GCP Cloud Functions/Cloud Run.

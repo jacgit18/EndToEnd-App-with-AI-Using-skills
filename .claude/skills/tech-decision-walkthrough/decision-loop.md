@@ -1,5 +1,13 @@
 # Decision loop
 
+## Contents
+
+- [The two registers](#the-two-registers)
+- [The loop, per decision](#the-loop-per-decision)
+- [When cost is a deciding axis](#when-cost-is-a-deciding-axis)
+- [Axes libraries](#axes-libraries)
+- [Anti-patterns](#anti-patterns)
+
 The per-decision protocol for `tech-decision-walkthrough`, the two registers in detail, axes
 libraries for the decisions a build hits most often, and the ADR shape. Operate at the
 assistance level `learning-gate` set — this file is *how* the loop runs at levels 1–3, it

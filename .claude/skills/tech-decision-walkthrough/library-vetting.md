@@ -1,5 +1,13 @@
 # Library vetting
 
+## Contents
+
+- [Depth control (same spirit as SKILL.md Step 3)](#depth-control-same-spirit-as-skillmd-step-3)
+- [The axes](#the-axes)
+- [How to check each signal](#how-to-check-each-signal)
+- [Folding into the loop](#folding-into-the-loop)
+- [Anti-patterns (extends `decision-loop.md`)](#anti-patterns-extends-decision-loopmd)
+
 The axes and checks for a decision whose shape is **"which library / package do we pull in
 for X"** — a validation library, an HTTP client, a date library, a state manager, a CLI
 parser, a chart library. It is the axes-library entry `decision-loop.md` doesn't have: the

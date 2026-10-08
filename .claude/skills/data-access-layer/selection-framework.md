@@ -1,5 +1,15 @@
 # Selection Framework
 
+## Contents
+
+- [1. Restate the source-of-truth ADR and what it constrains](#1-restate-the-source-of-truth-adr-and-what-it-constrains)
+- [2. Cut the spectrum to what this language offers](#2-cut-the-spectrum-to-what-this-language-offers)
+- [3. Lay the survivors against the query-shape mix and SQL fluency](#3-lay-the-survivors-against-the-query-shape-mix-and-sql-fluency)
+- [4. Apply the refactor-safety bar and the priority](#4-apply-the-refactor-safety-bar-and-the-priority)
+- [5. Name the blend explicitly](#5-name-the-blend-explicitly)
+- [6. State what the choice constrains downstream](#6-state-what-the-choice-constrains-downstream)
+- [7. Recommend and record](#7-recommend-and-record)
+
 Work these in order once the hard gate in `SKILL.md` is satisfied. Each step produces a written
 line; the collected lines become the ADR's Context and Decision.
 

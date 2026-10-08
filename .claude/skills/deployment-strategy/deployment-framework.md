@@ -1,5 +1,16 @@
 # Deployment Framework
 
+## Contents
+
+- [1. Confirm the pressure is a real release problem](#1-confirm-the-pressure-is-a-real-release-problem)
+- [2. Classify the deployable unit](#2-classify-the-deployable-unit)
+- [3. Inventory the progressive-delivery infrastructure](#3-inventory-the-progressive-delivery-infrastructure)
+- [4. Pick the rollout mechanism](#4-pick-the-rollout-mechanism)
+- [5. Define the health signal and the auto-rollback trigger](#5-define-the-health-signal-and-the-auto-rollback-trigger)
+- [6. Apply expand/contract to schema and contract changes](#6-apply-expandcontract-to-schema-and-contract-changes)
+- [7. Set the environment progression and promotion criteria](#7-set-the-environment-progression-and-promotion-criteria)
+- [8. Set cadence and recommend](#8-set-cadence-and-recommend)
+
 Work these in order once the gate in `SKILL.md` is satisfied. Each step produces a written line; the collected lines become the ADR.
 
 ## 1. Confirm the pressure is a real release problem

@@ -1,5 +1,15 @@
 # The Six Change Surfaces
 
+## Contents
+
+- [1. API surface](#1-api-surface)
+- [2. Data surface](#2-data-surface)
+- [3. State surface (client / in-memory / cache)](#3-state-surface-client--in-memory--cache)
+- [4. Performance surface](#4-performance-surface)
+- [5. Security surface](#5-security-surface)
+- [6. Observability surface](#6-observability-surface)
+- [Which surfaces usually carry the most risk, by change type](#which-surfaces-usually-carry-the-most-risk-by-change-type)
+
 Reference for `SKILL.md` step 2. For an Add or a Modify, walk all six against the concrete
 change from step 1. For a Remove or a Silent change, walk the same six against the thing
 being removed or changed — see `removal-and-silent-changes.md` for what to add on top.

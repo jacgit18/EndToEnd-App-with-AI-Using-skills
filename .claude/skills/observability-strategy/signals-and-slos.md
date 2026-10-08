@@ -1,5 +1,16 @@
 # Signals, SLOs, Sampling, Cardinality
 
+## Contents
+
+- [Monitoring vs observability](#monitoring-vs-observability)
+- [The signal types](#the-signal-types)
+- [Method cheat-sheets](#method-cheat-sheets)
+- [Service-metric menu — candidate SLIs](#service-metric-menu--candidate-slis)
+- [SLI / SLO / error budget](#sli--slo--error-budget)
+- [Sampling: head vs tail](#sampling-head-vs-tail)
+- [Cardinality — the hidden cost driver](#cardinality--the-hidden-cost-driver)
+- [Self-hosted stack vs managed](#self-hosted-stack-vs-managed)
+
 Backs steps 2–8 of `observability-framework.md` and "Challenge a proposed approach" in `SKILL.md`.
 
 ---

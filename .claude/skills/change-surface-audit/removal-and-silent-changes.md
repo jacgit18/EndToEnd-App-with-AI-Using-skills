@@ -1,5 +1,12 @@
 # Removal Dependencies, the Expand-Contract Sequence, and Silent Changes
 
+## Contents
+
+- [The expand-contract sequence (for a breaking Modify)](#the-expand-contract-sequence-for-a-breaking-modify)
+- [Hidden removal dependencies](#hidden-removal-dependencies)
+- [Silent changes — the category most likely to skip this audit entirely](#silent-changes--the-category-most-likely-to-skip-this-audit-entirely)
+- [Deprecation record format](#deprecation-record-format)
+
 Reference for `SKILL.md` steps 3, 4, and 5.
 
 ---
