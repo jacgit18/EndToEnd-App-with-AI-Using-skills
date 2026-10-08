@@ -1,5 +1,17 @@
 # Style Tradeoffs
 
+## Contents
+
+- [REST / HTTP-JSON](#rest--http-json)
+- [GraphQL](#graphql)
+- [gRPC](#grpc)
+- [WebSocket](#websocket)
+- [Server-Sent Events (SSE)](#server-sent-events-sse)
+- [Webhooks](#webhooks)
+- [Async messaging (queue / broker)](#async-messaging-queue--broker)
+- [Combining styles is normal](#combining-styles-is-normal)
+- [Decision-shape cheat table](#decision-shape-cheat-table)
+
 One entry per style: what it is, what it fits, what it costs, which consumers it rules out, and how it fails when misapplied. Use this in step 4 of `selection-framework.md` and in "Challenge the framing" in `SKILL.md`.
 
 ---

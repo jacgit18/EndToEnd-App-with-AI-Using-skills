@@ -1,5 +1,13 @@
 # Layer reference
 
+## Contents
+
+- [Abstraction model](#abstraction-model)
+- [Symptom → tool lookup](#symptom--tool-lookup)
+- [Do not default to the packet layer](#do-not-default-to-the-packet-layer)
+- [AI-assisted variant of this same procedure](#ai-assisted-variant-of-this-same-procedure)
+- [Learning priority for a generalist engineer](#learning-priority-for-a-generalist-engineer)
+
 ## Abstraction model
 
 ```text

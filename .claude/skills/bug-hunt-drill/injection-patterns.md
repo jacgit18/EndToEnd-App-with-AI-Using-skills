@@ -1,5 +1,12 @@
 # Bug Injection Patterns
 
+## Contents
+
+- [Easy (typos, logic flips, obvious off-by-one)](#easy-typos-logic-flips-obvious-off-by-one)
+- [Medium (missing await, stale keys, wrong layer)](#medium-missing-await-stale-keys-wrong-layer)
+- [Hard (race conditions, timezone boundaries, cascading logic)](#hard-race-conditions-timezone-boundaries-cascading-logic)
+- [Guidelines for injection](#guidelines-for-injection)
+
 ## Easy (typos, logic flips, obvious off-by-one)
 
 **Missing not operator:**

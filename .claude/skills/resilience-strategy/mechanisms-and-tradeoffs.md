@@ -1,5 +1,19 @@
 # Resilience Mechanisms & Tradeoffs
 
+## Contents
+
+- [Load shedding](#load-shedding)
+- [Rate limiting](#rate-limiting)
+- [Concurrency limiting / adaptive concurrency](#concurrency-limiting--adaptive-concurrency)
+- [Queue + backpressure](#queue--backpressure)
+- [Circuit breaker](#circuit-breaker)
+- [Timeout + retry budget + backoff/jitter](#timeout--retry-budget--backoffjitter)
+- [Bulkhead](#bulkhead)
+- [Graceful degradation](#graceful-degradation)
+- [Not here: failover and replication](#not-here-failover-and-replication)
+- [Shed vs scale](#shed-vs-scale)
+- [Placement table](#placement-table)
+
 Reference for `SKILL.md` and `resilience-framework.md`. Each mechanism: what it protects, what it costs, its failure mode, where it belongs.
 
 ---

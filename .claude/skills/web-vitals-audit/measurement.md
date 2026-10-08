@@ -1,5 +1,13 @@
 # Measurement — reproducing the number cold
 
+## Contents
+
+- [Lighthouse from the command line](#lighthouse-from-the-command-line)
+- [First-visit checklist for manual DevTools runs](#first-visit-checklist-for-manual-devtools-runs)
+- [Is throttling really applied?](#is-throttling-really-applied)
+- [Widths](#widths)
+- [Beyond one number: pages behind a login, the proxy, and what a 100 hides](#beyond-one-number-pages-behind-a-login-the-proxy-and-what-a-100-hides)
+
 Reference for `SKILL.md` Step 2 and Step 5.
 
 ## Lighthouse from the command line

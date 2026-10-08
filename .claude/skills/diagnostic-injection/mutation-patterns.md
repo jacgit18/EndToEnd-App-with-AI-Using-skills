@@ -1,5 +1,11 @@
 # Diagnostic Mutation Patterns
 
+## Contents
+
+- [Quick reference: mutation type by hypothesis](#quick-reference-mutation-type-by-hypothesis)
+- [Real-world examples](#real-world-examples)
+- [Mutation discipline](#mutation-discipline)
+
 ## Quick reference: mutation type by hypothesis
 
 | Hypothesis | Mutation | Why it works |

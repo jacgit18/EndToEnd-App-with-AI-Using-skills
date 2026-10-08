@@ -1,5 +1,13 @@
 # Orchestration and Failure Handling
 
+## Contents
+
+- [Orchestration vs choreography](#orchestration-vs-choreography)
+- [Step Functions state types and where Retry/Catch apply](#step-functions-state-types-and-where-retrycatch-apply)
+- [Hard failures vs soft failures](#hard-failures-vs-soft-failures)
+- [Parallel and Map fan-out failure semantics](#parallel-and-map-fan-out-failure-semantics)
+- [Dead-letter queues, failure destinations, and idempotency](#dead-letter-queues-failure-destinations-and-idempotency)
+
 The coordination and failure-contract mechanics behind gate items 6–7 in `SKILL.md`. Written
 around AWS Step Functions' Amazon States Language (ASL), since that's the concrete example
 most teams reach for; the orchestration-vs-choreography tradeoff itself is platform-agnostic.

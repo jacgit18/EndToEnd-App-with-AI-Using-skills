@@ -1,5 +1,14 @@
 # Patterns and Policies
 
+## Contents
+
+- [Read/write patterns](#readwrite-patterns)
+- [Freshness: invalidation vs TTL vs versioned keys](#freshness-invalidation-vs-ttl-vs-versioned-keys)
+- [Eviction policies](#eviction-policies)
+- [Sizing](#sizing)
+- [Failure modes](#failure-modes)
+- [SPOF and HA for a load-bearing cache](#spof-and-ha-for-a-load-bearing-cache)
+
 Read/write patterns, freshness mechanisms, eviction policies, sizing, and the failure modes — the material behind `caching-framework.md` steps 4–8.
 
 ## Read/write patterns

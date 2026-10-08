@@ -1,5 +1,15 @@
 # Increment delivery
 
+## Contents
+
+- [Core rule](#core-rule)
+- [Sizing: batch vs. slow down](#sizing-batch-vs-slow-down)
+- [The loop, per increment](#the-loop-per-increment)
+- [Verifying by effect](#verifying-by-effect)
+- [Coaching register](#coaching-register)
+- [Keeping the map visible](#keeping-the-map-visible)
+- [Ending](#ending)
+
 The per-increment protocol for when the pacing contract is set (SKILL.md Step 2) and the
 increment map is agreed (Step 3). This is *how* you run the loop — it doesn't change the
 increment size or cadence the user chose.

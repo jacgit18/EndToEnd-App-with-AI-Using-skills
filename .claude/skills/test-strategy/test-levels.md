@@ -1,5 +1,17 @@
 # Test Levels
 
+## Contents
+
+- [Unit](#unit)
+- [Integration](#integration)
+- [System integration](#system-integration)
+- [Contract](#contract)
+- [End-to-end (E2E)](#end-to-end-e2e)
+- [Smoke](#smoke)
+- [Acceptance / UAT](#acceptance--uat)
+- [Non-functional family](#non-functional-family)
+- [Manual testing still has a place](#manual-testing-still-has-a-place)
+
 One entry per level: what it is, what it buys, what it costs, its failure mode when over- or under-used, and where it runs. Use this in steps 3–5 of `selection-framework.md` and in "Challenge the framing" in `SKILL.md`.
 
 The levels form a **pyramid**: many cheap fast tests at the bottom, few slow expensive ones at the top. A rough default budget is **70% unit / 20% integration / 10% end-to-end** — a starting point to adjust, not a target to hit.

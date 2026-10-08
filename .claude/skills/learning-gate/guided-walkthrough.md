@@ -1,5 +1,14 @@
 # Guided walkthrough
 
+## Contents
+
+- [Core rule](#core-rule)
+- [Phase 0 — pin the goal and the starting point](#phase-0--pin-the-goal-and-the-starting-point)
+- [Phase 1 — map the path](#phase-1--map-the-path)
+- [Phase 2 — one step at a time](#phase-2--one-step-at-a-time)
+- [Coaching register](#coaching-register)
+- [Ending](#ending)
+
 The delivery protocol for when intent is **learning**, the state is **S0–S2**, and the rep is a
 multi-step task the user is going to perform themselves — "walk me through doing X", "give me the
 exact steps", setting something up, wiring two tools together, a procedure they'll repeat. The

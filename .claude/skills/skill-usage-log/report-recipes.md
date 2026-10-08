@@ -1,5 +1,15 @@
 # Report recipes
 
+## Contents
+
+- [Extract just the skill names](#extract-just-the-skill-names)
+- [Count per skill, most-used first](#count-per-skill-most-used-first)
+- [Totals](#totals)
+- [Per-day breakdown](#per-day-breakdown)
+- [Per-session breakdown](#per-session-breakdown)
+- [First-seen / last-seen date per skill](#first-seen--last-seen-date-per-skill)
+- [Catalogued skills with zero recorded invocations](#catalogued-skills-with-zero-recorded-invocations)
+
 Shell one-liners for summarizing `.claude/_Prompts/logs/*-skills.md`. Each log line looks like:
 
 ```
