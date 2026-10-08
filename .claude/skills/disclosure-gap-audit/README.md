@@ -1,5 +1,15 @@
 # disclosure-gap-audit skill
 
+## Contents
+
+- [Where it sits](#where-it-sits)
+- [The shape](#the-shape)
+- [Files](#files)
+- [What it produces](#what-it-produces)
+- [When it does NOT apply](#when-it-does-not-apply)
+- [Dependencies](#dependencies)
+- [Interaction with sibling skills](#interaction-with-sibling-skills)
+
 A **pre-flight audit** that takes a shipped-or-shipping product together with its public
 commitments — privacy policy, terms, cookie banner, marketing claims — and produces a
 **findings register** of the gaps between what the product does and what it discloses or

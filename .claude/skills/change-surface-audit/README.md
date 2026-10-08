@@ -1,5 +1,14 @@
 # change-surface-audit skill
 
+## Contents
+
+- [Where it sits](#where-it-sits)
+- [The shape](#the-shape)
+- [Files](#files)
+- [Output](#output)
+- [Interaction with sibling skills](#interaction-with-sibling-skills)
+- [Dependencies](#dependencies)
+
 A **pre-flight procedure** for one already-proposed, concrete change — add, modify, remove,
 or a "silent" change (dependency upgrade, config change, infra update). It walks the **six
 blast-radius surfaces** a change can silently touch (API, data, state, performance,

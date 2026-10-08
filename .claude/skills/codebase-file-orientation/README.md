@@ -1,5 +1,14 @@
 # codebase-file-orientation skill
 
+## Contents
+
+- [Where it sits](#where-it-sits)
+- [Files](#files)
+- [What it produces](#what-it-produces)
+- [When it does NOT apply](#when-it-does-not-apply)
+- [Dependencies](#dependencies)
+- [Interaction with sibling skills](#interaction-with-sibling-skills)
+
 A **procedure** that authors or reconciles a companion **orientation doc** for a source-code file that
 was just created or substantially changed. The doc is a short sidecar `.md` — matched to whatever doc
 convention the repo already uses, or a sidecar `<file>.md` beside the source if there is none —

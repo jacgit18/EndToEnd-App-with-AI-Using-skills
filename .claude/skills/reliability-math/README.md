@@ -1,5 +1,15 @@
 # reliability-math skill
 
+## Contents
+
+- [Where it sits](#where-it-sits)
+- [The shape](#the-shape)
+- [Files](#files)
+- [Output](#output)
+- [Deliberately out of scope](#deliberately-out-of-scope)
+- [Dependencies](#dependencies)
+- [Interaction with sibling skills](#interaction-with-sibling-skills)
+
 A **live-telemetry interpretation procedure** — five small pieces of arithmetic that
 separate a confident read of production numbers from a fooled one: check percentiles before
 trusting an average, use Little's Law (`L = λ × W`) to connect concurrency/arrival-rate/

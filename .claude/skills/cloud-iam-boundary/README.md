@@ -1,5 +1,14 @@
 # cloud-iam-boundary skill
 
+## Contents
+
+- [Where it sits](#where-it-sits)
+- [The shape](#the-shape)
+- [Files](#files)
+- [Output](#output)
+- [Interaction with sibling skills](#interaction-with-sibling-skills)
+- [Dependencies](#dependencies)
+
 A gated decision for **who or what gets access to a cloud resource and where that resource
 sits on the network** — the principal, the least-privilege permission set, the trust
 boundary and credential lifetime, any permissions boundary or org-wide SCP ceiling, and the
