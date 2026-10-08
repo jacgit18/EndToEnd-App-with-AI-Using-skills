@@ -5,6 +5,11 @@
    frontmatter — it alone decides when the skill fires and carries the carve-outs against
    siblings. (In a checkout without `template/`, copy a sibling skill of the same group as
    the scaffold instead — see `repo-map.md`.)
+   **Table of contents:** every supporting document the skill ships — companion `*.md`, files in
+   `references/`, the skill's `README.md`, and any rules file or record written for it — that runs
+   past 100 lines gets a `## Contents` list of its headings within its first 100 lines (right after
+   the title). Files of 100 lines or fewer don't need one. `SKILL.md` is exempt: it is the short
+   entry point. `scripts/skills/lint.sh` warns on a file that misses this.
 2. **Static audit** — run `skill-static-audit` on the draft (read-only,
    cheap) and fix the blockers and should-fixes before spending agent runs on the next two
    steps. It catches missing carve-outs, unreachable steps and one-way sibling pointers by

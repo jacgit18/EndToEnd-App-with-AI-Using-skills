@@ -43,6 +43,7 @@ For `name` and `description`, check each and cite the offending words:
 
 - **Length** — is the body short enough to load every time? Roughly: past ~250 lines, or a big block only some invocations need, is a split candidate. Cite line ranges.
 - **Rare-case content** — material needed only in an edge case (a long worked example, a rubric, a lookup table) should live in a companion file the body points to.
+- **Contents list** — any companion or `README.md` over 100 lines needs a `## Contents` list in its first 100 lines (`SKILL.md` exempt). Missing = should-fix.
 - **Pointers** — each companion is referenced *with when to read it*, not just listed. A file listed with no trigger is a finding.
 - **Large references** (roughly 100+ lines) have a contents list at the top so a reader can decide relevance without reading it all.
 

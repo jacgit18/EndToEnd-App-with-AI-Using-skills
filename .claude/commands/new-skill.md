@@ -18,6 +18,9 @@ Execution notes for running this well:
   Prompts skills; `SKILL.md` + companion `*.md` + `README.md` (copy `template/skill-template/`)
   for Architecture and Testing. A brand-new group also needs its own `### Group` section in
   `README.md`. Ask if unsure.
+- **Table of contents.** Any companion, `README.md` or other supporting document you write that
+  runs past 100 lines gets a `## Contents` list within its first 100 lines (not `SKILL.md`). Run
+  `scripts/skills/lint.sh --strict` before committing; it warns on a miss.
 - **`description` frontmatter first, and slowly.** It alone decides when the skill fires and
   carries every carve-out against siblings — literal trigger phrases plus explicit
   "NOT for X — that's `sibling`". A weak description is the usual reason a skill misfires or
