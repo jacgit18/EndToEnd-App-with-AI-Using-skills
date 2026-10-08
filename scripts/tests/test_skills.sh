@@ -46,6 +46,18 @@ t_lint_broken() {
 }
 case_ "lint.sh: reports each seeded defect; --strict exits 1, plain run exits 0" t_lint_broken
 
+t_lint_toc() {
+  local r="$CLAUDE_PROJECT_DIR/.claude/skills"
+  mkskill "$r" tocy "Has long companions."; echo "see ref.md and withtoc.md" >> "$r/tocy/SKILL.md"
+  python3 -c "print('# Ref\n' + 'line\n' * 120)" > "$r/tocy/ref.md"
+  python3 -c "print('# Ok\n\n## Contents\n\n- [A](#a)\n' + 'line\n' * 120)" > "$r/tocy/withtoc.md"
+  run bash "$S/lint.sh"
+  assert_contains "$OUT" "tocy/ref.md: over 100 lines with no table of contents" "long file without TOC warned"
+  assert_not_contains "$OUT" "withtoc.md: over 100" "file with a Contents heading not flagged"
+  run bash "$S/lint.sh" --strict; assert_status "$RC" 0 "TOC check is a warning, not an error"
+}
+case_ "lint.sh: warns on a >100-line skill doc with no table of contents" t_lint_toc
+
 t_lint_clean_and_budget() {
   local r="$CLAUDE_PROJECT_DIR/.claude/skills"
   mkskill "$r" alpha "A fine skill."

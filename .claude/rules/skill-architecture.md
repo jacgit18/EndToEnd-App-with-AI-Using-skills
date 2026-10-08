@@ -12,6 +12,9 @@ Every skill is a directory with a fixed shape:
 - **`README.md`** — where this skill sits relative to its siblings (hand-off, absorption,
   chaining boundaries).
 
+Companions, `README.md` and any other supporting document over 100 lines carry a `## Contents`
+list within their first 100 lines (`SKILL.md` is exempt). `lint.sh` warns when one is missing.
+
 Most skills are **gates**: they withhold the answer until a precondition is met — a stated
 hypothesis, a listed set of unknowns, a settled prior decision, a learning rep the user
 must do themselves. A few (`index-tuning`, `failure-mode-analysis`, `reliability-math`,

@@ -11,6 +11,8 @@ Warnings:
     real listing budget); ignored by --quiet's silence check and dropped by --errors-only
   - SKILL.md longer than --lines-warn lines (default 250)
   - companion *.md in a skill dir never mentioned in that SKILL.md
+  - any other *.md under a skill dir (companions, README.md, references/) over 100 lines with no table of
+    contents in its first 100 lines (a Contents/TOC heading or 3+ `](#anchor)` links); SKILL.md is exempt
   - one-way pointers: A's description names skill B, but B's SKILL.md never mentions A
     (summary count by default; --pairs lists them — many are legitimate hub fan-out)
 Usage: lint.py [--strict] [--quiet] [--errors-only] [--pairs] [--root .claude/skills]
@@ -22,6 +24,17 @@ EXTERNAL = {  # real skills/commands that live outside .claude/skills
     "sync-catalog", "new-skill", "skill-creator", "linkedin-humanizer", "linkedin-post-writer",
     "linkedin-comment-drafter", "linkedin-reply-handler",
 }
+TOC_HEAD = re.compile(r"^\s*(#+\s*)?(\*\*)?(table of contents|contents|toc|in this file|sections)\b", re.I)
+
+
+def lacks_toc(path):
+    L = open(path, encoding="utf-8", errors="replace").read().split("\n")
+    if len(L) <= 100:
+        return False
+    head = L[:100]
+    return not (any(TOC_HEAD.match(x) for x in head) or sum("](#" in x for x in head) >= 3)
+
+
 TOKEN = re.compile(r"`([a-z][a-z0-9]*(?:-[a-z0-9]+)+)`")
 
 
@@ -102,6 +115,11 @@ def main():
         for f in sorted(os.listdir(d)):
             if f.endswith(".md") and f not in ("SKILL.md", "README.md") and f not in body[n]:
                 warns.append(f"{rel}: companion '{f}' is never mentioned in SKILL.md")
+        for root_, _, files_ in os.walk(d):
+            for f in sorted(files_):
+                fp = os.path.join(root_, f)
+                if f.endswith(".md") and f != "SKILL.md" and not os.path.islink(fp) and lacks_toc(fp):
+                    warns.append(f"{os.path.relpath(fp, a.root)}: over 100 lines with no table of contents in the first 100")
 
     idx = os.path.join(a.root, "INDEX.md")
     if os.path.exists(idx):
