@@ -1,5 +1,14 @@
 # index-tuning skill
 
+## Contents
+
+- [Where it sits](#where-it-sits)
+- [The shape](#the-shape)
+- [Files](#files)
+- [Output](#output)
+- [Interaction with sibling skills](#interaction-with-sibling-skills)
+- [Dependencies](#dependencies)
+
 A **procedure** (not a decision-gate) for adding, revising, or auditing indexes on an
 **existing, populated** database. It derives a query's access path (composite column order,
 covering / partial / expression indexes), checks the planner will actually use the proposed

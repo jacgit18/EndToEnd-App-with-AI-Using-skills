@@ -1,5 +1,14 @@
 # system-design-communication skill
 
+## Contents
+
+- [Where it sits](#where-it-sits)
+- [The shape](#the-shape)
+- [Files](#files)
+- [Output](#output)
+- [Interaction with sibling skills](#interaction-with-sibling-skills)
+- [Dependencies](#dependencies)
+
 A live coaching skill (not a decision gate, not a procedure with a wrong-answer failure
 mode) for practicing the *communication* side of system design — explaining a design out
 loud, surviving a mock interview, defending a tradeoff under "what if?" pressure. It never

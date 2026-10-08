@@ -1,5 +1,15 @@
 # Accessibility and Lighthouse record: finance-dashboard
 
+## Contents
+
+- [Automated results (regression evidence only)](#automated-results-regression-evidence-only)
+- [Other routes: found 2026-10-03, fixed in the same pass](#other-routes-found-2026-10-03-fixed-in-the-same-pass)
+- [States and manual-review items run by script (2026-10-03, second pass)](#states-and-manual-review-items-run-by-script-2026-10-03-second-pass)
+- [Lighthouse on the real stack in CI (2026-10-03, fourth pass)](#lighthouse-on-the-real-stack-in-ci-2026-10-03-fourth-pass)
+- [Automated axe in CI (2026-10-03, third pass)](#automated-axe-in-ci-2026-10-03-third-pass)
+- [Not measured yet](#not-measured-yet)
+- [Manual review still required](#manual-review-still-required)
+
 Results and open manual-review items for `finance-dashboard/`. Lives here, not in the project, so the lessons can feed the skills and rules; it is not auto-loaded. Policy lives in `.claude/rules/web-accessibility-and-lighthouse.md` (target: WCAG 2.2 AAA, Lighthouse 100 in all four categories). This file holds the results and what is still unverified. **Nothing here is a conformance claim.**
 
 ## Automated results (regression evidence only)

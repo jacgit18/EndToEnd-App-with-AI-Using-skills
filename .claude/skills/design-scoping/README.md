@@ -1,5 +1,14 @@
 # design-scoping skill
 
+## Contents
+
+- [Where it sits](#where-it-sits)
+- [The shape](#the-shape)
+- [Files](#files)
+- [Output](#output)
+- [Interaction with sibling skills](#interaction-with-sibling-skills)
+- [Dependencies](#dependencies)
+
 The **front-door gate for a system-design effort**. It refuses to start designing until the
 user has stated five things — purpose + audience, functional requirements + an explicit
 out-of-scope list, the non-functional numeric targets (RPS ceiling, concurrency, latency

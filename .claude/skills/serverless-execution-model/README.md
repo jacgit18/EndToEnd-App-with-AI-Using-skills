@@ -1,5 +1,14 @@
 # serverless-execution-model skill
 
+## Contents
+
+- [Where it sits](#where-it-sits)
+- [The shape](#the-shape)
+- [Files](#files)
+- [Output](#output)
+- [Interaction with sibling skills](#interaction-with-sibling-skills)
+- [Dependencies](#dependencies)
+
 A gated decision for **how one unit of work actually runs** — the compute primitive (FaaS /
 container task / long-running service), the invocation model (sync / async / poll-based),
 whether a multi-step process needs a central orchestrator or tolerates event-driven

@@ -1,5 +1,14 @@
 # failure-mode-analysis skill
 
+## Contents
+
+- [Where it sits](#where-it-sits)
+- [The shape](#the-shape)
+- [Files](#files)
+- [Output](#output)
+- [Interaction with sibling skills](#interaction-with-sibling-skills)
+- [Dependencies](#dependencies)
+
 A **structured FMEA / pre-mortem procedure** over a design, workflow, or service graph the
 user describes. It walks every component and every interaction, enumerates how each can
 fail across **nine categories** (functional, availability, performance, consistency,

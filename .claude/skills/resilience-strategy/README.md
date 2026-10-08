@@ -1,5 +1,14 @@
 # resilience-strategy skill
 
+## Contents
+
+- [Where it sits](#where-it-sits)
+- [The shape](#the-shape)
+- [Files](#files)
+- [Output](#output)
+- [Interaction with sibling skills](#interaction-with-sibling-skills)
+- [Dependencies](#dependencies)
+
 A gated decision for **how a service or request path protects itself under overload and
 dependency failure** — load shedding with priority tiers, rate limiting, concurrency limiting
 and backpressure, circuit breakers, timeout / retry-budget / backoff policy, bulkheads, and

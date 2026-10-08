@@ -1,5 +1,14 @@
 # debugging-layer-selection skill
 
+## Contents
+
+- [Where it sits](#where-it-sits)
+- [Files](#files)
+- [What it produces](#what-it-produces)
+- [Deliberately out of scope](#deliberately-out-of-scope)
+- [Dependencies](#dependencies)
+- [Interaction with sibling skills](#interaction-with-sibling-skills)
+
 A procedure (not a gate) for triaging one live, reproducible symptom to the right
 observation layer before investigating it: Chrome DevTools (what is my application doing),
 backend observability (what is my server doing), or Wireshark/tshark (what is actually
