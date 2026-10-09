@@ -1,6 +1,6 @@
 ---
 name: design-scoping
-description: Front-door gate for system design: refuses to design until purpose, audience, scope, numeric non-functional targets, constraints and deep-dive features are stated; outputs a scope statement. Use for "design a system for X", "I'm building X, where do I start". Not vague asks (`ambiguity-gate`), stalled starts (`entry-point-first`), demand (`idea-to-first-test`), or interview practice (`system-design-communication`).
+description: Front-door gate for system design: refuses to design until purpose, audience, scope, numeric targets, constraints and deep-dive features are stated. Use for "design a system for X", "I'm building X, where do I start". Not vague asks (`ambiguity-gate`), stalled starts (`entry-point-first`), demand (`idea-to-first-test`), interview practice (`system-design-communication`), or compliance obligations (`legal-readiness-gate`).
 ---
 
 # Design Scoping
@@ -41,7 +41,7 @@ Each is NOT this skill; route to the sibling (full reasoning and boundary cases 
 - Who/what gets access, network placement → `cloud-iam-boundary`; what compute primitive runs a unit of work → `serverless-execution-model`.
 - The deep design of the 1–2 chosen features → the specialist skills above, one at a time.
 - Cost of reversing a decision → `technical-cost-decision`; sizing a stated cost cap → `technical-cost-decision`.
-- Auditing a shipped product against its public claims → `disclosure-gap-audit`.
+- Auditing a shipped product against its public claims → `disclosure-gap-audit`; unpacking a stated compliance regime (HIPAA/GDPR/SLA) into what to build, sign and publish → `legal-readiness-gate`.
 - Candidate-by-candidate technology comparison and ADRs → `tech-decision-walkthrough` (slash-only: suggest `/tech-decision-walkthrough`); gating a build behind a spec → `spec-drift-gate`; pacing file-by-file delivery → `incremental-build-pacing`.
 
 **Read `out-of-scope.md`** when a request sits near one of these boundaries and the one-liner does not settle it.

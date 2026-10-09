@@ -22,6 +22,7 @@ Groups are labels only — this file is the mapping. Add new skills here.
 - `design-scoping`
 - `disclosure-gap-audit`
 - `failure-mode-analysis`
+- `legal-readiness-gate`
 - `microservices-decision`
 - `migration-cutover`
 - `observability-strategy`
