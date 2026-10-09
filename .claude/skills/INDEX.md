@@ -58,6 +58,7 @@ Groups are labels only — this file is the mapping. Add new skills here.
 - `codebase-file-orientation`
 - `document-page-check`
 - `mind-map`
+- `priority-read`
 
 ## Git
 
