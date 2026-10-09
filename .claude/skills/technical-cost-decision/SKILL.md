@@ -98,6 +98,7 @@ These phrases are conclusions of a calculation. Used without one, they are guess
 - A line in the Cost Surface is absent rather than marked `~USD 0`
 - You priced the option the user asked about and no others
 - You called something a rounding error without computing it
+- A budget alert is named as the spending limit (it only warns; the hard limit is an instance cap, quota, or spend cap; name it, or say there is none)
 - The request contained a volume and your response contains no `$`
 - You asked for a figure you could have assumed, labelled, and computed with
 - Your response is a Surface or a questionnaire, and never answers the question that was asked
