@@ -9,7 +9,7 @@ plugin never drifts from the catalog — edit the skill in `.claude/skills/`, no
 
 ## architecture-skills
 
-30 skills: the Architecture, Architecture (Data) and AI Engineering groups (see
+31 skills: the Architecture, Architecture (Data) and AI Engineering groups (see
 `.claude/skills/INDEX.md`), minus `tech-decision-walkthrough`, plus `technical-cost-decision`. They hand off to each other constantly, so they ship as one
 plugin. Skills load namespaced: `architecture-skills:index-tuning`. Hand-offs outside the
 plugin (the `testing-skills` plugin below, `tech-decision-walkthrough`, `spec-drift-gate`, …) fall back to

@@ -1,6 +1,6 @@
 ---
 name: disclosure-gap-audit
-description: Pre-flight audit of a shipped-or-shipping product against its public commitments (privacy policy, terms, cookie banner, marketing claims), producing a findings register of disclosure and security gaps; gates on a data inventory. Use for "does our privacy policy cover what we actually do", "GDPR / CCPA exposure review". Not for code vulnerabilities (`security-review`) or one proposed change (`change-surface-audit`).
+description: Pre-flight audit of a shipped-or-shipping product against its public commitments (privacy policy, terms, cookie banner, marketing claims), producing a findings register; gates on a data inventory. Use for "does our privacy policy cover what we actually do", "GDPR / CCPA exposure review". Not for code vulnerabilities (`security-review`), one change (`change-surface-audit`), or pre-launch obligations (`legal-readiness-gate`).
 ---
 
 # Disclosure Gap Audit
@@ -56,6 +56,7 @@ call that can be made from a checklist.
 - **Stating a compliance regime as a design input** — "we're building X, GDPR applies, where
   do I start" → `design-scoping`, the pre-design front door. This skill runs *after* a
   design exists and already makes public claims, and audits the divergence.
+- **What to build or sign before launch** ("do I need HIPAA / a DPA / an SLA") → `legal-readiness-gate`.
 - **Choosing the authorization, IAM, or secrets model** — "flat vs hierarchical RBAC",
   "where should this secret live", "what's the least-privilege policy for this role" →
   `access-control-modeling` / `cloud-iam-boundary` / `config-and-secrets-management`. This

@@ -38,7 +38,9 @@ Full reasoning behind the one-line out-of-scope summary in `SKILL.md`. Read when
   between what a shipped product does and what its privacy policy / cookie banner / security
   posture disclose → `disclosure-gap-audit`. This skill states the compliance regime as an
   input *before* the design; that skill is the post-build audit that checks the built thing
-  against its commitments. Scope here, audit there.
+  against its commitments. Scope here, audit there. Once the regime is named, what it obliges
+  the build to produce (consent, user-rights paths, DPAs/BAAs, SLA terms, health-data rules)
+  is `legal-readiness-gate`.
 - **Walking the whole technology decision list candidate-by-candidate** — presenting the
   options, tradeoffs, and a recommendation for each stack choice, system-design-interview
   style, and recording an ADR per decision → `tech-decision-walkthrough` (slash-only: suggest `/tech-decision-walkthrough`), downstream of this
