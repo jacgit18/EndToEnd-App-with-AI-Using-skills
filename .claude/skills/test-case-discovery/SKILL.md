@@ -80,6 +80,7 @@ Follow with: assumptions list, open questions, and what was left out.
 - Flag a happy path that hides an assumption (dependency always available, input always well-formed).
 - If cases overlap, say so and merge them.
 - Rearranging, moving or merging features (board order, import merge): propose property cases, not just examples. Seeded random inputs; nothing lost or duplicated; fixed parts unchanged; undo restores exactly. Mutation-check by breaking the code on purpose. Give the strongest property case `Level: manual` or `e2e` and say under the table it is the one to run against the real app before shipping (if `spec-drift-gate` is in use, that is its Step 4b check).
+- Anything per-user or seeded: add a brand-new or empty account case (first sign-in, no data). Defaults, built-in plans or sample data written for the first user leak into the second; check the first screen and the first request, including a flash of the owner's data before load finishes.
 - **When the user says "just fill in the expected results yourself"** (no spec, out of time): keep the proposals, but label each `open — proposed default` and say plainly that none is a confirmed requirement. Offer "accept defaults" — only when the user says it does a proposed default become `user`. Do not present invented status codes or behavior as spec.
 - Stop at the table. Do not write test code, fixtures, or a test plan.
 
