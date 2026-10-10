@@ -127,7 +127,7 @@ banner, done"), put it against the gate and flag the load-bearing gap as a quest
 - **"Users are only in the US"** — which states? Washington, Nevada, Connecticut, California
   and others add rules; "US" alone is not a jurisdiction answer.
 - **"We'll add deletion later"** — a deletion request must reach backups, logs, analytics,
-  vendors, and AI training sets; retrofitting means finding all of them.
+  vendors, and AI training sets; retrofitting means finding all of them. Sum backup retention layers (lifecycle, soft delete, snapshots) from live settings: a default soft delete added 7 days to a 30-day promise.
 - **"99.99% uptime" in a contract** — against what architecture, measured how, with what
   credit? (The reachability math is `reliability-math`.)
 - **"The vendor is compliant, so we are"** — a signed DPA or BAA with that vendor, on a tier

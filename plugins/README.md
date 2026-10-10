@@ -31,9 +31,9 @@ copies don't appear next to the project copies here.
 
 ## testing-skills
 
-9 skills from the Testing group: `test-strategy`, `coverage-policy`, `test-case-discovery`,
+10 skills from the Testing group: `test-strategy`, `coverage-policy`, `test-case-discovery`,
 `test-practice-gate`, `database-test-tooling`, `browser-test-tooling`,
-`debugging-layer-selection`, `diagnostic-injection`, `web-vitals-audit`. `bug-hunt-drill` and
+`debugging-layer-selection`, `diagnostic-injection`, `web-vitals-audit`, `security-audit`. `bug-hunt-drill` and
 `repo-reality-audit` stay project-only. A separate plugin so it can be installed only where
 tests are written; hand-offs into `architecture-skills` (`failure-mode-analysis`,
 `deployment-strategy`, `data-access-layer`, …) fall back inline when that plugin is absent.

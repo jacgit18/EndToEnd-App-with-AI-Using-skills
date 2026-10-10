@@ -54,6 +54,7 @@ If the user opens with the design half-made ("just give me the tables, fully nor
 - **"one big table"** — how many of the columns are null for any given row? Wide sparse tables are a normalization smell. What made you avoid the join?
 - **"no foreign keys, the app handles it"** — every writer goes through that app? Forever? FK constraints are the cheapest integrity you will ever get; dropping them is a decision, not a default.
 - **"store it like the client does" (a document or blob per list)** — row-identity check: does every repeated item have a stable id, `createdAt`/`updatedAt`, a soft-delete (`deletedAt`) so a merge can tell "removed" from "never seen", and a unique constraint for each uniqueness rule the client enforces? Is each field user-authored (store it) or derived (compute it, or it goes stale and doubles on merge)?
+- **"keep a history/audit row on every update (or refused write)"** — does the row copy the whole payload with no cap or pruning? Worst-case growth per account is the request size cap x the rate limit (100 saves of a 52 KB document grew a history table by 5.7 MB). Cap the payload, store a diff or a hash, or prune; size it with `capacity-estimation`.
 
 Flag the assumption as a question, not a correction.
 

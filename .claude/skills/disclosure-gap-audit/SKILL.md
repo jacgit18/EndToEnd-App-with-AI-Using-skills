@@ -97,7 +97,7 @@ still starts — but every pass that depends on a missing item is capped at
      analytics, advertising, cloud/hosting, email, support, payment, and **AI/LLM
      providers**. Named, not "some vendors."
    - **Retention** — how long each category is kept, and the deletion path and timeline
-     (including backups).
+     (including backups; check against live storage settings, as soft delete and snapshots extend it).
    - **Tracking technology** — cookies by purpose (necessary / functional / analytics /
      advertising), pixels, SDKs, device fingerprinting, and any cross-site or cross-app
      tracking.

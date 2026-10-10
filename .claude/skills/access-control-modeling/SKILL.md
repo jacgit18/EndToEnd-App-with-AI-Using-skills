@@ -68,6 +68,7 @@ If the user opens with the shape already decided, put their reasoning under the 
 - **"filter by `tenant_id` in the app, that's enough"** — what happens the day someone writes a query and forgets the `WHERE tenant_id = ?`? Is there a database-level backstop (row-level security) or is every current and future query trusted to remember (item 7)? Shared-schema tenancy without an RLS backstop is a single missed `WHERE` clause away from a cross-tenant leak.
 - **"we'll add real permissions later once we have real customers"** — a single-tenant, single-role app still benefits from naming actors/resources/actions now (item 3–4), even if the model today is one implicit role; it's the retrofitting onto data and endpoints that assumed one trusted owner that's expensive, not the initial naming.
 - **"one shared admin role that can do everything, simpler to reason about"** — simpler until the day one over-broad admin action is mis-clicked or a compromised admin account has no blast-radius limit. What are the 3–5 actual admin actions (item 4)? A narrower set, even split into two roles, costs little more to define.
+- **"the client knows who is signed in"** — it latches that at load, but a second tab or window can switch the cookie. Does the client re-check on wake and each poll, and does the server refuse a write whose expected user differs from the session user (409)? Queued writes for the old user must never be sent as the new one.
 
 Flag the load-bearing assumption as a question, not a correction.
 
