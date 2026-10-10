@@ -1,6 +1,6 @@
 ---
 name: ticket-evaluation
-description: Analyzes, prioritizes, sizes, or gives a go/no-go on a shared work ticket (Jira/Linear/Asana/GitHub issue or pasted feature description). Use for "should we pull this into the sprint," "is this worth doing," "evaluate this ticket," backlog grooming. Not `entry-point-first` (cannot start the work at all), not `design-scoping` (a bare system name like "build billing"), not a raw idea with no ticket (`idea-to-first-test`).
+description: Analyzes, prioritizes, or gives a go/no-go on a shared work ticket (Jira/Linear/Asana/GitHub issue or pasted feature description). Use for "should we pull this into the sprint," "is this worth doing," "evaluate this ticket," backlog grooming. Not `entry-point-first` (cannot start), `design-scoping` (bare system name like "build billing"), `idea-to-first-test` (no ticket), or "how long" (`effort-layers`).
 ---
 
 # Ticket Evaluation
@@ -21,6 +21,7 @@ This skill separates **what the ticket says** from **what the ticket is missing*
   immediately": if the user insists on a verdict now, give a provisional one and say plainly it
   rests on missing acceptance criteria.
 - **Implementation.** This skill ends at proceed / defer / needs more info / reconsider.
+- **A duration for the ticket** ("roughly how long"). Never produce one here. Give the verdict, mark Feasibility `insufficient info` if effort is unstated, then offer `effort-layers`, which takes the user's own build figure and walks the surrounding work. Do not run both in one reply.
 
 ---
 
@@ -180,7 +181,7 @@ Where a recommendation depends on an unknown, state the branch: "proceed if the 
 
 Needs no repo setup and writes nothing; the verdict is produced in chat from a pasted ticket or one the user links.
 
-Depends on: `design-scoping`, `user-story-decomposition`, `entry-point-first`, `idea-to-first-test`, `deprecation-sunset`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `design-scoping` and the ticket is a bare system name → ask for purpose, scale and acceptance criteria and give no verdict until they exist; no `user-story-decomposition` and the ticket is a bare feature name → ask for the actor, the action and the acceptance criteria, and if the user insists, give the provisional verdict the Out of scope rule describes.
+Depends on: `design-scoping`, `user-story-decomposition`, `entry-point-first`, `idea-to-first-test`, `deprecation-sunset`, `effort-layers`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `design-scoping` and the ticket is a bare system name → ask for purpose, scale and acceptance criteria and give no verdict until they exist; no `user-story-decomposition` and the ticket is a bare feature name → ask for the actor, the action and the acceptance criteria, and if the user insists, give the provisional verdict the Out of scope rule describes.
 
 ## Routing boundaries (full)
 

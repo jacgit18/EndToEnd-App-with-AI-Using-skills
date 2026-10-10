@@ -46,6 +46,7 @@ Groups are labels only — this file is the mapping. Add new skills here.
 ## Business
 
 - `delete-ai-words`
+- `effort-layers`
 - `explaining-my-work`
 - `software-carpentier-brand`
 - `system-design-communication`
