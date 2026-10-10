@@ -1,5 +1,5 @@
 import json, math
-D="iron-log/docs/"
+D="Projects/iron-log/docs/"
 def adr(n,slug,label): return f"[[{D}architecture/decisions/{n}-{slug}|{label}]]"
 fm=f"[[{D}feature-map|feature map]]"
 dr=f"[[{D}backend-data-rules|data rules]]"
@@ -96,6 +96,6 @@ def side(branches,sign):
             yy+=hh+GAP
         y+=tot+BGAP
 side(R,1);side(L,-1)
-out="/home/jac/Videos/DevHiveMind/iron-log/docs/architecture/Iron Log Design Mind Map.canvas"
+out="/home/jac/Videos/DevHiveMind/Projects/iron-log/docs/architecture/Iron Log Design Mind Map.canvas"
 json.dump(dict(nodes=nodes,edges=edges),open(out,"w"),indent=1)
 print(len(nodes),len(edges))
