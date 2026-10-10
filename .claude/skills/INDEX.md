@@ -98,6 +98,7 @@ Groups are labels only — this file is the mapping. Add new skills here.
 - `debugging-layer-selection`
 - `diagnostic-injection`
 - `repo-reality-audit`
+- `security-audit`
 - `test-case-discovery`
 - `test-practice-gate`
 - `test-strategy`

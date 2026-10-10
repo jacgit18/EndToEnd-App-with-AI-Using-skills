@@ -1,8 +1,8 @@
 {
   "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
   "name": "testing-skills",
-  "version": "0.1.0",
-  "description": "Testing decision gates and debugging procedures: test mix, coverage policy, test cases, writing-a-test charter, database and browser test tooling, debugging-layer triage, hypothesis-driven code mutation, web-vitals audits.",
+  "version": "0.2.0",
+  "description": "Testing decision gates and debugging procedures: test mix, coverage policy, test cases, writing-a-test charter, database and browser test tooling, debugging-layer triage, hypothesis-driven code mutation, web-vitals audits, security audits.",
   "author": {
     "name": "jacgit18"
   },
