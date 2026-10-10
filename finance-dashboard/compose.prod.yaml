@@ -68,12 +68,18 @@ services:
       # a CLI flag, because the command below runs inside `sh -c "..."` where a
       # quoted '*' arrives as the literal characters '*' and silently matches
       # nothing (found the hard way: logs showed Caddy's IP for every request).
-      FORWARDED_ALLOW_IPS: "*"
+      #
+      # Private ranges, NOT "*": with "*" uvicorn takes the LEFTMOST X-Forwarded-For
+      # entry, which the visitor controls, so a rotating header gave every login
+      # attempt a fresh rate-limit bucket. With a network list uvicorn walks the
+      # header right to left and takes the first address that is not private, i.e.
+      # the visitor address Cloudflare appended. Pinned by tests/test_rate_limit.py.
+      FORWARDED_ALLOW_IPS: "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,127.0.0.1"
     # Apply pending migrations, then serve. --proxy-headers + FORWARDED_ALLOW_IPS
-    # (above) make uvicorn trust X-Forwarded-For, so request.client.host (what the
-    # login rate limiter keys on) is the real visitor and not Caddy. "*" is acceptable
-    # only because the backend publishes no port: the sole thing that can reach
-    # it is Caddy, on this private network. Publish it and "*" becomes spoofable.
+    # (above) make uvicorn trust X-Forwarded-For from Caddy and cloudflared, so
+    # request.client.host (what the login rate limiter keys on) is the real visitor
+    # and not Caddy. Do not publish a backend port: the trusted list only covers
+    # private addresses, but a published port would let anyone on the LAN send headers.
     command: >
       sh -c "uv run alembic upgrade head &&
              uv run uvicorn app.main:app --host 0.0.0.0 --port 8000

@@ -23,6 +23,15 @@ WINDOW_SECONDS = 15 * 60
 _attempts: dict[str, deque[float]] = defaultdict(deque)
 
 
+SWEEP_THRESHOLD = 1000
+
+
+def _sweep(now: float) -> None:
+    """Drop clients whose whole window has expired, so distinct keys can't pile up forever."""
+    for key in [k for k, q in _attempts.items() if not q or now - q[-1] >= WINDOW_SECONDS]:
+        del _attempts[key]
+
+
 def _client_key(request: Request) -> str:
     # Behind Caddy this is Caddy's address unless uvicorn runs with
     # --proxy-headers and --forwarded-allow-ips set to the proxy, in which
@@ -34,6 +43,8 @@ def _client_key(request: Request) -> str:
 def limit_login_attempts(request: Request) -> None:
     """FastAPI dependency: 429 once a client exceeds MAX_ATTEMPTS per window."""
     now = time.monotonic()
+    if len(_attempts) > SWEEP_THRESHOLD:
+        _sweep(now)
     attempts = _attempts[_client_key(request)]
 
     while attempts and now - attempts[0] >= WINDOW_SECONDS:
