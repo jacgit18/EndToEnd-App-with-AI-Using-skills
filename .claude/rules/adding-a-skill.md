@@ -25,6 +25,9 @@
 4. **Interaction test** — run `skill-interaction-testing` against the sibling set.
    Record what you find: hand-off, absorption, chaining, or a fix for stacking /
    contradiction / silent override.
+   Steps 3–4 run in a fresh session or subagent. The session that edited a skill or slash
+   command keeps the text it loaded, so re-invoking it there tests the old version (the
+   `/audit-codebase` run 2 had to follow the edited file by hand). Do the same for a command.
 5. **Reciprocal edits** — apply the sibling `description` changes and cross-pointers the
    interaction test surfaced, both directions.
 6. **Portability + packaging** — add a `## Portability` section just above `## Routing

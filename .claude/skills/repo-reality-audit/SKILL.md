@@ -44,7 +44,11 @@ destructive commands, never touch git, never open a PR.
    any exists).
 2. Execute the test suite(s) as documented. Note the outcome precisely: clean pass, clean fail
    (with reason), or ambiguous failure (hang, unclear error, missing precondition with no
-   guard or clear message).
+   guard or clear message). Report the pass, fail **and skip** counts, and run with the
+   runner's skip-reason flag (`pytest -rs`, `--reporter=verbose`). A run that silently skips a
+   large share of tests is not a clean pass: name the cause (e.g. another project's container
+   holding the test DB's port), check whether CI forces those tests to run, and treat a high
+   local skip rate as a finding.
 3. Check whether any CI the docs/ADRs claim actually exists (`.github/workflows/`,
    `.gitlab-ci.yml`, etc.) and whether it would run what's claimed.
 4. A missing precondition (dev DB not running, env var unset) that fails ambiguously instead

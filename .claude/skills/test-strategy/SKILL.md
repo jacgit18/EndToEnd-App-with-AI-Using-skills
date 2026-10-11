@@ -37,7 +37,7 @@ Do not recommend a mix until these are answered. Split into what you may surface
 
 **Facts you may surface from the codebase** (fill in, then show for confirmation):
 
-- **Tests that already exist** — directories, runners, what levels are present, roughly how many of each, which suites are marked skipped or flaky.
+- **Tests that already exist** — directories, runners, what levels are present, roughly how many of each, which suites are marked skipped or flaky, and the skip count of the last real run with its reasons (`pytest -rs`). "173 passed" with 312 skipped is not a green suite; a test that skips when its infrastructure is missing should fail locally the way it does in CI.
 - **The pipeline as configured** — CI workflow files, what jobs run on PR vs merge vs tag, whether there is a deploy step or a staging environment.
 - **The surface's seams visible in code** — what it imports and calls out to (DB, other services, third-party APIs), and what calls it.
 
