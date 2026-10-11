@@ -49,6 +49,7 @@ Concrete tool names, versions and per-engine caveats for each mechanism are in `
 - Recommended a GUI client as what an automated/CI test actually runs against
 - Recommended an in-memory/embedded substitute engine without naming the fidelity gap against the real production engine
 - Recommended a shared persistent test database with no stated isolation strategy
+- Left DB-backed tests that skip when the database is unreachable, with nothing (e.g. `REQUIRE_DB=1`) making that skip fail outside CI; or a fixed host port another project's database on the same machine can hold (one finance-dashboard run skipped 312 of 485 tests because iron-log's Postgres had 5433)
 - Answered a "what test levels do we need" question as if it were this skill's mechanism call
 - Treated an agent-driven database GUI/MCP tool question as this skill's territory instead of `api-tooling-selection`'s
 

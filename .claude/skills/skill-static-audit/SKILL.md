@@ -19,6 +19,7 @@ It reads. It does not run the skill against prompts (that is `skill-interaction-
 | No target at all ("audit my skills") | Ask which one. If they mean every skill, that is `catalog-drift-audit` (mechanical drift) or a loop of this skill per skill — offer, don't start 60 audits. |
 | `SKILL.md` has no frontmatter or no `description` | That is the first finding (blocker) — still audit the rest, and say the skill cannot trigger as written. |
 | The ask is "why is this skill's output inconsistent?" | Read the steps for ambiguity and unstated branches and report them as *risk*; say a text read cannot explain runtime variance, and offer `skill-interaction-testing` or `anthropic-skills:skill-creator` if they have example runs. |
+| A security scanner's output for the skill is given (e.g. a SkillSpector JSON) | Audit as normal, and add a scanner section: for each issue, quote the text it hit and mark it **real** (the skill tells the model to do the risky thing), **false positive** (the skill describes, audits or warns about that behaviour, e.g. `security-audit` naming attack classes) or **needs a fix** (wording a model could read as an instruction). A scanner severity is evidence to triage, not a verdict; a "real" one is a blocker. |
 | The ask is "does it *actually* fire / collide?" | Not this skill — `skill-interaction-testing` (collisions) or `anthropic-skills:skill-creator` (measured triggering). Offer the pointer; a read-only audit can flag *risk*, not prove behavior. |
 
 ## Step 2 — Frontmatter
