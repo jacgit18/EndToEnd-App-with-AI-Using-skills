@@ -1,0 +1,86 @@
+# Automated release. Push a tag like v0.1.0-pre-alpha.1 (or run this manually with a
+# version + stage) and a GitHub Release is published with the maturity ladder
+# (PoC > MVP > Pre-Alpha > Alpha > Beta > RC > GA, Gamma/Delta optional) in the notes.
+# Anything with a stage suffix is marked "pre-release"; only a bare vX.Y.Z is GA.
+# Free: GitHub-hosted minutes on a public repo cost nothing.
+name: Release
+
+on:
+  push:
+    tags: ['v[0-9]+.[0-9]+.[0-9]+*']
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version without v, e.g. 0.1.0'
+        required: true
+        default: '0.1.0'
+      stage:
+        description: 'Stage'
+        required: true
+        default: pre-alpha
+        type: choice
+        options: [poc, mvp, pre-alpha, alpha, beta, rc, gamma, delta, ga]
+      iteration:
+        description: 'Iteration number (ignored for ga)'
+        required: true
+        default: '1'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Publish release
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve tag
+        id: tag
+        env:
+          EVENT: ${{ github.event_name }}
+          IN_VERSION: ${{ inputs.version }}
+          IN_STAGE: ${{ inputs.stage }}
+          IN_ITER: ${{ inputs.iteration }}
+        run: |
+          if [[ "$EVENT" == workflow_dispatch ]]; then
+            if [[ "$IN_STAGE" == ga ]]; then tag="v${IN_VERSION}"; else tag="v${IN_VERSION}-${IN_STAGE}.${IN_ITER}"; fi
+          else
+            tag="${GITHUB_REF_NAME}"
+          fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+
+      - name: Build notes header
+        id: header
+        run: |
+          bash scripts/release/notes.sh "${{ steps.tag.outputs.tag }}" > header.md 2> flags.txt
+          cat flags.txt >> "$GITHUB_OUTPUT"
+
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.tag.outputs.tag }}
+          PRERELEASE: ${{ steps.header.outputs.prerelease }}
+        run: |
+          # Create the tag on the dispatched commit if it does not exist yet.
+          if ! git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
+            git tag "$TAG" "$GITHUB_SHA"
+            git push origin "$TAG"
+          fi
+          # Generated change list (PRs since the previous tag) goes under "## Changes".
+          gh api repos/${{ github.repository }}/releases/generate-notes \
+            -f tag_name="$TAG" --jq .body > changes.md
+          cat header.md changes.md > notes.md
+          flag=(); [[ "$PRERELEASE" == true ]] && flag=(--prerelease)
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release edit "$TAG" --title "$TAG" --notes-file notes.md "${flag[@]}"
+          else
+            gh release create "$TAG" --title "$TAG" --notes-file notes.md --verify-tag "${flag[@]}"
+          fi
