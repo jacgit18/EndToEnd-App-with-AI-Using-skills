@@ -66,7 +66,7 @@ stated. **Do not invent them.** If any is missing, name it and stop.
    desktop / API / all). "A chat app" is not a purpose; "team collaboration chat for
    engineering orgs of 50–500, web and mobile, mostly US/EU" is.
 3. **Functional requirements + an explicit out-of-scope list** — the handful of things the
-   system must do, *and* the things a reasonable person might expect it to do that it
+   system must do (each business rule with its *why* where the user knows it; a missing why is a non-blocking gap), *and* the things a reasonable person might expect it to do that it
    deliberately will not (v1 has no voice calls, no third-party integrations, no admin
    console). The out-of-scope list is not optional — an unstated exclusion is a scope
    fight later.
@@ -184,7 +184,7 @@ Non-functional targets:
 Constraints:        team <n, experience> · timeline <date, hard?> · stack <fixed parts> · platforms <clients> · compliance <regimes, or "none">
 Deep-dive now:      <the 1–2 decisions — each with its blast radius and why it can't wait>
 Client-owned rules: <the table from "Challenge a proposed scope" — UI-first + deferred-server only, else omit>
-Acknowledged, deferred: <the rest — decided later, during implementation or a later design pass>
+Acknowledged, deferred: <the rest — each marked assumed (default stated) or deferred until built (what settles it); no hard-to-reverse decision (the significance filter's migration tell) sits here unconfirmed>
 Sequence:           <ordered list of which specialist skill runs next on which decision>
 ```
 
