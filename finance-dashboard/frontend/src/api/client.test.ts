@@ -79,6 +79,62 @@ describe("401 handling", () => {
   });
 });
 
+describe("error messages", () => {
+  const text = (body: string, status: number) => new Response(body, { status });
+
+  it("shows a string detail, not the JSON around it", async () => {
+    const api = await loadApi("/");
+    fetchMock.mockResolvedValueOnce(json({ detail: "account is archived" }, 409));
+
+    await expect(api.listAccounts()).rejects.toMatchObject({
+      status: 409,
+      message: "account is archived",
+    });
+  });
+
+  it("joins a 422's validation messages with the field name", async () => {
+    const api = await loadApi("/");
+    fetchMock.mockResolvedValueOnce(
+      json(
+        {
+          detail: [
+            { type: "x", loc: ["body", "amount"], msg: "Value error, bad amount" },
+            { type: "x", loc: ["body", "date"], msg: "Field required" },
+          ],
+        },
+        422,
+      ),
+    );
+
+    await expect(api.listAccounts()).rejects.toMatchObject({
+      message: "amount: Value error, bad amount; date: Field required",
+    });
+  });
+
+  it("falls back to the raw body when it is not the FastAPI shape", async () => {
+    const api = await loadApi("/");
+    fetchMock
+      .mockResolvedValueOnce(text("<html>502 Bad Gateway</html>", 502))
+      .mockResolvedValueOnce(json({ other: 1 }, 500))
+      .mockResolvedValueOnce(text("", 503));
+
+    await expect(api.listAccounts()).rejects.toMatchObject({ message: "<html>502 Bad Gateway</html>" });
+    await expect(api.listAccounts()).rejects.toMatchObject({ message: '{"other":1}' });
+    await expect(api.listAccounts()).rejects.toMatchObject({ status: 503, message: expect.any(String) });
+  });
+});
+
+describe("listTransactions", () => {
+  it("sends the limit and filters as query parameters", async () => {
+    const api = await loadApi("/");
+    fetchMock.mockResolvedValueOnce(json([]));
+
+    await api.listTransactions({ month: "2026-05", accountId: 3, limit: 1000 });
+
+    expect(fetchMock.mock.calls[0][0]).toBe("/api/transactions?month=2026-05&account_id=3&limit=1000");
+  });
+});
+
 describe("logout", () => {
   it("handles the empty 204 and forgets the token", async () => {
     const api = await loadApi("/login");

@@ -1,7 +1,13 @@
-import { useState, type FormEvent } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMemo, useState, type FormEvent } from "react";
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { api, type Transaction, type TransactionCreate } from "./api/client";
+import {
+  api,
+  TRANSACTIONS_MAX_PAGE_SIZE,
+  TRANSACTIONS_PAGE_SIZE,
+  type Transaction,
+  type TransactionCreate,
+} from "./api/client";
 import { ERROR_TEXT, MUTED_ROW, ScrollTable, VisuallyHidden } from "./a11y";
 import { formatNumberWithCommas, stripCommas } from "./numberFormatting";
 
@@ -24,6 +30,9 @@ export default function Transactions() {
   // List filters (S4): "" = no filter. month is the <input type="month"> value, YYYY-MM.
   const [month, setMonth] = useState("");
   const [filterAccount, setFilterAccount] = useState(0);
+  // Page size: the list is newest-first and capped, so a long ledger never loads at once.
+  // "Show more" raises it; changing a filter starts over at one page.
+  const [limit, setLimit] = useState(TRANSACTIONS_PAGE_SIZE);
 
   const accounts = useQuery({ queryKey: ["accounts"], queryFn: () => api.listAccounts() });
   // Archived categories are hidden by the backend default, so they never reach the picker.
@@ -34,15 +43,29 @@ export default function Transactions() {
   // Filters are part of the key, so each view caches separately; invalidating the bare
   // ["transactions"] prefix refreshes all of them.
   const transactions = useQuery({
-    queryKey: ["transactions", { month, accountId: filterAccount }],
+    queryKey: ["transactions", { month, accountId: filterAccount, limit }],
     queryFn: () =>
-      api.listTransactions({ month: month || undefined, accountId: filterAccount || undefined }),
+      api.listTransactions({
+        month: month || undefined,
+        accountId: filterAccount || undefined,
+        limit,
+      }),
+    placeholderData: keepPreviousData, // keep the rows on screen while "Show more" loads
   });
+  const mayHaveMore = (transactions.data?.length ?? 0) >= limit;
 
   // A row is voided when a reversal in the list points at it. The reversal keeps the
   // original's date and account, so any month/account filter includes both or neither.
-  const voidedIds = new Set(
-    transactions.data?.flatMap((t) => (t.reverses_transaction_id ? [t.reverses_transaction_id] : [])),
+  const voidedIds = useMemo(
+    () =>
+      new Set(
+        transactions.data?.flatMap((t) => (t.reverses_transaction_id ? [t.reverses_transaction_id] : [])),
+      ),
+    [transactions.data],
+  );
+  const categoryNames = useMemo(
+    () => new Map(categories.data?.map((c) => [c.id, c.name])),
+    [categories.data],
   );
 
   const createTransaction = useMutation({
@@ -139,14 +162,21 @@ export default function Transactions() {
 
       <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginBottom: "0.5rem" }}>
         <label>
-          Month <input type="month" value={month} onChange={(e) => setMonth(e.target.value)} />
+          Month <input type="month" value={month} onChange={(e) => {
+              setMonth(e.target.value);
+              setLimit(TRANSACTIONS_PAGE_SIZE);
+            }}
+          />
         </label>
         <label>
           Account{" "}
           <select
             aria-label="Filter by account"
             value={filterAccount || ""}
-            onChange={(e) => setFilterAccount(Number(e.target.value))}
+            onChange={(e) => {
+              setFilterAccount(Number(e.target.value));
+              setLimit(TRANSACTIONS_PAGE_SIZE);
+            }}
           >
             <option value="">All accounts</option>
             {accounts.data?.map((a) => (
@@ -177,12 +207,27 @@ export default function Transactions() {
               categoryName={
                 t.category_id === null || !categories.data
                   ? ""
-                  : (categories.data.find((c) => c.id === t.category_id)?.name ?? "(archived)")
+                  : (categoryNames.get(t.category_id) ?? "(archived)")
               }
             />
           ))}
         </tbody>
       </table></ScrollTable>
+      {mayHaveMore && (
+        <p role="status">
+          Showing the newest {transactions.data?.length} transactions.{" "}
+          {limit < TRANSACTIONS_MAX_PAGE_SIZE ? (
+            <button
+              type="button"
+              onClick={() => setLimit((l) => Math.min(l + TRANSACTIONS_PAGE_SIZE, TRANSACTIONS_MAX_PAGE_SIZE))}
+            >
+              Show more
+            </button>
+          ) : (
+            "Pick a month or an account to narrow the list."
+          )}
+        </p>
+      )}
     </section>
   );
 }

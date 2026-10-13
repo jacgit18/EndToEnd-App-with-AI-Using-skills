@@ -540,6 +540,41 @@ def test_bad_month_is_422(client, month):
     assert client.get("/api/transactions", params={"month": month}).status_code == 422
 
 
+def test_list_pages_with_limit_and_offset(client):
+    a = make_account(client)
+    ids = [posted(client, a, date=f"2026-05-{d:02d}")["id"] for d in range(1, 6)]
+    newest_first = ids[::-1]
+
+    assert listed_ids(client, account_id=a, limit=2) == newest_first[:2]
+    assert listed_ids(client, account_id=a, limit=2, offset=2) == newest_first[2:4]
+    assert listed_ids(client, account_id=a, limit=2, offset=4) == newest_first[4:]
+    assert listed_ids(client, account_id=a, limit=2, offset=10) == []
+
+
+def test_list_default_page_is_500_newest(client):
+    from app.routers.transactions import DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE
+
+    assert (DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE) == (500, 5000)
+    a = make_account(client, starting="0.00")
+    first = posted(client, a, "1.00", date="2026-01-01")["id"]
+    for _ in range(DEFAULT_PAGE_SIZE):
+        newest = posted(client, a, "1.00", date="2026-01-02")["id"]
+
+    page = listed_ids(client, account_id=a)
+
+    assert len(page) == DEFAULT_PAGE_SIZE
+    assert page[0] == newest and first not in page
+    assert first in listed_ids(client, account_id=a, limit=DEFAULT_PAGE_SIZE + 1)
+
+
+@pytest.mark.parametrize(
+    "params",
+    [{"limit": 0}, {"limit": -1}, {"limit": 5001}, {"limit": "x"}, {"offset": -1}, {"offset": "x"}],
+)
+def test_bad_paging_is_422(client, params):
+    assert client.get("/api/transactions", params=params).status_code == 422
+
+
 # --------------------------------------------------------------------------- 4. DB rules (0004)
 
 

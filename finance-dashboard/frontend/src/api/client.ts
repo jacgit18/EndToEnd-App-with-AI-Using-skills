@@ -175,6 +175,31 @@ export interface Health {
   db: "connected" | "unreachable";
 }
 
+// FastAPI error bodies are {"detail": "text"}, or for a 422 {"detail": [{"loc": [...], "msg": "..."}]}.
+// Show the text, not the JSON. Anything else (HTML from a proxy, an empty body) falls back to the
+// raw body, then the status line.
+async function errorMessage(res: Response): Promise<string> {
+  const body = await res.text();
+  try {
+    const detail: unknown = JSON.parse(body)?.detail;
+    if (typeof detail === "string" && detail) return detail;
+    if (Array.isArray(detail)) {
+      const parts = detail.flatMap((d: { loc?: unknown[]; msg?: unknown }) => {
+        if (typeof d?.msg !== "string") return [];
+        const field = d.loc?.[d.loc.length - 1];
+        return [typeof field === "string" ? `${field}: ${d.msg}` : d.msg];
+      });
+      if (parts.length) return parts.join("; ");
+    }
+  } catch {
+    // not JSON: use the body as is
+  }
+  return body || res.statusText;
+}
+
+export const TRANSACTIONS_PAGE_SIZE = 500;
+export const TRANSACTIONS_MAX_PAGE_SIZE = 5000;
+
 export class ApiError extends Error {
   constructor(
     public status: number,
@@ -215,7 +240,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     window.location.assign("/login");
   }
   if (!res.ok) {
-    throw new ApiError(res.status, (await res.text()) || res.statusText);
+    throw new ApiError(res.status, await errorMessage(res));
   }
   if (res.status === 204) return undefined as T; // e.g. logout: success, no body
   return res.json() as Promise<T>;
@@ -269,11 +294,13 @@ export const api = {
   copyBudgetsForward: (month: string) =>
     request<CopyForwardResult>(`/budgets/${month}/copy-forward`, { method: "POST" }),
 
-  // month = "YYYY-MM". Both filters optional; the backend ANDs them.
-  listTransactions: (opts?: { month?: string; accountId?: number }) => {
+  // month = "YYYY-MM". Both filters optional; the backend ANDs them. limit: newest-first page
+  // size (backend default 500, max 5000); a full page means there may be more.
+  listTransactions: (opts?: { month?: string; accountId?: number; limit?: number }) => {
     const q = new URLSearchParams();
     if (opts?.month) q.set("month", opts.month);
     if (opts?.accountId) q.set("account_id", String(opts.accountId));
+    if (opts?.limit) q.set("limit", String(opts.limit));
     const qs = q.toString();
     return request<Transaction[]>(`/transactions${qs ? `?${qs}` : ""}`);
   },
