@@ -104,6 +104,21 @@ t_commit_unrelated_staged() {
 }
 case_ "commit.sh: refuses when an unrelated file is already staged" t_commit_unrelated_staged
 
+t_commit_merge_in_progress() {
+  mk_trailer_repo; echo base > lock.json; echo o > other.txt; git add lock.json other.txt; git commit -qm base
+  git checkout -qb feat; echo feat > lock.json; git commit -qam feat
+  git checkout -q main; echo main > lock.json; echo changed > other.txt; git commit -qam main
+  git checkout -q feat; git merge main >/dev/null 2>&1
+  run bash "$G/commit.sh" -m "x" -- other.txt
+  assert_status "$RC" 1; assert_contains "$OUT" "still unresolved"; assert_contains "$OUT" "lock.json"
+  git checkout --theirs lock.json
+  run bash "$G/commit.sh" -m "Resolve lockfile" -- lock.json
+  assert_status "$RC" 0; assert_contains "$OUT" "in-progress merge"
+  assert_eq "$(git rev-list --parents -n1 HEAD | wc -w)" "3" "merge commit has two parents"
+  assert_eq "$(git status --porcelain)" "" "clean after merge"
+}
+case_ "commit.sh: completes an in-progress merge; refuses while paths are unmerged" t_commit_merge_in_progress
+
 t_commit_space_unicode() {
   mk_trailer_repo; echo a > "my file.txt"; mkdir "dir with space"; echo b > "dir with space/é ü.txt"
   run bash "$G/commit.sh" -m "Spaces" -- "my file.txt" "dir with space"

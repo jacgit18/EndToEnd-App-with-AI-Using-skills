@@ -120,11 +120,30 @@ if git diff --cached --quiet; then
   exit 1
 fi
 
+# A merge in progress stages everything it auto-merged, so those files are part of
+# the merge commit by design: skip the outside-paths check, but refuse while any
+# path is still unmerged (named paths were just staged, which resolves them).
+merging=0
+if git rev-parse -q --verify MERGE_HEAD >/dev/null 2>&1; then
+  merging=1
+  unmerged="$(git ls-files -u | cut -f2 | sort -u)"
+  if [ -n "$unmerged" ]; then
+    echo "commit.sh: merge in progress, still unresolved:" >&2
+    printf '%s\n' "$unmerged" | sed 's/^/  /' >&2
+    echo "commit.sh: resolve and name them, then retry." >&2
+    exit 1
+  fi
+  echo "commit.sh: completing the in-progress merge (auto-merged files ride along)." >&2
+fi
+
 # Refuse if the index holds anything outside the named paths: `git commit`
 # takes the whole index, so files staged earlier would ride along silently.
-outside="$(comm -23 \
-  <(git diff --cached --name-only | sort) \
-  <(git diff --cached --name-only -- "${paths[@]}" | sort))"
+outside=""
+if [ "$merging" = 0 ]; then
+  outside="$(comm -23 \
+    <(git diff --cached --name-only | sort) \
+    <(git diff --cached --name-only -- "${paths[@]}" | sort))"
+fi
 if [ -n "$outside" ]; then
   echo "commit.sh: the index already holds files outside the named paths:" >&2
   printf '%s\n' "$outside" | sed 's/^/  /' >&2
