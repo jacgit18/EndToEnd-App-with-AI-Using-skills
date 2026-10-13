@@ -16,8 +16,7 @@ from sqlalchemy.orm import Session
 
 from app.db import get_db
 from app.models.transaction import Transaction
-from app.routers.transactions import _month_range
-from app.schemas.budget import MONTH_PATTERN
+from app.months import MONTH_PATTERN, month_range
 from app.schemas.dashboard import Dashboard, DashboardCategory, Trend, TrendPoint
 
 router = APIRouter()
@@ -37,7 +36,7 @@ def dashboard(
     month: Annotated[str, Query(pattern=MONTH_PATTERN)],
     db: Session = Depends(get_db),
 ) -> Dashboard:
-    start, end = _month_range(month)
+    start, end = month_range(month)
     params: dict = {"start": start, "month": month}
     if end is not None:
         params["end"] = end
@@ -123,8 +122,8 @@ def trend(
         for i in range(index - TREND_MONTHS + 1, index + 1)
         if i >= 1000 * 12
     ]
-    start, _ = _month_range(months[0])
-    _, end = _month_range(month)
+    start, _ = month_range(months[0])
+    _, end = month_range(month)
     params: dict = {"start": start}
     if end is not None:
         params["end"] = end

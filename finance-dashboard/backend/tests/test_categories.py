@@ -477,3 +477,8 @@ def db_row_by_name(name: str) -> tuple[str, bool]:
     with SessionLocal() as db:
         row = db.scalars(select(Category).where(Category.name == name)).one()
         return row.kind, row.is_archived
+
+
+@pytest.mark.parametrize("bad", [99999999999999999999, 2**31, 0])
+def test_patch_with_out_of_range_id_is_422(client, bad):
+    assert client.patch(f"/api/categories/{bad}", json={"name": unique_name()}).status_code == 422

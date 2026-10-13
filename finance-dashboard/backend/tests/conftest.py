@@ -55,7 +55,16 @@ def _check_db() -> str | None:
                     "cd finance-dashboard/backend && PYTHONPATH=. uv run alembic upgrade head"
                 )
     except psycopg.Error as e:
-        return f"Postgres at {host}:{port} refused the connection ({str(e).strip()}) — {HINT}"
+        detail = str(e).strip()
+        if "password authentication failed" in detail:
+            # The port answers but doesn't know our user: nearly always a different
+            # project's Postgres sitting on the default port, not a wrong password here.
+            return (
+                f"Postgres at {host}:{port} rejected the finance login ({detail}). The port "
+                "is probably held by ANOTHER project's Postgres. Run the suite against a "
+                "throwaway database instead: finance-dashboard/scripts/test-db.sh"
+            )
+        return f"Postgres at {host}:{port} refused the connection ({detail}) — {HINT}"
     return None
 
 
