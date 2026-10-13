@@ -72,8 +72,10 @@ Independent delegations may run in parallel as subagents.
 Find the docs root before writing. Check in this order and use the first that applies:
 1. The project's CLAUDE.md or `.claude/rules/` says where docs live (e.g. "docs are edited only in <path>").
    Resolve a relative `docs/` for the audited subproject against that path.
-2. `~/.claude/CLAUDE.md` names a docs root pattern: try `<root>/Projects/<project>/docs/`, then
-   `<root>/<repo-name>/<subproject>/docs/`, then `<root>/<repo-name>/docs/`. Use the first that exists.
+2. `~/.claude/CLAUDE.md` names a docs root pattern (`<root>/Projects/<project>/`, no `docs/`
+   subfolder): try `<root>/Projects/<project>/`, then `<root>/Projects/<repo-name>/<subproject>/`,
+   then `<root>/Projects/<repo-name>/`. Use the first that exists. (Older layouts with a `docs/`
+   subfolder: if the folder you found has one, use it.)
 3. Else `docs/audits/` inside the project.
 Write `<docs dir>/audits/YYYY-MM-DD-codebase-audit.md` (add `-<subproject>` if auditing one of several).
 Create `audits/` if needed. Quote paths (they may contain spaces). Say which rule picked the location.

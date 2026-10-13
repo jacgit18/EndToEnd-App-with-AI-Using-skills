@@ -10,7 +10,7 @@ Standing rules are in `.claude/rules/` and load automatically — read them, don
 
 ## Hard rules (details in `conventions.md`)
 
-- **Docs are not edited here.** `finance-dashboard/docs/` and `Artifact/` are frozen copies; edit them only under `/home/jac/Videos/DevHiveMind/EndToEnd-App-with-AI-Using-skills/`. Quote paths (spaces).
+- **Docs are not edited here.** `finance-dashboard/docs/` and `Artifact/` are frozen copies; the live docs are `/home/jac/Videos/DevHiveMind/Projects/EndToEnd-App-with-AI-Using-skills/finance-dashboard/` and `…/Artifact/` (no `docs/` subfolder there). Edit only those. Quote paths (spaces).
 - **Git:** branch per change, PRs to `main`, never push to `main`. Stage explicit pathspecs only (never `git add -A` / `.`). Use `scripts/git/commit.sh`, `push.sh`, `land.sh`.
 - **Prod deploys** need a fresh, explicit "deploy to prod" in the current session.
 - **Never commit** `*.csv` (personal financial exports) or `.claude/_Prompts/logs/`.
