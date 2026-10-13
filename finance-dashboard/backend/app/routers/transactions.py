@@ -28,6 +28,12 @@ ONE_REVERSAL_INDEX = "uq_transaction_one_reversal"  # migration 0004's partial u
 # matches other scripts' digits), and no year 0000 (Python's date can't hold it).
 MONTH_PATTERN = r"^[1-9][0-9]{3}-(0[1-9]|1[0-2])$"
 
+# List paging. The owner's ledger grows with every CSV import (up to 5000 rows each), so an
+# unpaged list eventually returns tens of thousands of rows. The frontend asks for more by
+# raising `limit`; MAX_PAGE_SIZE is the hard cap on one response.
+DEFAULT_PAGE_SIZE = 500
+MAX_PAGE_SIZE = 5000
+
 
 def _out_of_range() -> HTTPException:
     return HTTPException(
@@ -58,11 +64,15 @@ def _month_range(month: str) -> tuple[date, date | None]:
 def list_transactions(
     month: Annotated[str | None, Query(pattern=MONTH_PATTERN)] = None,
     account_id: int | None = None,
+    limit: Annotated[int, Query(ge=1, le=MAX_PAGE_SIZE)] = DEFAULT_PAGE_SIZE,
+    offset: Annotated[int, Query(ge=0)] = 0,
     db: Session = Depends(get_db),
 ) -> list[Transaction]:
     """Newest first. `?month=YYYY-MM` and `?account_id=` narrow it (S4's list
     filters); both together are ANDed. A malformed month (2026-13, 2026-1) is a 422
-    from the Query pattern, never an empty list that looks like "no spending"."""
+    from the Query pattern, never an empty list that looks like "no spending".
+    `?limit=` (default 500, max 5000) and `?offset=` page the result so a long
+    ledger is never returned in one response; a full page means there may be more."""
     stmt = select(Transaction).order_by(Transaction.date.desc(), Transaction.id.desc())
     if month is not None:
         start, end = _month_range(month)
@@ -71,7 +81,7 @@ def list_transactions(
             stmt = stmt.where(Transaction.date < end)
     if account_id is not None:
         stmt = stmt.where(Transaction.account_id == account_id)
-    return list(db.scalars(stmt))
+    return list(db.scalars(stmt.limit(limit).offset(offset)))
 
 
 @router.post("", response_model=TransactionRead, status_code=201)

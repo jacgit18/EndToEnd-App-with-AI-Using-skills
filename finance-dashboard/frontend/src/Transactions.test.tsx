@@ -3,7 +3,7 @@ import { fireEvent, render, screen, waitFor, within } from "@testing-library/rea
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import Transactions from "./Transactions";
-import type { Account, Category, Transaction } from "./api/client";
+import { TRANSACTIONS_PAGE_SIZE, ApiError, type Account, type Category, type Transaction } from "./api/client";
 
 const listAccounts = vi.fn();
 const listCategories = vi.fn();
@@ -101,11 +101,19 @@ describe("Transactions", () => {
     await screen.findByText("Coffee");
     fireEvent.change(screen.getByLabelText("Month"), { target: { value: "2026-09" } });
     await waitFor(() =>
-      expect(listTransactions).toHaveBeenLastCalledWith({ month: "2026-09", accountId: undefined }),
+      expect(listTransactions).toHaveBeenLastCalledWith({
+        month: "2026-09",
+        accountId: undefined,
+        limit: TRANSACTIONS_PAGE_SIZE,
+      }),
     );
     fireEvent.change(screen.getByLabelText("Filter by account"), { target: { value: "1" } });
     await waitFor(() =>
-      expect(listTransactions).toHaveBeenLastCalledWith({ month: "2026-09", accountId: 1 }),
+      expect(listTransactions).toHaveBeenLastCalledWith({
+        month: "2026-09",
+        accountId: 1,
+        limit: TRANSACTIONS_PAGE_SIZE,
+      }),
     );
   });
 
@@ -138,10 +146,53 @@ describe("Transactions", () => {
   });
 
   it("shows the server's error when a void is refused", async () => {
-    voidTransaction.mockRejectedValue(new Error("account is archived"));
+    voidTransaction.mockRejectedValue(new ApiError(409, "account is archived"));
     renderIt();
     fireEvent.click(await screen.findByRole("button", { name: "Void" }));
     expect(await screen.findByRole("alert")).toHaveTextContent("account is archived");
+  });
+
+  it("offers Show more when the page is full and asks for a bigger page", async () => {
+    const full = Array.from({ length: TRANSACTIONS_PAGE_SIZE }, (_, i) => tx({ id: 1000 - i }));
+    listTransactions.mockResolvedValueOnce(full).mockResolvedValue(full);
+    renderIt();
+
+    expect(await screen.findByText(/Showing the newest 500 transactions/)).toBeInTheDocument();
+    expect(listTransactions).toHaveBeenLastCalledWith(
+      expect.objectContaining({ limit: TRANSACTIONS_PAGE_SIZE }),
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Show more" }));
+
+    await waitFor(() =>
+      expect(listTransactions).toHaveBeenLastCalledWith(
+        expect.objectContaining({ limit: TRANSACTIONS_PAGE_SIZE * 2 }),
+      ),
+    );
+  });
+
+  it("shows no Show more when the list is shorter than a page", async () => {
+    renderIt();
+    await screen.findByText("Coffee");
+    expect(screen.queryByRole("button", { name: "Show more" })).not.toBeInTheDocument();
+  });
+
+  it("starts over at one page when a filter changes", async () => {
+    const full = Array.from({ length: TRANSACTIONS_PAGE_SIZE }, (_, i) => tx({ id: 1000 - i }));
+    listTransactions.mockResolvedValue(full);
+    renderIt();
+    fireEvent.click(await screen.findByRole("button", { name: "Show more" }));
+    await waitFor(() =>
+      expect(listTransactions).toHaveBeenLastCalledWith(expect.objectContaining({ limit: 1000 })),
+    );
+
+    fireEvent.change(screen.getByLabelText("Filter by account"), { target: { value: "1" } });
+
+    await waitFor(() =>
+      expect(listTransactions).toHaveBeenLastCalledWith(
+        expect.objectContaining({ accountId: 1, limit: TRANSACTIONS_PAGE_SIZE }),
+      ),
+    );
   });
 
   it("labels a category missing from the picker list as archived", async () => {
