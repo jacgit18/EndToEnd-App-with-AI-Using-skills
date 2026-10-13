@@ -10,7 +10,7 @@
   (the **docs root**) and `Artifact/` (talking points, write-ups) in
   `…/Projects/EndToEnd-App-with-AI-Using-skills/Artifact/`. There is **no `docs/` subfolder** in the
   vault: `docs/spec.md` in this repo's code comments and README is `<docs root>/spec.md`. The
-  copies in this repo are frozen and go stale; do not edit them. Any skill that writes to
+  repo copies were deleted 2026-10-13; do not recreate them. Any skill that writes to
   `docs/architecture/decisions/`, `docs/testing/` or similar and says "follow the repo's own
   convention" means this: resolve `docs/…` for finance-dashboard to `<docs root>/…`, and
   `Artifact/…` to `…/Artifact/…`. Quote the path (spaces elsewhere in DevHiveMind). Code,

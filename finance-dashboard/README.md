@@ -9,7 +9,7 @@ Phases 3-7 follow the order in `docs/spec.md`.
 
 > **Docs moved (2026-10-03, again 2026-10-13):** every `docs/…` path below lives directly in
 > `/home/jac/Videos/DevHiveMind/Projects/EndToEnd-App-with-AI-Using-skills/finance-dashboard/`
-> (so `docs/spec.md` is `…/finance-dashboard/spec.md`). The `docs/` folder in this repo is a frozen copy.
+> (so `docs/spec.md` is `…/finance-dashboard/spec.md`). There is no `docs/` folder in this repo (the frozen copy was deleted 2026-10-13).
 
 - Design: `docs/spec.md`, `docs/architecture/decisions/`
 - Running it online for free: `docs/deploy.md`
