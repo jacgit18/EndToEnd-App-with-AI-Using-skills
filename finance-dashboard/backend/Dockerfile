@@ -27,4 +27,6 @@ COPY migrations ./migrations
 
 EXPOSE 8000
 
-CMD ["uv", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# --frozen --no-sync: run the environment built above (no dev group); never re-sync
+# from PyPI at container start.
+CMD ["uv", "run", "--frozen", "--no-sync", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

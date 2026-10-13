@@ -80,9 +80,14 @@ services:
     # request.client.host (what the login rate limiter keys on) is the real visitor
     # and not Caddy. Do not publish a backend port: the trusted list only covers
     # private addresses, but a published port would let anyone on the LAN send headers.
+    #
+    # `uv run --frozen --no-sync`: the image was built with `uv sync --no-dev`, so run
+    # exactly that environment. Plain `uv run` re-syncs at start and pulls the DEV group
+    # (pytest, pygments, ...) from PyPI on every fresh container, which put prod startup
+    # at the mercy of DNS (found by the 2026-10-13 audit; startup now needs no network).
     command: >
-      sh -c "uv run alembic upgrade head &&
-             uv run uvicorn app.main:app --host 0.0.0.0 --port 8000
+      sh -c "uv run --frozen --no-sync alembic upgrade head &&
+             uv run --frozen --no-sync uvicorn app.main:app --host 0.0.0.0 --port 8000
              --proxy-headers"
 
   web:
