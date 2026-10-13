@@ -15,7 +15,9 @@ from sqlalchemy.orm import Session
 from app.db import get_db
 from app.models.budget import Budget
 from app.models.category import Category
-from app.schemas.budget import MONTH_PATTERN, BudgetRead, BudgetSet, CopyForwardResult
+from app.months import MONTH_PATTERN
+from app.schemas._ids import MAX_ID
+from app.schemas.budget import BudgetRead, BudgetSet, CopyForwardResult
 
 router = APIRouter()
 
@@ -35,7 +37,7 @@ def list_budgets(
 @router.put("/{month}/{category_id}", response_model=BudgetRead)
 def set_budget(
     month: Annotated[str, Path(pattern=MONTH_PATTERN)],
-    category_id: int,
+    category_id: Annotated[int, Path(ge=1, le=MAX_ID)],
     payload: BudgetSet,
     db: Session = Depends(get_db),
 ) -> Budget:
@@ -68,7 +70,7 @@ def set_budget(
 @router.delete("/{month}/{category_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_budget(
     month: Annotated[str, Path(pattern=MONTH_PATTERN)],
-    category_id: int,
+    category_id: Annotated[int, Path(ge=1, le=MAX_ID)],
     db: Session = Depends(get_db),
 ) -> Response:
     """Remove that month's budget line. 404 if there was none, so a typo'd month

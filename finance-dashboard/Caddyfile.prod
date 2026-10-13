@@ -28,7 +28,19 @@
 }
 
 :80 {
+	# Request body caps, enforced here before the app sees a byte (FastAPI/Starlette parse a
+	# multipart upload to a temp file BEFORE the handler's own 2 MB check runs; 2026-10-13
+	# audit). CSV import: 2 MB file + multipart overhead. Every other API call is small JSON.
+	handle /api/imports* {
+		request_body {
+			max_size 3MB
+		}
+		reverse_proxy backend:8000
+	}
 	handle /api/* {
+		request_body {
+			max_size 64KB
+		}
 		reverse_proxy backend:8000
 	}
 	handle /health {
@@ -55,10 +67,19 @@
 	}
 
 	# Cheap hardening; the app is same-origin so none of these break it.
+	#  * CSP: the built app is one external module script plus an inline <style> in
+	#    index.html, React inline style="" attributes and same-origin /api calls. So scripts
+	#    are 'self' only (no inline script, no eval); styles need 'unsafe-inline' for those
+	#    attributes; connect/img are same-origin (img also data: for inline SVG); nothing may
+	#    frame the app, change <base>, post a form elsewhere or load plugins.
+	#  * HSTS: Cloudflare terminates TLS, so browsers only ever reach the site over HTTPS;
+	#    one year, no includeSubDomains/preload (the domain is a free DNSHE one).
 	header {
 		X-Content-Type-Options nosniff
 		X-Frame-Options DENY
 		Referrer-Policy same-origin
+		Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'"
+		Strict-Transport-Security "max-age=31536000"
 		-Server
 	}
 }

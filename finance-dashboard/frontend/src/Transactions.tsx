@@ -78,6 +78,10 @@ export default function Transactions() {
       // a guess at the new shape — the source of truth is the database.
       queryClient.invalidateQueries({ queryKey: ["transactions"] });
       queryClient.invalidateQueries({ queryKey: ["accounts"] });
+      // The dashboard totals and trend are built from the same ledger rows.
+      // "dashboard-trend" is a separate key, not a child of "dashboard".
+      queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-trend"] });
       setForm(emptyForm());
     },
   });
@@ -248,6 +252,10 @@ function TransactionRow({
       // A void adds a ledger row and moves the account's balance, like a create.
       queryClient.invalidateQueries({ queryKey: ["transactions"] });
       queryClient.invalidateQueries({ queryKey: ["accounts"] });
+      // The dashboard totals and trend are built from the same ledger rows.
+      // "dashboard-trend" is a separate key, not a child of "dashboard".
+      queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-trend"] });
     },
   });
 

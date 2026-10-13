@@ -11,13 +11,15 @@ from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_validator
 
+from app.schemas._ids import MAX_ID
+
 # A header name as it appears in the file (headers are trimmed when the file is read).
 ColumnName = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
 
 # An account id in `account_map`. Strict: JSON `"3"` or `true` is a 422, not quietly
 # turned into account 3 or account 1 (a mis-typed id would file money in the wrong
-# account). gt=0 because ids start at 1.
-AccountId = Annotated[int, Field(strict=True, gt=0)]
+# account). gt=0 because ids start at 1; le=MAX_ID because ids are 32-bit INTEGERs.
+AccountId = Annotated[int, Field(strict=True, gt=0, le=MAX_ID)]
 
 # Upper bound on `account_map` entries. Each distinct non-null id is one row lock,
 # so the map has to be bounded; the preview only ever offers <= 50 values per

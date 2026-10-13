@@ -1,12 +1,15 @@
 """GET/POST/PATCH /api/accounts — list, create, edit/archive (spec S2)."""
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from typing import Annotated
+
+from fastapi import APIRouter, Depends, HTTPException, Path, status
 from sqlalchemy import select
 from sqlalchemy.exc import DataError, IntegrityError
 from sqlalchemy.orm import Session
 
 from app.db import get_db
 from app.models.account import Account
+from app.schemas._ids import MAX_ID
 from app.schemas.account import AccountCreate, AccountRead, AccountUpdate
 
 router = APIRouter()
@@ -19,6 +22,12 @@ def _is_name_conflict(exc: IntegrityError) -> bool:
     or a new constraint, and must not be reported to the client as "duplicate name"."""
     diag = getattr(exc.orig, "diag", None)
     return getattr(diag, "constraint_name", None) == NAME_CONSTRAINT
+
+
+def _is_out_of_range(exc: DataError) -> bool:
+    """True only for SQLSTATE 22003 (numeric_value_out_of_range). Other DataErrors
+    are bugs and must not be reported as a balance overflow."""
+    return getattr(exc.orig, "sqlstate", None) == "22003"
 
 
 def _out_of_range() -> HTTPException:
@@ -71,7 +80,9 @@ def create_account(payload: AccountCreate, db: Session = Depends(get_db)) -> Acc
 
 @router.patch("/{account_id}", response_model=AccountRead)
 def update_account(
-    account_id: int, payload: AccountUpdate, db: Session = Depends(get_db)
+    account_id: Annotated[int, Path(ge=1, le=MAX_ID)],
+    payload: AccountUpdate,
+    db: Session = Depends(get_db),
 ) -> Account:
     """Edit name, type, starting balance, or archive/unarchive (`is_archived`).
 
@@ -109,8 +120,10 @@ def update_account(
 
     try:
         db.commit()
-    except DataError:
+    except DataError as exc:
         db.rollback()  # e.g. balance + delta overflowed NUMERIC(14,2); nothing saved
+        if not _is_out_of_range(exc):
+            raise
         raise _out_of_range()
     except IntegrityError as exc:
         db.rollback()  # nothing was saved
