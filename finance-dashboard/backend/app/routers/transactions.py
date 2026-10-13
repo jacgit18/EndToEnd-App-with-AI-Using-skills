@@ -6,10 +6,9 @@ back through `reverses_transaction_id`) that cancels the first. The original is
 never touched, so the ledger always shows what happened and when it was undone.
 """
 
-from datetime import date
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Path, Query, status
 from sqlalchemy import select
 from sqlalchemy.exc import DataError, IntegrityError
 from sqlalchemy.orm import Session
@@ -18,15 +17,13 @@ from app.db import get_db
 from app.models.account import Account
 from app.models.category import Category
 from app.models.transaction import Transaction
+from app.months import MONTH_PATTERN, month_range
+from app.schemas._ids import MAX_ID
 from app.schemas.transaction import TransactionCreate, TransactionRead
 
 router = APIRouter()
 
 ONE_REVERSAL_INDEX = "uq_transaction_one_reversal"  # migration 0004's partial unique index
-
-# YYYY-MM with a real month (01-12). ASCII digits only ([0-9], not \d, which also
-# matches other scripts' digits), and no year 0000 (Python's date can't hold it).
-MONTH_PATTERN = r"^[1-9][0-9]{3}-(0[1-9]|1[0-2])$"
 
 # List paging. The owner's ledger grows with every CSV import (up to 5000 rows each), so an
 # unpaged list eventually returns tens of thousands of rows. The frontend asks for more by
@@ -49,21 +46,17 @@ def _is_second_reversal(exc: IntegrityError) -> bool:
     return getattr(diag, "constraint_name", None) == ONE_REVERSAL_INDEX
 
 
-def _month_range(month: str) -> tuple[date, date | None]:
-    """[first of month, first of next month). The upper bound is exclusive, so the
-    last day of the month is in and the 1st of the next is out whatever the month's
-    length. None for 9999-12, which has no next month a `date` can hold."""
-    year, mon = int(month[:4]), int(month[5:])
-    start = date(year, mon, 1)
-    if mon == 12:
-        return start, (date(year + 1, 1, 1) if year < 9999 else None)
-    return start, date(year, mon + 1, 1)
+def _is_out_of_range(exc: DataError) -> bool:
+    """True only for SQLSTATE 22003 (numeric_value_out_of_range). Other DataErrors
+    (bad encoding, invalid text, a value too long) are bugs and must not be reported
+    as a balance overflow."""
+    return getattr(exc.orig, "sqlstate", None) == "22003"
 
 
 @router.get("", response_model=list[TransactionRead])
 def list_transactions(
     month: Annotated[str | None, Query(pattern=MONTH_PATTERN)] = None,
-    account_id: int | None = None,
+    account_id: Annotated[int | None, Query(ge=1, le=MAX_ID)] = None,
     limit: Annotated[int, Query(ge=1, le=MAX_PAGE_SIZE)] = DEFAULT_PAGE_SIZE,
     offset: Annotated[int, Query(ge=0)] = 0,
     db: Session = Depends(get_db),
@@ -75,7 +68,7 @@ def list_transactions(
     ledger is never returned in one response; a full page means there may be more."""
     stmt = select(Transaction).order_by(Transaction.date.desc(), Transaction.id.desc())
     if month is not None:
-        start, end = _month_range(month)
+        start, end = month_range(month)
         stmt = stmt.where(Transaction.date >= start)
         if end is not None:
             stmt = stmt.where(Transaction.date < end)
@@ -127,15 +120,19 @@ def create_transaction(
 
     try:
         db.commit()
-    except DataError:
+    except DataError as exc:
         db.rollback()  # balance + amount overflowed NUMERIC(14,2); nothing saved
+        if not _is_out_of_range(exc):
+            raise
         raise _out_of_range()
     db.refresh(transaction)
     return transaction
 
 
 @router.post("/{transaction_id}/void", response_model=TransactionRead, status_code=201)
-def void_transaction(transaction_id: int, db: Session = Depends(get_db)) -> Transaction:
+def void_transaction(
+    transaction_id: Annotated[int, Path(ge=1, le=MAX_ID)], db: Session = Depends(get_db)
+) -> Transaction:
     """Void a row by posting its reversal (ADR-0005). No body: everything the
     reversal carries is copied from the original, so there is nothing to choose.
 
@@ -187,8 +184,10 @@ def void_transaction(transaction_id: int, db: Session = Depends(get_db)) -> Tran
 
     try:
         db.commit()
-    except DataError:
+    except DataError as exc:
         db.rollback()  # balance - amount overflowed NUMERIC(14,2); nothing saved
+        if not _is_out_of_range(exc):
+            raise
         raise _out_of_range()
     except IntegrityError as exc:
         # The race-safe backstop for the pre-check above: if a second reversal

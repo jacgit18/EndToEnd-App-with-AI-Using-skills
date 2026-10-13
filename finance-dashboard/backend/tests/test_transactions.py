@@ -623,9 +623,12 @@ def test_reconcile_finds_no_drift_after_voids(client):
     with SessionLocal() as db:
         _, drifted = reconcile.find_drift(db)
     assert [d for d in drifted if d[0] == account_id] == []
-    # main()'s exit code covers every account; only meaningful if nothing else drifts.
-    if not drifted:
-        assert reconcile.main() == 0
+    # main()'s exit code covers every account, so it only says something about this test
+    # if nothing else drifts. Fail loudly on a dirty DB (as test_reconcile's
+    # pre_existing_clean does) instead of skipping the assertion.
+    foreign = [d for d in drifted if not d[1].startswith(PREFIX)]
+    assert foreign == [], f"DB already drifts outside this test: {foreign}"
+    assert reconcile.main() == 0
     assert assert_invariant(account_id)[1] == Decimal("499.99")
 
 
@@ -698,3 +701,64 @@ def test_void_racing_new_posts_on_the_same_account_keeps_the_invariant(auth):
         expected += Decimal("3.00") + sum(amounts)
         starting, balance, total, _ = assert_invariant(account_id)
         assert total == expected, round_no
+
+
+# --------------------------------------------------------------------------- 7. id bounds
+
+HUGE_ID = 99999999999999999999  # past INTEGER: used to reach Postgres and come back a 500
+
+
+@pytest.mark.parametrize("bad", [HUGE_ID, 2**31, 0, -1])
+def test_out_of_range_ids_are_422_everywhere_a_transaction_takes_one(client, bad):
+    account_id = make_account(client)
+    assert post_tx(client, bad).status_code == 422
+    assert post_tx(client, account_id, category_id=bad).status_code == 422
+    assert client.get("/api/transactions", params={"account_id": bad}).status_code == 422
+    assert void(client, bad).status_code == 422
+
+
+def test_largest_valid_id_is_still_a_clean_404(client):
+    """2**31-1 passes validation and is simply not found; it never reaches Postgres
+    as a range error."""
+    assert post_tx(client, 2**31 - 1).status_code == 404
+    assert void(client, 2**31 - 1).status_code == 404
+
+
+# --------------------------------------------------------------------------- 8. DataError mapping
+
+
+class _FakeOrig(Exception):
+    """Stands in for psycopg's error: only `.sqlstate` is looked at."""
+
+    def __init__(self, sqlstate):
+        super().__init__(sqlstate)
+        self.sqlstate = sqlstate
+
+
+def test_only_numeric_out_of_range_dataerror_is_reported_as_balance_overflow(
+    client, monkeypatch
+):
+    """A DataError that is not SQLSTATE 22003 is a bug and must surface as an error,
+    not as the "balance out of range" 422 that would hide it."""
+    from sqlalchemy.exc import DataError
+    from sqlalchemy.orm import Session
+
+    account_id = make_account(client)
+    original = posted(client, account_id)
+
+    def failing(sqlstate):
+        def commit(self):
+            raise DataError("stmt", {}, _FakeOrig(sqlstate))
+
+        return commit
+
+    # raise_server_exceptions (default True) re-raises an unhandled error in the test.
+    monkeypatch.setattr(Session, "commit", failing("22003"))
+    assert post_tx(client, account_id).status_code == 422
+    assert void(client, original["id"]).status_code == 422
+
+    monkeypatch.setattr(Session, "commit", failing("22021"))  # character_not_in_repertoire
+    with pytest.raises(DataError):
+        post_tx(client, account_id)
+    with pytest.raises(DataError):
+        void(client, original["id"])
