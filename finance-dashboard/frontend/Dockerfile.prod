@@ -6,7 +6,7 @@
 # repo root — compose.prod.yaml mounts Caddyfile.prod over /etc/caddy/Caddyfile.
 
 # ── Stage 1: compile ──────────────────────────────────────────────────────────
-FROM node:20-slim AS build
+FROM node:26-slim AS build
 
 WORKDIR /app
 
