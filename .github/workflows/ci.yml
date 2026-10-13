@@ -66,6 +66,15 @@ jobs:
           enable-cache: true
           cache-dependency-glob: finance-dashboard/backend/uv.lock
       - run: uv sync --frozen
+      - name: Lint (ruff check; rules in pyproject.toml)
+        run: uv run ruff check .
+      - name: Dependency audit (pip-audit, locked runtime deps)
+        # Non-blocking for now (new advisories can appear with no change here). Flip to
+        # blocking by deleting `continue-on-error` once it has run clean for a few weeks.
+        continue-on-error: true
+        run: |
+          uv export --frozen --no-dev --no-hashes --no-emit-project -o "$RUNNER_TEMP/requirements.txt"
+          uv run --with pip-audit pip-audit -r "$RUNNER_TEMP/requirements.txt" --no-deps --disable-pip
       - name: Migrate (Settings validates the login vars even for alembic)
         env:
           AUTH_EMAIL: ci@example.com
@@ -91,6 +100,12 @@ jobs:
           cache: npm
           cache-dependency-path: finance-dashboard/frontend/package-lock.json
       - run: npm ci
+      - name: Dependency audit (npm audit, runtime deps, high and above)
+        # Non-blocking for now: it currently reports 2 moderate react-router advisories
+        # (below the high threshold, so exit 0 anyway) that a separate dependency PR fixes.
+        # Delete `continue-on-error` to make it blocking once that PR has merged.
+        continue-on-error: true
+        run: npm audit --omit=dev --audit-level=high
       - run: npm test
       - run: npm run build
       - name: Upload the production build
