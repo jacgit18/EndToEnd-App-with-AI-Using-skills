@@ -9,10 +9,18 @@
   `/home/jac/Videos/DevHiveMind/Projects/EndToEnd-App-with-AI-Using-skills/finance-dashboard/`
   (the **docs root**) and `Artifact/` (talking points, write-ups) in
   `…/Projects/EndToEnd-App-with-AI-Using-skills/Artifact/`. There is **no `docs/` subfolder** in the
-  vault: `docs/spec.md` in this repo's code comments and README is `<docs root>/spec.md`. The
-  repo copies were deleted 2026-10-13; do not recreate them. Any skill that writes to
+  vault, and the docs root is organised by kind (2026-10-13): `architecture/` (ADRs in
+  `architecture/decisions/`, scope, stack walkthrough), `testing/`, `specs/` (`spec.md`,
+  `phase7-spec.md`, `phase7-verification.md`, `phase8-spec.md`, `phase9-spec.md`), `ops/`
+  (`deploy.md`, `paid-options.md`), `audits/`, `ux/`, plus `backlog.md`, `ROADMAP.md`,
+  `ARCHITECTURE.md`, `DECISIONS.md`, `CHANGELOG.md`, `_PriorityRead.md` at the top. So a
+  `docs/…` citation in this repo's code comments and README maps like this:
+  `docs/architecture/…` and `docs/testing/…` keep their path under `<docs root>`;
+  `docs/spec.md` and `docs/phaseN-spec.md` become `<docs root>/specs/…`; `docs/deploy.md` and
+  `docs/paid-options.md` become `<docs root>/ops/…`; `docs/backlog.md` is `<docs root>/backlog.md`.
+  The repo copies were deleted 2026-10-13; do not recreate them. Any skill that writes to
   `docs/architecture/decisions/`, `docs/testing/` or similar and says "follow the repo's own
-  convention" means this: resolve `docs/…` for finance-dashboard to `<docs root>/…`, and
+  convention" means this: resolve `docs/…` for finance-dashboard as above, and
   `Artifact/…` to `…/Artifact/…`. Quote the path (spaces elsewhere in DevHiveMind). Code,
   `.claude/` and `scripts/` stay here. Wikilinks in the vault are full vault paths
   (`[[Projects/EndToEnd-App-with-AI-Using-skills/finance-dashboard/…]]`).
