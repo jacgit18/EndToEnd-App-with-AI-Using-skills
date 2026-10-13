@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Smoke suite (hooks, git helpers, lint, profile)
         run: scripts/tests/run.sh
       - name: Skill catalog lint (errors fail, warnings print)
@@ -60,7 +60,7 @@ jobs:
       # CI must never silently skip the integration suite.
       REQUIRE_DB: "1"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: astral-sh/setup-uv@v5
         with:
           enable-cache: true
@@ -93,7 +93,7 @@ jobs:
       run:
         working-directory: finance-dashboard/frontend
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
           node-version: 24
@@ -125,7 +125,7 @@ jobs:
       run:
         working-directory: finance-dashboard/frontend
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
           node-version: 24
@@ -155,7 +155,7 @@ jobs:
       run:
         working-directory: finance-dashboard
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
           node-version: 24
