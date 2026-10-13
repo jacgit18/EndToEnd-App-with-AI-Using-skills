@@ -1013,3 +1013,9 @@ def test_multi_imports_over_the_same_accounts_in_opposite_order_do_not_deadlock(
             expected[account_id] += Decimal(f"-1.{round_no:02d}") + Decimal(f"-2.{round_no:02d}")
             _, balance, total, _ = assert_invariant(account_id)
             assert total == expected[account_id], (round_no, account_id)
+
+
+@pytest.mark.parametrize("bad", [99999999999999999999, 2**31, 0])
+def test_import_account_id_out_of_range_is_422(client, bad):
+    response = do_import(client, bad, csv_text(("2026-09-01", "-1.00", "x")))
+    assert response.status_code == 422
