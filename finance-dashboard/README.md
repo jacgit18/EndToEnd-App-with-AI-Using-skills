@@ -5,15 +5,17 @@ Personal finance dashboard — FastAPI backend, Postgres, React/Vite frontend.
 skeleton (health check, accounts/transactions, DB schema, frontend scaffold). Phase 1 adds
 single-owner login (server-side session + CSRF + login rate limit), a free deploy path via a
 Cloudflare quick tunnel, and optional Sentry error tracking. Next: Phase 2 (accounts finish).
-Phases 3-7 follow the order in `docs/spec.md`.
+Phases 3-7 follow the order in `specs/spec.md` (in the vault docs root below).
 
-> **Docs moved (2026-10-03, again 2026-10-13):** every `docs/…` path below lives directly in
+> **Docs moved (2026-10-03, reorganised 2026-10-13):** the docs live in
 > `/home/jac/Videos/DevHiveMind/Projects/EndToEnd-App-with-AI-Using-skills/finance-dashboard/`
-> (so `docs/spec.md` is `…/finance-dashboard/spec.md`). There is no `docs/` folder in this repo (the frozen copy was deleted 2026-10-13).
+> (the docs root), organised as `architecture/`, `testing/`, `specs/`, `ops/`, `audits/`, `ux/`.
+> Old `docs/…` citations map as listed in `.claude/rules/conventions.md`. There is no `docs/`
+> folder in this repo (the frozen copy was deleted 2026-10-13).
 
-- Design: `docs/spec.md`, `docs/architecture/decisions/`
-- Running it online for free: `docs/deploy.md`
-- Where money could come in: `docs/paid-options.md`
+- Design: `specs/spec.md`, `architecture/decisions/`, `ARCHITECTURE.md`, `DECISIONS.md`
+- Running it online for free: `ops/deploy.md`
+- Where money could come in: `ops/paid-options.md`
 
 ## Prerequisites
 
@@ -29,7 +31,7 @@ Two ways to run this, same app either way:
 - **Option 1** — Postgres in Docker, backend and frontend on the host. Faster edit-reload
   loop (native `--reload`/HMR), what you want day to day.
 - **Option 2** — the whole stack in Docker via Compose. Closer to how it'll actually deploy
-  (ADR-0012), and how `docs/spec.md`'s Phase 0 walking skeleton is defined — use this to
+  (ADR-0012), and how `specs/spec.md`'s Phase 0 walking skeleton is defined — use this to
   sanity-check that a change works outside your one dev machine's native setup.
 
 ## Option 1: Native (Postgres in Docker, backend/frontend on the host)
@@ -91,7 +93,7 @@ Opens on `http://localhost:5173` (Vite's default). The dev server proxies `/api/
 Tests (no backend needed for either): `npm test` (Vitest unit/component), `npm run e2e`
 (Playwright against the production build with the API mocked in the page, plus axe on every
 route). `npm run screenshots` writes preview PNGs to `screenshots/` (gitignored); PRs get a
-before/after/diff comment from CI. See `docs/testing/running-tests.md` and ADR-0023.
+before/after/diff comment from CI. See `testing/running-tests.md` and ADR-0023.
 
 ## Option 2: Full stack in Docker (Compose)
 

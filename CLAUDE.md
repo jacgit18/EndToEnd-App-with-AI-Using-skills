@@ -14,7 +14,7 @@ Standing rules are in `.claude/rules/` and load automatically — read them, don
 - **Git:** branch per change, PRs to `main`, never push to `main`. Stage explicit pathspecs only (never `git add -A` / `.`). Use `scripts/git/commit.sh`, `push.sh`, `land.sh`.
 - **Prod deploys** need a fresh, explicit "deploy to prod" in the current session.
 - **Never commit** `*.csv` (personal financial exports) or `.claude/_Prompts/logs/`.
-- Free-first: prefer free tiers; document anything that could cost money in `docs/paid-options.md`.
+- Free-first: prefer free tiers; document anything that could cost money in `ops/paid-options.md` (vault docs root).
 - Never post anything externally (e.g. LinkedIn drafts) — save as files only.
 
 ## finance-dashboard
