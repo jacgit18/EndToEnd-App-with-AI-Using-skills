@@ -22,6 +22,7 @@ not a survey of all options.
 - "Should I clean up / squash these WIP commits before merging?"
 - "Do we want a merge commit here or a fast-forward?"
 - "What's the right way to get this long-lived branch back in sync?"
+- "In what order should I land these 5 open PRs?" — skip the five-fact precondition (it picks the method, not the order); go to Queued PRs.
 
 ## Out of scope — hand these off
 
@@ -44,6 +45,7 @@ not a survey of all options.
   "list your own candidate options and a leaning first" rep doesn't apply. The five-fact
   precondition here is the rep. Options Generator's own trigger list names this skill for
   exactly this reason.
+- **Tests fail or behaviour broke after a merge** — debugging, `problem-solving-gates`; **conflict concepts** ("why do lockfile conflicts happen") — `learning-gate`.
 - **A bare conceptual question** — "what is a fast-forward merge?" — answered directly, no
   gate.
 
@@ -87,7 +89,7 @@ decision open.
 
 ## The decision
 
-Apply in order — the first that matches wins.
+Apply A–D in order — the first that matches wins. Queued PRs and Conflict triage below apply independently of A–D.
 
 ### A. A mandated strategy exists (Q2)
 
@@ -108,7 +110,7 @@ messier than ideal and why that's the correct trade.
 - Branch is **shared** with others, or already merged into elsewhere → **merge the trunk
   in**. A rebase would force everyone else to recover. Accept the merge commits.
 - Either way: if conflicts appear, run the triage below, then stop and report whatever it doesn't clear.
-- A branch that needs a **second** "merge main in" because other PRs landed means the open PRs overlap. Stop syncing and re-plan the order (see Queued PRs).
+- A branch that needs a **second** sync (merge or rebase) because other PRs landed means the open PRs overlap. Stop syncing and re-plan the order (see Queued PRs).
 
 ### D. Integrating a finished branch into the trunk (Q4 = integrating)
 
@@ -131,9 +133,9 @@ When 2+ PRs are open at once, state the order before merging the first. Default:
 
 Classify each hunk, then act:
 
-1. **Generated file** (`package-lock.json`, `uv.lock`, other lockfiles) — never hand-merge. Take the trunk's version and rerun the install. Say you did.
+1. **Generated file** (`package-lock.json`, `uv.lock`, other lockfiles) — never hand-merge. Take the trunk's version and rerun the install. Say you did. Hand-written manifests (`package.json`, `pyproject.toml`) are classed by hunk (2 or 3): resolve the manifest first, then regenerate the lockfile from it.
 2. **Additive on both sides** (both PRs append different lines: imports, CI steps, test cases) — keep both, check ordering, run the tests.
-3. **Same lines changed differently** — a semantic conflict. Stop, show both sides and what each intended, and let the user decide. Do not pick `-X ours` / `-X theirs`.
+3. **Same lines changed differently** — a semantic conflict. Stop, show both sides and what each intended, and let the user decide. Do not pick `-X ours` / `-X theirs`. If the user explicitly says "pick mine/theirs", they have decided: show both sides, confirm once, apply.
 
 Judgment-heavy git: Sonnet or Opus (`git-actions.md`).
 
