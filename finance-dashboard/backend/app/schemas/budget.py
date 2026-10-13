@@ -13,13 +13,13 @@ from pydantic import (
     field_validator,
 )
 
+from app.months import MONTH_PATTERN
 from app.schemas._money import Money, as_str, reject_float
 
-# "YYYY-MM", month 01-12. The same string the dashboard will take as ?month=, and
-# the exact form stored in budgets.month. Checked by pattern rather than parsed to a
-# date so what the client sent is what gets stored: "2026-9" and "2026-09-01" are
-# 422s, not silently reshaped into a key that a later lookup would miss.
-MONTH_PATTERN = r"^[1-9][0-9]{3}-(0[1-9]|1[0-2])$"
+# "YYYY-MM", month 01-12 (MONTH_PATTERN, app/months.py). The same string the dashboard
+# takes as ?month=, and the exact form stored in budgets.month. Checked by pattern rather
+# than parsed to a date so what the client sent is what gets stored: "2026-9" and
+# "2026-09-01" are 422s, not silently reshaped into a key that a later lookup would miss.
 Month = Annotated[str, Field(pattern=MONTH_PATTERN)]
 
 

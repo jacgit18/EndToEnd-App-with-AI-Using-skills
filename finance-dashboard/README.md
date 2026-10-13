@@ -95,6 +95,12 @@ Tests (no backend needed for either): `npm test` (Vitest unit/component), `npm r
 route). `npm run screenshots` writes preview PNGs to `screenshots/` (gitignored); PRs get a
 before/after/diff comment from CI. See `testing/running-tests.md` and ADR-0023.
 
+Backend tests need a migrated Postgres, and skip themselves without one. If another project's
+Postgres holds host port 5433 they skip quietly (hundreds of tests), so run them with
+`finance-dashboard/scripts/test-db.sh [pytest args]`: it starts a throwaway `postgres:16-alpine`
+on a random high port, migrates it, runs `REQUIRE_DB=1 pytest -q` (a missing DB fails instead of
+skipping), and removes the container on exit. Needs Docker.
+
 ## Option 2: Full stack in Docker (Compose)
 
 Four services (`db`, `backend`, `frontend`, `caddy`) defined in `compose.yaml`. If Option 1's

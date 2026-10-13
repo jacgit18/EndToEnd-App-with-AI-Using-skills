@@ -39,7 +39,7 @@ from decimal import Decimal  # noqa: E402
 
 import pytest  # noqa: E402
 from fastapi.testclient import TestClient  # noqa: E402
-from sqlalchemy import delete, func, select, update  # noqa: E402
+from sqlalchemy import delete, func, select, text, update  # noqa: E402
 from sqlalchemy.exc import OperationalError  # noqa: E402
 
 from app import rate_limit, reconcile  # noqa: E402
@@ -327,3 +327,91 @@ def test_query_failure_is_2(monkeypatch, reconcile_log):
 
     assert reconcile.main() == 2
     assert any(r.getMessage() == "reconcile could not run" for r in reconcile_log.records)
+
+
+# --------------------------------------------------------------------------- 4. reversals
+
+
+def insert_reversal(original_id: int, account_id: int, amount: str) -> int:
+    """Write a reversal row straight into Postgres, bypassing the void endpoint (which
+    always posts the exact negation), and move the account's balance by the same amount
+    so the balance invariant stays true: that is exactly the case it cannot see."""
+    with SessionLocal() as db:
+        row = db.execute(
+            text(
+                "INSERT INTO transactions (account_id, date, amount, description, type,"
+                " reverses_transaction_id) VALUES (:a, '2026-09-01', :amt, :d, 'reversal', :r)"
+                " RETURNING id"
+            ),
+            {"a": account_id, "amt": amount, "d": f"{PREFIX}bad reversal", "r": original_id},
+        ).one()
+        db.execute(
+            update(Account)
+            .where(Account.id == account_id)
+            .values(balance=Account.balance + Decimal(amount))
+        )
+        db.commit()
+        return row[0]
+
+
+def bad_reversals_for(ids) -> list[tuple]:
+    ids = set(ids)
+    with SessionLocal() as db:
+        return [r for r in reconcile.find_bad_reversals(db) if r[2] in ids]
+
+
+def original_tx_id(account_id: int) -> int:
+    with SessionLocal() as db:
+        return db.scalar(select(Transaction.id).where(Transaction.account_id == account_id))
+
+
+def test_a_real_void_is_not_a_bad_reversal(client, pre_existing_clean, reconcile_log):
+    account = make_account(client, "100.00", ["-25.00"])
+    original = original_tx_id(account["id"])
+    assert client.post(f"/api/transactions/{original}/void").status_code == 201
+
+    assert bad_reversals_for([account["id"]]) == []
+    assert reconcile.main() == 0
+
+
+def test_reversal_with_the_wrong_amount_is_flagged_though_balance_ties_out(
+    client, pre_existing_clean, reconcile_log
+):
+    account = make_account(client, "100.00", ["-25.00"])  # balance 75.00
+    original = original_tx_id(account["id"])
+    reversal = insert_reversal(original, account["id"], "10.00")  # should have been 25.00
+
+    # The balance invariant holds (balance 85.00 == 100 - 25 + 10), so drift is silent...
+    assert drift_for([account["id"]]) == {}
+    # ...and only the reversal check sees it.
+    assert bad_reversals_for([account["id"]]) == [
+        (reversal, original, account["id"], Decimal("10.00"), Decimal("-25.00"))
+    ]
+
+    assert reconcile.main() == 1
+    warnings = [
+        r.getMessage() for r in reconcile_log.records
+        if r.name == "reconcile" and r.getMessage().startswith("BAD REVERSAL ")
+    ]
+    assert warnings == [
+        f"BAD REVERSAL id={reversal} reverses={original} account id={account['id']} "
+        "amount=10.00 original amount=-25.00"
+    ]
+    errors = [r.getMessage() for r in reconcile_log.records
+              if r.name == "reconcile" and r.levelno == logging.ERROR]
+    assert errors == ["1 reversals do not cancel their original"]
+
+
+def test_reversal_on_another_account_is_flagged_even_if_the_amount_cancels(
+    client, pre_existing_clean, reconcile_log
+):
+    first = make_account(client, "100.00", ["-25.00"])
+    other = make_account(client, "50.00", [])
+    original = original_tx_id(first["id"])
+    reversal = insert_reversal(original, other["id"], "25.00")  # right amount, wrong account
+
+    assert drift_for([first["id"], other["id"]]) == {}  # each balance ties out
+    assert bad_reversals_for([first["id"], other["id"]]) == [
+        (reversal, original, other["id"], Decimal("25.00"), Decimal("-25.00"))
+    ]
+    assert reconcile.main() == 1

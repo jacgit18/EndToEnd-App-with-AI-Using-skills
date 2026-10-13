@@ -518,3 +518,36 @@ def test_concurrent_posts_and_edits_keep_the_invariant(auth):
         assert count == POSTERS * (round_no + 1)
         assert total == expected_sum
         assert starting in edits  # whichever edit landed last
+
+
+class _FakeOrig(Exception):
+    """Stands in for psycopg's error: only `.sqlstate` is looked at."""
+
+    def __init__(self, sqlstate):
+        super().__init__(sqlstate)
+        self.sqlstate = sqlstate
+
+
+@pytest.mark.parametrize("bad", [99999999999999999999, 2**31, 0])
+def test_patch_with_out_of_range_id_is_422(client, bad):
+    assert client.patch(f"/api/accounts/{bad}", json={"type": "cash"}).status_code == 422
+
+
+def test_only_numeric_out_of_range_dataerror_is_reported_as_balance_overflow(client, monkeypatch):
+    from sqlalchemy.exc import DataError
+    from sqlalchemy.orm import Session
+
+    account = create_account(client, type="checking", starting_balance="1.00").json()
+    url = f"/api/accounts/{account['id']}"
+
+    def failing(sqlstate):
+        def commit(self):
+            raise DataError("stmt", {}, _FakeOrig(sqlstate))
+
+        return commit
+
+    monkeypatch.setattr(Session, "commit", failing("22003"))
+    assert client.patch(url, json={"type": "cash"}).status_code == 422
+    monkeypatch.setattr(Session, "commit", failing("22P02"))  # invalid_text_representation
+    with pytest.raises(DataError):
+        client.patch(url, json={"type": "cash"})

@@ -61,7 +61,7 @@ jobs:
       REQUIRE_DB: "1"
     steps:
       - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v5
+      - uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
           cache-dependency-glob: finance-dashboard/backend/uv.lock
@@ -94,7 +94,7 @@ jobs:
         working-directory: finance-dashboard/frontend
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: npm
@@ -109,7 +109,7 @@ jobs:
       - run: npm test
       - run: npm run build
       - name: Upload the production build
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: frontend-dist
           path: finance-dashboard/frontend/dist
@@ -126,7 +126,7 @@ jobs:
         working-directory: finance-dashboard/frontend
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: npm
@@ -136,7 +136,7 @@ jobs:
       - run: npm run e2e
       - name: Upload report and traces on failure
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-report
           path: |
@@ -156,12 +156,12 @@ jobs:
         working-directory: finance-dashboard
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: npm
           cache-dependency-path: finance-dashboard/frontend/package-lock.json
-      - uses: astral-sh/setup-uv@v5
+      - uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
           cache-dependency-glob: finance-dashboard/backend/uv.lock
@@ -182,7 +182,7 @@ jobs:
         run: scripts/real-stack.sh logs --tail 200
       - name: Upload reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: real-stack-reports
           path: |

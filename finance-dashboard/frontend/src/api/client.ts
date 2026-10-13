@@ -214,7 +214,8 @@ export class ApiError extends Error {
 // until request() re-fetches one from /auth/me before the next write.
 let csrfToken: string | null = null;
 
-async function request<T>(path: string, init?: RequestInit): Promise<T> {
+// Exported only so client.test.ts can exercise header merging directly.
+export async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const isWrite = init?.method !== undefined && init.method !== "GET";
   if (isWrite && !csrfToken && path !== "/auth/login") {
     // Reloaded page: cookie still valid, token gone. A 401 here redirects to
@@ -224,13 +225,20 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   // A FormData body (CSV upload) must NOT get a Content-Type: the browser adds
   // multipart/form-data with the boundary itself, and a JSON header would break it.
   const isForm = init?.body instanceof FormData;
-  const res = await fetch(`/api${path}`, {
-    headers: {
-      ...(isForm ? {} : { "Content-Type": "application/json" }),
-      ...(isWrite && csrfToken ? { "X-CSRF-Token": csrfToken } : {}),
-    },
-    ...init,
-  });
+  // Caller headers go on top of the defaults, and `headers` is taken out of the
+  // spread so a caller's own headers can never replace the merged object (that
+  // would silently drop Content-Type and the CSRF token). The CSRF header is set
+  // last so a write can't lose it, even if the caller passes one of its own.
+  const { headers: callerHeaders, ...rest } = init ?? {};
+  const headers: Record<string, string> = {};
+  const setHeader = (name: string, value: string) => {
+    for (const k of Object.keys(headers)) if (k.toLowerCase() === name.toLowerCase()) delete headers[k];
+    headers[name] = value;
+  };
+  if (!isForm) setHeader("Content-Type", "application/json");
+  new Headers(callerHeaders).forEach((value, name) => setHeader(name, value));
+  if (isWrite && csrfToken) setHeader("X-CSRF-Token", csrfToken);
+  const res = await fetch(`/api${path}`, { ...rest, headers });
   if (res.status === 401 && window.location.pathname !== "/login") {
     // Session missing, expired or revoked. client.ts sits outside React, so it
     // can't use the router's navigate(); a full-page redirect also drops every
