@@ -27,6 +27,7 @@ dependencies = [
 dev = [
     "pytest>=8.0",
     "httpx>=0.27",   # required by FastAPI's TestClient (ADR-0016 integration tests)
+    "ruff>=0.17.0",
 ]
 
 # Added in later phases, not needed yet:
@@ -43,3 +44,12 @@ dev = [
 # pytest is run from here, same as it does when uvicorn runs the app itself.
 [tool.pytest.ini_options]
 pythonpath = ["."]
+
+# Lint (CI: `uv run ruff check .`). Conservative set: pycodestyle errors that are not
+# style (E4, E7, E9) and pyflakes (F). Formatting is not enforced (no `ruff format`).
+[tool.ruff]
+target-version = "py313"
+extend-exclude = ["migrations/versions"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F"]

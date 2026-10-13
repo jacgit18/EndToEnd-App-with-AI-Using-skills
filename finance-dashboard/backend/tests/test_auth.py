@@ -128,7 +128,7 @@ def test_me_reissues_a_working_csrf_token_and_requires_a_session(client):
 
 
 def test_logout_invalidates_the_session_server_side(client):
-    csrf_token = login(client).json()["csrf_token"]
+    login(client)
     cookie = client.cookies.get(SESSION_COOKIE_NAME)
 
     assert client.post("/api/auth/logout").status_code == 204
