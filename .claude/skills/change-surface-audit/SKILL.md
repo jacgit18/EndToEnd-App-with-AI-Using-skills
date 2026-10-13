@@ -107,7 +107,7 @@ From `surface-checklist.md`: **API, Data, State, Performance, Security, Observab
 For each — does this change touch it, what's the specific risk here, what question
 resolves it. Applies to Add and Modify directly; for Remove and Silent changes, walk the
 same six surfaces against the *thing being removed or changed*, not just the code diff.
-Mark a surface `n/a — <reason>` rather than silently skipping it.
+Mark a surface `n/a — <reason>` rather than silently skipping it. Also list other open PRs touching the same files (`gh pr list --json number,files`): a merge-order risk to flag, not a seventh surface.
 **Conflict register** (only when 2+ features touch the same row or state): keep a numbered one-line-per-pair register in the PR description or spec, updated in the same PR. Several writers? Then both must use the same conflict rule (last-writer-wins by field or row, 3-way merge); a mismatch is a design risk to flag before merging. Otherwise skip and say so.
 
 ### 3. For Modify — classify compatible vs. breaking
