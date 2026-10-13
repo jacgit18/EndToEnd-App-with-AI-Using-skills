@@ -14,6 +14,7 @@ from pydantic import (
     field_validator,
 )
 
+from app.schemas._ids import Id
 from app.schemas._money import Money, as_str, reject_float
 
 # Same rule as AccountName (account.py), at the column's 255 characters: trimmed,
@@ -41,8 +42,8 @@ class TransactionCreate(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    account_id: int
-    category_id: int | None = None
+    account_id: Id
+    category_id: Id | None = None
     date: date
     amount: Money  # negative = money out, positive = money in; NUMERIC(14,2) rules, see _money.py
     description: Description

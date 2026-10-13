@@ -280,3 +280,9 @@ def test_write_without_csrf_header_is_refused(client):
     assert client.delete(f"/api/budgets/{M}/{cid}").status_code == 403
     assert copy(client).status_code == 403
     assert rows(cid) == []
+
+
+@pytest.mark.parametrize("bad", [99999999999999999999, 2**31, 0])
+def test_budget_category_id_out_of_range_is_422(client, bad):
+    assert client.put(f"/api/budgets/{M}/{bad}", json={"amount": "5"}).status_code == 422
+    assert client.delete(f"/api/budgets/{M}/{bad}").status_code == 422

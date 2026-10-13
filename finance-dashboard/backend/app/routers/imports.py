@@ -27,6 +27,7 @@ from app.db import get_db
 from app.models.account import Account
 from app.models.import_batch import ImportBatch
 from app.models.transaction import Transaction
+from app.schemas._ids import MAX_ID
 from app.schemas.import_batch import (
     ImportBatchRead,
     ImportMapping,
@@ -91,7 +92,7 @@ def create_import(
     file: UploadFile = File(...),
     # Required in single-account mode, refused in multi-account mode (the mapping's
     # account_map names the accounts). Optional here so the router can say which.
-    account_id: int | None = Form(None),
+    account_id: int | None = Form(None, ge=1, le=MAX_ID),
     mapping: str = Form(...),  # JSON: a multipart form can't carry a nested object
     db: Session = Depends(get_db),
 ) -> ImportResult:
