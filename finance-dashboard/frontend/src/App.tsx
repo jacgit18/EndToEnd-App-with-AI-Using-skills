@@ -20,7 +20,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
-      <Route path="/" element={<Dashboard />} />
+      <Route path="/" element={<TransactionsHome />} />
       <Route path="/dashboard" element={<DashboardPage />} />
       <Route path="/accounts" element={<AccountsPage />} />
       <Route path="/categories" element={<CategoriesPage />} />
@@ -31,11 +31,13 @@ export default function App() {
   );
 }
 
-// Phase 0's actual proof: this component is the first thing that exercises
-// the whole chain end to end — browser -> Vite proxy -> FastAPI -> Postgres
+// Home page ("/"): the backend-status badge, sign-out and nav around the
+// Transactions list. (The dashboard proper is DashboardPage at "/dashboard".)
+// It began as Phase 0's proof and still exercises the whole chain end to end — browser -> Vite proxy -> FastAPI -> Postgres
 // (spec.md's "controlled-experiment slice"). TanStack Query owns the
-// fetch/loading/error/refetch state (ADR-0009) — no useState/useEffect here.
-function Dashboard() {
+// fetch/loading/error/refetch state (ADR-0009) — this component itself has no
+// useState/useEffect (the Transactions child keeps its own form state).
+function TransactionsHome() {
   const { data, isLoading, isError } = useQuery({
     queryKey: ["health"],
     queryFn: api.health,
