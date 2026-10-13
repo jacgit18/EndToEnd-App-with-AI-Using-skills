@@ -49,6 +49,22 @@ describe("CSRF token handling", () => {
     expect(csrfHeaderOf(fetchMock.mock.calls[1])["X-CSRF-Token"]).toBe("tok-me");
   });
 
+  it("keeps the CSRF and Content-Type headers when a caller passes its own headers", async () => {
+    await loadApi("/login");
+    const { api, request } = await import("./client");
+    fetchMock
+      .mockResolvedValueOnce(json({ csrf_token: "tok-h" })) // login
+      .mockResolvedValueOnce(json({ id: 1 }, 201));
+    await api.login("a@b.c", "pw");
+
+    await request("/accounts", { method: "POST", body: "{}", headers: { "X-Trace": "abc" } });
+
+    const sent = csrfHeaderOf(fetchMock.mock.calls[1]);
+    expect(sent["X-CSRF-Token"]).toBe("tok-h");
+    expect(sent["Content-Type"]).toBe("application/json");
+    expect(sent["x-trace"]).toBe("abc");
+  });
+
   it("does not send a CSRF header on reads", async () => {
     const api = await loadApi();
     fetchMock.mockResolvedValueOnce(json([]));

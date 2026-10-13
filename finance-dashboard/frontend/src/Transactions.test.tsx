@@ -53,14 +53,17 @@ const tx = (over: Partial<Transaction> = {}): Transaction => ({
 });
 
 function renderIt() {
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } });
   render(
-    <QueryClientProvider
-      client={new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } })}
-    >
+    <QueryClientProvider client={client}>
       <Transactions />
     </QueryClientProvider>,
   );
+  return client;
 }
+
+const invalidatedKeys = (spy: { mock: { calls: unknown[][] } }) =>
+  spy.mock.calls.map((c) => (c[0] as { queryKey: unknown[] }).queryKey[0]);
 
 beforeEach(() => {
   listAccounts.mockReset().mockResolvedValue([acct()]);
@@ -122,6 +125,34 @@ describe("Transactions", () => {
     fireEvent.click(await screen.findByRole("button", { name: "Void" }));
     expect(window.confirm).toHaveBeenCalled();
     await waitFor(() => expect(voidTransaction).toHaveBeenCalledWith(10));
+  });
+
+  it("invalidates ledger, accounts and dashboard queries after a void", async () => {
+    const client = renderIt();
+    const spy = vi.spyOn(client, "invalidateQueries");
+    fireEvent.click(await screen.findByRole("button", { name: "Void" }));
+    await waitFor(() => expect(voidTransaction).toHaveBeenCalledWith(10));
+    await waitFor(() =>
+      expect(invalidatedKeys(spy)).toEqual(
+        expect.arrayContaining(["transactions", "accounts", "dashboard", "dashboard-trend"]),
+      ),
+    );
+  });
+
+  it("invalidates ledger, accounts and dashboard queries after a create", async () => {
+    const client = renderIt();
+    const spy = vi.spyOn(client, "invalidateQueries");
+    await screen.findByText("Coffee");
+    fireEvent.change(screen.getAllByRole("combobox")[0], { target: { value: "1" } });
+    fireEvent.change(screen.getByPlaceholderText(/Amount/), { target: { value: "-1.00" } });
+    fireEvent.change(screen.getByPlaceholderText("Description"), { target: { value: "Gum" } });
+    fireEvent.click(screen.getByRole("button", { name: "Add" }));
+    await waitFor(() => expect(createTransaction).toHaveBeenCalled());
+    await waitFor(() =>
+      expect(invalidatedKeys(spy)).toEqual(
+        expect.arrayContaining(["transactions", "accounts", "dashboard", "dashboard-trend"]),
+      ),
+    );
   });
 
   it("does not void when the confirmation is declined", async () => {
