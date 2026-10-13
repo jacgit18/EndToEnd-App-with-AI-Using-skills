@@ -145,3 +145,17 @@ def test_login_is_rate_limited_after_max_attempts(client):
     assert set(codes) == {401}
     assert blocked.status_code == 429
     assert int(blocked.headers["Retry-After"]) > 0
+
+
+def test_logout_deletion_cookie_carries_the_attributes_the_cookie_was_set_with(client):
+    login(client)
+    response = client.post("/api/auth/logout")
+    assert response.status_code == 204
+
+    deletion = response.headers["set-cookie"].lower()
+    assert deletion.startswith(f"{SESSION_COOKIE_NAME.lower()}=")
+    assert "max-age=0" in deletion
+    assert "path=/" in deletion
+    assert "httponly" in deletion
+    assert "samesite=lax" in deletion
+    

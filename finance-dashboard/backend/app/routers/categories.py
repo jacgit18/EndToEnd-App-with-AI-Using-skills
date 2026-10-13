@@ -4,13 +4,16 @@ No DELETE: transactions reference categories forever, so an unwanted category is
 archived instead (hidden from pickers, history kept).
 """
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from typing import Annotated
+
+from fastapi import APIRouter, Depends, HTTPException, Path, status
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.db import get_db
 from app.models.category import Category
+from app.schemas._ids import MAX_ID
 from app.schemas.category import CategoryCreate, CategoryRead, CategoryUpdate
 
 router = APIRouter()
@@ -62,7 +65,9 @@ def create_category(payload: CategoryCreate, db: Session = Depends(get_db)) -> C
 
 @router.patch("/{category_id}", response_model=CategoryRead)
 def update_category(
-    category_id: int, payload: CategoryUpdate, db: Session = Depends(get_db)
+    category_id: Annotated[int, Path(ge=1, le=MAX_ID)],
+    payload: CategoryUpdate,
+    db: Session = Depends(get_db),
 ) -> Category:
     """Rename and/or archive/unarchive. `kind` is not editable (CategoryUpdate
     rejects it). Archiving leaves every existing transaction as it is; it only
