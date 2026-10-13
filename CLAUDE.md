@@ -10,7 +10,7 @@ Standing rules are in `.claude/rules/` and load automatically — read them, don
 
 ## Hard rules (details in `conventions.md`)
 
-- **Docs are not edited here.** `finance-dashboard/docs/` and `Artifact/` are frozen copies; the live docs are `/home/jac/Videos/DevHiveMind/Projects/EndToEnd-App-with-AI-Using-skills/finance-dashboard/` and `…/Artifact/` (no `docs/` subfolder there). Edit only those. Quote paths (spaces).
+- **Docs are not in this repo.** finance-dashboard's docs are `/home/jac/Videos/DevHiveMind/Projects/EndToEnd-App-with-AI-Using-skills/finance-dashboard/` and the write-ups are `…/Artifact/` (no `docs/` subfolder). The repo copies were deleted 2026-10-13. Quote paths (spaces).
 - **Git:** branch per change, PRs to `main`, never push to `main`. Stage explicit pathspecs only (never `git add -A` / `.`). Use `scripts/git/commit.sh`, `push.sh`, `land.sh`.
 - **Prod deploys** need a fresh, explicit "deploy to prod" in the current session.
 - **Never commit** `*.csv` (personal financial exports) or `.claude/_Prompts/logs/`.
@@ -32,6 +32,8 @@ npm test           # vitest
 npm run e2e        # playwright (+ axe)
 ```
 
+- **Read first (vault, `/home/jac/Videos/DevHiveMind/Projects/EndToEnd-App-with-AI-Using-skills/finance-dashboard/`):** `_PriorityRead.md` ranks everything. Guardrails: `ROADMAP.md` (build only what it and the backlog list), `ARCHITECTURE.md`, `DECISIONS.md` (do not re-litigate), `CHANGELOG.md` (add an entry with each change).
+- **UI work:** read all five in `ux/` first: `UX-DESIGN-BRIEF.md`, `USERFLOW.md`, `DESIGN-SYSTEM.md`, `COMPONENTS.md`, `SCREEN-SPECS.md`. They were written from the code (2026-10-13); the code wins if they differ. Update them with each UI change.
 - Postgres runs in Docker (`finance-dashboard-db`); full stack via `compose.yaml`. See `finance-dashboard/README.md`.
 - CI is `.github/workflows/ci.yml`.
 - Web UI targets WCAG 2.2 AAA and Lighthouse 100; measure the **production build**, not the dev server (`web-accessibility-and-lighthouse.md`).
