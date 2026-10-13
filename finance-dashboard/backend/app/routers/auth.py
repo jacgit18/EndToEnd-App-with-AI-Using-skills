@@ -81,4 +81,13 @@ def logout(
 ) -> None:
     delete_session(db, session.id)
     db.commit()
-    response.delete_cookie(SESSION_COOKIE_NAME)
+    # Same attributes the cookie was set with: a browser matches a deletion to the stored
+    # cookie by name + domain + path, and a mismatched Secure/SameSite can make it ignore
+    # the clearing header, leaving the dead session cookie in place.
+    response.delete_cookie(
+        SESSION_COOKIE_NAME,
+        path="/",
+        secure=settings.cookie_secure,
+        httponly=True,
+        samesite="lax",
+    )
