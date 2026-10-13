@@ -4,14 +4,18 @@
   they do not push to `main`. Merging a PR is fine from the terminal — `scripts/git/land.sh`
   does it through `gh` (branch protection and checks still apply); that is merging a PR, not
   a direct push to `main`.
-- **Docs live in DevHiveMind (from 2026-10-03).** `finance-dashboard/docs/` (ADRs, specs,
-  backlog, paid-options, deploy, testing) and `Artifact/` (talking points, write-ups) are
-  edited **only** in `/home/jac/Videos/DevHiveMind/EndToEnd-App-with-AI-Using-skills/`, at the
-  same relative paths. The copies in this repo are frozen and go stale; do not edit them. Any
-  skill that writes to `docs/architecture/decisions/`, `docs/testing/` or similar and says
-  "follow the repo's own convention" means this: resolve `docs/…` for finance-dashboard to
-  `<that DevHiveMind root>/finance-dashboard/docs/…`, and `Artifact/…` to `<root>/Artifact/…`.
-  Quote the path (spaces elsewhere in DevHiveMind). Code, `.claude/` and `scripts/` stay here.
+- **Docs live in DevHiveMind (from 2026-10-03; under `Projects/` from 2026-10-13).**
+  finance-dashboard's docs (ADRs, specs, backlog, paid-options, deploy, testing, audits) are in
+  `/home/jac/Videos/DevHiveMind/Projects/EndToEnd-App-with-AI-Using-skills/finance-dashboard/`
+  (the **docs root**) and `Artifact/` (talking points, write-ups) in
+  `…/Projects/EndToEnd-App-with-AI-Using-skills/Artifact/`. There is **no `docs/` subfolder** in the
+  vault: `docs/spec.md` in this repo's code comments and README is `<docs root>/spec.md`. The
+  copies in this repo are frozen and go stale; do not edit them. Any skill that writes to
+  `docs/architecture/decisions/`, `docs/testing/` or similar and says "follow the repo's own
+  convention" means this: resolve `docs/…` for finance-dashboard to `<docs root>/…`, and
+  `Artifact/…` to `…/Artifact/…`. Quote the path (spaces elsewhere in DevHiveMind). Code,
+  `.claude/` and `scripts/` stay here. Wikilinks in the vault are full vault paths
+  (`[[Projects/EndToEnd-App-with-AI-Using-skills/finance-dashboard/…]]`).
 - **`.gitignore`:** `*.csv` (personal financial exports) and `.claude/_Prompts/logs/` (the
   `UserPromptSubmit` hook's prompt logs) live in the working tree but are never committed.
 - **Commit messages** end with:
