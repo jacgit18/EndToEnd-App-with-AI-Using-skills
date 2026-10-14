@@ -68,8 +68,9 @@ Skills about how you work rather than about a project load as plain user skills 
 the four request-shape gates, the writing trio (`explaining-my-work`, `delete-ai-words`,
 `software-carpentier-brand`), the two Documents skills (`codebase-file-orientation`,
 `document-page-check`), three Prompts skills (`prompt-authoring`, `prompt-tester`,
-`idea-to-first-test`), `incremental-build-pacing`, `effort-layers`, the git pair (`commit-and-push`,
-`history-integration-strategy`) and seven slash-only skills (`disable-model-invocation: true`, so
+`idea-to-first-test`), `incremental-build-pacing`, `effort-layers`, the git trio (`commit-and-push`,
+`history-integration-strategy`, `release-version-calc`; copy `scripts/release/` into a repo that
+wants its `next-version.sh`) and seven slash-only skills (`disable-model-invocation: true`, so
 they never auto-fire; type `/name` to use one): `tech-decision-walkthrough`,
 `system-design-communication`, `bug-hunt-drill`, `decision-journal`, `problem-journal`,
 `repo-reality-audit`, `context-promotion`. The two journals write under a configurable root
@@ -81,7 +82,7 @@ for s in ambiguity-gate learning-gate problem-solving-gates entry-point-first \
          explaining-my-work delete-ai-words software-carpentier-brand \
          codebase-file-orientation document-page-check \
          prompt-authoring prompt-tester idea-to-first-test incremental-build-pacing effort-layers \
-         commit-and-push history-integration-strategy \
+         commit-and-push history-integration-strategy release-version-calc \
          tech-decision-walkthrough system-design-communication bug-hunt-drill \
          decision-journal problem-journal repo-reality-audit context-promotion; do
   [ -e ~/.claude/skills/$s ] || ln -s "$PWD/.claude/skills/$s" ~/.claude/skills/$s

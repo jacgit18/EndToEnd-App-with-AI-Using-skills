@@ -65,6 +65,7 @@ Groups are labels only — this file is the mapping. Add new skills here.
 
 - `commit-and-push`
 - `history-integration-strategy`
+- `release-version-calc`
 
 ## Prompts
 
