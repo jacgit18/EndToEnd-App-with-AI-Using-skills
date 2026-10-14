@@ -44,6 +44,18 @@ Also create these five in `<project>/ux/` when missing, filled from the real cod
 
 Link them from the README or CLAUDE.md "Read first" block and from `_PriorityRead.md`.
 
+### Database set (any project with a database)
+
+Also create these five in `<project>/data/` when missing, so an agent works from a written contract instead of inventing tables and permissions. On an existing project, fill them from the real code (migrations, ORM models, constraints, auth checks, seed scripts) and say the code wins if they differ; on a new one, write them before the first migration. Read them before touching the schema, a migration, access rules or fixtures; update them in the same PR as each such change.
+
+1. `DATA-MODEL.md`: entities and relationships (who owns which record, cardinality), as a Mermaid ERD or a plain list. Deeper design: `relational-modeling`.
+2. `SCHEMA.md`: per table/field: type, required, defaults, allowed values (enums/statuses), min/max, uniqueness, and where each rule is enforced (DB constraint, API validation, form).
+3. `MIGRATIONS.md`: the tool and commands, the expand/contract rule for changes on live data, backup-before-migrate, the rollback step for each risky migration, and a log of migrations that needed special handling. Moving to a new store: `migration-cutover`.
+4. `RLS-POLICIES.md`: who can read/write which rows, one row per table × role (anon, user, owner, admin, service), and the mechanism (Postgres RLS, query scoping, API checks). Single-user apps still write it: say so and name what stops a second user seeing the data. Model choice: `access-control-modeling`.
+5. `SEED-DATA.md`: test users per role, sample records covering empty, typical and edge states, how to load and reset them, and the rule that seeds never contain real personal data.
+
+Link them from `ARCHITECTURE.md` and `_PriorityRead.md` (read-when tier: "touching the database").
+
 ## Maintain
 
 After any bulk move or rename of docs, re-check every link in `_PriorityRead.md` (links by bare name survive a folder move, path-qualified ones do not); retarget, recreate or drop each broken one, and say which. When a doc is added, renamed, superseded or closed, update the tiers in the same piece of work and bump the `Last reviewed` date. When a PR changes behaviour, a decision or the plan, update `CHANGELOG.md`, `DECISIONS.md` or `ROADMAP.md` in the same piece of work. Keep it to one screen; if it grows, you are listing, not prioritizing.

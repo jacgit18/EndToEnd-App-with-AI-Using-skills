@@ -16,7 +16,7 @@ Turn "commit this" into a clean commit whose message is actually derived from wh
 ## Out of scope — hand these off or decline
 
 - **Pull requests.** This skill stops after `git push`. Opening a PR is a separate, explicitly-started step: on "open a PR", commit and push any uncommitted or unpushed work here first, then open it with `gh pr create` (and merge with `scripts/git/land.sh` only when asked). **Ordering with `history-integration-strategy`:** if the user also wants history cleaned up ("land it without messy history"), run that skill's gate *before* pushing, or ask whether to push first — pushing makes the commits "published" and changes its answer.
-- **Merge conflict resolution.** If a push is rejected for conflicts or the tree has conflict markers, stop and report it — don't guess at a resolution.
+- **Merge conflict resolution.** If a push is rejected for conflicts or the tree has unresolved conflict markers, stop and report it — don't guess at a resolution. Lockfile/additive triage lives in `history-integration-strategy`.
 - **History rewriting.** No `rebase`, no `commit --amend` on a pushed commit, no `push --force`. If the user wants history changed, that's a deliberate separate request with its own confirmation. Deciding *whether* to squash or rebase a branch for integration is `history-integration-strategy` (it picks the strategy; it doesn't run the rebase).
 - **Branching / integration strategy.** This skill will branch off the default branch when needed (below), but it doesn't design a Git flow or choose how a finished branch folds back in — merge commit vs. squash vs. rebase vs. fast-forward is `history-integration-strategy`.
 
@@ -42,7 +42,7 @@ git log --oneline -10            # recent history — for message convention
 git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null || echo origin/main  # default branch
 ```
 
-If `git status` shows nothing to commit and nothing staged, say so and stop.
+If `git status` shows nothing to commit and nothing staged, say so and stop (unless the request also asks for a version bump: `release-version-calc` writes it first, then commit it).
 
 If the user has already staged a subset of files, treat that as intent — commit what they staged (pass exactly those paths to `commit.sh`, which refuses when the index holds files outside the named paths), and mention the unstaged remainder rather than sweeping it in.
 
@@ -68,7 +68,7 @@ Scan the diff before staging. Stop and flag — don't silently commit — if you
 - **`.env` files or local config** not already tracked, unless the user clearly wants them in.
 - **Large or binary blobs** that look accidental (build output, `node_modules`, media dumps, `*.log`).
 - **Stray debug code** — `console.log`, `print()`, `debugger`, `TODO: remove`, commented-out blocks that read as leftovers.
-- **Merge conflict markers** — `<<<<<<<`, `=======`, `>>>>>>>`.
+- **Merge conflict markers** — `<<<<<<<`, `=======`, `>>>>>>>` (unresolved ones only; conflicts resolved per the `history-integration-strategy` triage are fine to commit).
 - **Unrelated files** swept in by a broad `git add`.
 
 Surface these as a short list and let the user decide. A `.gitignore` addition is often the right fix for the first two.
@@ -207,3 +207,4 @@ Depends on: `history-integration-strategy`. If it isn't installed, say so and gi
 
 - Use when the user says "commit this", "commit and push", "push my changes", "save this to git", "commit with a good message", "write the commit message", or finishes a chunk of work and wants it in version control.
 - It also does not write per-file documentation for newly added modules — `codebase-file-orientation` may offer to author those orientation docs before the commit, and never blocks or delays it.
+- Not for deciding the release version before committing a bump ("bump the version and commit it"): `release-version-calc` picks the number and edits the manifests, then this skill commits them.

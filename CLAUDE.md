@@ -34,6 +34,7 @@ npm run e2e        # playwright (+ axe)
 
 - **Read first (vault, `/home/jac/Videos/DevHiveMind/Projects/EndToEnd-App-with-AI-Using-skills/finance-dashboard/`):** `_PriorityRead.md` ranks everything. Guardrails: `ROADMAP.md` (build only what it and the backlog list), `ARCHITECTURE.md`, `DECISIONS.md` (do not re-litigate), `CHANGELOG.md` (add an entry with each change).
 - **UI work:** read all five in `ux/` first: `UX-DESIGN-BRIEF.md`, `USERFLOW.md`, `DESIGN-SYSTEM.md`, `COMPONENTS.md`, `SCREEN-SPECS.md`. They were written from the code (2026-10-13); the code wins if they differ. Update them with each UI change.
+- **Database work** (schema, migration, access rules, fixtures): read all five in `data/` first: `DATA-MODEL.md`, `SCHEMA.md`, `MIGRATIONS.md`, `RLS-POLICIES.md`, `SEED-DATA.md`. Written from the code (2026-10-13); the code wins if they differ. Update them in the same PR.
 - Postgres runs in Docker (`finance-dashboard-db`); full stack via `compose.yaml`. See `finance-dashboard/README.md`.
 - CI is `.github/workflows/ci.yml`.
 - Web UI targets WCAG 2.2 AAA and Lighthouse 100; measure the **production build**, not the dev server (`web-accessibility-and-lighthouse.md`).

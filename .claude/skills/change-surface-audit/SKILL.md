@@ -107,7 +107,7 @@ From `surface-checklist.md`: **API, Data, State, Performance, Security, Observab
 For each — does this change touch it, what's the specific risk here, what question
 resolves it. Applies to Add and Modify directly; for Remove and Silent changes, walk the
 same six surfaces against the *thing being removed or changed*, not just the code diff.
-Mark a surface `n/a — <reason>` rather than silently skipping it.
+Mark a surface `n/a — <reason>` rather than silently skipping it. Also list other open PRs touching the same files (`gh pr list --json number,files`): a merge-order risk to flag (order and stacking: `history-integration-strategy`), not a seventh surface.
 **Conflict register** (only when 2+ features touch the same row or state): keep a numbered one-line-per-pair register in the PR description or spec, updated in the same PR. Several writers? Then both must use the same conflict rule (last-writer-wins by field or row, 3-way merge); a mismatch is a design risk to flag before merging. Otherwise skip and say so.
 
 ### 3. For Modify — classify compatible vs. breaking
@@ -241,9 +241,9 @@ default.
 Needs no repo setup. Writes a deprecation record only for removals with a live deprecation window, to `docs/engineering/deprecations/` by default (follow the repo's own convention). Depends on: `deployment-strategy`, `spec-drift-gate`, `deprecation-sunset`, `disclosure-gap-audit`, `failure-mode-analysis`, `migration-cutover`, `resilience-strategy`, `relational-modeling`, `database-architecture`, `data-tier-operations`, `api-interface-style`, `config-and-secrets-management`, `access-control-modeling`, `document-page-check`, `codebase-file-orientation`, `repo-reality-audit`. If a named sibling isn't installed, say so and give the one-line answer inline instead of dropping the hand-off; when it is installed under a plugin namespace, hand off by that name. The load-bearing ones: no `deployment-strategy` → state the rollout constraint the audit implies (expand/contract order, what must ship first, the rollback trigger) and stop there; no `deprecation-sunset` → write the record and list notice, window and a straggler check as the next steps; no `migration-cutover` → name moving a workload between systems as a separate decision.
 
 ## Routing boundaries (full)
-
 The frontmatter `description` is truncated in the skill listing, so the full boundary rules live here (moved verbatim from the original description):
 
 - Not for writing the changed file's own standing orientation/companion doc (role, public surface, edges, gotchas) — that's `codebase-file-orientation`; it documents the file, this traces what the change breaks elsewhere, and the two compose on one change.
 - Use when someone says "what could this change break", "am I missing anything before I ship this", "is this a breaking change", "we're removing this endpoint/column/feature — what do we need to check first", "before adding this feature, what should I think about", "PR review for blast radius", or names a dependency bump / config change / infra update.
 - Not for checking whether a repo's own docs, ADRs or CI claims are still true, or whether its build and tests actually run (`repo-reality-audit`); that is a read-only whole-codebase check, not this skill's job.
+- Not for the release's version number across a range of changes: that is `release-version-calc`, which sends this skill the one change it can't classify from the diff and uses the compatible/breaking verdict to pick major/minor/patch.

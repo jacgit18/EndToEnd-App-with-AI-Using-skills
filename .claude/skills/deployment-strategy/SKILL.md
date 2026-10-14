@@ -139,3 +139,4 @@ Depends on: `migration-cutover`, `change-surface-audit`, `test-strategy`, `obser
 - Use when someone says "we need zero-downtime deploys", "should we do blue-green or canary", "our deploys cause an outage", "rollbacks take too long", "releases are scary so we batch them", "how do we roll this out safely", "set up a staging pipeline", or proposes a rollout approach and wants it checked.
 - Not for whether to adopt a service mesh, or rollout via a mesh's traffic-splitting — the adopt-or-not decision is `service-mesh-adoption`; this skill decides the rollout once that is settled.
 - Not for repo-per-service / pipeline-per-repo layout or how many deployable units exist — that is `microservices-decision`.
+- Not for what the new version's number is (major/minor/patch, pre-release stage, which manifests to sync): that is `release-version-calc`; this skill decides how that version rolls out.

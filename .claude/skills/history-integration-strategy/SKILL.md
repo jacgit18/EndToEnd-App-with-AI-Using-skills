@@ -1,6 +1,6 @@
 ---
 name: history-integration-strategy
-description: Gate for HOW to fold one branch into another (merge commit, fast-forward, squash-merge, rebase) or bring a branch up to date with trunk; withholds the recommendation until five facts are stated. Fires on "merge or rebase", "squash or merge this PR", "my branch is behind main — merge or rebase". NOT `commit-and-push` (stages/commits/pushes), NOT `learning-gate` (conceptual explainer); no skill resolves merge conflicts.
+description: Gate for HOW to fold one branch into another (merge commit, fast-forward, squash-merge, rebase) or bring a branch up to date with trunk; withholds the recommendation until five facts are stated. Fires on "merge or rebase", "squash or merge this PR", "my branch is behind main — merge or rebase". NOT `commit-and-push` (stages/commits/pushes), NOT `learning-gate` (conceptual explainer). Also queued-PR order and conflict triage.
 ---
 
 # History integration strategy
@@ -22,6 +22,7 @@ not a survey of all options.
 - "Should I clean up / squash these WIP commits before merging?"
 - "Do we want a merge commit here or a fast-forward?"
 - "What's the right way to get this long-lived branch back in sync?"
+- "In what order should I land these 5 open PRs?" — skip the five-fact precondition (it picks the method, not the order); go to Queued PRs.
 
 ## Out of scope — hand these off
 
@@ -30,9 +31,7 @@ not a survey of all options.
   this skill decides the method and hands back. **Order:** when cleanup is wanted, this gate runs
   *before* the push — once `commit-and-push` has pushed, Q1 ("already published") flips to yes
   and rules out local rewrites.
-- **Mechanical merge-conflict resolution** — no skill guesses at conflict resolutions. If a
-  merge or rebase throws conflicts, stop and report them (same rule `commit-and-push`
-  holds).
+- **Guessing at merge-conflict resolutions** — only the triage below is allowed (lockfiles, purely additive hunks). Anything else: stop and report, same as `commit-and-push`.
 - **Walking an interactive rebase / history surgery step by step** — this skill picks
   *rebase vs merge vs squash*; it does not narrate `rebase -i`, `reflog` recovery, or
   `filter-repo`. Once the strategy is chosen, executing it is ordinary work.
@@ -46,6 +45,7 @@ not a survey of all options.
   "list your own candidate options and a leaning first" rep doesn't apply. The five-fact
   precondition here is the rep. Options Generator's own trigger list names this skill for
   exactly this reason.
+- **Tests fail or behaviour broke after a merge** — debugging, `problem-solving-gates`; **conflict concepts** ("why do lockfile conflicts happen") — `learning-gate`.
 - **A bare conceptual question** — "what is a fast-forward merge?" — answered directly, no
   gate.
 
@@ -89,7 +89,7 @@ decision open.
 
 ## The decision
 
-Apply in order — the first that matches wins.
+Apply A–D in order — the first that matches wins. Queued PRs and Conflict triage below apply independently of A–D.
 
 ### A. A mandated strategy exists (Q2)
 
@@ -109,8 +109,8 @@ messier than ideal and why that's the correct trade.
   often as needed.
 - Branch is **shared** with others, or already merged into elsewhere → **merge the trunk
   in**. A rebase would force everyone else to recover. Accept the merge commits.
-- Either way: if conflicts appear, that's `commit-and-push`'s rule — stop and report, don't
-  guess.
+- Either way: if conflicts appear, run the triage below, then stop and report whatever it doesn't clear.
+- A branch that needs a **second** sync (merge or rebase) because other PRs landed means the open PRs overlap. Stop syncing and re-plan the order (see Queued PRs).
 
 ### D. Integrating a finished branch into the trunk (Q4 = integrating)
 
@@ -124,6 +124,20 @@ messier than ideal and why that's the correct trade.
 | One meaningful commit plus WIP noise, or one commit and trunk HAS moved | either | **Squash-merge** if the noise is only on this branch; **rebase then fast-forward** a lone clean commit if the branch is private, else a merge commit. |
 
 Note on rule B: squash-merge into trunk creates a new commit on trunk and does not rewrite the branch's own published commits, so a shared PR branch can still be squash-merged and then discarded; it is off the table only when the squash would be applied to the branch itself (a local squash then force-push).
+
+### Queued PRs — decide the landing order first
+
+When 2+ PRs are open at once, state the order before merging the first. Default: lockfile/dependency-only PRs, then CI, then backend/infra, then frontend; PRs sharing a file go adjacent, or the later one is stacked on the earlier. Land repo-wide hygiene commits (untracking files, mass renames, formatters) before any feature PR, or their churn shows up in every sync merge.
+
+### Conflict triage (stop-and-report still applies to the last class)
+
+Classify each hunk, then act:
+
+1. **Generated file** (`package-lock.json`, `uv.lock`, other lockfiles) — never hand-merge. Take the trunk's version and rerun the install. Say you did. Hand-written manifests (`package.json`, `pyproject.toml`) are classed by hunk (2 or 3): resolve the manifest first, then regenerate the lockfile from it.
+2. **Additive on both sides** (both PRs append different lines: imports, CI steps, test cases) — keep both, check ordering, run the tests.
+3. **Same lines changed differently** — a semantic conflict. Stop, show both sides and what each intended, and let the user decide. Do not pick `-X ours` / `-X theirs`. If the user explicitly says "pick mine/theirs", they have decided: show both sides, confirm once, apply.
+
+Judgment-heavy git: Sonnet or Opus (`git-actions.md`).
 
 ### E. Long-lived branch, badly diverged
 
@@ -163,7 +177,7 @@ If the user says "just tell me", "I don't care", or it is merge day and they wan
 - Recommend rebase, squash-of-the-branch, amend, or force-push on commits that are already published to others without their agreement.
 - Override a repo or forge mandated strategy (Q2) in a single PR.
 - Lay out all four options and leave the choice open.
-- Guess at conflict resolutions; stop and report.
+- Guess at a semantic conflict (triage class 3); stop and report. Generated files and purely additive hunks follow the triage.
 - Ask the user for a fact you can read from git, the forge, or CONTRIBUTING.
 
 If `scripts/git/land.sh` is available, it executes the chosen method with `--merge`, `--squash`, or `--rebase`.
@@ -207,3 +221,4 @@ into another repo's `.claude/skills/`. See `README.md` for where it sits next to
 
 - Fires on "merge or rebase", "squash or merge this PR", "merge / squash / rebase", "how should I integrate this branch", "my branch is behind main — merge or rebase", "squash these commits before merging", "clean up history before the merge", "should this be a fast-forward".
 - NOT `learning-gate` — "explain how rebase differs from merge" with no specific integration to decide is a learning request, this skill decides a concrete case.
+- Not for what to tag the release after it merges: that is `release-version-calc`; this skill only picks how the release branch is folded in.
