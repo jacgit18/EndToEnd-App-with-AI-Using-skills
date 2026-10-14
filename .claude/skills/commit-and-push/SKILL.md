@@ -42,7 +42,7 @@ git log --oneline -10            # recent history — for message convention
 git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null || echo origin/main  # default branch
 ```
 
-If `git status` shows nothing to commit and nothing staged, say so and stop.
+If `git status` shows nothing to commit and nothing staged, say so and stop (unless the request also asks for a version bump: `release-version-calc` writes it first, then commit it).
 
 If the user has already staged a subset of files, treat that as intent — commit what they staged (pass exactly those paths to `commit.sh`, which refuses when the index holds files outside the named paths), and mention the unstaged remainder rather than sweeping it in.
 
@@ -207,3 +207,4 @@ Depends on: `history-integration-strategy`. If it isn't installed, say so and gi
 
 - Use when the user says "commit this", "commit and push", "push my changes", "save this to git", "commit with a good message", "write the commit message", or finishes a chunk of work and wants it in version control.
 - It also does not write per-file documentation for newly added modules — `codebase-file-orientation` may offer to author those orientation docs before the commit, and never blocks or delays it.
+- Not for deciding the release version before committing a bump ("bump the version and commit it"): `release-version-calc` picks the number and edits the manifests, then this skill commits them.

@@ -150,3 +150,4 @@ Depends on: `change-surface-audit`, `migration-cutover`, `api-interface-style`, 
 - Not for a removal whose only question is what else it breaks ("what do I check before I delete this endpoint"), or one with no consumers beyond the owning team — that is `change-surface-audit`, which runs first and whose deprecation record this skill extends.
 - Not for retiring a datastore, application, or hosting environment wholesale — that is `migration-cutover`.
 - Not for deciding how API versions are named or numbered — that is `api-interface-style`.
+- Not for the version number of the release that announces or completes a removal: that is `release-version-calc` (announcement = additive, removal = breaking); this skill runs the window between them.

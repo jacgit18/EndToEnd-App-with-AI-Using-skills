@@ -221,3 +221,4 @@ into another repo's `.claude/skills/`. See `README.md` for where it sits next to
 
 - Fires on "merge or rebase", "squash or merge this PR", "merge / squash / rebase", "how should I integrate this branch", "my branch is behind main — merge or rebase", "squash these commits before merging", "clean up history before the merge", "should this be a fast-forward".
 - NOT `learning-gate` — "explain how rebase differs from merge" with no specific integration to decide is a learning request, this skill decides a concrete case.
+- Not for what to tag the release after it merges: that is `release-version-calc`; this skill only picks how the release branch is folded in.
