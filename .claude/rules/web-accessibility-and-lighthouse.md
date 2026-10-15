@@ -45,6 +45,24 @@ Applies to any web UI built or changed from this repo (portfolio site, `finance-
 - Keep tiny CSS inline (a separate file is a render-blocking request).
 - A structure test per page; run axe (AAA tags, 1280px and 320px, every state) and Lighthouse on every route.
 
+## Keep the score on every UI change (standing requirement)
+
+Hitting 100 once is not the job; keeping it is. For any project with a web UI:
+
+- Install the runner: `plugins/testing-skills/skills/web-vitals-audit/lighthouse.mjs` copied to `scripts/lighthouse.mjs`
+  (production build, mobile and desktop, first visit; `--check` fails under the floors; `--tab=`, `--runs=3`, `--url=`).
+  Set its `FLOORS` to the project's current scores on day one, raise them whenever a change earns it, never lower them silently.
+- The project's CLAUDE.md says: before a PR that changes UI, styles, fonts, images or the bundle, run it and put the before and
+  after in the PR description; a score under the floors is a regression to fix; a change that has to cost points says so in the PR.
+  Add a "Lighthouse run" line to the PR template's checks.
+- Build by these (each was a real loss of points): nothing arrives after load and moves the page (late banners, notices and images
+  float over the page or reserve their space); measured fallback fonts, and preload only the title font; the first screen's bundle
+  stays small (sheets and tabs lazy, heavy libraries behind `import()`, and a failed lazy download maps to a reload prompt); small
+  CSS inline, component CSS in its own file; images with width and height, lazy below the fold; an accessible name contains the
+  visible text; only roles the element allows; every colour pair passes in light and dark, native controls (`select`) included.
+- When a project is onboarded, write its baseline (scores, FCP, LCP, TBT, CLS) and "room to improve" list into its design-system
+  doc, so the next change starts from a number.
+
 ## Where the detail lives
 
 Fixing a score below target, or auditing login-gated pages and the proxy: `web-vitals-audit` (`measurement.md`, last section). Keep per-project results and the manual

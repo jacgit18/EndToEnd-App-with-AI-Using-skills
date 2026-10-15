@@ -97,6 +97,16 @@ Re-run the exact Step 2 conditions. Record the Lighthouse version, browser, form
 fix moved which number, and what you deliberately left alone (see below). If a deploy is
 involved, the final measurement is on the live URL, not the local build. A score that wobbles by a point on an unchanged build is noise: repeat three times before calling a regression or a fix.
 
+## Step 6 — Keep the score (leave a runner and a rule behind)
+
+A fix that nothing guards erodes. Before finishing, make sure the project can hold what you just earned:
+
+1. Copy `lighthouse.mjs` (this folder) to the project's `scripts/`, set its `FLOORS` to the scores you just measured, and run it once to confirm it passes.
+2. Add the standing rule to the project's CLAUDE.md and a "Lighthouse run" line to its PR template (the wording is in `.claude/rules/web-accessibility-and-lighthouse.md`, "Keep the score on every UI change").
+3. Write the baseline numbers and the remaining "room to improve" list into the project's design-system doc.
+
+The runner reuses Playwright's Chromium and `npx lighthouse`; it needs no install. It is a local guard, not a CI gate, because scores wobble by about 3 points on a busy machine.
+
 ## What not to change
 
 Say these out loud when they come up rather than doing them by reflex:

@@ -29,3 +29,11 @@ Global copy lives in `~/.claude/CLAUDE.md`; this file is the version-controlled 
   force-push variants, `git branch -D` and remote branch deletion. `land.sh` is unaffected.
 - Report outcomes exactly: a PR that is open but not merged is "open, not merged", not "done".
 - In this repo the simple branch → PR → merge flow is routine; use `scripts/git/*` (`conventions.md`).
+
+## Pull request descriptions (every project)
+
+- Never hand-write a PR description. Use the project's `scripts/pr-body.mjs` (fills `.github/pull_request_template.md` and ticks the
+  Audience box from the diff: n/a, admin only or everyone), then `gh pr create --body-file`. A project without the kit gets it
+  installed first: `.claude/skills/commit-and-push/pr-kit/` (README there says what to copy and adapt).
+- The owner should never have to say who can see a change. The script decides from the diff; `--audience` overrides only when told.
+- After opening, read `gh pr checks` and fix a failed description check at once.
