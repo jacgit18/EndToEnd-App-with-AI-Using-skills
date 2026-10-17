@@ -28,6 +28,8 @@ Before writing, pull together — from the conversation, not from guessing:
 5. **Open decisions / constraints** — anything the user decided on, ruled out, or specified as a requirement. These are easy to silently drop on a fresh start.
 6. **Next steps** — the specific next action(s), in order. Not a generic "continue working on X" — the actual next move.
 
+**Also record, when true:** (a) evidence labels on claims: `verified` (ran it), `read-only` (read the code), `agent-reported` (a subagent said so, not spot-checked), `not run`; (b) machine load and test workarounds that were needed (e.g. load average, `--maxWorkers=4`), so a resuming session does not mistake load timeouts for regressions; (c) background agents: id, area, done or running, and the findings so far, since their results are lost if the session ends. See `.claude/rules/evidence-labels.md`.
+
 If any of these is genuinely unclear or missing (e.g., you don't know if a change is finished or half-done), ask rather than guessing — a wrong guess here is worse than a short pause, since the whole point is accuracy for someone with zero other context.
 
 If a `spec-drift-gate` spec document already exists for this build, **link to it** for items 1 and 5 (Goal, Open decisions / constraints) rather than re-deriving them from the conversation — the spec is the source of truth for problem framing and scope; duplicating it here risks the copy drifting from the original.
@@ -68,6 +70,43 @@ _[date]_
 ```
 
 Omit a section entirely if it has nothing real to put in it (e.g., no firm decisions were made) — don't pad with placeholder text.
+
+## Planning handoff (Opus analysis -> Sonnet implementation)
+
+Use this mode when the session ran on Opus for analysis and planning and the plan is done. Finish the plan first, then hand off and switch to Sonnet to build it. Do not start implementing on Opus.
+
+Write the file to `.claude/handoffs/` using these sections instead of the standard layout. Everything must come from what was actually found, with nothing guessed; a field with nothing real says "none" or goes in Unresolved Questions.
+
+```markdown
+# Session Handoff — [short task name] (plan)
+_[date]_
+
+## Problem
+- Confirmed problem, in one or two sentences
+- Evidence: logs, failing test output, file:line, measurements
+- Reproduction steps, numbered, exact commands or clicks
+
+## Expected Behavior & Acceptance Criteria
+- [observable, checkable statement]
+
+## Relevant Files & Proposed Changes
+- `path/to/file:line` — [what to change and why]
+
+## Constraints & Decisions Already Made
+- [ADR numbers, project rules, options ruled out and why; binding, do not re-litigate]
+
+## Required Tests
+- [test file or spec, what it must prove, command to run]
+
+## Unresolved Questions
+- [question, who decides, what to do until answered]
+```
+
+Steps, in order:
+1. Finish the analysis and plan on Opus. Verify the evidence and file paths before writing them down.
+2. Write the handoff file and tell the user its path in one line.
+3. Switch the session to Sonnet: call `mcp__ccd_session_mgmt__set_session_model` (load it with ToolSearch first) if it is available. If it is not, tell the user to switch with `/model sonnet` and then run `/last-handoff`. Do not implement on Opus either way.
+4. Sonnet resumes with `/last-handoff`: acceptance criteria and required tests are the definition of done, constraints are binding, and unresolved questions are asked before the step they block.
 
 ## Delivery
 

@@ -96,6 +96,7 @@ of the score — splitting bundles moves little while the page still jumps.
 Re-run the exact Step 2 conditions. Record the Lighthouse version, browser, form factor and throttling with every result; it applies to that build and environment only. Report before → after per metric and per width, which
 fix moved which number, and what you deliberately left alone (see below). If a deploy is
 involved, the final measurement is on the live URL, not the local build. A score that wobbles by a point on an unchanged build is noise: repeat three times before calling a regression or a fix.
+Before blaming a change for a drop, check the machine load (`uptime`) and measure `main` on the same machine in the same conditions; a score with no baseline proves nothing (one fix read mobile 61 against a floor of 88 on a loaded machine). Retry on an idle machine.
 
 ## Step 6 — Keep the score (leave a runner and a rule behind)
 

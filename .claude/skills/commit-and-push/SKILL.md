@@ -194,6 +194,8 @@ Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
 - **Only whitespace / formatter churn** — call it out; the user may want to drop it or commit it separately as `style:`.
 - **Pre-existing staged changes you didn't make** — ask whether to include them before committing.
 - **Detached HEAD** — stop and report; committing here loses work silently.
+- **Wrong branch or someone else's changes** — run `git branch --show-current` and `git status` before staging. If the branch is not the one for this task, or the tree holds changes you did not make (another session or worktree), stop and ask; never stage them. If plain `git` fails with "must be run in a work tree", `core.bare` is set wrongly: use `git --git-dir=.git --work-tree=. -c core.bare=false <cmd>` and report it; do not edit the config.
+- **Pre-push hook fails with timeouts** — check machine load first. Rerun the tests with fewer workers (`--maxWorkers=4`); push with `SKIP_CHECK=1` only after `npm run check` passes cleanly. See `.claude/rules/test-run-protocol.md`.
 - **No `origin` remote** — commit locally, tell the user there's nowhere to push.
 - **A pre-commit hook fails** — the commit did not happen. Show the hook's output, fix what it names (formatter, lint, tests) if that is in scope, re-stage those paths, and make a NEW commit; never `--no-verify` unless the user says so, and never `--amend` (the previous commit is not yours to rewrite).
 - **Signing fails** (GPG/SSH key unavailable, agent locked) — stop and report the error; don't disable `commit.gpgsign` or pass `--no-gpg-sign` without the user's explicit say-so.

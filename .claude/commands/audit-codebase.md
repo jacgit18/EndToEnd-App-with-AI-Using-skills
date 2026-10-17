@@ -103,6 +103,7 @@ Rules for findings:
 - Rank by impact on users or data first, effort second. A failing build or a vulnerable runtime dependency
   outranks style.
 - Separate **confirmed** from **suspected**. Label suspected ones.
+- Findings reported by a subagent or delegated skill are `agent-reported` until you have opened the cited file:line and checked it. Spot-check the top findings (at least every high or medium one) before they go in the report; keep the reviewer's confidence next to each. See `.claude/rules/evidence-labels.md`.
 - Do not claim the project is "secure", "compliant" or "clean". Say what was checked and what was not.
 
 ## 5. Finish

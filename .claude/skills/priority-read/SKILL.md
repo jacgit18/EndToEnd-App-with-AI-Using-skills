@@ -60,6 +60,8 @@ Link them from `ARCHITECTURE.md` and `_PriorityRead.md` (read-when tier: "touchi
 
 After any bulk move or rename of docs, re-check every link in `_PriorityRead.md` (links by bare name survive a folder move, path-qualified ones do not); retarget, recreate or drop each broken one, and say which. When a doc is added, renamed, superseded or closed, update the tiers in the same piece of work and bump the `Last reviewed` date. When a PR changes behaviour, a decision or the plan, update `CHANGELOG.md`, `DECISIONS.md` or `ROADMAP.md` in the same piece of work. Keep it to one screen; if it grows, you are listing, not prioritizing.
 
+Backlogs: when a backlog file passes about 300 lines, split it by theme with a short index and archive the done items; audit open items against the code and the PR list on a set cadence (each milestone), because stale items cost more than missing ones.
+
 ## Rules
 
 - Never invent a doc's importance: if it was not read, say it was ranked from its title only.
