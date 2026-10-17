@@ -7,3 +7,5 @@ Rules written only as prose get missed (the PR Audience box, Lighthouse before/a
 - When a rule is missed twice, add the enforcer instead of rewording the rule.
 - A new enforcer ships with a changelog line and lists the rule it guards.
 - Keep a short "rule, enforcer" table in `CLAUDE.md` or the project's `ARCHITECTURE.md`.
+
+Enforcer: advisory; checked when a project's `CLAUDE.md` is reviewed.

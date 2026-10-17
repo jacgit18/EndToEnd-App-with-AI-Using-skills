@@ -79,8 +79,6 @@ The worktree is deleted (`git worktree remove <path>`, then `git branch -D drill
 
 ## Rules
 
-For a real (not injected) bug hunt: findings from reviewer agents are unverified until spot-checked against the code; see `audit-codebase` and `.claude/rules/evidence-labels.md`.
-
 - **Never merge or push a drill branch.** The exercise is sandboxed. If you accidentally push, delete the remote branch immediately (`git push origin --delete drill/...`).
 - **The answer key is off-repo.** If you see the answer key in the conversation, the exercise is spoiled. The injecting subagent returns only symptoms, so the conversation can't accidentally leak them.
 - **Timeout is optional.** Some interview rounds have a 45-minute clock; most don't. Set a timer if you want one, else work at your pace.

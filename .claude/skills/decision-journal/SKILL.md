@@ -27,7 +27,7 @@ It applies when the user *wants* a decision recorded or reviewed. It does not fi
 | Saving context to resume later | `session-handoff` |
 | Turning shipped work into something to post or say | `explaining-my-work` |
 
-A decision that changes CI, cost or a vendor and is likely to be reversed (a paid review bot added, removed and restored in one day) is worth a one-line suggestion that the user type `/decision-journal`; the skill is slash-only, so suggest it and do not log it yourself. Routine choices (a variable name, a lint rule) aren't worth an entry. If it's unclear whether a decision is big enough, ask in one line rather than logging it.
+Routine choices (a variable name, a lint rule) aren't worth an entry. If it's unclear whether a decision is big enough, ask in one line rather than logging it.
 
 ## Mode: Log
 

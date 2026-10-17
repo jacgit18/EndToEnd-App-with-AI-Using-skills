@@ -9,3 +9,5 @@ Several sessions, worktrees and branches run at once. Keep them from colliding.
 - Deleting branches, worktrees or tags, `reset --hard` and force-push need the user's confirmation, on any model. Check "unmerged" branches against squash-merges first, skip worktrees with dirty files, and keep a note of what was removed.
 - A stray commit is fixed with a new, user-approved step, never silently.
 - When resuming from a handoff, confirm it is the right one (branch and goal) before editing.
+
+Enforcer: `permissions.ask` entries for `reset --hard`, force-push and branch deletion (`git-actions.md`); the rest is advisory.

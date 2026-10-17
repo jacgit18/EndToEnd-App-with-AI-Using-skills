@@ -6,3 +6,5 @@
 - Never print secrets or connection strings; never paste them into reports or handoffs.
 - Backups and dumps on disk are sensitive: create them mode 600 (`umask 077`), keep them out of git, and keep them in encrypted storage.
 - Migrations run against the direct (non-pooled) database URL, only after the owner has the command and the rollback plan.
+
+Enforcer: advisory; production commands are run by the owner.
