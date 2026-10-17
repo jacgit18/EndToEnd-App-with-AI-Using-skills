@@ -15,7 +15,7 @@ matched against handoff filenames (`/last-handoff pr239`).
 Newest handoffs in this project (by modified time):
 !`d="${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}/.claude/handoffs"; ls -t "$d"/handoff-*.md 2>/dev/null | head -5 || true; echo "  --- dir: $d ---"`
 
-- No argument: take the first file listed above.
+- No argument: handoffs pile up and several can belong to different tasks the same day. If the newest two or three name different branches or goals, show their names and one-line goals and ask which to resume before reading further or editing anything (one session opened the wrong handoff and began editing the wrong feature). If only one plausible handoff exists, take it.
 - `$ARGUMENTS` is an existing file: use it.
 - `$ARGUMENTS` is a keyword: take the newest file whose name contains it.
 - Nothing listed, or no match: say so in one line and stop. Do not guess a handoff from another
@@ -48,6 +48,11 @@ Then start on step 1 of Next Steps. Do not wait for a "go" unless the next step 
 outward-facing (push, merge, deploy, delete, post): those follow the project's own rules (CLAUDE.md)
 and need the user's go-ahead as usual. Keep the handoff's "Decisions & Constraints" as binding; do not
 re-litigate them.
+
+If the handoff is a planning handoff (sections Problem, Expected Behavior & Acceptance Criteria, Relevant Files &
+Proposed Changes, Required Tests, Unresolved Questions), treat the acceptance criteria and required tests as the
+definition of done, re-run the reproduction steps first to confirm the problem still shows, and ask the user about
+any Unresolved Question before the step it blocks.
 
 If the handoff has an increment map (`- [x]` / `- [ ]` checklist from `incremental-build-pacing`), keep
 using that format and tick items as you finish them.

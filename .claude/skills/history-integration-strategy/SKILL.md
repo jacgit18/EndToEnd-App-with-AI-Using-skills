@@ -129,6 +129,8 @@ Note on rule B: squash-merge into trunk creates a new commit on trunk and does n
 
 When 2+ PRs are open at once, state the order before merging the first. Default: lockfile/dependency-only PRs, then CI, then backend/infra, then frontend; PRs sharing a file go adjacent, or the later one is stacked on the earlier. Land repo-wide hygiene commits (untracking files, mass renames, formatters) before any feature PR, or their churn shows up in every sync merge.
 
+Owner rule (2026-10-17): order PRs only when they share a file. List the files each PR changes (`gh pr diff <n> --name-only`); no overlap means parallel, and an overlap names the file that forces the order. Recurring conflict hotspots to check first: the changelog, registry files with append-at-end lists (`features.ts`-style), shared e2e specs, and tracked generated files such as screenshots. For hotspots, prefer `merge=union` in `.gitattributes` or per-PR fragments, and keep generated binaries out of git. See `.claude/rules/session-git-hygiene.md`.
+
 ### Conflict triage (stop-and-report still applies to the last class)
 
 Classify each hunk, then act:

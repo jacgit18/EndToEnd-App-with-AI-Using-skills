@@ -194,6 +194,7 @@ Pick the companions that match the target's surfaces during reconnaissance; igno
 8. Re-reporting carried same-source prior confirmed records or using them as exemplars that anchor the hunt.
 9. Assigning severity to `needs_validation` records.
 10. Writing the report before independent verification or letting prose and JSON disagree.
+11. Skipping data at rest: check the machine and repo for sensitive artifacts (database dumps, backups, exports, `.env` copies), their file modes (world-readable `0664` on a plaintext dump is a finding) and whether future copies are created with a safe umask.
 
 ## Portability
 
