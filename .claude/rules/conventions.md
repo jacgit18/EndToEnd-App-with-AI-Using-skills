@@ -24,7 +24,7 @@
   `Artifact/…` to `…/Artifact/…`. Quote the path (spaces elsewhere in DevHiveMind). Code,
   `.claude/` and `scripts/` stay here. Wikilinks in the vault are full vault paths
   (`[[Projects/EndToEnd-App-with-AI-Using-skills/finance-dashboard/…]]`).
-- **Parallel PRs:** list the files each PR touches before opening several at once. PRs sharing a file are stacked or landed in order (lockfiles, CI, backend/infra, frontend); repo-wide hygiene (untracking, mass renames, formatters) lands first on its own PR. Lockfile conflicts: take main's, rerun the install (`history-integration-strategy`).
+- **Parallel PRs:** list the files each PR touches before opening several at once. PRs sharing a file land one after the other, each branched from fresh `main` (no stacked PRs; order lockfiles, CI, backend/infra, frontend), and PRs with no shared file run in parallel (`parallel-agent-structure.md`); repo-wide hygiene (untracking, mass renames, formatters) lands first on its own PR. Lockfile conflicts: take main's, rerun the install (`history-integration-strategy`).
 - **`.gitignore`:** `*.csv` (personal financial exports) and `.claude/_Prompts/logs/` (the
   `UserPromptSubmit` hook's prompt logs) live in the working tree but are never committed.
 - **Commit messages** end with:

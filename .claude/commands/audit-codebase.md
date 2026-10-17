@@ -63,6 +63,7 @@ invoke each installed one (except slash-only ones, which you only suggest) or st
 was skipped. If a skill is missing, say "skill not installed, used fallback" and run the fallback.
 `security-review` and `code-review` review a diff: point them at the highest-risk area (auth, sessions,
 input parsing/uploads, rate limiting, SQL built from strings) via a subagent, not just the last commit.
+Run `security-audit` in guidance mode only (no output directory, no sandboxed execution, no six-phase run), because this command is read-only and time-boxed; fold its findings into this report and offer the full audit as a separate step.
 Fallbacks are shallow: label any finding or "clean" verdict that rests only on a fallback as
 **shallow check** and list the unreviewed areas under "Not verified". Never block on a missing sibling.
 Independent delegations may run in parallel as subagents.
@@ -102,7 +103,7 @@ Rules for findings:
 - Every finding cites evidence (path:line or the command output). No evidence, no finding.
 - Rank by impact on users or data first, effort second. A failing build or a vulnerable runtime dependency
   outranks style.
-- Separate **confirmed** from **suspected**. Label suspected ones.
+- Separate **confirmed** from **suspected**. Label suspected ones. Finding status (confirmed or suspected) is separate from the evidence label (`verified`, `read-only`, `agent-reported`, `not run`); a finding is confirmed only when its evidence is `verified`. A delegated skill's own status words (for example `needs_validation`) map to suspected.
 - Findings reported by a subagent or delegated skill are `agent-reported` until you have opened the cited file:line and checked it. Spot-check the top findings (at least every high or medium one) before they go in the report; keep the reviewer's confidence next to each. See `.claude/rules/evidence-labels.md`.
 - Do not claim the project is "secure", "compliant" or "clean". Say what was checked and what was not.
 

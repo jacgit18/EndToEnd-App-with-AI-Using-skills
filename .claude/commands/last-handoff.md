@@ -15,7 +15,7 @@ matched against handoff filenames (`/last-handoff pr239`).
 Newest handoffs in this project (by modified time):
 !`d="${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}/.claude/handoffs"; ls -t "$d"/handoff-*.md 2>/dev/null | head -5 || true; echo "  --- dir: $d ---"`
 
-- No argument: handoffs pile up and several can belong to different tasks the same day. If the newest two or three name different branches or goals, show their names and one-line goals and ask which to resume before reading further or editing anything (one session opened the wrong handoff and began editing the wrong feature). If only one plausible handoff exists, take it.
+- No argument: handoffs pile up and several can belong to different tasks the same day. If the newest two or three name different branches or goals, read only each file's title and Goal line, show them, and ask which to resume before reading further or editing anything (one session opened the wrong handoff and began editing the wrong feature). If only one plausible handoff exists, take it.
 - `$ARGUMENTS` is an existing file: use it.
 - `$ARGUMENTS` is a keyword: take the newest file whose name contains it.
 - Nothing listed, or no match: say so in one line and stop. Do not guess a handoff from another
@@ -42,7 +42,7 @@ Reply with:
 
 1. **Goal** in one sentence.
 2. **What the repo shows now** (branch, PR state, uncommitted changes), noting any drift from the handoff.
-3. **Next steps**, in the handoff's order, with the first one marked as the one you are starting.
+3. **Next steps**, in the handoff's order (for a planning handoff: its Relevant Files & Proposed Changes, in order), with the first one marked as the one you are starting. Re-check any item the handoff labels `read-only` or `agent-reported` before building on it (`evidence-labels.md`).
 
 Then start on step 1 of Next Steps. Do not wait for a "go" unless the next step is hard to reverse or
 outward-facing (push, merge, deploy, delete, post): those follow the project's own rules (CLAUDE.md)

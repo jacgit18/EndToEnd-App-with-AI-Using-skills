@@ -7,3 +7,5 @@ Splitting a large file (a store, a global stylesheet) went well as a series of p
 - Name the protected paths (for example board reorder and log write paths) and move them last, with their tests untouched and green.
 - Add a guard that keeps the result from drifting back (a lint rule rejecting raw values, a size or line-count check, a test).
 - Update the structure map in `ARCHITECTURE.md` in the same PR.
+
+Enforcer: the guard each refactor adds (lint rule, size check or test); the rest is advisory.

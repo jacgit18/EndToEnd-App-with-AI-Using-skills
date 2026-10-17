@@ -56,7 +56,7 @@ Surface these from the repo. Don't ask the user for them.
   Step 3 still runs so the changelog has its first entry.
 - **Scheme.** SemVer, CalVer (`2026.10.1`), or none. **CalVer: stop the SemVer path.** The
   next version is the date rule the project already uses; say so and only do Step 5.
-- **Stray tags.** List every tag, not just the highest: a mistyped or old-scheme tag (`v1.5.5-alpha` beside `v5.0.0-alpha.10`) skews the base and the next number. Report any that do not fit the ladder and let the user decide; never delete or move a tag yourself.
+- **Stray tags.** List every tag with `git tag --list` (`--merged HEAD` hides tags on other branches), not just the highest: a mistyped or old-scheme tag (`v1.5.5-alpha` beside `v5.0.0-alpha.10`) skews the base and the next number. Report any that do not fit the ladder and let the user decide; never delete or move a tag yourself.
 - **Units.** One versioned unit, or several (a monorepo's web app, API and library). Ask
   whether they version **independently** (separate prefixes, run this per unit with
   `--path` / `--tag-prefix`) or **in lockstep** (one number, highest bump across all).
