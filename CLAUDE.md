@@ -12,6 +12,7 @@ Standing rules are in `.claude/rules/` and load automatically — read them, don
 
 - **Docs are not in this repo.** finance-dashboard's docs are `/home/jac/Videos/DevHiveMind/Projects/EndToEnd-App-with-AI-Using-skills/finance-dashboard/` and the write-ups are `…/Artifact/` (no `docs/` subfolder). The repo copies were deleted 2026-10-13. Quote paths (spaces).
 - **Git:** branch per change, PRs to `main`, never push to `main`. Stage explicit pathspecs only (never `git add -A` / `.`). Use `scripts/git/commit.sh`, `push.sh`, `land.sh`.
+- **PR descriptions:** never hand-written. `node scripts/pr-body.mjs --what "..." > body.md`, then `gh pr create --body-file body.md`; it ticks the Audience box from the diff (enforcers: `.github/workflows/pr-audience.yml`, `pr-changelog.yml`). Kit: `.claude/skills/commit-and-push/pr-kit/`.
 - **Prod deploys** need a fresh, explicit "deploy to prod" in the current session.
 - **Never commit** `*.csv` (personal financial exports) or `.claude/_Prompts/logs/`.
 - Free-first: prefer free tiers; document anything that could cost money in `ops/paid-options.md` (vault docs root).
