@@ -32,7 +32,7 @@ Discovery prompts: who uses it and what job are they hiring it for; what do comp
 
 Run it before a feature is `Ready`, in this order:
 
-1. **Can the existing stack do it?** A new dependency, service or vendor is a standing cost even if it is free today. Prefer what is already in the project.
+1. **Can the existing stack do it?** A new dependency, service or vendor is a standing cost even if it is free today. Prefer what is already in the project; walk the ladder in `dependency-selection.md` (platform, existing dependency, write it, library, service).
 2. **Recurring cost.** Estimate per active user per month and the cost at 10x usage. Flag anything with no upper bound (AI calls, storage of user files, SMS, egress). Cap it or put it in a paid tier.
 3. **Data and schema.** Does it add tables, columns or user data? Schema changes are the hardest to undo (expand/contract migrations, backups, RLS). Data about people adds retention, export and delete-on-request duties.
 4. **Third-party risk.** Pricing changes, rate limits, deprecation, outages, terms. Note the exit path: how hard is it to replace.
