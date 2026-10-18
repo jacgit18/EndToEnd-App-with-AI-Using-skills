@@ -66,6 +66,7 @@ Concrete config keys and runner differences are in `tool-landscape.md`; read it 
 - Left the clock, timezone or storage state unpinned for tests whose logic reads them, without saying so
 - Recommended fixed sleeps or `networkidle` as the readiness signal without naming the cost
 - Treated a passing axe scan as accessibility conformance
+- Called a layout fix done after one width and one string (a Rest box dropped under the day's box from a long title in one case and a 44px-target change in another): test the worst content (longest title, a stamped date, large text) at several widths, and re-run it when a sizing rule changes
 - Judged tap-target size or overridden CSS from a source read instead of measuring (axe does not check target size; later rules in the cascade can override earlier ones). Recommend a measured spec: every button, field, tab and link at the phone width (e.g. 390x844) fails under 44x44, with checkboxes inside a 44px label counted as covered
 - Answered test-mix or case-discovery questions as if they were this skill's call
 
