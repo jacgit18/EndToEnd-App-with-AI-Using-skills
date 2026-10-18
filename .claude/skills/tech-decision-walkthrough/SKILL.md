@@ -79,7 +79,8 @@ For each decision — full protocol and the axes libraries are in `decision-loop
    line each: what it is, where it shines, where it hurts.
 4. **Deciding axes** — the 2–4 dimensions that actually discriminate here. Name them *before*
    scoring. This is the interview move: make the evaluation criteria explicit. When the
-   decision is "which library/package for X", use `library-vetting.md` for the supply-chain
+   decision is "which library/package for X", first check `build-vs-library.md` (does it need a
+   dependency at all), then use `library-vetting.md` for the supply-chain
    axes (weight, maintenance, license, security, exit cost) an improvised list skips.
 5. **Score against the axes** — a compact comparison. Be honest where a rejected option is
    genuinely better; a comparison with no cost to the winner isn't finished. When one axis is

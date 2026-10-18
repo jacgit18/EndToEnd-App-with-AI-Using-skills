@@ -16,6 +16,10 @@ choices, and their axes are about *fit*. Pulling a dependency into the tree adds
 of axes about *what you now carry* — maintenance, weight, license, security, exit cost — that
 an improvised axis list routinely skips.
 
+**First, is a package the answer at all?** Walk the option ladder in `build-vs-library.md`
+(platform, a dependency already in the tree, write it, copy it in) before vetting candidates;
+its never-build list says when a library is required regardless of size.
+
 Use this when a decision in the walkthrough is a dependency pick. It does **not** replace the
 `decision-loop.md` entries for the datastore, the web framework, or the data-access layer —
 those are their own decisions with their own axes; this feeds them a supply-chain read when
@@ -26,7 +30,7 @@ that have no dedicated entry.
 
 | Class | Example | Treatment |
 |---|---|---|
-| **Routine** | a small single-purpose util — `slugify`, `ms`, a debounce | One line: license is compatible · published within ~12 months · no open critical advisory · downloads not near-zero. No table. Batch several into one note. |
+| **Routine** | a small single-purpose util — `slugify`, `ms`, `nanoid` | One line: license is compatible · published within ~12 months · no open critical advisory · downloads not near-zero. No table. Batch several into one note. |
 | **Structural** | the library shapes a subsystem — validation, HTTP client, router, state | Full loop. Pick the 3–4 axes below that discriminate here, score them, inline ADR with a one-line vetting snapshot in Consequences. |
 | **Load-bearing** | ORM, the core framework, a crypto / auth library, anything ripping it out means a migration | Full loop **and** run the specialist `decision-loop.md` entry (data-access layer, etc.); supply-chain risk is its own paragraph in the ADR, not a footnote. |
 
@@ -118,4 +122,4 @@ repo for the human signals (who's merging, how they treat issues).
 | **Top-level license only** | Cleared MIT on the package, missed an AGPL three levels down | `license-checker --summary` on the resolved tree |
 | **CVE count as the signal** | Rejecting a library for one patched 2019 advisory | Patch *latency* is the signal; a fast fix is reassuring |
 | **Bus factor unnamed** | Recommending a solo-maintainer lib with no revisit trigger | Name it in Step 5, add the trigger to the ADR |
-| **Vetting a routine pick to death** | Full axis table for a `debounce` | Depth control — one line, batch it |
+| **Vetting a routine pick to death** | Full axis table for `slugify` | Depth control — one line, batch it |
