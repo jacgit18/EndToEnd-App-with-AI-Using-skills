@@ -155,6 +155,8 @@ risks, and constraints named · priority set, or flagged "priority: not set" (th
 confirmed. Priority and estimate are owed by the team, so a flagged-missing item is a named gap, not a failure of the decomposition. A story sitting in the backlog missing several of these isn't ready regardless of
 how well-written its prose is — name the gaps rather than rounding up.
 
+The acceptance criteria are the story's **Done when** (`.claude/rules/definition-of-done.md`): observable, each with the evidence that will show it, plus what is not part of done. The project-wide Definition of done lives in the project's `CLAUDE.md`; do not restate it per story.
+
 ---
 
 ## Marking a story documentable (optional pass)

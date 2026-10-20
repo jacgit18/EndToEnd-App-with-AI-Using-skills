@@ -6,7 +6,7 @@ Goal: decide what to build in one planning pass, so features are not invented on
 
 - **Discovery pass at project start** (and again at each milestone): list every feature wanted for the next stage, using the prompts below. Do not write code during it.
 - **Idea inbox.** A new idea mid-build goes into an `Inbox` section of `FEATURE-PLAN.md` with one line, not into code. Review the inbox at a fixed point (end of each milestone or a set weekly slot), then score, tier and rank the keepers.
-- **Stage gate.** Work only from features marked `Ready`. A feature not in the plan needs a plan row first (5 minutes: the fields in section 2).
+- **Stage gate.** Work only from features marked `Ready` (cost check passed and `Done when` written). A feature not in the plan needs a plan row first (5 minutes: the fields in section 2).
 - **Out of scope list.** Say what you will not build this stage; it stops re-litigating.
 
 Discovery prompts: who uses it and what job are they hiring it for; what do competitors and similar apps have; what do users do today that is manual or annoying; what does a day-1 user need versus a day-100 user; what makes a user stay (retention) versus pay (revenue); what is required to operate it (admin, support, billing, analytics, export, delete-my-data, notifications, onboarding, settings, accessibility, offline, import).
@@ -16,6 +16,7 @@ Discovery prompts: who uses it and what job are they hiring it for; what do comp
 | Field | What to write |
 |---|---|
 | Name and one-line job | what the user can do afterward |
+| Done when | 3 to 7 observable, checkable statements plus what is not part of done and the evidence for each (see `definition-of-done.md`); a row without it is not `Ready` |
 | Stage | Now / Next / Later / Never |
 | Tier | Free, Paid, Paid-higher, Admin-only, Undecided (see section 4) |
 | Value | high / medium / low, and who gets it |
