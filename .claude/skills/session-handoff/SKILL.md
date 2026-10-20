@@ -32,6 +32,8 @@ Before writing, pull together — from the conversation, not from guessing:
 
 If any of these is genuinely unclear or missing (e.g., you don't know if a change is finished or half-done), ask rather than guessing — a wrong guess here is worse than a short pause, since the whole point is accuracy for someone with zero other context.
 
+**A handoff goes stale in the same session.** If the user keeps working after the file is written (the hook can fire mid-design) and a decision, wording or requirement changes, update the file before the session ends and say it changed; a design handed off one turn too early silently drops the latest agreement. For a design that exists only as a preview or in chat, record the agreed behavior in the handoff, since the preview is not saved.
+
 If a `spec-drift-gate` spec document already exists for this build, **link to it** for items 1 and 5 (Goal, Open decisions / constraints) rather than re-deriving them from the conversation — the spec is the source of truth for problem framing and scope; duplicating it here risks the copy drifting from the original.
 
 If `incremental-build-pacing` is mid-flight, item 6 (Next steps) **is** the

@@ -16,7 +16,7 @@ routes the deep work to the specialist skills.
 ## When to use
 
 - The user asks to **design or architect a system, service, or feature** — "design a URL
-  shortener", "architect the notification service", "how should we structure this".
+  shortener", "architect the notification service", "how should we structure this". A feature in an existing app, briefed as a story by its owner, skips the gate: **read `feature-in-existing-app.md`**.
 - The user is **starting a greenfield build** and wants to know where to begin.
 - The user has a **design doc or a rough sketch** and wants its scope pressure-tested
   before the team commits.
