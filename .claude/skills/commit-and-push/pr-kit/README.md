@@ -16,6 +16,9 @@ It copies the files below, appends the rule to the project's CLAUDE.md, and prin
 | `pr-kit.json` | `.github/pr-kit.json` (the per-project settings) |
 | `pr-body.mjs` | `scripts/pr-body.mjs` (fills the template and ticks the Audience box from the diff) |
 | `prBody.test.js` | `scripts/prBody.test.js` (vitest; drop it if the project has no test runner) |
+| `dependency-scan.yml` | `.github/workflows/dependency-scan.yml` (npm audit for production dependencies, GitHub dependency review, and `dep-vet` on packages a PR adds; rule `dependency-security.md`) |
+| `dependabot.yml` | `.github/dependabot.yml` (weekly grouped updates; add an ecosystem block per manifest) |
+| `dep-vet.mjs`, `depVet.test.js` | `scripts/dep-vet.mjs` and its test (registry facts and typosquat flags for new npm packages; `node scripts/dep-vet.mjs <name>` by hand before approving one) |
 
 Then add the rule to the project's CLAUDE.md: "open every PR with `node scripts/pr-body.mjs --what "..." > body.md` and `gh pr create --body-file body.md`; never write the description by hand."
 

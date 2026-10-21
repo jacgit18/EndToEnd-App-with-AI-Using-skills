@@ -30,3 +30,4 @@ Split because: n/a: this PR is the whole feature
 
 - [ ] The project's test, lint and build commands pass (replace this line with them)
 - [ ] Docs and changelog updated
+- [ ] New packages: none, or listed in the description with the lower ladder rung and a `Dependency approval:` line (`dependency-security.md`)

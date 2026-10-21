@@ -30,7 +30,7 @@ that have no dedicated entry.
 
 | Class | Example | Treatment |
 |---|---|---|
-| **Routine** | a small single-purpose util — `slugify`, `ms`, `nanoid` | One line: license is compatible · published within ~12 months · no open critical advisory · downloads not near-zero. No table. Batch several into one note. |
+| **Routine** | a small single-purpose util — `slugify`, `ms`, `nanoid` | One line: license is compatible · published within ~12 months · no open critical advisory · downloads not near-zero · exact name checked, not a young near-copy (every pick, however small). No table. Batch several into one note. |
 | **Structural** | the library shapes a subsystem — validation, HTTP client, router, state | Full loop. Pick the 3–4 axes below that discriminate here, score them, inline ADR with a one-line vetting snapshot in Consequences. |
 | **Load-bearing** | ORM, the core framework, a crypto / auth library, anything ripping it out means a migration | Full loop **and** run the specialist `decision-loop.md` entry (data-access layer, etc.); supply-chain risk is its own paragraph in the ADR, not a footnote. |
 
@@ -64,7 +64,11 @@ axis where the candidates score the same). The field:
   constraint; flag it, don't wave it through.
 - **Security posture** — known advisories and, more telling, how fast past ones were patched;
   whether releases are published with 2FA / provenance. One old CVE that was fixed in two
-  days is a *good* sign.
+  days is a *good* sign. Also **is it the real package**: an exact-name check against the
+  project's own docs, a first-publish date and download count that fit a maintained library,
+  a linked repository that matches, and no unexplained install scripts. A days-old package or
+  a near-copy of a popular name is a typosquat until shown otherwise (`dependency-security.md`;
+  `node scripts/dep-vet.mjs <name>` prints these facts for npm).
 - **Exit cost** — if this turns out wrong in a year, how hard is it to remove. A thin wrapper
   you could swap behind your own interface is low-risk; a library whose types and idioms
   spread through every module is high lock-in and the axis should say so.
@@ -81,6 +85,7 @@ Commands below are npm; the equivalents follow.
 | Downloads, trend, compare candidates | npmjs.com page · npmtrends.com (side-by-side) |
 | Bus factor, issue/PR backlog | GitHub → Insights → Contributors & Pulse · open issue/PR counts + oldest-first sort |
 | Dependency graph, licenses, OpenSSF Scorecard, advisories — one page | **deps.dev/npm/\<pkg\>** |
+| Typosquat / brand-new / install scripts | `node scripts/dep-vet.mjs <pkg>` (PR kit) · `npm view <pkg> time.created scripts repository` · OSV `MAL-` malware advisories on osv.dev |
 | Known vulnerabilities + patch latency | osv.dev · GitHub Advisory Database · `npm audit` once installed |
 | License (top-level + transitive) | `npm view <pkg> license` · `npx license-checker --summary` |
 | Maintainer count, 2FA, signed releases, branch protection | OpenSSF Scorecard (via deps.dev) |
