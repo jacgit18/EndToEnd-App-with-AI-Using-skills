@@ -1,5 +1,15 @@
 # Definition of done (applies to every project)
 
+<!-- toc -->
+## Contents
+
+- [[#1. Project DoD: set once, at onboarding]]
+- [[#2. Feature "Done when": set at the Ready gate]]
+- [[#3. Closing a change]]
+- [[#4. Changing the DoD]]
+- [[#Enforcers]]
+<!-- /toc -->
+
 "Done" is decided before the work starts, not argued after. Two levels, both written down up front, both checked at the end with evidence.
 
 ## 1. Project DoD: set once, at onboarding
