@@ -1,6 +1,6 @@
 # PR kit: a pull request description that always passes its checks
 
-Copied from iron-log (where it runs; iron-log is the source, refresh these files from it when it changes). Install it in any project that opens PRs with one command:
+Copied from iron-log (where it runs; iron-log is the source, refresh these files from it when it changes), except `prBody.test.js`: iron-log's copy tests its own audience rules, the kit's is generic (inline audiences) so it passes in a fresh project. Add new test cases to both; never copy iron-log's file over the kit's. Install it in any project that opens PRs with one command:
 
 ```bash
 .claude/skills/commit-and-push/pr-kit/install.sh <project-dir>   # keeps files that exist; --force replaces
