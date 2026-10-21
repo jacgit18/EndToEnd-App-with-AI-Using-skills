@@ -1,5 +1,16 @@
 # Web accessibility and Lighthouse
 
+<!-- toc -->
+## Contents
+
+- [[#Targets]]
+- [[#Claims]]
+- [[#Measuring]]
+- [[#Build to these from the first commit]]
+- [[#Keep the score on every UI change (standing requirement)]]
+- [[#Where the detail lives]]
+<!-- /toc -->
+
 Applies to any web UI built or changed from this repo (portfolio site, `finance-dashboard/`).
 
 ## Targets

@@ -1,5 +1,12 @@
 # Conventions
 
+<!-- toc -->
+## Contents
+
+- [[#Standing preferences]]
+- [[#Git helper scripts]]
+<!-- /toc -->
+
 - **Branches / PRs:** branch per change; PRs target `main`. Automated routines open PRs,
   they do not push to `main`. Merging a PR is fine from the terminal — `scripts/git/land.sh`
   does it through `gh` (branch protection and checks still apply); that is merging a PR, not
