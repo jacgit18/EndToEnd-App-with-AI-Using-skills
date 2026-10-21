@@ -1,6 +1,6 @@
 # Dependency selection: library or build (applies to every project)
 
-Before adding a package or service, decide whether the job needs one. Every dependency is a standing cost (upgrades, advisories, breaking majors, transitive packages and licenses, bundle weight, an absent maintainer); every line you own is one too (bugs, edge cases, tests). Pick the smaller cost for this job.
+Before adding a package or service, decide whether the job needs one. Whether it is safe to install is `dependency-security.md` (no install without the owner's yes, name check, vetting, CI scans); both apply. Every dependency is a standing cost (upgrades, advisories, breaking majors, transitive packages and licenses, bundle weight, an absent maintainer); every line you own is one too (bugs, edge cases, tests). Pick the smaller cost for this job.
 
 ## The ladder: take the first rung that does the job
 
@@ -26,7 +26,7 @@ Cryptography and password hashing, authentication and sessions, sanitising or pa
 
 - Vet it at the right depth: `tech-decision-walkthrough/library-vetting.md` (one line for a util; maintenance, weight, transitive deps, license, security patch speed and exit cost for anything bigger).
 - Wrap structural and load-bearing libraries behind one seam module so a swap touches one file; don't let their types spread.
-- Lockfile committed, `npm audit` / `pip-audit` in CI, heavy front-end libraries lazy-loaded.
+- Lockfile committed, `npm audit` / `pip-audit` and dependency review in CI (`dependency-security.md`), heavy front-end libraries lazy-loaded.
 
 ## Record it
 

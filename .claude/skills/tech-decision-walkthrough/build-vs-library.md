@@ -10,6 +10,8 @@
 - [Recording the call](#recording-the-call)
 - [Anti-patterns](#anti-patterns)
 
+Whether a package is safe to install at all (typosquats, malware, install scripts, owner approval) is `dependency-security.md`; run it on every pick, whatever the rung.
+
 The question *before* `library-vetting.md`: does this job need a dependency at all, or does the
 platform already do it, or is it small enough to own? `library-vetting.md` picks *which* package
 once a package is the answer; this file decides whether it is. The standing rule is

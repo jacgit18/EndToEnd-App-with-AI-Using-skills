@@ -38,7 +38,7 @@ If a check cannot run, say so; absence of output is not a pass.
 | Secrets in tree | `git ls-files` + grep for key-shaped strings, tracked `.env*` | same | same |
 | Stale deps | `npm outdated` | `pip list --outdated` | per ecosystem |
 
-Also check: lockfile committed, CI exists and covers lint + tests, `.gitignore` covers env files,
+Also check the dependency guard (`dependency-security.md`): a CI job running `npm audit`/`pip-audit`, dependency review and new-package vetting (`dep-vet`), a Dependabot or Renovate config, no package in a manifest fetched from a git or tarball URL, and no install command without `--ignore-scripts` in a deploy path that handles secrets. Report each missing piece as a finding. Also check: lockfile committed, CI exists and covers lint + tests, `.gitignore` covers env files,
 dead branches (`git branch -r --merged`), very large tracked files, TODO/FIXME count.
 
 Use the project's own scripts first (`package.json` scripts, `Makefile`, CLAUDE.md commands).

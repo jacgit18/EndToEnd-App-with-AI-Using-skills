@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Install the PR kit into a project: template, two CI checks, pr-body script, its test, and the CLAUDE.md rule.
+# Install the PR kit into a project: template, two CI checks, pr-body script, its test, the dependency scan (dependency-security.md), and the CLAUDE.md rule.
 # Usage: install.sh [project-dir] [--force]   (default: current directory; existing files are kept unless --force)
 set -eu
 kit="$(cd "$(dirname "$0")" && pwd)"
@@ -17,8 +17,11 @@ put pr-audience.yml .github/workflows/pr-audience.yml
 put pr-changelog.yml .github/workflows/pr-changelog.yml
 put pr-body.mjs scripts/pr-body.mjs
 put pr-kit.json .github/pr-kit.json
-if [ -f package.json ] && grep -q '"vitest"' package.json; then put prBody.test.js scripts/prBody.test.js
-else echo "skipped  scripts/prBody.test.js (no vitest in package.json)"; fi
+put dependency-scan.yml .github/workflows/dependency-scan.yml
+put dependabot.yml .github/dependabot.yml
+put dep-vet.mjs scripts/dep-vet.mjs
+if [ -f package.json ] && grep -q '"vitest"' package.json; then put prBody.test.js scripts/prBody.test.js; put depVet.test.js scripts/depVet.test.js
+else echo "skipped  scripts/prBody.test.js, scripts/depVet.test.js (no vitest in package.json)"; fi
 rule='Pull requests: never write the description by hand. Run `node scripts/pr-body.mjs --what "<what and why>" > body.md`, then `gh pr create --body-file body.md`.'
 if [ -f CLAUDE.md ]; then
   if grep -q 'scripts/pr-body.mjs' CLAUDE.md; then echo "kept     CLAUDE.md (rule already there)"
