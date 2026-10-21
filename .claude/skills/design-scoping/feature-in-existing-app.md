@@ -27,3 +27,5 @@ Worked once, 2026-10-19: splitting grocery costs in iron-log (BJ's card shared t
 ## Exit
 
 The user says they like the preview, the open questions are listed with who answers each, and the next step is concrete (a branch off `main`, the files to read, the tests to write first). Then hand off to `spec-drift-gate` or `incremental-build-pacing` for the build.
+
+Then run `feature-brief` to close the remaining questions and write the brief before the build.
