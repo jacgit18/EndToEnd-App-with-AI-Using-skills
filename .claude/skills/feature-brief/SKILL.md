@@ -21,7 +21,7 @@ The cheapest place to find a wrong assumption is before the code. This skill run
 
 1. **Read before asking.** The project's `FEATURE-PLAN.md` row for the card, `ARCHITECTURE.md`, `ux/` and `data/` docs for the area, the feature map, open PRs (`gh pr list`, `gh pr diff <n> --name-only`). Never ask what these answer. Label what you learned `read-only`.
 2. **Draft the brief with defaults.** Fill `brief-template.md` with your best answer for every field and mark each guess `(default)`. This is the thing the owner reacts to.
-3. **Ask what only the owner knows.** Take the unanswered fields from `question-bank.md`. Batch them (up to 4 questions per AskUserQuestion call; a round may carry several related themes, merged so the whole bank fits in at most 3 rounds). Every question has a recommended default as the first option, so "defaults" is a valid answer for a batch. Stop asking when every field is answered or deliberately deferred.
+3. **Ask only the real decisions; list the rest as defaults.** A question is real when the docs and code leave two or more reasonable answers that change the build (what Silent covers, which sound, who sees it). A question whose answer you already know from the docs or a project rule is not asked: state it as `(default)` in a "Defaults I am taking" list and let the owner veto in one reply. Ask the real decisions in one round (up to 4 per AskUserQuestion call, recommended default first), then show the defaults list and the draft brief together for a single "go" or change. Add a second round only if an answer opens new decisions. Test run 2026-10-21 (rest-timer sound): without this rule the skill asked 8 questions in 3 rounds when only 2 were real.
 4. **Close the edge decisions.** List each "should it..." the build would hit (empty, offline, over the limit, old data, undo, long text) and decide it now. A decision the owner skips is recorded as `(default)`, not left open.
 5. **Check overlap and cost.** Compare the files-touched list with open PRs; apply the `feature-planning.md` cost and debt check; split into several PRs only for a reason in `feature-delivery.md`.
 6. **Ready gate.** The brief has no open question, 3 to 7 Done-when lines each naming its evidence, and an out-of-scope list. Write it to `<docs root>/<project>/briefs/<feature>.md`, add the brief link to the `FEATURE-PLAN.md` row, run `doc-toc.mjs` if it is over 60 lines. Restate it in five lines and ask for one "go".
@@ -29,7 +29,7 @@ The cheapest place to find a wrong assumption is before the code. This skill run
 
 ## Rules that keep it cheap
 
-- `ambiguity-gate`'s one-question limit does not apply here: this pass is deliberate. No more than 3 rounds of questions; if a fourth is needed, the feature is not understood yet: say so and return to `design-scoping`.
+- `ambiguity-gate`'s one-question limit does not apply here: this pass is deliberate. No more than 2 rounds of questions; if a third is needed, the feature is not understood yet: say so and return to `design-scoping`.
 - Questions are about decisions, not facts you can look up.
 - Do not write code, schemas or UI in the brief; name the files and the shape.
 - Never re-ask a decision recorded in the project's `DECISIONS.md`.
