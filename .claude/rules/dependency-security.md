@@ -40,7 +40,7 @@ Every project with a package manifest runs these on pull requests and on a weekl
 
 ## Setup per project
 
-`commit-and-push/pr-kit/install.sh` installs `dependency-scan.yml`, `dependabot.yml` and `scripts/dep-vet.mjs`. Before the first run, turn on **Dependency graph** (and Dependabot alerts and security updates) in the repository's Settings, Code security; the review job fails with "Dependency review is not supported" until it is on, even in a public repository (iron-log's first run, 2026-10-21). Then the project's `CLAUDE.md` gets the Definition of done line and the PR template gets the package-delta line. For non-npm stacks name the equivalent (`pip-audit`, `osv-scanner`, `cargo audit`) in the project's `CLAUDE.md`.
+`commit-and-push/pr-kit/install.sh` installs `dependency-scan.yml`, `dependabot.yml` and `scripts/dep-vet.mjs`. Before the first run, turn on **Dependency graph** (and Dependabot alerts and security updates) in the repository's Settings, Code security; until it is on the review job skips itself with a warning annotation (without that it fails with "Dependency review is not supported", even in a public repository: iron-log's first run, 2026-10-21), so a skipped review is visible in the run but the guard is not complete. Then the project's `CLAUDE.md` gets the Definition of done line and the PR template gets the package-delta line. For non-npm stacks name the equivalent (`pip-audit`, `osv-scanner`, `cargo audit`) in the project's `CLAUDE.md`.
 
 ## When something is already installed
 
