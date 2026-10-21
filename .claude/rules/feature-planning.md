@@ -1,5 +1,16 @@
 # Feature planning, cost, debt and tiers (applies to every project)
 
+<!-- toc -->
+## Contents
+
+- [[#1. Plan once, then freeze]]
+- [[#2. Fields for every feature (one table row or card)]]
+- [[#3. Cost and technical-debt check]]
+- [[#4. Tier model (free versus paid)]]
+- [[#5. Ranking]]
+- [[#Where it lives]]
+<!-- /toc -->
+
 Goal: decide what to build in one planning pass, so features are not invented on the fly, and know up front what each costs, what it adds to technical debt, and which plan it belongs to (free or paid). Output lives in the project's `ROADMAP.md` (ranked list, out of scope) and `FEATURE-PLAN.md` (the full table below), both in `/home/jac/Videos/DevHiveMind/Projects/<project>/`.
 
 ## 1. Plan once, then freeze
