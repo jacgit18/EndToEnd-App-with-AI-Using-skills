@@ -32,7 +32,7 @@ Ask only what the project docs and code do not answer. Group by theme, batch up 
 - Any Board or day-tab area touched (hands off unless told).
 
 ## Cost and risk
-- Per-use cost and the cap; new dependency, service or vendor (`dependency-selection.md`).
+- Per-use cost and the cap; new dependency, service or vendor (`dependency-selection.md`); each new package needs the owner's yes and a `dep-vet` result (`dependency-security.md`), so ask it here, not mid-build.
 - What could go wrong, how it is switched off, the measurement that says remove it.
 
 ## Verification

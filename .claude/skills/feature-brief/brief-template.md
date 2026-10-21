@@ -37,7 +37,7 @@ Screen, component, copy, phone and desktop, light and dark, accessible names. Ha
 |---|---|---|---|
 
 ## Cost and risk
-Running cost (and at 10x), new dependency or vendor, debt rating, how it is switched off, kill criteria.
+Running cost (and at 10x), new dependency or vendor (each package: owner approval and `dep-vet` result, `dependency-security.md`), debt rating, how it is switched off, kill criteria.
 
 ## Tests and docs
 - Tests: unit, e2e spec file, real device.
