@@ -21,6 +21,12 @@ Ask only what the project docs and code do not answer. Group by theme, batch up 
 - Existing data created before this feature: what shows?
 - Two devices, same data: which wins?
 
+## Mechanism limits (read the code first, ask only what it leaves open)
+- Does the delivery mechanism (queue, push, job runner, sync, API) allow what the feature needs: how many pending items per user or key, how far ahead, how often, retries and duplicates?
+- What runs the code path: a signed-in user, or a background job with no user context (row-level security, a security-definer function, a migration)?
+- Does every screen, tab, route or flag the answers name exist as written?
+- What stops it if it loops or the user never opens the app again?
+
 ## Data
 - New tables, columns or stored fields? Who owns them? Export, import and delete-my-data behavior.
 - Money, dates, units: format, rounding, time zone.
