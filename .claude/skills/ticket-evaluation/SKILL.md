@@ -1,6 +1,6 @@
 ---
 name: ticket-evaluation
-description: Analyzes, prioritizes, or gives a go/no-go on a shared work ticket (Jira/Linear/Asana/GitHub issue or pasted feature description). Use for "should we pull this into the sprint," "is this worth doing," "evaluate this ticket," backlog grooming. Not `entry-point-first` (cannot start), `design-scoping` (bare system name like "build billing"), `idea-to-first-test` (no ticket), or "how long" (`effort-layers`).
+description: Analyzes, prioritizes, or gives a go/no-go on a shared work ticket (Jira/Linear/Asana/GitHub issue or pasted feature description). Use for "should we pull this into the sprint," "is this worth doing," "evaluate this ticket," backlog grooming. Not `entry-point-first` (cannot start), `design-scoping` (bare system name like "build billing"), `idea-to-first-test` (no ticket), or "how long" (`effort-layers`). A go decision hands to `feature-brief`.
 ---
 
 # Ticket Evaluation

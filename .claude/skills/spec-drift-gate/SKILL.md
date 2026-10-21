@@ -1,6 +1,6 @@
 ---
 name: spec-drift-gate
-description: Gate before substantial multi-file or multi-session AI-assisted builds with no written spec, plus mid-build drift checkpoints. Triggers: "make me a dashboard", "ready to merge / shipped?" on a spec-gated build, vague one-line build asks. Not a one-shot, `design-scoping`, `ambiguity-gate`, `change-surface-audit`, `incremental-build-pacing`, or an untested idea (`idea-to-first-test`); settled-spec slices go to `spec-executor`.
+description: Gate before substantial multi-file or multi-session AI-assisted builds with no written spec, plus mid-build drift checkpoints. Triggers: "make me a dashboard", "ready to merge / shipped?" on a spec-gated build, vague one-line build asks. Not a one-shot, `design-scoping`, `ambiguity-gate`, `change-surface-audit`, `incremental-build-pacing`, or an untested idea (`idea-to-first-test`); settled-spec slices go to `spec-executor`. Not `feature-brief` (planning one feature before the build).
 ---
 
 # Spec Drift Gate

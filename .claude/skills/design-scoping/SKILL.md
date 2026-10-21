@@ -1,6 +1,6 @@
 ---
 name: design-scoping
-description: Front-door gate for system design: refuses to design until purpose, audience, scope, numeric targets, constraints and deep-dive features are stated. Use for "design a system for X", "I'm building X, where do I start". Not vague asks (`ambiguity-gate`), stalled starts (`entry-point-first`), demand (`idea-to-first-test`), interview practice (`system-design-communication`), or compliance obligations (`legal-readiness-gate`).
+description: Front-door gate for system design: refuses to design until purpose, audience, scope, numeric targets, constraints and deep-dive features are stated. Use for "design a system for X", "I'm building X, where do I start". Not vague asks (`ambiguity-gate`), stalled starts (`entry-point-first`), demand (`idea-to-first-test`), interview practice (`system-design-communication`), or compliance obligations (`legal-readiness-gate`). A settled feature in an existing project is `feature-brief`.
 ---
 
 # Design Scoping
