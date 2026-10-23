@@ -53,10 +53,10 @@ If the user has already staged a subset of files, treat that as intent — commi
 If the current branch is the default branch (`main` / `master`) **and** the user has not explicitly said to commit directly to it, create a branch first:
 
 ```bash
-git switch -c <type>/<short-slug>   # e.g. feat/commit-push-skill, fix/null-check
+git switch -c <letter>-<slug>   # f feature, b bug, d docs, c chore, p dependencies; e.g. f-commit-push-skill, b-null-check, d-readme
 ```
 
-Propose the name from the change itself and say why you're branching. If the user explicitly wants the commit on the default branch, honor that.
+The letter is the PR label (`rules/branch-naming.md`); `guard-pr-create.sh` blocks `gh pr create` from a branch that does not follow it. Propose the name from the change itself and say why you're branching. If the user explicitly wants the commit on the default branch, honor that.
 
 ### 3. Group the changes
 

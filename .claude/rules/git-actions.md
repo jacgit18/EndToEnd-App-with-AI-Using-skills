@@ -6,7 +6,7 @@ Global copy lives in `~/.claude/CLAUDE.md`; this file is the version-controlled 
 
 - staging and committing
 - writing a commit message from a diff
-- branching and pushing
+- branching (named `<letter>-<slug>`, see `branch-naming.md`) and pushing
 - opening PRs
 - checking status and logs
 
