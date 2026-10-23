@@ -9,6 +9,8 @@ A ticket is a request written by someone who already knows the context. The read
 
 This skill separates **what the ticket says** from **what the ticket is missing** from **what can actually be judged**, and keeps the verdict at the bottom where it cannot outrun its own caveats.
 
+A go whose demand is still untested (no one has been asked or shown it): say so and hand to `demand-experiment-design` before `feature-brief`.
+
 ## Out of scope
 
 - **Rewriting the ticket.** Naming a dimension as weak is evaluation. Redrafting the acceptance criteria, splitting the scope, or designing the feature is a different job — offer it after the recommendation, only if asked.

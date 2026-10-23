@@ -47,7 +47,7 @@ Try it without installing: `claude --plugin-dir plugins/testing-skills`. This re
 
 ## planning-skills
 
-3 skills from the Business group: `feature-brief` (one feature → a question-bank planning pass and a brief, so it ships as one branch and one PR), `user-story-decomposition` (feature or epic → stories or a
+4 skills from the Business group: `demand-experiment-design` (a named demand risk → a fake door / A/B / concierge test with the pass line set first, then a build / kill / retest read), `feature-brief` (one feature → a question-bank planning pass and a brief, so it ships as one branch and one PR), `user-story-decomposition` (feature or epic → stories or a
 use case, acceptance criteria, Definition of Ready) and `ticket-evaluation` (a written ticket →
 proceed / defer / needs more info / reconsider). They hand off to each other, so they ship
 together. The rest of Business is split by job: `technical-cost-decision` ships in

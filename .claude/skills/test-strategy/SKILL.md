@@ -7,6 +7,8 @@ description: Gated decision for the test mix of a component or system: levels, e
 
 Given something that needs testing — one module, one service, one feature that crosses layers, or a whole system — decide the mix: which test levels exist, how much effort each gets, where in the pipeline each runs, whether non-functional testing is in scope, and whether a TDD or BDD workflow fits. The skill makes the user state the surface, the cost of failure, and the pipeline before any mix is on the table, then writes a test plan and an ADR for the non-obvious choices.
 
+Demand questions (will anyone use or pay for it, fake door, A/B on interest) are not code-correctness tests: `demand-experiment-design`.
+
 ## When to use
 
 - The user is setting a testing approach for a **new** component/service/feature, or reworking one.
