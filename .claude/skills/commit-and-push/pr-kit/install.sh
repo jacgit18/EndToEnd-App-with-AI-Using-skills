@@ -22,6 +22,10 @@ put dependabot.yml .github/dependabot.yml
 put dep-vet.mjs scripts/dep-vet.mjs
 if [ -f package.json ] && grep -q '"vitest"' package.json; then put prBody.test.js scripts/prBody.test.js; put depVet.test.js scripts/depVet.test.js
 else echo "skipped  scripts/prBody.test.js, scripts/depVet.test.js (no vitest in package.json)"; fi
+if [ -f package.json ] && grep -q '"vitest"' package.json && [ -f scripts/prBody.test.js ]; then
+  echo "smoke    running the kit tests against this project's config and template"
+  npx --no-install vitest run scripts/prBody.test.js scripts/depVet.test.js || echo "WARNING: kit tests fail here: fix pr-kit.json or the template before the first PR" >&2
+fi
 rule='Pull requests: never write the description by hand. Run `node scripts/pr-body.mjs --what "<what and why>" > body.md`, then `gh pr create --body-file body.md`.'
 if [ -f CLAUDE.md ]; then
   if grep -q 'scripts/pr-body.mjs' CLAUDE.md; then echo "kept     CLAUDE.md (rule already there)"

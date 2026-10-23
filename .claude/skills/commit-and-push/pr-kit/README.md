@@ -27,3 +27,5 @@ Adapt per project (the script and both CI checks are identical everywhere and ar
 - `.github/pull_request_template.md`: one Audience box per audience label (the test fails if one is missing) and the project's own "Checks" lines. Only the Audience section is machine-checked.
 
 The check fails with "no heading" or "found N" when a description was written by hand, which is the failure this kit removes: the author (human or agent) never has to remember who sees the change.
+
+Prerequisites outside the repo (`dependency-security.md`, "Prerequisites outside the repo"): turn on the dependency graph, Dependabot alerts and the required checks in the repository settings, and confirm each check skips bot PRs by PR author. `install.sh` runs the kit's tests after copying when the project has vitest; after the first PR, read `gh pr checks`.
