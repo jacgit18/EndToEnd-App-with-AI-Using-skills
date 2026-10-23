@@ -2,6 +2,8 @@
 
 Ask only what the project docs and code do not answer. Group by theme, batch up to 4 per call, recommended default first. Skip a theme that does not apply (no data change: skip Data).
 
+A question added after a miss carries an *(added date, PR: why)* note. Add one whenever you add a question, so a later cleanup can tell a needed question from a stale one, and a run of late additions in one theme shows the bank was missing that area.
+
 ## Job and user
 - Who uses this, and what do they do today instead?
 - In one sentence, what can they do afterward that they cannot now?
@@ -22,6 +24,7 @@ Ask only what the project docs and code do not answer. Group by theme, batch up 
 - Two devices, same data: which wins?
 
 ## Mechanism limits (read the code first, ask only what it leaves open)
+*(added 2026-10-21, #229: a brief assumed limits and screens the mechanism and app did not have.)*
 - Does the delivery mechanism (queue, push, job runner, sync, API) allow what the feature needs: how many pending items per user or key, how far ahead, how often, retries and duplicates?
 - What runs the code path: a signed-in user, or a background job with no user context (row-level security, a security-definer function, a migration)?
 - Does every screen, tab, route or flag the answers name exist as written?
@@ -38,7 +41,7 @@ Ask only what the project docs and code do not answer. Group by theme, batch up 
 - Any Board or day-tab area touched (hands off unless told).
 
 ## Cost and risk
-- Per-use cost and the cap; new dependency, service or vendor (`dependency-selection.md`); each new package needs the owner's yes and a `dep-vet` result (`dependency-security.md`), so ask it here, not mid-build.
+- Per-use cost and the cap; new dependency, service or vendor (`dependency-selection.md`); each new package needs the owner's yes and a `dep-vet` result (`dependency-security.md`), so ask it here, not mid-build. *(added 2026-10-21, #226: an agent would otherwise add a package mid-build without the owner's yes.)*
 - What could go wrong, how it is switched off, the measurement that says remove it.
 
 ## Verification
