@@ -7,6 +7,8 @@ description: Pre-build planning pass for one feature in a project whose intent i
 
 The cheapest place to find a wrong assumption is before the code. This skill runs one rigorous planning pass for one feature, writes the answers down, and hands a build that needs no further questions. Rule behind it: `feature-delivery.md` (one feature = one brief = one branch = one PR).
 
+If the job's demand is untested (a DEMAND risk with no test run), run `demand-experiment-design` first and plan the feature from its result.
+
 ## When it applies
 
 | Situation | Do |

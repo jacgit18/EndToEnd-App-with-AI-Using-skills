@@ -1,6 +1,6 @@
 ---
 name: idea-to-first-test
-description: Turns a raw idea into one cheap test: an uncensored 100x pass, the kernel (real need), then the riskiest assumption tagged BUILD or DEMAND and the cheapest test touching it. Use for "wild idea", "what if the app could…", "how do I test demand". Not a stalled start (`entry-point-first`), system scope (`design-scoping`), a written ticket (`ticket-evaluation`), stories (`user-story-decomposition`), a spec (`spec-drift-gate`).
+description: Turns a raw idea into one cheap test: a 100x pass, the kernel, then the riskiest assumption tagged BUILD or DEMAND and the cheapest test. Use for "wild idea", "validate my idea", "what if the app could…". Not a stalled start (`entry-point-first`), scope (`design-scoping`), a ticket (`ticket-evaluation`), stories (`user-story-decomposition`), a spec (`spec-drift-gate`), a named DEMAND risk (`demand-experiment-design`).
 ---
 
 # Idea to First Test
@@ -19,6 +19,7 @@ A big idea fails two ways: it gets cut down before it is understood (judgment to
 | Asking for a one-line build with no spec | `spec-drift-gate` |
 | Choosing between options they already have | `problem-solving-gates` Options Generator |
 | Asking what a concept is | `learning-gate` |
+| Has the DEMAND risk named and wants the test designed or its result read | `demand-experiment-design` |
 
 Idea too vague to restate in one sentence: ask for that one sentence before Step 2, nothing else.
 
@@ -45,7 +46,7 @@ Start a new section. Pick the strongest recurring kernel (the user may override)
    Name the one that kills the idea if false. Flag any assumption the user stated as fact and has not tested.
 4. **First test** — must touch that assumption directly. Setup, tooling and polish do not count.
    - BUILD: tracer bullet — input → one step → visible output, hardcoded and ugly. First action under 30 minutes, 2-hour timebox.
-   - DEMAND: cheapest of a conversation, a one-page landing page with a real ask, or the manual version done by hand for one person. Add: who the customer is and what they do today instead. First action (the message, the page, the list of who to ask) under 30 minutes; the test itself runs days, so set a result date, not a 2-hour box.
+   - DEMAND: cheapest of a conversation, a one-page landing page with a real ask, or the manual version done by hand for one person. Add: who the customer is and what they do today instead. For the pass line, sample limits and reading the result, hand to `demand-experiment-design`. First action (the message, the page, the list of who to ask) under 30 minutes; the test itself runs days, so set a result date, not a 2-hour box.
 
 ## Output
 
