@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Hooks: log-prompt, log-skill, context-watch, catalog-drift-check.
+# Hooks: log-prompt, log-skill, context-watch, catalog-drift-check, guard-pr-create.
 . "$(dirname "$0")/lib.sh"
 command -v jq >/dev/null 2>&1 || { echo "SKIP  hooks (jq not installed)"; exit 0; }
 
@@ -155,5 +155,36 @@ t_drift_clean() {
   assert_contains "$OUT" "Open SKILL-BACKLOG.md markers (1): line 1"
 }
 case_ "catalog-drift-check: clean catalog silent + read-only; README/backlog drift flagged" t_drift_clean
+
+# --- guard-pr-create: branch naming (rules/branch-naming.md) -----------------------------------
+# The hook reads {cwd, tool_input.command}; a repo with scripts/pr-body.mjs gets past the "no PR kit" block.
+guard_on_branch() { # guard_on_branch <branch> [command]  -> sets OUT/RC
+  local repo="$T/guard repo"
+  if [ ! -d "$repo/.git" ]; then mkrepo_commit "$repo"; mkdir -p "$repo/scripts"; : > "$repo/scripts/pr-body.mjs"; fi
+  git -C "$repo" switch -q -C "$1"
+  local cmd="${2:-gh pr create --title t --body-file body.md}"
+  run_in "$(jq -n --arg cwd "$repo" --arg c "$cmd" '{cwd:$cwd,tool_input:{command:$c}}')" bash "$HOOKS/guard-pr-create.sh"
+}
+t_guard_allows_names() {
+  local b
+  for b in f-rest-day-timer b-second-rest-day d-readme c-ci-shard-e2e p-zod-advisory f-a main master release/1.2 dependabot/npm_and_yarn/vite claude/f-x worktree-abc; do
+    guard_on_branch "$b"; assert_status "$RC" 0 "allowed [$b]"; assert_eq "$OUT" "" "silent on [$b]"
+  done
+}
+t_guard_blocks_names() {
+  local b
+  for b in badname feature/x F-Upper f- f-a--b x-thing fix/null-check f-has_underscore f-Mixed; do
+    guard_on_branch "$b"; assert_status "$RC" 2 "blocked [$b]"; assert_contains "$OUT" "naming rule" "message on [$b]"
+  done
+}
+t_guard_skip_and_other_commands() {
+  guard_on_branch badname "BRANCH_NAME_SKIP=1 gh pr create --body-file body.md"; assert_status "$RC" 0 "inline skip"
+  BRANCH_NAME_SKIP=1 guard_on_branch badname; assert_status "$RC" 0 "env skip"
+  guard_on_branch badname "git status"; assert_status "$RC" 0 "other commands untouched"
+  guard_on_branch f-ok "gh pr create --title t"; assert_status "$RC" 2 "still needs --body-file"
+}
+case_ "guard-pr-create: allows <f|b|d|c|p>-slug and the exempt names" t_guard_allows_names
+case_ "guard-pr-create: blocks names outside the form, with the rule in the message" t_guard_blocks_names
+case_ "guard-pr-create: BRANCH_NAME_SKIP, other commands, and the body-file rule still hold" t_guard_skip_and_other_commands
 
 finish
