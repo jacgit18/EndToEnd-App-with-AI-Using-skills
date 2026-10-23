@@ -1,5 +1,17 @@
 # Dependency security: an agent never installs what you would not install (applies to every project)
 
+<!-- toc -->
+## Contents
+
+- [[#The rules]]
+- [[#Vet before approving: the checklist]]
+- [[#What CI must block]]
+- [[#Setup per project]]
+- [[#Prerequisites outside the repo]]
+- [[#When something is already installed]]
+- [[#Enforcers]]
+<!-- /toc -->
+
 A dependency is code from the internet that runs with your app's permissions, at install time as well as run time. An AI agent will add a package to finish a task and cannot tell a five-year-old maintained library from a three-day-old typosquat (`react-datepiicker` for `react-datepicker`) that steals environment variables or wallets. This rule adds the security check that `dependency-selection.md` (whether to add one) does not cover.
 
 ## The rules
@@ -41,6 +53,16 @@ Every project with a package manifest runs these on pull requests and on a weekl
 ## Setup per project
 
 `commit-and-push/pr-kit/install.sh` installs `dependency-scan.yml`, `dependabot.yml` and `scripts/dep-vet.mjs`. Before the first run, turn on **Dependency graph** (and Dependabot alerts and security updates) in the repository's Settings, Code security; until it is on the review job skips itself with a warning annotation (without that it fails with "Dependency review is not supported", even in a public repository: iron-log's first run, 2026-10-21), so a skipped review is visible in the run but the guard is not complete. Then the project's `CLAUDE.md` gets the Definition of done line and the PR template gets the package-delta line. For non-npm stacks name the equivalent (`pip-audit`, `osv-scanner`, `cargo audit`) in the project's `CLAUDE.md`.
+
+## Prerequisites outside the repo
+
+A workflow can pass in review and still fail on its first real PR because it assumes a setting or an identity the code does not show (2026-10-21: the dependency graph was off; the audience check read the triggering actor, not the PR author). When a rule adds or changes a workflow, list in the PR what it needs from outside the repo and check each one:
+
+- Repository settings: dependency graph, Dependabot alerts, required status checks, branch protection, Actions permissions.
+- Identities: which PR authors are bots (Dependabot, release bots) and whether each check skips them by PR author, not by the actor that triggered the run.
+- Secrets and tokens the workflow reads, and what happens when they are absent (skip with a warning, never silently pass).
+
+Then open a throwaway PR (or re-run on an existing one) and read `gh pr checks` before calling the setup done.
 
 ## When something is already installed
 

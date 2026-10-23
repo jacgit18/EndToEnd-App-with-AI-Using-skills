@@ -6,6 +6,7 @@ Rules written only as prose get missed (the PR Audience box, Lighthouse before/a
 - Prefer, in order: a test or lint that fails, a hook that blocks, a script that prints a reminder, prose.
 - When a rule is missed twice, add the enforcer instead of rewording the rule.
 - A new enforcer ships with a changelog line and lists the rule it guards.
+- A new guard (a lint, a name check, a CI gate) runs against the project's current state before it merges, to catch false positives: `dep-vet` first flagged every `@types/x` package as a lookalike (2026-10-21). Put the false-positive case in its test.
 - Keep a short "rule, enforcer" table in `CLAUDE.md` or the project's `ARCHITECTURE.md`.
 
 Enforcer: advisory; checked when a project's `CLAUDE.md` is reviewed.
