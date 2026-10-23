@@ -45,7 +45,7 @@ All of these, in writing, before any data exists:
 3. **Build / kill / retest thresholds**, e.g. "build at 15%+ of exposed, kill under 5%, between = retest with a stronger ask".
 4. **Window** (a result date, not "until we see enough").
 5. **Honest labelling** (required for a fake door): the page says the feature is not ready yet ("Coming soon", join a list). No fake loading states, no implied availability, no charging for something that does not exist.
-6. **Reachability**: pick the build bar so it can be cleared at the planned n. If the interval at the planned n cannot sit above the kill line (e.g. 20 users cannot separate 15% from 5%), raise exposure, strengthen the ask, or switch type before running. Bars come from what the decision is worth (what a build costs vs. the value if the rate holds), not a default. No cost estimate from the user: propose a starting bar, label it a placeholder, and ask for the build cost in one line.
+6. **Reachability**: pick the build bar so it can be cleared at the planned n. Check it in the reply, not as a maybe: if the interval at the planned n cannot sit above the kill line (e.g. 12 or 20 users cannot separate 15% from 5%), say so and raise exposure, strengthen the ask, or switch type before running. Bars come from what the decision is worth (what a build costs vs. the value if the rate holds), not a default. No cost estimate from the user: propose a starting bar, label it a placeholder, and ask for the build cost in one line.
 7. **Cleanup**: what happens to people who clicked (tell them, offer the waitlist, do not leave a dead button).
 
 ## Step 4 — Read the result
