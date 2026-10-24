@@ -81,5 +81,5 @@ Group audit findings and small fixes by area, one PR per area per batch, listing
 ## Enforcers
 
 - This rule is advisory today. Its checks: the PR template's "Brief" and "Split because" lines, and a count of open PRs per author in the weekly review.
-- Add a script check to the project's `pr-body.mjs` (warn when a PR under 40 lines is opened while another PR from the same session is open) once the rule is missed twice (`rule-enforcers.md`).
+- `pr-body.mjs` warns (advisory, never blocks) when the PR changes a file that another open PR of the author also changes, naming the PR and the shared files; silence it with `--split "file overlap: <file>"`. It does not warn about an open PR with no file in common, because those run in parallel (`parallel-agent-structure.md`, "Serial or parallel"). Changed 2026-10-23 (iron-log PR 501); an earlier version warned on any PR under 40 lines beside any open PR.
 - Related: `feature-planning.md` (what to build and its cost), `definition-of-done.md` (when it is done), `parallel-agent-structure.md` (what can run side by side).
