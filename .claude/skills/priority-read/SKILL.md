@@ -6,6 +6,7 @@ description: Writes and maintains `PriorityRead.md` in a project folder, a ranke
 # Priority read
 
 Produces `/home/jac/Videos/DevHiveMind/Projects/<project>/PriorityRead.md`: the answer to "I have 100 docs; which do I actually read?"
+
 ## Create
 
 1. List every file under `<project>/` (count them; note generated bulk such as audit runs, candidate JSON, agent artifacts, screenshots).
