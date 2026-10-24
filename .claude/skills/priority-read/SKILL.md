@@ -1,12 +1,11 @@
 ---
 name: priority-read
-description: Writes and maintains `_PriorityRead.md` in a project folder, a ranked reading list saying which of the project's many generated docs matter most and which to skip. Use for "what should I read first in this project", "create the priority read", "too many docs", and on onboarding any project. Not `mind-map` (visual design map), `codebase-file-orientation` (one file's sidecar), or `session-handoff` (one session's state).
+description: Writes and maintains `PriorityRead.md` in a project folder, a ranked reading list saying which of the project's many generated docs matter most and which to skip. Use for "what should I read first in this project", "create the priority read", "too many docs", and on onboarding any project. Not `mind-map` (visual design map), `codebase-file-orientation` (one file's sidecar), or `session-handoff` (one session's state).
 ---
 
 # Priority read
 
-Produces `/home/jac/Videos/DevHiveMind/Projects/<project>/_PriorityRead.md`: the answer to "I have 100 docs; which do I actually read?" The leading underscore keeps it at the top of the folder.
-
+Produces `/home/jac/Videos/DevHiveMind/Projects/<project>/PriorityRead.md`: the answer to "I have 100 docs; which do I actually read?"
 ## Create
 
 1. List every file under `<project>/` (count them; note generated bulk such as audit runs, candidate JSON, agent artifacts, screenshots).
@@ -42,7 +41,7 @@ Also create these five in `<project>/ux/` when missing, filled from the real cod
 4. `COMPONENTS.md`: reusable pieces (buttons, forms, cards, sheets, notices) with their states: default, hover, focus, disabled, error, loading, empty.
 5. `SCREEN-SPECS.md`: per screen: layout, main action, mobile layout, loading and empty states.
 
-Link them from the README or CLAUDE.md "Read first" block and from `_PriorityRead.md`.
+Link them from the README or CLAUDE.md "Read first" block and from `PriorityRead.md`.
 
 ### Database set (any project with a database)
 
@@ -54,11 +53,11 @@ Also create these five in `<project>/data/` when missing, so an agent works from
 4. `RLS-POLICIES.md`: who can read/write which rows, one row per table × role (anon, user, owner, admin, service), and the mechanism (Postgres RLS, query scoping, API checks). Single-user apps still write it: say so and name what stops a second user seeing the data. Model choice: `access-control-modeling`.
 5. `SEED-DATA.md`: test users per role, sample records covering empty, typical and edge states, how to load and reset them, and the rule that seeds never contain real personal data.
 
-Link them from `ARCHITECTURE.md` and `_PriorityRead.md` (read-when tier: "touching the database").
+Link them from `ARCHITECTURE.md` and `PriorityRead.md` (read-when tier: "touching the database").
 
 ## Maintain
 
-After any bulk move or rename of docs, re-check every link in `_PriorityRead.md` (links by bare name survive a folder move, path-qualified ones do not); retarget, recreate or drop each broken one, and say which. When a doc is added, renamed, superseded or closed, update the tiers in the same piece of work and bump the `Last reviewed` date. When a PR changes behaviour, a decision or the plan, update `CHANGELOG.md`, `DECISIONS.md` or `ROADMAP.md` in the same piece of work. Keep it to one screen; if it grows, you are listing, not prioritizing.
+After any bulk move or rename of docs, re-check every link in `PriorityRead.md` (links by bare name survive a folder move, path-qualified ones do not); retarget, recreate or drop each broken one, and say which. When a doc is added, renamed, superseded or closed, update the tiers in the same piece of work and bump the `Last reviewed` date. When a PR changes behaviour, a decision or the plan, update `CHANGELOG.md`, `DECISIONS.md` or `ROADMAP.md` in the same piece of work. Keep it to one screen; if it grows, you are listing, not prioritizing.
 
 Backlogs: when a backlog file passes about 300 lines, split it by theme with a short index and archive the done items; audit open items against the code and the PR list on a set cadence (each milestone), because stale items cost more than missing ones.
 

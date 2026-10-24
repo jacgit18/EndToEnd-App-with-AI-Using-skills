@@ -52,6 +52,6 @@ A file over 400 lines, or a changelog or log where one section is one dated entr
 
 - When a project is onboarded, run the script over its docs folder and the repo's `README.md`/`SETUP.md`/ADR folder, and add `--check` to its checks if it has a docs check.
 - When Claude writes a new document, it runs the script on that file before finishing.
-- `_PriorityRead.md` lists the long documents worth reading first; the TOC says what is in each one.
+- `PriorityRead.md` lists the long documents worth reading first; the TOC says what is in each one.
 
 Enforcer: a PostToolUse hook (`~/.claude/hooks/doc-toc.sh`, registered in `settings.json`) refreshes the list of any `.md` under `DevHiveMind/Projects/` right after Write/Edit; `doc-toc.mjs --check` (exit 1 when missing or stale). Run it in a project's `check` or pre-push hook when that project wants it enforced; until then it is advisory and part of the docs line of the Definition of done.
