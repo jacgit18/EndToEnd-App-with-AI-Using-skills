@@ -4,7 +4,7 @@
 //
 //   node doc-toc.mjs <dir|file>...            write TOCs (idempotent)
 //   node doc-toc.mjs --check <dir|file>...    exit 1 if a doc needs a TOC or has a stale one
-//   options: --min-lines=60  --style=wiki|md  --skip=archive,images,node_modules
+//   options: --min-lines=100  --style=wiki|md  --skip=archive,images,node_modules
 //
 // The TOC sits right after the first H1, between <!-- toc --> and <!-- /toc -->,
 // so it lands inside the first 100 lines. Headings inside code fences are ignored.
@@ -14,7 +14,7 @@ import { join } from 'node:path'
 const args = process.argv.slice(2)
 const flag = (n, d) => (args.find(a => a.startsWith(`--${n}=`)) ?? `--${n}=${d}`).split('=')[1]
 const check = args.includes('--check')
-const minLines = Number(flag('min-lines', 60))
+const minLines = Number(flag('min-lines', 100))
 const style = flag('style', 'wiki')
 const skip = new Set(flag('skip', 'archive,images,node_modules,.git').split(','))
 const targets = args.filter(a => !a.startsWith('--'))
