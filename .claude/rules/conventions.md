@@ -20,7 +20,7 @@
   `architecture/decisions/`, scope, stack walkthrough), `testing/`, `specs/` (`spec.md`,
   `phase7-spec.md`, `phase7-verification.md`, `phase8-spec.md`, `phase9-spec.md`), `ops/`
   (`deploy.md`, `paid-options.md`), `audits/`, `ux/`, plus `backlog.md`, `ROADMAP.md`,
-  `ARCHITECTURE.md`, `DECISIONS.md`, `CHANGELOG.md`, `_PriorityRead.md` at the top. So a
+  `ARCHITECTURE.md`, `DECISIONS.md`, `CHANGELOG.md`, `PriorityRead.md` at the top. So a
   `docs/…` citation in this repo's code comments and README maps like this:
   `docs/architecture/…` and `docs/testing/…` keep their path under `<docs root>`;
   `docs/spec.md` and `docs/phaseN-spec.md` become `<docs root>/specs/…`; `docs/deploy.md` and
