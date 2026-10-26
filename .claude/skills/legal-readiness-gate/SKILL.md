@@ -246,4 +246,4 @@ Depends on: `disclosure-gap-audit`, `design-scoping`, `reliability-math`, `acces
 - Use when someone says "what do I need legally before launch", "do I need a privacy policy / terms / cookie banner", "do I need HIPAA", "does GDPR apply to us", "what do we owe users who ask for deletion", "what SLA should we offer", "an enterprise customer wants a DPA / BAA / SOC 2", "can I send health data to an LLM API", or "what changes legally as we grow".
 - It is NOT for auditing a live policy against what the product does — "does our privacy policy cover this" is `disclosure-gap-audit`.
 - It is NOT for scoping a system or recording the compliance regime as a constraint — that is `design-scoping`, which hands the unpacking here.
-- It is NOT for the arithmetic of reachable uptime (`reliability-math`) or the cost of a compliance program (`technical-cost-decision`).
+- It is NOT for the arithmetic of reachable uptime (`reliability-math`) or the cost of a compliance program (`technical-cost-decision`). Receipt or document photo pipelines: `media-capture-pipeline`.

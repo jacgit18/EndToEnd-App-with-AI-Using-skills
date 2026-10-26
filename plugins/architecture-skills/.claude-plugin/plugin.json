@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
   "name": "architecture-skills",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Architecture and data-architecture decision gates and procedures: system scoping, legal and compliance readiness, service boundaries, APIs, gateways, deployment, migration, resilience, observability, IAM, secrets, caching, data stores, table and warehouse modeling, cost, and AI-agent tooling and model routing.",
   "author": {
     "name": "jacgit18"

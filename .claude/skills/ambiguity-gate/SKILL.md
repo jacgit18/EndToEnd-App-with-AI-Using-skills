@@ -130,3 +130,4 @@ Depends on: `design-scoping`, `user-story-decomposition`, `prompt-authoring`, `s
 - It does NOT ask the user to supply a diagnosis (that's `problem-solving-gates`) and does not audit a settled change's blast radius (that's `change-surface-audit`).
 - It hands off rather than asking when intent is settled and only scope is open: designing or architecting a system/feature goes to `design-scoping`, splitting work into stories goes to `user-story-decomposition`, and writing or improving a prompt goes to `prompt-authoring` (each runs its own targeted questions).
 - Not for a request to write tests (`test-practice-gate`, which owns that gate) or a multi-file/multi-session build with no written spec once intent is settled (`spec-drift-gate`, whose spec requirement applies next, not a second clarifying question).
+- A camera or photo-to-data feature (receipt scan, barcode, document capture) goes to `media-capture-pipeline`, which asks its own six questions.

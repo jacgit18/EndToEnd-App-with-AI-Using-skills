@@ -26,6 +26,7 @@ A question added after a miss carries an *(added date, PR: why)* note. Add one w
 ## Mechanism limits (read the code first, ask only what it leaves open)
 *(added 2026-10-21, #229: a brief assumed limits and screens the mechanism and app did not have.)*
 - Does the delivery mechanism (queue, push, job runner, sync, API) allow what the feature needs: how many pending items per user or key, how far ahead, how often, retries and duplicates?
+- Photo or camera input: settle `media-capture-pipeline` first (capture, extraction, retention, cap, accuracy) and link its ADR in the brief.
 - What runs the code path: a signed-in user, or a background job with no user context (row-level security, a security-definer function, a migration)?
 - Does every screen, tab, route or flag the answers name exist as written?
 - What stops it if it loops or the user never opens the app again?
