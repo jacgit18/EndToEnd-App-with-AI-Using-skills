@@ -51,7 +51,7 @@ Do not recommend a mix until these are answered. Split into what you may surface
 4. **The pipeline stages that exist** — what actually runs between a commit and production: local pre-commit, PR CI, merge, staging deploy, production deploy, post-deploy checks. You cannot place a smoke test at a stage that does not exist. If PR CI runs only the jobs the diff needs (a `changes` job mapping paths to jobs), record the map: a file it does not recognise runs everything, and a push to main, a manual run and the deploy gate always run every job.
 5. **Non-functional requirements, with numbers** (an axe scan inside e2e is a regression check, not an accessibility conformance claim; the rest of WCAG stays a manual-review list) — latency budget, throughput target, expected load and its shape, security/compliance surface — or an explicit "none specified." No numbers means performance/load/security testing is out of this plan, and that should be a stated choice, not an omission.
 6. **Change rate and lifetime** — a throwaway spike, or a load-bearing system maintained for years? A prototype does not get the full pyramid; a system others depend on does.
-7. **Who maintains these, and the CI time budget** — who writes and fixes these tests, how long the suite is allowed to take, whether E2E infrastructure (browser grid, seeded environment) already exists or would be new.
+7. **Who maintains these, and the CI time budget** — who writes and fixes these tests, how long the suite is allowed to take (PR wall-clock and runner minutes per PR, with the current numbers from `gh run list`), whether E2E infrastructure (browser grid, seeded environment) already exists or would be new. An AI agent adds tests, jobs and timeouts "just in case" unless a budget is written down (`ci-budget.md`); no stated budget means the plan must state one.
 
 "How should we test this" with items 1–7 absent is not valid input. Ask for what's missing and stop. Do not offer a menu of test levels "to react to."
 
@@ -77,6 +77,8 @@ Flag the load-bearing assumption as a question ("is 'prod keeps breaking' someth
 
 Once the gate is satisfied, work `selection-framework.md` in order: map the surface and its seams, rate the failure risk per area, classify what each test level buys *here*, assign the effort budget (start from 70/20/10 and adjust for risk and surface shape), place each level in a real pipeline stage, choose the functional technique (black/white/grey box) and the data strategy (fixtures vs data-driven), decide the non-functional scope with thresholds or an explicit "none", answer the TDD/BDD workflow question, and list what you are deferring.
 
+**Cost-per-run lens.** Give each level in the mix a per-run cost (seconds and runner minutes on this pipeline) next to what it buys, and push logic checks down to the cheapest level that can see the risk: an e2e test earns its place only for wiring, layout or a real browser or database. Every job gets a `timeout-minutes` about 2x its normal runtime, and the plan lists what is pruned or deduplicated when the budget is exceeded (candidates proposed with evidence, owner approves; never silent deletion). Rule: `ci-budget.md`.
+
 **Isolation and parity lens.** Every test must pass alone, in any order, with an empty environment and no gitignored file (`.env`) behind it, and the runtime version must match across image, local and CI. Before blaming CI for a hang or a failure, run each test file alone locally with a clean env.
 
 `test-levels.md` backs it: each level (unit, integration, system integration, contract, end-to-end, smoke, acceptance/UAT, and the non-functional family) in one entry — what it buys, what it costs, its failure mode when over- or under-used, and where it runs — plus the pyramid note and a note that **manual testing still has a place** for exploratory and one-off acceptance checks.
@@ -95,6 +97,7 @@ Pipeline placement:  <level → stage: e.g. "unit + integration → PR CI; smoke
 Functional technique: <black-box | white-box | grey-box, and why> ; data: <fixtures | data-driven>
 Non-functional:      <load / performance / security — each with a threshold, or "none — accepted">
 Workflow:            <TDD | test-after | BDD with Gherkin — and the reason, esp. who reads the .feature files>
+CI budget:           <PR wall-clock target, runner minutes per PR, job timeouts; what is pruned first when over>
 Deferred:            <coverage % → coverage-policy | framework/tool choice | CI-cost sizing → technical-cost-decision>
 ```
 

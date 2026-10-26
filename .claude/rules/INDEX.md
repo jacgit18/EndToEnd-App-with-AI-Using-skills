@@ -6,6 +6,7 @@ One line per rule file: what it decides and what enforces it. Read the file when
 |---|---|---|
 | `adding-a-skill.md` | steps to add or change a skill | `lint.sh --strict`, `/new-skill` |
 | `agents.md` | which unattended agents exist | advisory |
+| `ci-budget.md` | CI job timeouts, per-project CI budget, no silent pipeline growth, test pruning by proposal | `scripts/ci-timeouts.mjs` (PR kit), PR template line |
 | `commands.md` | git scripts, lint, smoke tests | the scripts |
 | `conventions.md` | branches, commits, staging, docs location, prod deploys | `commit.sh`, permissions |
 | `definition-of-done.md` | project DoD and per-feature Done when | PR template Done section |
