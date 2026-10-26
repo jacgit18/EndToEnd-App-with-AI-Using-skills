@@ -1,6 +1,6 @@
 ---
 name: observability-strategy
-description: Gated decision for how a system is made observable: signals, SLIs/SLOs and error budget, instrumentation, sampling, alerting, retention, self-hosted vs managed. Use for "we need monitoring / observability", "set up distributed tracing", "what should we alert on". Not for vendor dollar sizing (`technical-cost-decision`), triaging one live incident (`debugging-layer-selection`), or one page's web vitals (`web-vitals-audit`).
+description: Gated decision for how a system is made observable: signals, SLIs/SLOs, instrumentation, sampling, alerting, self-hosted vs managed. Triggers: "do we have Sentry / error tracking", "how is logging and monitoring", "set up tracing", "what should we alert on". Not for vendor dollar sizing (`technical-cost-decision`), triaging one live incident (`debugging-layer-selection`), or one page's web vitals (`web-vitals-audit`).
 ---
 
 # Observability Strategy

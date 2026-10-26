@@ -1,6 +1,6 @@
 ---
 name: deployment-strategy
-description: Gated decision for how a new version of one deployable unit reaches production: rollout mechanism, environment progression, expand/contract schema, rollback trigger. Use when "zero-downtime deploys", "blue-green or canary", "rollbacks take too long". Not for moving a workload between systems (`migration-cutover`), whether a change is breaking (`change-surface-audit`), or whether users want it (`demand-experiment-design`).
+description: Decision for how a new version of one deployable unit reaches production: rollout mechanism, environments, expand/contract schema, rollback trigger. Triggers: "releasing to a bigger userbase", "staging vs prod", "zero-downtime deploys", "blue-green or canary". Not for moving a workload between systems (`migration-cutover`), breaking-change check (`change-surface-audit`), or whether users want it (`demand-experiment-design`).
 ---
 
 # Deployment Strategy
