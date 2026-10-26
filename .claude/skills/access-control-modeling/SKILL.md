@@ -1,6 +1,6 @@
 ---
 name: access-control-modeling
-description: Gated decision for the application authorization model: RBAC/ABAC/ACL/ReBAC, permission granularity, multi-tenancy isolation, where checks are enforced. Triggers: "what roles should we have", "design the permissions system", "RBAC or ABAC". Authentication is out of scope. Not for cloud identity — `cloud-iam-boundary`. Not for table DDL — `relational-modeling`.
+description: Gated decision for the application authorization model: RBAC/ABAC/ACL/ReBAC, permission granularity, multi-tenancy isolation, where checks are enforced. Triggers: "how are roles defined", "admin-only vs paid features", "who can see what", "design the permissions system", "RBAC or ABAC". Authentication is out of scope. Not for cloud identity — `cloud-iam-boundary`. Not for table DDL — `relational-modeling`.
 ---
 
 # Access Control Modeling
