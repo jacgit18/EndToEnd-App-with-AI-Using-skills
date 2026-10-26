@@ -60,6 +60,7 @@ If the user opens with a number or a rule already chosen, put it under the gate 
 - **"80% across every repo"** — criticality, churn, and lifespan differ per module; one number over-tests frozen glue and under-tests the churning payments logic. Should the target be set per module by whoever owns the domain?
 - **"Gate the build on total coverage"** — a total-coverage gate punishes a well-tested PR that adds a large generated file and lets an untested change ride under the average. Gating on **new-code coverage** or the **delta** targets the change itself. Which failure are you trying to prevent?
 - **"Raise it from 90% to 95%"** — the note is explicit: the value is in 30%→70% on untested areas, not 90%→95%. Where is the coverage actually low, and is that where the risk is?
+- **"Add tests until the number is hit"** — every added test costs runner minutes on every PR forever, and an agent will add more "just in case". Does the policy say when a test is removed or merged (duplicate coverage of the same flow, a test that has never failed and is covered by a cheaper one)? A policy that only ratchets up needs a trim rule beside it, and deletion is proposed with evidence and approved by the owner (`ci-budget.md`).
 - **"Coverage proves the tests are good"** — coverage proves lines *ran*, not that behavior was *checked*. If test quality is the real worry, mutation testing is the tool; name it and treat it as a separate decision.
 
 Flag the assumption as a question ("is the goal to stop untested code landing, or to raise the whole codebase — those want different gates?"), not a correction.
@@ -88,6 +89,7 @@ Enforcement:        <block merge | report only> ; basis: <overall | new-code | d
 Delta rule:         <e.g. "new-code coverage ≥ 80%; total may not drop more than 0.5%">
 Legacy ratchet:     <"cover what you touch; floor rises to X% by <date>" — or "n/a, already above target">
 Quality check:      <mutation testing on <segment>, or "not adopted — noted">
+Trim rule:          <how duplicate or never-failing tests are proposed for removal, and who approves; CI cost cap from `ci-budget.md`>
 Not doing:          <what's deliberately unenforced, and the accepted risk>
 ```
 

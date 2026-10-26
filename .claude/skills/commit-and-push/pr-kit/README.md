@@ -19,6 +19,7 @@ It copies the files below, appends the rule to the project's CLAUDE.md, and prin
 | `dependency-scan.yml` | `.github/workflows/dependency-scan.yml` (npm audit for production dependencies, GitHub dependency review, and `dep-vet` on packages a PR adds; rule `dependency-security.md`) |
 | `dependabot.yml` | `.github/dependabot.yml` (weekly grouped updates; add an ecosystem block per manifest) |
 | `dep-vet.mjs`, `depVet.test.js` | `scripts/dep-vet.mjs` and its test (registry facts and typosquat flags for new npm packages; `node scripts/dep-vet.mjs <name>` by hand before approving one) |
+| `ci-timeouts.yml`, `ci-timeouts.mjs`, `ciTimeouts.test.js` | `.github/workflows/ci-timeouts.yml`, `scripts/ci-timeouts.mjs` and its test (fails a GitHub Actions job with no `timeout-minutes`, or one over 10 without `# timeout-ok: why`; rule `ci-budget.md`; also wire `node scripts/ci-timeouts.mjs` into the project's local check) |
 
 Then add the rule to the project's CLAUDE.md: "open every PR with `node scripts/pr-body.mjs --what "..." > body.md` and `gh pr create --body-file body.md`; never write the description by hand."
 

@@ -41,6 +41,12 @@ If a check cannot run, say so; absence of output is not a pass.
 Also check the dependency guard (`dependency-security.md`): a CI job running `npm audit`/`pip-audit`, dependency review and new-package vetting (`dep-vet`), a Dependabot or Renovate config, no package in a manifest fetched from a git or tarball URL, and no install command without `--ignore-scripts` in a deploy path that handles secrets. Report each missing piece as a finding. Also check: lockfile committed, CI exists and covers lint + tests, `.gitignore` covers env files,
 dead branches (`git branch -r --merged`), very large tracked files, TODO/FIXME count.
 
+CI cost (`ci-budget.md`), read from the workflow files and real runs (`gh run list`, `gh run view <id> --json jobs`; three runs, state the spread; `gh` missing or no runs is "not run"):
+- every job has `timeout-minutes` (`node scripts/ci-timeouts.mjs`, or read the YAML); list jobs without one, and values over 10 minutes without a `timeout-ok` reason;
+- the slowest jobs and e2e specs, jobs whose worst run is near their timeout, matrix legs that take far longer than their siblings (imbalance), and retries that passed;
+- duplicate coverage: several specs for one flow; specs that have never failed in the run history and that a unit test covers; list them as *candidates to propose*, never delete or edit them;
+- the project's CI budget (CLAUDE.md or `CI-BUDGET.md`) exists and the latest baseline is within it; if no budget exists, that is a finding.
+
 Use the project's own scripts first (`package.json` scripts, `Makefile`, CLAUDE.md commands).
 Time-box each command; report a timeout as "not run".
 

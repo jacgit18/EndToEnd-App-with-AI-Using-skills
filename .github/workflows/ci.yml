@@ -34,7 +34,7 @@ jobs:
   backend:
     name: Backend tests (real Postgres)
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 5
     defaults:
       run:
         working-directory: finance-dashboard/backend
@@ -120,7 +120,7 @@ jobs:
     # (e2e/mock-api.js): no backend or secrets needed. ADR-0023.
     name: Frontend E2E + accessibility (Playwright)
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 15 # timeout-ok: worst run 9 min on the last 8 runs
     defaults:
       run:
         working-directory: finance-dashboard/frontend
@@ -150,7 +150,7 @@ jobs:
     # form factors, signed in. Closes the gap ADR-0023 left open. No repo secrets needed.
     name: Real-stack smoke + Lighthouse
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 20 # timeout-ok: worst run 10.5 min on the last 8 runs
     defaults:
       run:
         working-directory: finance-dashboard
