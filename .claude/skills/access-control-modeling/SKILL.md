@@ -141,3 +141,4 @@ Depends on: `cloud-iam-boundary`, `relational-modeling`, `disclosure-gap-audit`,
 
 - Use when someone says "what roles should we have", "design the permissions system", "how do users relate to roles", "can a user have multiple roles", "admin vs member vs viewer", "row-level security or app-level checks", "multi-tenant permission model", "RBAC or ABAC", "a user should only see their own org's data", "who can approve/edit/delete X", or proposes a role/permission shape and wants it checked.
 - Not for the broader blast radius of a specific change that happens to touch permissions ("we're adding a feature, does it need new roles" alongside API/data/state/other risk) — that is `change-surface-audit`, which audits the whole change first and hands the permissions question here once it's confirmed touched.
+- Who may view kept scan images is decided here; the retention and capture design is `media-capture-pipeline`.

@@ -242,3 +242,4 @@ Depends on: `caching-strategy`, `deployment-strategy`, `resilience-strategy`, `w
   and wants it checked. See "Out of scope" above for the sibling carve-outs
   (`caching-strategy`, `deployment-strategy`, `resilience-strategy`, `api-interface-style`,
   `data-access-layer`) — not repeated here. A poor Lighthouse number is `web-vitals-audit` (SW bypassed).
+- A camera or photo-scan feature (capture, extraction, retention, cost cap) is `media-capture-pipeline`; an offline-queued scan is this skill's write-scope question.

@@ -113,3 +113,4 @@ Depends on: `spec-drift-gate` (optional, Step 4b), `test-strategy`, `test-practi
 The frontmatter `description` is kept short for the skill listing budget; the full original description is preserved here.
 - Use when someone is working out what to test rather than how or how much, "what should I test for this feature", "what cases am I missing", "did I cover the edge cases", "list the test cases for X", "brainstorm test scenarios", "what could go wrong with this endpoint", "review my test plan for gaps", "what do we test for this Terraform module / pipeline / migration".
 - Not for a debugging-practice exercise built on injected bugs (`bug-hunt-drill`); that trains finding defects, not listing which cases a feature needs.
+- The accuracy sample set for an extraction feature (receipts, barcodes) is set in `media-capture-pipeline`; the full case table for the feature comes here.

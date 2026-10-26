@@ -1,6 +1,6 @@
 ---
 name: model-routing-decision
-description: Gated decision for routing LLM calls across more than one model: tiering by task, choosing across providers, adopting a routing proxy, or in-session model choice. Triggers: "when should I use Haiku vs. Sonnet vs. Opus", "should I build a model router", "is a routing proxy worth it". Not for pricing tiers — `technical-cost-decision`. Not for volume sizing — `capacity-estimation`.
+description: Gated decision for routing LLM calls across more than one model: tiering by task, choosing across providers, adopting a routing proxy, or in-session model choice. Triggers: "when should I use Haiku vs. Sonnet vs. Opus", "should I build a model router", "is a routing proxy worth it". Not for pricing tiers — `technical-cost-decision`. Not for volume sizing — `capacity-estimation`. Photo pipelines: `media-capture-pipeline`.
 ---
 
 # Model Routing Decision

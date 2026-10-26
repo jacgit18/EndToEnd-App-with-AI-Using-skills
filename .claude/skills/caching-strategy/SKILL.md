@@ -142,3 +142,4 @@ Depends on: `data-tier-operations`, `technical-cost-decision`, `index-tuning`, `
 - Not for whether the hit-rate (or any cache) metric is correctly measured or alerted — that is `observability-strategy`.
 - Not for who is allowed to see a cached record or how per-user/per-tenant data is kept from leaking across cache keys as an authorization matter -- the permission model is `access-control-modeling`, which hands this skill the staleness requirement.
 - Not for request-path overload protection — rate limiting, load shedding, circuit breakers on the calls a cache miss falls through to — that is `resilience-strategy`, for which "serve a stale / cached response" is one degradation fallback whose cache this skill designs.
+- Kept receipt or document images (retention, who may view) are `media-capture-pipeline`, with `access-control-modeling` for the viewer rule.
