@@ -32,4 +32,5 @@ Split because: n/a: this PR is the whole feature
 - [ ] `scripts/skills/lint.sh --strict` (skills, rules or commands changed; n/a otherwise)
 - [ ] `scripts/tests/run.sh` (scripts or hooks changed; n/a otherwise)
 - [ ] finance-dashboard: backend `uv run pytest -q`; frontend `npm run build && npm test`
+- [ ] CI minutes: n/a (no workflow or test-suite change), or PR wall-clock and runner minutes before and after, with any new job, leg, spec or timeout named and what a new e2e spec catches that a unit test cannot (`ci-budget.md`)
 - [ ] UI, style, font, image or bundle change: `node scripts/lighthouse.mjs --check` run, before and after in the description (n/a otherwise)
