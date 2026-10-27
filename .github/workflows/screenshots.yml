@@ -31,7 +31,7 @@ jobs:
     # A fork PR's token is read-only, so there is nothing this job could publish: skip it.
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 15 # timeout-ok: `playwright install --with-deps` stalled 6 to 12 min on a slow apt mirror on 2026-10-26 (normal run 1 min)
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
