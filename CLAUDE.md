@@ -39,6 +39,7 @@ npm run e2e        # playwright (+ axe)
 - **Database work** (schema, migration, access rules, fixtures): read all five in `data/` first: `DATA-MODEL.md`, `SCHEMA.md`, `MIGRATIONS.md`, `RLS-POLICIES.md`, `SEED-DATA.md`. Written from the code (2026-10-13); the code wins if they differ. Update them in the same PR.
 - Postgres runs in Docker (`finance-dashboard-db`); full stack via `compose.yaml`. See `finance-dashboard/README.md`.
 - CI is `.github/workflows/ci.yml`.
+- Dependency scan = npm audit + dependency review + dep-vet + pip-audit; enforcer `.github/workflows/dependency-scan.yml`. No package is added without the owner's yes in chat (`dependency-security.md`); put `Dependency approval: <name>` in the PR.
 - Web UI targets WCAG 2.2 AAA and Lighthouse 100; measure the **production build**, not the dev server (`web-accessibility-and-lighthouse.md`).
 - A Lighthouse/axe score is regression evidence, not a conformance claim.
 
