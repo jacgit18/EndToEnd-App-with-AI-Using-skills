@@ -282,7 +282,21 @@ def test_list_hides_archived_by_default_and_orders_by_kind_then_name(client):
     assert {active["id"], archived["id"]} <= {c["id"] for c in everything}
     assert all(c["is_archived"] is False for c in default)
     keys = [(c["kind"], c["name"]) for c in everything]
-    assert keys == sorted(keys)
+    kinds = [kind for kind, _ in keys]
+    assert kinds == sorted(kinds)  # plain lowercase words: the same order in every collation
+    # The API sorts in SQL (ORDER BY kind, name), so names follow the database's collation: en_US
+    # files "__t_x" among the letters, the C locale (CI's Alpine Postgres) puts "_" after capitals.
+    # Python's sorted() therefore cannot be the reference; the database's own order for the same rows is.
+    with SessionLocal() as db:
+        expected = [
+            (row.kind, row.name)
+            for row in db.execute(
+                select(Category.kind, Category.name)
+                .where(Category.id.in_([c["id"] for c in everything]))
+                .order_by(Category.kind, Category.name)
+            )
+        ]
+    assert keys == expected
 
 
 # --------------------------------------------------------------------------- 4. PATCH
