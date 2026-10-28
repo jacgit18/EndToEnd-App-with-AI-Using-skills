@@ -20,6 +20,7 @@ It copies the files below, appends the rule to the project's CLAUDE.md, and prin
 | `dependabot.yml` | `.github/dependabot.yml` (weekly grouped updates; add an ecosystem block per manifest) |
 | `dep-vet.mjs`, `depVet.test.js` | `scripts/dep-vet.mjs` and its test (registry facts and typosquat flags for new npm packages; `node scripts/dep-vet.mjs <name>` by hand before approving one) |
 | `ci-timeouts.yml`, `ci-timeouts.mjs`, `ciTimeouts.test.js` | `.github/workflows/ci-timeouts.yml`, `scripts/ci-timeouts.mjs` and its test (fails a GitHub Actions job with no `timeout-minutes`, or one over 10 without `# timeout-ok: why`; rule `ci-budget.md`; also wire `node scripts/ci-timeouts.mjs` into the project's local check) |
+| `claude-review.yml`, `review-model.mjs`, `reviewModel.test.js` | `.github/workflows/claude-review.yml`, `scripts/review-model.mjs` and its test (the automatic PR review; `review-model.mjs` picks Opus for risky paths or a big diff and Sonnet otherwise, never Haiku; needs the `CLAUDE_CODE_OAUTH_TOKEN` repository secret (subscription, from `claude setup-token`); settings under `review` in `.github/pr-kit.json`; rule `pr-review-bot.md`) |
 
 Then add the rule to the project's CLAUDE.md: "open every PR with `node scripts/pr-body.mjs --what "..." > body.md` and `gh pr create --body-file body.md`; never write the description by hand."
 
