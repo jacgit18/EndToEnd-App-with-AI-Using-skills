@@ -22,11 +22,13 @@ put dependabot.yml .github/dependabot.yml
 put dep-vet.mjs scripts/dep-vet.mjs
 put ci-timeouts.yml .github/workflows/ci-timeouts.yml
 put ci-timeouts.mjs scripts/ci-timeouts.mjs
-if [ -f package.json ] && grep -q '"vitest"' package.json; then put prBody.test.js scripts/prBody.test.js; put depVet.test.js scripts/depVet.test.js; put ciTimeouts.test.js scripts/ciTimeouts.test.js
-else echo "skipped  scripts/prBody.test.js, scripts/depVet.test.js, scripts/ciTimeouts.test.js (no vitest in package.json)"; fi
+put claude-review.yml .github/workflows/claude-review.yml
+put review-model.mjs scripts/review-model.mjs
+if [ -f package.json ] && grep -q '"vitest"' package.json; then put prBody.test.js scripts/prBody.test.js; put depVet.test.js scripts/depVet.test.js; put ciTimeouts.test.js scripts/ciTimeouts.test.js; put reviewModel.test.js scripts/reviewModel.test.js
+else echo "skipped  scripts/prBody.test.js, scripts/depVet.test.js, scripts/ciTimeouts.test.js, scripts/reviewModel.test.js (no vitest in package.json)"; fi
 if [ -f package.json ] && grep -q '"vitest"' package.json && [ -f scripts/prBody.test.js ]; then
   echo "smoke    running the kit tests against this project's config and template"
-  npx --no-install vitest run scripts/prBody.test.js scripts/depVet.test.js scripts/ciTimeouts.test.js || echo "WARNING: kit tests fail here: fix pr-kit.json or the template before the first PR" >&2
+  npx --no-install vitest run scripts/prBody.test.js scripts/depVet.test.js scripts/ciTimeouts.test.js scripts/reviewModel.test.js || echo "WARNING: kit tests fail here: fix pr-kit.json or the template before the first PR" >&2
 fi
 rule='Pull requests: never write the description by hand. Run `node scripts/pr-body.mjs --what "<what and why>" > body.md`, then `gh pr create --body-file body.md`.'
 if [ -f CLAUDE.md ]; then
@@ -39,6 +41,6 @@ cat <<MSG
 Done: the script and CI checks are identical in every project. Per project, edit only these two files:
 - .github/pr-kit.json: "audiences" (extra rules such as admin only or paid, each with a label, a changed file or a line added to a file's diff), and optionally "notUserFacing", "ui", "autoTickWhenNoUi" (see DEFAULTS at the top of scripts/pr-body.mjs).
 - .github/pull_request_template.md: one Audience box per audience label, and this project's own Checks lines.
-Also per project: a CI budget (PR wall-clock, runner minutes per PR, baseline from real runs) in its CLAUDE.md and CI-BUDGET.md (ci-budget.md), and the PR template's CI minutes line.
+Also per project: add the CLAUDE_CODE_OAUTH_TOKEN repository secret (run `claude setup-token` in your own terminal, then `gh secret set CLAUDE_CODE_OAUTH_TOKEN --repo <owner/repo>`; it bills your Claude subscription, not API credits; without it the automatic PR review posts "did not run" on every PR; model rule pr-review-bot.md, per-project settings under "review" in .github/pr-kit.json), and a CI budget (PR wall-clock, runner minutes per PR, baseline from real runs) in its CLAUDE.md and CI-BUDGET.md (ci-budget.md), and the PR template's CI minutes line.
 scripts/prBody.test.js checks that every audience in the config has exactly one box in the template.
 MSG
