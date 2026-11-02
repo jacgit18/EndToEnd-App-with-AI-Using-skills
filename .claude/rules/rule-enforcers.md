@@ -6,6 +6,7 @@ Rules written only as prose get missed (the PR Audience box, Lighthouse before/a
 - Prefer, in order: a test or lint that fails, a hook that blocks, a script that prints a reminder, prose.
 - When a rule is missed twice, add the enforcer instead of rewording the rule.
 - A new enforcer ships with a changelog line and lists the rule it guards.
+- A guard that starts non-blocking names its exit in the workflow comment: the condition that makes it blocking, who flips it, and the date to look again. When the condition is met it flips in that same PR (iron-log 2026-10-26: pip-audit non-blocking until certifi was bumped, flipped the same day). A non-blocking guard with no named exit is a rule with no enforcer.
 - A new guard (a lint, a name check, a CI gate) runs against the project's current state before it merges, to catch false positives: `dep-vet` first flagged every `@types/x` package as a lookalike (2026-10-21). Put the false-positive case in its test.
 - Keep a short "rule, enforcer" table in `CLAUDE.md` or the project's `ARCHITECTURE.md`.
 
