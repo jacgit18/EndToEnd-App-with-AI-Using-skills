@@ -11,7 +11,9 @@ Do all of these before the first feature; about a day, and none of it slows gene
 3. **Migrations as plain files** from the first table, even locally.
 4. **Unit tests on pure logic only** (money, dates, merging, validation); no component-test layer, no e2e yet.
 5. **One-command deploy** to a real URL, and look at it in a real browser at phone and desktop width.
-6. **A short `CLAUDE.md`** from `new-project-claude-md-template.md`: stack, commands, data rules, under about 40 lines.
+6. **Screen addresses from the first screen** (`screen-addresses.md`): a route table, one history hook, Back and reload working for each screen, no personal data in an address; adding it later means touching every screen.
+7. **Endpoint guards from the first route** (`endpoint-guards.md`): one default-deny sign-in gate before every route, public routes on a named allowlist, a route module and prefix per feature, and the route-inventory test; retrofitting means auditing every route.
+8. **A short `CLAUDE.md`** from `new-project-claude-md-template.md`: stack, commands, data rules, under about 40 lines.
 
 ## Triggers: add the guardrail when the event happens
 

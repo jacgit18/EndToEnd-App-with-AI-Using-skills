@@ -14,7 +14,7 @@ An AI agent treats "more tests, longer timeouts, one more job" as free safety. I
 
 ## Enforcers
 
-- `scripts/ci-timeouts.mjs` (PR kit, run by `.github/workflows/ci-timeouts.yml` and the project's `npm run lint` or check): fails a job without `timeout-minutes` and a value over 10 without `# timeout-ok:`. Exits 1; the false-positive cases (reusable-workflow jobs, comments, quoted values) are in its test.
+- `scripts/ci-timeouts.mjs` (PR kit, run by `.github/workflows/ci-timeouts.yml` and the project's `npm run lint` or check; the `timeouts` check is advisory, not a required check, because it only runs when workflow files change): fails a job without `timeout-minutes` and a value over 10 without `# timeout-ok:`. Exits 1; the false-positive cases (reusable-workflow jobs, comments, quoted values) are in its test.
 - PR template line `CI minutes: before/after, or n/a`; `definition-of-done.md` baseline line.
 - Rules 2 to 7 are advisory until one is missed twice (`rule-enforcers.md`).
 

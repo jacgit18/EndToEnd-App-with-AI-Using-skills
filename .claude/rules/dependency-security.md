@@ -20,7 +20,7 @@ A dependency is code from the internet that runs with your app's permissions, at
 2. **Name check first.** Type the exact name from the package's own documentation or repository, never from memory or a search snippet. A name one letter off a popular package, a scope you do not recognise, or a package with the right name but a new publisher is refused until checked.
 3. **Install without scripts, then look.** Use `--ignore-scripts` (npm, pnpm) for the first install of a new package; run its install script only after reading what it does. Never `curl | sh`, never an install command copied from a README of an unvetted package, never a package fetched from a git URL or tarball URL unless the owner approves that source.
 4. **Lockfile is the truth.** Commit it; CI installs with `npm ci` / `uv sync --frozen`; a PR that changes the lockfile without a matching manifest change is suspect. Pin exact versions for anything load-bearing.
-5. **Scan automatically on every PR.** The scanners below run in CI and block the merge; the agent does not rely on remembering.
+5. **Scan automatically on every PR.** The scanners below run in CI; only the ones the repository ruleset lists as required checks block the merge (`audit` and `analyze` in iron-log), the rest report on the PR and are advisory. The agent does not rely on remembering.
 6. **Secrets stay out of reach.** Install and test with the least environment: no production database URL, no deploy keys, no cloud credentials in the shell where a new package first runs.
 
 ## Vet before approving: the checklist
@@ -42,7 +42,7 @@ Two or more red flags, or any malware hit, means refuse and pick a lower rung. O
 
 ## What CI must block
 
-Every project with a package manifest runs these on pull requests and on a weekly schedule:
+Every project with a package manifest runs these on pull requests and on a weekly schedule. **Blocking = a required check in the ruleset**: `audit` (Dependency scan: `npm audit`) and `analyze` (CodeQL) in iron-log (owner decision 2026-10-27). `review` (dependency review), `new-package` (`dep-vet`), `audience`, `changelog`, `timeouts` and the Claude `review` are **advisory**: a skipped-by-design check (bots, path filters, missing repo setting) never reports, and a required check that never reports blocks the PR forever (`test-run-protocol.md` rule 8). A required check must report on every PR, so never put `paths:` filters on it without a gate job.
 
 - `npm audit --omit=dev --audit-level=high` (or `pip-audit`, `uv audit`): fails on a known high or critical advisory in production dependencies. Dev dependencies are reported; a project with existing dev findings starts non-blocking and ratchets.
 - GitHub **dependency review** on PRs: fails a PR that adds a package with a known vulnerability or a disallowed license, and shows the whole delta.
@@ -71,7 +71,8 @@ If an agent finds a package it did not get approval for, or an advisory or malwa
 ## Enforcers
 
 - Install commands: `permissions.ask` entries in `~/.claude/settings.json` (`npm install *`, `npm i *`, `pnpm add *`, `yarn add *`, `pip install *`, `pip3 install *`, `uv add *`, `uv pip install *`, `poetry add *`) so a person approves each one. `npm ci` and the project's own `npm install` with no package stay unprompted.
-- CI: `dependency-scan.yml` (audit, dependency review, dep-vet) fails the PR.
+- CI: `dependency-scan.yml` runs audit, dependency review and dep-vet; `audit` (and CodeQL's `analyze`) are required checks and block the merge, `review` and `new-package` fail visibly but do not block.
+- Third-party actions that hold secrets or write access (`anthropics/claude-code-action`, `google-github-actions/*`) and security tooling (`github/codeql-action`, `actions/dependency-review-action`) are pinned to a full commit SHA with a `# vX.Y.Z` comment; `actions/*` stay on tags. Dependabot keeps the pins current.
 - PR kit: the template's package-delta line (`dependency-selection.md`) plus a `Dependency approval:` line.
 - Everything else (name check, scripts, secrets) is advisory.
 

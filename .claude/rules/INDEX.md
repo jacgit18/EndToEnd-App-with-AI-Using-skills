@@ -8,12 +8,16 @@ One line per rule file: what it decides and what enforces it. Read the file when
 | `agents.md` | which unattended agents exist | advisory |
 | `ci-budget.md` | CI job timeouts, per-project CI budget, no silent pipeline growth, test pruning by proposal | `scripts/ci-timeouts.mjs` (PR kit), PR template line |
 | `new-project-order.md` | Day-1 checklist for a new project, guardrails added at triggers, features stop when a trigger fires; lean CLAUDE.md template | advisory (stage table) |
+| `pr-review-bot.md` | Automatic PR review on open; model picked by risk (Opus for risky paths or big diffs, Sonnet otherwise, never Haiku) | `reviewModel.test.js`, `claude-review.yml` (PR kit); secret and `review` settings advisory |
 | `commands.md` | git scripts, lint, smoke tests | the scripts |
 | `conventions.md` | branches, commits, staging, docs location, prod deploys | `commit.sh`, permissions |
 | `definition-of-done.md` | project DoD and per-feature Done when | PR template Done section |
 | `dependency-security.md` | no install without approval; vetting; CI scans; repo prerequisites | `permissions.ask`, `dependency-scan.yml` |
 | `dependency-selection.md` | library or build ladder | advisory (PR package delta) |
 | `document-toc.md` | `## Contents` in long docs | `doc-toc.sh` hook, `doc-toc.mjs --check` |
+| `vault-properties.md` | vault docs start with an intact properties block (line 1 `---`, required keys, YAML-safe values) | `doc-toc.sh` hook runs `fm-check.mjs` (exit 2) |
+| `screen-addresses.md` | every screen has an address; Back and reload work; the address is not security | route test and navigation spec (iron-log), else advisory |
+| `endpoint-guards.md` | every route declares its guard; default-deny gate; route module per feature; route-inventory test | route-inventory test (iron-log), else advisory |
 | `evidence-labels.md` | verified, read-only, agent-reported, not run | advisory |
 | `feature-delivery.md` | one brief, one branch, one PR | advisory (PR template lines) |
 | `feature-planning.md` | plan once; cost, debt, tiers | advisory |
