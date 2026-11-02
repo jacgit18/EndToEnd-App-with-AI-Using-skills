@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Install the PR kit into a project: template, two CI checks, pr-body script, its test, the dependency scan (dependency-security.md), the CI timeout check (ci-budget.md), and the CLAUDE.md rule.
-# Usage: install.sh [project-dir] [--force]   (default: current directory; existing files are kept unless --force)
+# Usage: install.sh [project-dir] [--force] [--qa-scenarios <scenario-file>]   (default: current directory; existing files are kept unless --force; --qa-scenarios turns on the QA scenarios line and warning, see QA-SCENARIOS.md)
 set -eu
 kit="$(cd "$(dirname "$0")" && pwd)"
-dir="."; force=0
-for a in "$@"; do case "$a" in --force) force=1 ;; *) dir="$a" ;; esac; done
+dir="."; force=0; qa=""
+while [ $# -gt 0 ]; do case "$1" in --force) force=1 ;; --qa-scenarios) qa="${2:?--qa-scenarios needs the path of the scenario file}"; shift ;; *) dir="$1" ;; esac; shift; done
 cd "$dir"
 git rev-parse --show-toplevel >/dev/null 2>&1 || { echo "not a git repository: $PWD" >&2; exit 1; }
 root="$(git rev-parse --show-toplevel)"; cd "$root"
@@ -24,6 +24,24 @@ put ci-timeouts.yml .github/workflows/ci-timeouts.yml
 put ci-timeouts.mjs scripts/ci-timeouts.mjs
 put claude-review.yml .github/workflows/claude-review.yml
 put review-model.mjs scripts/review-model.mjs
+if [ -n "$qa" ]; then # opt-in QA scenarios (QA-SCENARIOS.md): the config key and the template line, each only if missing
+  QA_FILE="$qa" node -e '
+    const fs = require("fs"); const file = process.env.QA_FILE;
+    const cfg = ".github/pr-kit.json"; let c = fs.readFileSync(cfg, "utf8");
+    if (/"qa"\s*:/.test(c)) console.log("kept     " + cfg + " (has a qa key)");
+    else {
+      const entry = `"qa": { "scenarioFile": ${JSON.stringify(file)}, "idPattern": "S-\\\\d{2,}" }`;
+      c = /^\s*\{\s*\}\s*$/.test(c) ? `{\n  ${entry}\n}\n` : c.replace(/\{/, `{\n  ${entry},`);
+      fs.writeFileSync(cfg, c); console.log("wrote    " + cfg + " (qa key)");
+    }
+    const tpl = ".github/pull_request_template.md"; const lines = fs.readFileSync(tpl, "utf8").split("\n");
+    if (lines.some(l => /^QA scenarios:/.test(l))) console.log("kept     " + tpl + " (has the QA scenarios line)");
+    else {
+      let at = -1; lines.forEach((l, i) => { if (/^(Brief|Split because|PR tracker):/.test(l)) at = i; });
+      if (at < 0) console.log("WARNING: " + tpl + " has no Delivery lines: add \"QA scenarios: none given (pass --qa)\" under ## Delivery by hand");
+      else { lines.splice(at + 1, 0, "QA scenarios: none given (pass --qa)"); fs.writeFileSync(tpl, lines.join("\n")); console.log("wrote    " + tpl + " (QA scenarios line)"); }
+    }'
+fi
 if [ -f package.json ] && grep -q '"vitest"' package.json; then put prBody.test.js scripts/prBody.test.js; put depVet.test.js scripts/depVet.test.js; put ciTimeouts.test.js scripts/ciTimeouts.test.js; put reviewModel.test.js scripts/reviewModel.test.js
 else echo "skipped  scripts/prBody.test.js, scripts/depVet.test.js, scripts/ciTimeouts.test.js, scripts/reviewModel.test.js (no vitest in package.json)"; fi
 if [ -f package.json ] && grep -q '"vitest"' package.json && [ -f scripts/prBody.test.js ]; then
@@ -36,11 +54,12 @@ if [ -f CLAUDE.md ]; then
   else printf '\n- %s\n' "$rule" >> CLAUDE.md; echo "appended CLAUDE.md rule"; fi
 else echo "no CLAUDE.md: add this line to the project's instructions: $rule"; fi
 node scripts/ci-timeouts.mjs || echo "WARNING: some jobs have no timeout-minutes (ci-budget.md): add one to each, about 2x its measured runtime, before the first PR" >&2
-cat <<MSG
+cat <<'MSG'
 
 Done: the script and CI checks are identical in every project. Per project, edit only these two files:
 - .github/pr-kit.json: "audiences" (extra rules such as admin only or paid, each with a label, a changed file or a line added to a file's diff), and optionally "notUserFacing", "ui", "autoTickWhenNoUi" (see DEFAULTS at the top of scripts/pr-body.mjs).
 - .github/pull_request_template.md: one Audience box per audience label, and this project's own Checks lines.
 Also per project: add the CLAUDE_CODE_OAUTH_TOKEN repository secret (run `claude setup-token` in your own terminal, then `gh secret set CLAUDE_CODE_OAUTH_TOKEN --repo <owner/repo>`; it bills your Claude subscription, not API credits; without it the automatic PR review posts "did not run" on every PR; model rule pr-review-bot.md, per-project settings under "review" in .github/pr-kit.json), and a CI budget (PR wall-clock, runner minutes per PR, baseline from real runs) in its CLAUDE.md and CI-BUDGET.md (ci-budget.md), and the PR template's CI minutes line.
+Optional, for a project with a QA environment and test accounts: re-run with --qa-scenarios <path of the scenario file> (or follow QA-SCENARIOS.md in the kit) to turn on the QA scenarios line and warning.
 scripts/prBody.test.js checks that every audience in the config has exactly one box in the template.
 MSG
