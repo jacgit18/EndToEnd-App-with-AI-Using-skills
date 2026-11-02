@@ -15,6 +15,9 @@ One line per rule file: what it decides and what enforces it. Read the file when
 | `dependency-security.md` | no install without approval; vetting; CI scans; repo prerequisites | `permissions.ask`, `dependency-scan.yml` |
 | `dependency-selection.md` | library or build ladder | advisory (PR package delta) |
 | `document-toc.md` | `## Contents` in long docs | `doc-toc.sh` hook, `doc-toc.mjs --check` |
+| `vault-properties.md` | vault docs start with an intact properties block (line 1 `---`, required keys, YAML-safe values) | `doc-toc.sh` hook runs `fm-check.mjs` (exit 2) |
+| `screen-addresses.md` | every screen has an address; Back and reload work; the address is not security | route test and navigation spec (iron-log), else advisory |
+| `endpoint-guards.md` | every route declares its guard; default-deny gate; route module per feature; route-inventory test | route-inventory test (iron-log), else advisory |
 | `evidence-labels.md` | verified, read-only, agent-reported, not run | advisory |
 | `feature-delivery.md` | one brief, one branch, one PR | advisory (PR template lines) |
 | `feature-planning.md` | plan once; cost, debt, tiers | advisory |

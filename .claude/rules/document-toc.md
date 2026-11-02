@@ -22,7 +22,7 @@ AI readers often stop reading a file after about 100 lines and work from what th
 
 ## Where it goes
 
-Directly under the H1 title and its one-line intro (an italic or `>` line), before any other section. The generator puts it there between `<!-- toc -->` and `<!-- /toc -->` markers; it only rewrites what is between the markers. Frontmatter (the `---` block) stays first; a long frontmatter counts toward the 100 lines, so keep it under 25.
+Directly under the H1 title and its one-line intro (an italic or `>` line), before any other section. The generator puts it there between `<!-- toc -->` and `<!-- /toc -->` markers; it only rewrites what is between the markers. Frontmatter (the `---` block) stays first and must be intact (`vault-properties.md`); a long frontmatter counts toward the 100 lines, so keep it under 25.
 
 ## What it lists
 
