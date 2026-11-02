@@ -28,4 +28,5 @@ Other labels (`accessibility`, `duplicate`, `question`, ...) are not branch type
 - Creating a branch: propose a name from the change in this form and say why.
 - `git-routine` and the `commit-and-push` skill use it for the branch guard.
 - `scripts/pr-body.mjs` reads the letter to pick the PR label (`--type` overrides it).
+- Letter versus contents is advisory, not blocked: a check on the last 28 merged PRs (2026-11-02) flagged 2 of 6 `d-` PRs that carried a small script change beside docs, and both were right to be `d-`. A mixed PR takes the letter of its main change; revisit a hook only if a wrong letter is missed twice (`rule-enforcers.md`).
 - Enforcer: `~/.claude/hooks/guard-pr-create.sh` blocks `gh pr create` from a branch outside this form (opt out for one command with `BRANCH_NAME_SKIP=1`).
