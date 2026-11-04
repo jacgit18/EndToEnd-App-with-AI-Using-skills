@@ -19,6 +19,7 @@ Copy the block below into the new project's `CLAUDE.md`, fill the brackets, keep
 
 ## Conventions
 - All new code in [TypeScript strict]. Logic is a pure function with a unit test; components only wire it.
+- One folder per feature (`[features folder]`), other features import it only through its `index`; shared files are registries (list in `ARCHITECTURE.md`); plans carry a touch map (task, files, wave) so tasks with no shared file run in parallel (`parallel-agent-structure.md`).
 - Every screen has an address (route table in `[file]`, Back and reload work, no personal data in it); the address is never the access check (`screen-addresses.md`).
 - The page container is capped at 1920 px (one rule, same on every screen) and the desktop is checked at 1920x1080 and 2560x1440 (`desktop-layout-width.md`).
 - Every endpoint sits behind the one sign-in gate unless it is on the public allowlist (with a reason); each feature has its own route module and `/api/<feature>` prefix with its guard declared at the mount; the route-inventory test (`[file]`) and the guard matrix in `ARCHITECTURE.md` are updated with each endpoint (`endpoint-guards.md`).

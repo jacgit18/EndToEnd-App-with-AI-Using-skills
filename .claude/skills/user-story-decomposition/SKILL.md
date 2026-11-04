@@ -144,6 +144,7 @@ Only when the stories will be documented and shared as they ship: also ask wheth
 | **Unambiguous** | One reading. If two people would build different things from it, it's not ready. |
 | **Feasible** | Achievable given the team, tools, and time actually available. |
 | **Testable** | The acceptance criteria give someone outside the story's author a way to verify it. |
+| **Separable** | Names the feature folder or files it will touch, so two stories that need the same file are marked "ordered", not "parallel" (`parallel-agent-structure.md`). Skip when the stories are not going to be built by parallel agents. |
 
 A story failing **Testable** almost always traces back to acceptance criteria that were
 skipped or left vague — fix that before rewriting the story prose.

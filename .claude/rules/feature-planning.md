@@ -36,7 +36,7 @@ Discovery prompts: who uses it and what job are they hiring it for; what do comp
 | New technology | each new service, library, SDK or API the feature adds, and the lock-in if it is swapped later |
 | Debt it adds | maintenance, upgrades, migrations, extra tests, a second code path, a vendor to watch, compliance (see section 3) |
 | Depends on / blocks | other features, schema, infra |
-| Shared files touched | from the project's shared-file list (see `parallel-agent-structure.md`); fewer is better, and a feature touching many belongs in a serial slot |
+| Shared files touched | from the project's shared-file list (see `parallel-agent-structure.md`); fewer is better, and a feature touching many belongs in a serial slot; also the contract (type, route, table) it needs merged first, and its wave |
 | Risk | what could go wrong, and how it is switched off (flag) |
 | Kill criteria | the measurement after launch that says remove it or leave it |
 

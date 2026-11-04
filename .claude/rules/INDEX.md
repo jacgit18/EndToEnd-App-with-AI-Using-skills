@@ -27,7 +27,7 @@ One line per rule file: what it decides and what enforces it. Read the file when
 | `feature-planning.md` | plan once; cost, debt, tiers | advisory |
 | `git-actions.md` | which model for which git work | `permissions.ask` |
 | `merge-safe-files.md` | conflict-prone files | `.gitattributes` |
-| `parallel-agent-structure.md` | structure for parallel agents; serial or parallel by file overlap | advisory |
+| `parallel-agent-structure.md` | structure for parallel agents; AI-traversable layout; contract first, touch map and waves in the plan; serial or parallel by file overlap | advisory (`pr-body.mjs` warns on shared files with open PRs) |
 | `production-access.md` | read-only production, owner runs commands | advisory |
 | `pure-move-refactors.md` | file splits as pure moves | the guard each refactor adds |
 | `repo-map.md` | what is tracked in this checkout | advisory |

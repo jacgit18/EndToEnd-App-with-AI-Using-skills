@@ -33,8 +33,12 @@ Tables, columns, migration (expand/contract), export, delete, backup round-trip.
 Screen, component, copy, phone and desktop, light and dark, accessible names. Hands-off areas respected.
 
 ## Files touched
-| File | Why | Shared file? | Open PR overlap |
-|---|---|---|---|
+Contract this feature needs first (type, route, table; "none" if none): if two tasks share it, it is its own small PR and the rest wait for it (`parallel-agent-structure.md`).
+
+| File | Create / modify | Why | Shared file? (registry line named) | Open PR overlap | Wave |
+|---|---|---|---|---|---|
+
+Wave 1 tasks share no file; a later wave waits only for the task whose file it needs. A file outside this table means stop and update the row, not edit quietly.
 
 ## Cost and risk
 Running cost (and at 10x), new dependency or vendor (each package: owner approval and `dep-vet` result, `dependency-security.md`), debt rating, how it is switched off, kill criteria.
