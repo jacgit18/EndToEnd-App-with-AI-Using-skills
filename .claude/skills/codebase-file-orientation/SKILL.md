@@ -47,6 +47,7 @@ reconstruct.
   that inspects a paginated document being *consumed*; this *emits* a markdown doc *about source code*.
 - **A spec written before a multi-file build**, then audited as the build drifts, is `spec-drift-gate`.
   That is forward-looking intent for work not done yet; this describes a file that already exists.
+- **A feature folder's map entry** (folder, one-line job, public entry, shared files touched) belongs in the project's `ARCHITECTURE.md` feature map and, for a folder of more than a handful of files, a 30-line `README.md`, so an agent can traverse by feature (`parallel-agent-structure.md`, "Make the code easy for an AI to traverse"). Write the per-file doc here; keep the folder entry short and link to it.
 - **An end-of-session context dump** so work resumes later is `session-handoff` — ephemeral,
   whole-session, next-steps-oriented. This doc is durable, single-file, and has no "next steps".
 - **Reasoning about what a change breaks elsewhere** in the system is `change-surface-audit`. This

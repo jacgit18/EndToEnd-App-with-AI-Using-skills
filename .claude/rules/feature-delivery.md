@@ -52,6 +52,7 @@ Ask only what the docs do not answer. Group by theme.
 - **Data:** new tables or columns, who owns the data, export and delete, what happens to old rows, sync and conflicts.
 - **UI:** the new screen's address and what Back and reload do (`screen-addresses.md`); which screen and component, reuse or new, phone and desktop, dark mode, copy text, accessibility names, hands-off areas.
 - **Endpoints:** the feature's route prefix and module, the guard for each route (session, admin, paid, token), rate limit and key, body limit, cache header, and its guard-matrix row (`endpoint-guards.md`).
+- **Parallelism:** the feature's folder, the contract (type, route, table) another task needs merged first, the shared files it touches as registry lines, and its wave in the touch map (`parallel-agent-structure.md`).
 - **Mechanism limits:** what the queue, push, job runner or API allows (pending per key, how far ahead, how often), whether the path runs with no signed-in user (RLS, migration), and that every named screen or flag exists; read the code first.
 - **Cost and risk:** per-use cost and the cap, new dependency (`dependency-selection.md`), third party, kill criteria.
 - **Verification:** which tests, which need a real device, what the owner will try, Lighthouse impact.
