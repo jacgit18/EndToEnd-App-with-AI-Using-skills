@@ -41,7 +41,7 @@ Add-ons by change type (include the ones the project has):
 | Workflow, CI job, or a new e2e or integration spec | Minutes before and after in the PR (3 runs, spread stated); a new job or leg has a timeout and the owner's yes if it adds over 10% (`ci-budget.md`); the new spec says what a unit test cannot catch |
 | Anything with per-use cost | Cap or tier recorded in `FEATURE-PLAN.md` |
 | Device-only behavior (push, install, back-swipe) | Tried on a real device, or listed as `not run` and not called done |
-| Deploy or release | Smoke check of the live URL; rollback step known; owner approved the prod step |
+| Deploy or release | Smoke check of the live URL; rollback step known; the owner starts the prod deploy (or approves it, in a project that has an approval step) |
 
 ## 2. Feature "Done when": set at the Ready gate
 
