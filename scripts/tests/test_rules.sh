@@ -11,6 +11,8 @@ t_clean() { mkrules; RULES_GLOBAL="$T/g" RULES_PROJECT="$T/p" run bash "$SCRIPTS
 case_ "sync-check: identical copies with an INDEX row pass" t_clean
 t_drift() { mkrules; echo more >> "$T/g/a.md"; RULES_GLOBAL="$T/g" RULES_PROJECT="$T/p" run bash "$SCRIPTS/rules/sync-check.sh"; assert_status "$RC" 1; assert_contains "$OUT" "differs: a.md"; }
 case_ "sync-check: a differing copy fails" t_drift
+t_frontmatter() { mkrules; printf -- '---\npaths:\n  - "**/*.md"\n---\n\nrule a\n' > "$T/g/a.md"; RULES_GLOBAL="$T/g" RULES_PROJECT="$T/p" run bash "$SCRIPTS/rules/sync-check.sh"; assert_status "$RC" 0; }
+case_ "sync-check: a paths frontmatter block on the global copy is ignored" t_frontmatter
 t_noindex() { mkrules; echo x > "$T/p/b.md"; RULES_GLOBAL="$T/g" RULES_PROJECT="$T/p" run bash "$SCRIPTS/rules/sync-check.sh"; assert_status "$RC" 1; assert_contains "$OUT" "no INDEX row: b.md"; }
 case_ "sync-check: a rule with no INDEX row fails" t_noindex
 t_projonly() { mkrules; echo x > "$T/p/b.md"; printf '| `b.md` | x | y |\n' >> "$T/p/INDEX.md"; RULES_GLOBAL="$T/g" RULES_PROJECT="$T/p" run bash "$SCRIPTS/rules/sync-check.sh"; assert_status "$RC" 0; }
