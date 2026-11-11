@@ -1,5 +1,11 @@
 # Vault documents keep intact properties (applies to every project, 2026-11-02)
 
+<!-- toc -->
+## Contents
+
+- [[#The rules]]
+<!-- /toc -->
+
 Every markdown document written into the vault starts with a valid properties block (YAML frontmatter). A broken block is silent damage: Obsidian shows the properties as raw text or drops them, Bases, Dataview and the publish filter (`dg-publish`) skip the note, and the generated table of contents (`document-toc.md`) lands in the wrong place. Found 2026-11-02: 5 of 391 project docs had a value YAML cannot parse (an unquoted `[[wikilink]]` in `Relates`, a `: ` inside `Status`), and the brief template had no block at all, so every brief copied from it started without one.
 
 ## The rules
