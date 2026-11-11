@@ -30,6 +30,7 @@ Make it theme-aware like any Artifact (the page chrome follows the viewer; the m
 4. **Build, run once, publish.** Test the script against a stub DOM or one browser pass for errors, then publish; republish to the same URL as the owner's picks come in so the link stays.
 5. **Owner picks in chat**; the choices go into the feature's brief (`feature-delivery.md`, decisions made, option marked) and the brief links the preview. The mock is not the spec: the brief and the Done when list are.
 6. **Keep a copy** in the project docs (`Projects/<project>/ux/previews/<date>-<topic>.html`) and list it in `PriorityRead.md` if it is still the reference; archive it when the work ships.
+7. **Keep the preview until the owner has seen it.** Never delete, unpublish or overwrite a preview page, a temporary preview route or its screenshots before the owner says in chat that they have looked at it; give the link first, then wait. Cleanup is its own step with the owner's yes (2026-11-11: a landing preview was removed unseen during the billing go-live and had to be rebuilt).
 
 ## Evidence
 

@@ -8,12 +8,16 @@ repo="$(cd "$(dirname "$0")/../.." && pwd)"
 global="${RULES_GLOBAL:-$HOME/.claude/rules}"
 proj="${RULES_PROJECT:-$repo/.claude/rules}"
 bad=0
+body() { # file without a leading --- frontmatter block and the blank lines after it
+  awk 'NR==1 && /^---$/ {f=1; next} f && /^---$/ {f=0; s=1; next} f {next} s && /^$/ {next} {s=0; print}' "$1"
+}
 for f in "$proj"/*.md; do
   b="$(basename "$f")"
   [ "$b" = INDEX.md ] && continue
   grep -q "\`$b\`" "$proj/INDEX.md" || { echo "no INDEX row: $b"; bad=1; }
   # project-only rules (no global copy) are fine; a shared one must be identical
-  if [ -f "$global/$b" ] && ! cmp -s "$f" "$global/$b"; then
+  # the global copy may start with a `paths:` frontmatter block (on-demand loading); the project copy has none
+  if [ -f "$global/$b" ] && ! body "$global/$b" | cmp -s "$f" -; then
     echo "differs: $b (global vs project)"; bad=1
   fi
 done
