@@ -129,13 +129,13 @@ export function deliveryWarnings({ brief, split, tracker, trackerLine = false, o
 /** Scenario ids a project's scenario file defines (`id: 'S-01'`), read as text so this script needs no TypeScript loader. */
 export const scenarioIds = (text, idPattern = 'S-\\d{2,}') => [...text.matchAll(new RegExp(`id: '(${idPattern})'`, 'g'))].map(m => m[1]);
 
-/** The text of a project's scenarios: `scenarioFile` in .github/pr-kit.json is one file, or a folder of one-scenario files. */
+/** The text of a project's scenarios: `scenarioFile` in .github/pr-kit.json is one file, or a folder of one-scenario files (read one level deep, .ts/.js/.mjs/.json files only). */
 export const readScenarioText = path => (statSync(path).isDirectory()
-  ? readdirSync(path, { withFileTypes: true }).filter(entry => entry.isFile()).map(entry => entry.name).sort().map(name => readFileSync(join(path, name), 'utf8')).join('\n')
+  ? readdirSync(path, { withFileTypes: true }).filter(entry => entry.isFile() && /\.(ts|js|mjs|json)$/.test(entry.name)).map(entry => entry.name).sort().map(name => readFileSync(join(path, name), 'utf8')).join('\n')
   : readFileSync(path, 'utf8'));
 
 /** True when a changed file is the scenario file, or sits inside the scenario folder (`scenarioFile` may name either). */
-export const touchesScenarios = (files, scenarioFile) => files.some(file => file === scenarioFile || file.startsWith(`${scenarioFile}/`));
+export const touchesScenarios = (files, scenarioFile) => files.some(file => file === scenarioFile.replace(/\/+$/, '') || file.startsWith(`${scenarioFile.replace(/\/+$/, '')}/`));
 
 /** Warnings for the QA scenarios line (the project's `qa` config). Advisory like the Delivery ones. A user-visible change names the scenarios that cover it, or says
  *  `n/a: <why>`; every id named must exist in the scenario file. `enabled` is false for a project with no `qa` config or a template without the line. */

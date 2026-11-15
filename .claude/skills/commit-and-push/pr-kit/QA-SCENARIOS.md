@@ -2,20 +2,20 @@
 
 For a project that has a QA environment with test accounts (personas) and wants every user-facing feature to arrive with numbered "try this" scenarios, without the owner having to remember. Off by default: a project with no `qa` key in `.github/pr-kit.json` sees no change from `pr-body.mjs`.
 
-Reference implementation: iron-log (ADR 080 test accounts, ADR 094 this trigger). Files to copy the idea from: `server/qa/personas.ts` (accounts), `server/qa/scenarios.ts` (the list), `server/qa/scenarios.test.ts` (list tests), `scripts/qa-scenarios-doc.mjs` (generates the page and `--check`s it), `scripts/pr-body.mjs`.
+Reference implementation: iron-log (ADR 080 test accounts, ADR 094 this trigger). Files to copy the idea from: `server/qa/personas.ts` (accounts), `server/qa/scenarios.ts` or the `server/qa/scenarios/` folder (the list), `server/qa/scenarios.test.ts` (list tests), `scripts/qa-scenarios-doc.mjs` (generates the page and `--check`s it), `scripts/pr-body.mjs`.
 
 ## What it does
 
 - A brief has a QA scenarios section (drafted from Done when and the states list, updated from the diff after the build).
 - `node scripts/pr-body.mjs --qa "S-41, S-42"` (or `--qa "n/a: <why>"`) fills a `QA scenarios:` line in the PR description.
-- It warns, never blocks, when: a user-visible PR gives no `--qa`; an id is not in the scenario file (also inside `n/a: covered by S-01`); real ids are named but the PR does not change the scenario file; `n/a` has no reason.
+- It warns, never blocks, when: a user-visible PR gives no `--qa`; an id is not in the scenario file (also inside `n/a: covered by S-01`); real ids are named but the PR does not change the scenario file or folder; `n/a` has no reason.
 - A docs-only PR (audience n/a) gets `QA scenarios: n/a: no user-facing change` filled in.
 
 It does not generate Playwright specs (CI budget: unit tests first), and no agent records a scenario result: the Result column of the generated page is the owner's.
 
 ## Setup (4 steps)
 
-1. **Scenario file.** One list, ids `S-01` upward, never reused or renumbered (a scenario that no longer applies gets `retired: true`). Each entry: id, feature, title, persona (an existing test account), brief (slug or `feature-map`), steps, expected, optional `edge`, `device`. Write the ids as `id: 'S-01'` (single quotes, one space): `pr-body.mjs` reads the file as text so it needs no TypeScript loader.
+1. **Scenario file.** One file holding the list, or a folder of one-scenario files (`scenarioFile` may name either; a folder is read one level deep, so keep only scenario files in it), ids `S-01` upward, never reused or renumbered (a scenario that no longer applies gets `retired: true`). Each entry: id, feature, title, persona (an existing test account), brief (slug or `feature-map`), steps, expected, optional `edge`, `device`. Write the ids as `id: 'S-01'` (single quotes, one space): `pr-body.mjs` reads the file as text so it needs no TypeScript loader.
 2. **Config.** In `.github/pr-kit.json` add
    `"qa": { "scenarioFile": "<path of the scenario file, or of a folder of one-scenario files>", "idPattern": "S-\\d{2,}" }`.
 3. **Template.** In `.github/pull_request_template.md`, under `## Delivery`, add the line `QA scenarios: none given (pass --qa)` and `--qa "<S-ids or n/a: why>"` to the comment above it. (Without the line the warning stays off.)
