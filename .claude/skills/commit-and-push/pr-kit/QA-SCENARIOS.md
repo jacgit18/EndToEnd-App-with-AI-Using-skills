@@ -17,7 +17,7 @@ It does not generate Playwright specs (CI budget: unit tests first), and no agen
 
 1. **Scenario file.** One list, ids `S-01` upward, never reused or renumbered (a scenario that no longer applies gets `retired: true`). Each entry: id, feature, title, persona (an existing test account), brief (slug or `feature-map`), steps, expected, optional `edge`, `device`. Write the ids as `id: 'S-01'` (single quotes, one space): `pr-body.mjs` reads the file as text so it needs no TypeScript loader.
 2. **Config.** In `.github/pr-kit.json` add
-   `"qa": { "scenarioFile": "<path of the scenario file>", "idPattern": "S-\\d{2,}" }`.
+   `"qa": { "scenarioFile": "<path of the scenario file, or of a folder of one-scenario files>", "idPattern": "S-\\d{2,}" }`.
 3. **Template.** In `.github/pull_request_template.md`, under `## Delivery`, add the line `QA scenarios: none given (pass --qa)` and `--qa "<S-ids or n/a: why>"` to the comment above it. (Without the line the warning stays off.)
 4. **Rule and brief.** Add the Definition of done line and the brief section below to the project's `CLAUDE.md` and brief template.
 
