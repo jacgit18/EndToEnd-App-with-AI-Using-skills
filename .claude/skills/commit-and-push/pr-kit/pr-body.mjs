@@ -19,7 +19,8 @@
 // This script is the same in every project; what differs lives in .github/pr-kit.json (all keys optional, see DEFAULTS below) and in the
 // template's Audience and Checks lines. Every audience's label must appear in exactly one Audience box of the template.
 import { execFileSync } from 'node:child_process';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 // A key set in .github/pr-kit.json replaces that key's default entirely (it does not add to it), so a project that sets `notUserFacing` or `ui` lists every pattern.
@@ -128,6 +129,14 @@ export function deliveryWarnings({ brief, split, tracker, trackerLine = false, o
 /** Scenario ids a project's scenario file defines (`id: 'S-01'`), read as text so this script needs no TypeScript loader. */
 export const scenarioIds = (text, idPattern = 'S-\\d{2,}') => [...text.matchAll(new RegExp(`id: '(${idPattern})'`, 'g'))].map(m => m[1]);
 
+/** The text of a project's scenarios: `scenarioFile` in .github/pr-kit.json is one file, or a folder of one-scenario files (read one level deep, .ts/.js/.mjs/.json files only). */
+export const readScenarioText = path => (statSync(path).isDirectory()
+  ? readdirSync(path, { withFileTypes: true }).filter(entry => entry.isFile() && /\.(ts|js|mjs|json)$/.test(entry.name)).map(entry => entry.name).sort().map(name => readFileSync(join(path, name), 'utf8')).join('\n')
+  : readFileSync(path, 'utf8'));
+
+/** True when a changed file is the scenario file, or sits inside the scenario folder (`scenarioFile` may name either). */
+export const touchesScenarios = (files, scenarioFile) => files.some(file => file === scenarioFile.replace(/\/+$/, '') || file.startsWith(`${scenarioFile.replace(/\/+$/, '')}/`));
+
 /** Warnings for the QA scenarios line (the project's `qa` config). Advisory like the Delivery ones. A user-visible change names the scenarios that cover it, or says
  *  `n/a: <why>`; every id named must exist in the scenario file. `enabled` is false for a project with no `qa` config or a template without the line. */
 export function qaWarnings({ enabled = false, qa, audience, known = [], idPattern = 'S-\\d{2,}', scenariosChanged = true }) {
@@ -176,7 +185,7 @@ function main(argv) {
   for (const w of deliveryWarnings({ brief: arg('--brief'), split: arg('--split'), tracker: arg('--tracker'), trackerLine: /^PR tracker:/m.test(template), overlaps: overlappingPrs(files, otherOpenPrs(git)) })) console.error(w);
   const qaFile = config.qa ? fileURLToPath(new URL(`../${config.qa.scenarioFile}`, import.meta.url)) : null;
   const qaGiven = arg('--qa');
-  for (const w of qaWarnings({ enabled: Boolean(qaFile) && /^QA scenarios:/m.test(template), qa: qaGiven, audience: found.audience, known: qaFile && existsSync(qaFile) ? scenarioIds(readFileSync(qaFile, 'utf8'), config.qa.idPattern) : [], idPattern: config.qa?.idPattern, scenariosChanged: Boolean(config.qa) && files.includes(config.qa.scenarioFile) })) console.error(w);
+  for (const w of qaWarnings({ enabled: Boolean(qaFile) && /^QA scenarios:/m.test(template), qa: qaGiven, audience: found.audience, known: qaFile && existsSync(qaFile) ? scenarioIds(readScenarioText(qaFile), config.qa.idPattern) : [], idPattern: config.qa?.idPattern, scenariosChanged: Boolean(config.qa) && touchesScenarios(files, config.qa.scenarioFile) })) console.error(w);
   process.stdout.write(buildBody(template, found.audience, arg('--what'), touchesUi(files, config), arg('--changelog'), config, { brief: arg('--brief'), split: arg('--split'), tracker: arg('--tracker'), qa: qaGiven ?? (config.qa && found.audience === 'na' ? 'n/a: no user-facing change' : undefined) }));
 }
 
