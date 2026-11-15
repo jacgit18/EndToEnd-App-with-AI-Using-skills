@@ -4,7 +4,7 @@
 set -eu
 kit="$(cd "$(dirname "$0")" && pwd)"
 dir="."; force=0; qa=""
-while [ $# -gt 0 ]; do case "$1" in --force) force=1 ;; --qa-scenarios) qa="${2:?--qa-scenarios needs the path of the scenario file}"; shift ;; *) dir="$1" ;; esac; shift; done
+while [ $# -gt 0 ]; do case "$1" in --force) force=1 ;; --qa-scenarios) qa="${2:?--qa-scenarios needs the path of the scenario file, or of a folder of one-scenario files}"; shift ;; *) dir="$1" ;; esac; shift; done
 cd "$dir"
 git rev-parse --show-toplevel >/dev/null 2>&1 || { echo "not a git repository: $PWD" >&2; exit 1; }
 root="$(git rev-parse --show-toplevel)"; cd "$root"
@@ -60,6 +60,6 @@ Done: the script and CI checks are identical in every project. Per project, edit
 - .github/pr-kit.json: "audiences" (extra rules such as admin only or paid, each with a label, a changed file or a line added to a file's diff), and optionally "notUserFacing", "ui", "autoTickWhenNoUi" (see DEFAULTS at the top of scripts/pr-body.mjs).
 - .github/pull_request_template.md: one Audience box per audience label, and this project's own Checks lines.
 Also per project: add the CLAUDE_CODE_OAUTH_TOKEN repository secret (run `claude setup-token` in your own terminal, then `gh secret set CLAUDE_CODE_OAUTH_TOKEN --repo <owner/repo>`; it bills your Claude subscription, not API credits; without it the automatic PR review posts "did not run" on every PR; model rule pr-review-bot.md, per-project settings under "review" in .github/pr-kit.json), and a CI budget (PR wall-clock, runner minutes per PR, baseline from real runs) in its CLAUDE.md and CI-BUDGET.md (ci-budget.md), and the PR template's CI minutes line.
-Optional, for a project with a QA environment and test accounts: re-run with --qa-scenarios <path of the scenario file> (or follow QA-SCENARIOS.md in the kit) to turn on the QA scenarios line and warning.
+Optional, for a project with a QA environment and test accounts: re-run with --qa-scenarios <path of the scenario file or folder> (or follow QA-SCENARIOS.md in the kit) to turn on the QA scenarios line and warning.
 scripts/prBody.test.js checks that every audience in the config has exactly one box in the template.
 MSG
