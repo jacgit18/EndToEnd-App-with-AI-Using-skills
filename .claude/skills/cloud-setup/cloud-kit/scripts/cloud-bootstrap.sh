@@ -9,7 +9,10 @@ set -euo pipefail
 KIT_NAME=cloud-bootstrap
 # shellcheck disable=SC1091
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/cloud-lib.sh"
+trap 'clipboard_clear 2>/dev/null || true' EXIT
 dry_arg 2 "$@"
+# The owner URL may be on the clipboard from cloud-new-database.sh: clear it on every exit of a real run, including bad arguments, bad conf and failures (a clipboard manager may still keep history). A dry run leaves it alone.
+((DRY)) && trap - EXIT
 load_conf
 validate_env_deploy
 set_env "${1:-}"
@@ -31,8 +34,6 @@ owner_sql() {
 if ((DRY)); then
   echo "DRY RUN for '$ENV_NAME': nothing below is executed, and no gcloud, docker or network call is made."
 else
-  # The owner URL may be on the clipboard from cloud-new-database.sh: clear it on any exit, success or failure (a clipboard manager may still keep history).
-  trap 'clipboard_clear 2>/dev/null || true' EXIT
   guard_active_project
   if [[ "$ENV_NAME" == prod ]]; then
     read -rp "Type the service name ($PREFIX) to confirm: " typed

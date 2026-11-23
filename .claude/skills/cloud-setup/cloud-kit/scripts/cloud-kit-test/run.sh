@@ -29,7 +29,7 @@ newenv() { # [project-id | none]
 ORIG_PATH="$PATH"
 # Run a kit script in the sandbox repo: sets RC; stdout in $OUT, stderr in $ERR. Stdin from $IN (default empty).
 runk() { local s="$1"; shift; ( cd "$REPO" && printf '%b' "${IN:-}" | bash "$SCRIPTS/$s" "$@" ) > "$OUT" 2> "$ERR"; RC=$?; }
-log_empty() { [[ ! -s "$FAKE_LOG" ]]; }
+log_empty() { ! grep -qvE "^xclip( |$)" "$FAKE_LOG" 2>/dev/null; } # the clipboard clear on a real run's early exit is allowed; any other tool call is not
 logs() { grep -qF -- "$1" "$FAKE_LOG"; }
 leaks() { grep -qF -- "$SENTINEL" "$FAKE_LOG" "$OUT" "$ERR" "$REPO/.env.deploy" 2>/dev/null; }
 good_state() { # fake cloud state that a finished fin-dash-qa setup would have
@@ -87,6 +87,11 @@ for kv in "GCP_REGION=us-east4; touch pwned" "GCP_REGION=US_EAST4" "GCP_PROJECT_
     newenv; printf 'GCP_PROJECT_ID=test-proj-1234\nGCP_REGION=us-east4\n%s\n' "$kv" > "$REPO/.env.deploy"; runk $c
     [[ $RC != 0 ]] && log_empty && grep -q 'invalid value' "$ERR" && [[ ! -e "$REPO/pwned" ]]; t ".env.deploy '$kv' refused by $c" $? "rc=$RC $(cat "$ERR")"
   done
+done
+
+for kv in "GCP_REGION=" "NEON_PROJECT_ID_QA="; do
+  newenv; printf 'GCP_PROJECT_ID=test-proj-1234\n%s\n' "$kv" > "$REPO/.env.deploy"; runk cloud-bootstrap.sh qa --dry-run
+  [[ $RC == 0 ]]; t ".env.deploy '$kv' (empty) counts as unset, not invalid" $? "rc=$RC"
 done
 
 echo "== active project guard"
@@ -182,6 +187,12 @@ for case_name in "prod-wrong-confirm" "pooled-url" "gh-not-signed-in" "active-pr
   runk cloud-bootstrap.sh $c; unset FAKE_GH_FAIL FAKE_ROLE_FLAGS
   [[ $RC != 0 && ! -s "$FAKE_STATE/clipboard" ]]; t "die path '$case_name' leaves the clipboard empty" $? "rc=$RC"
 done
+for bad in "qa --dryrun" "qa --dry-run extra" "stage" "--dry-run"; do
+  newenv; mkdir -p "$FAKE_STATE"; echo "$SENTINEL" > "$FAKE_STATE/clipboard"; runk cloud-bootstrap.sh $bad
+  [[ $RC != 0 && ! -s "$FAKE_STATE/clipboard" ]]; t "early exit 'cloud-bootstrap.sh $bad' leaves the clipboard empty" $? "rc=$RC"
+done
+newenv; mkdir -p "$FAKE_STATE"; echo "$SENTINEL" > "$FAKE_STATE/clipboard"; printf 'GCP_REGION=BAD\n' > "$REPO/.env.deploy"; runk cloud-bootstrap.sh qa
+[[ $RC != 0 && ! -s "$FAKE_STATE/clipboard" ]]; t "a bad .env.deploy exit leaves the clipboard empty" $? "rc=$RC"
 newenv; mkdir -p "$FAKE_STATE"; echo "$SENTINEL" > "$FAKE_STATE/clipboard"; runk cloud-bootstrap.sh qa --dry-run
 [[ -s "$FAKE_STATE/clipboard" ]]; t "a dry run does not touch the clipboard" $?
 
