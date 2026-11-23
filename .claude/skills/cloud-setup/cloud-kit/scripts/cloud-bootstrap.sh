@@ -9,9 +9,10 @@ set -euo pipefail
 KIT_NAME=cloud-bootstrap
 # shellcheck disable=SC1091
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/cloud-lib.sh"
+dry_arg 2 "$@"
 load_conf
+validate_env_deploy
 set_env "${1:-}"
-[[ "${2:-}" == "--dry-run" ]] && DRY=1
 
 PROJECT="<GCP_PROJECT_ID>"
 if [[ -f .env.deploy ]]; then
@@ -30,6 +31,8 @@ owner_sql() {
 if ((DRY)); then
   echo "DRY RUN for '$ENV_NAME': nothing below is executed, and no gcloud, docker or network call is made."
 else
+  # The owner URL may be on the clipboard from cloud-new-database.sh: clear it on any exit, success or failure (a clipboard manager may still keep history).
+  trap 'clipboard_clear 2>/dev/null || true' EXIT
   guard_active_project
   if [[ "$ENV_NAME" == prod ]]; then
     read -rp "Type the service name ($PREFIX) to confirm: " typed
@@ -101,6 +104,8 @@ else
     echo "   $APP_SECRET exists already; leaving the role and its password alone."
     echo "   (To rotate: delete nothing by hand; ask for a rotate option to be added to this script.)"
   else
+    rolstate="$(owner_sql <<<"SELECT CASE WHEN NOT EXISTS (SELECT FROM pg_roles WHERE rolname = '${DB_ROLE}') THEN 'new' WHEN (SELECT shobj_description(oid, 'pg_authid') FROM pg_roles WHERE rolname = '${DB_ROLE}') = 'cloud-kit' THEN 'kit' ELSE 'foreign' END AS rolstate;")"
+    [[ "$rolstate" != foreign ]] || die "the database already has a role named $DB_ROLE that this kit did not create (no 'cloud-kit' comment). Refusing to change its password or attributes. Pick another DB_ROLE, or, if you know it is this app's role, run: COMMENT ON ROLE ${DB_ROLE} IS 'cloud-kit'; and run this script again."
     APP_PW="$(openssl rand -hex 24)"
     owner_sql <<SQL
 DO \$\$ BEGIN
@@ -112,6 +117,7 @@ DO \$\$ BEGIN
   EXECUTE format('GRANT CONNECT ON DATABASE %I TO ${DB_ROLE}', current_database());
 END \$\$;
 SQL
+    owner_sql <<<"COMMENT ON ROLE ${DB_ROLE} IS 'cloud-kit';" || die "the role ${DB_ROLE} was created but could not be marked; run: COMMENT ON ROLE ${DB_ROLE} IS 'cloud-kit'; then run this script again"
     flags="$(owner_sql <<<"SELECT rolbypassrls::text || ',' || rolsuper::text FROM pg_roles WHERE rolname = '${DB_ROLE}';")"
     [[ "$flags" == "false,false" ]] || die "$DB_ROLE can bypass row-level security or is a superuser ($flags). Stopping; nothing stored."
     APP_URL="$(OWNER_URL="$OWNER_URL" APP_PW="$APP_PW" APP_ROLE="$DB_ROLE" node -e '
@@ -142,7 +148,6 @@ unset PGURL OWNER_URL 2>/dev/null || true
 if ((DRY)); then
   say "Dry run finished; nothing was changed."
 else
-  clipboard_clear 2>/dev/null || true
   bash "$KIT_DIR/cloud-verify.sh" "$ENV_NAME"
   say "Done. Next: npm run deploy:$ENV_NAME"
 fi

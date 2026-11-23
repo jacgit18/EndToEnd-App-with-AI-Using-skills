@@ -6,9 +6,10 @@ set -euo pipefail
 KIT_NAME=cloud-verify
 # shellcheck disable=SC1091
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/cloud-lib.sh"
+dry_arg 2 "$@"
 load_conf
+validate_env_deploy
 WHAT="${1:-}"
-[[ "${2:-}" == "--dry-run" ]] && DRY=1
 if [[ "$WHAT" == project ]]; then ENV_NAME=""; else set_env "$WHAT"; fi
 
 FAILS=0
