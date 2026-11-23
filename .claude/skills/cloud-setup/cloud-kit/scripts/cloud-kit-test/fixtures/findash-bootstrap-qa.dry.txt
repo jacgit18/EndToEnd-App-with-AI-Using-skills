@@ -1,0 +1,38 @@
+DRY RUN for 'qa': nothing below is executed, and no gcloud, docker or network call is made.
+
+== 1. Enable the APIs
+   would run: gcloud services enable run.googleapis.com artifactregistry.googleapis.com secretmanager.googleapis.com iam.googleapis.com --project test-proj-1234
+
+== 2. Image repository 'fin-dash' in us-east4 (created if missing)
+   would run: gcloud artifacts repositories describe fin-dash --location us-east4 --project test-proj-1234   (and create it with --repository-format=docker if that fails)
+
+== 3. Service account fin-dash-qa-run (created if missing)
+   would run: gcloud iam service-accounts describe fin-dash-qa-run@test-proj-1234.iam.gserviceaccount.com --project test-proj-1234   (and create it if that fails)
+
+== 4. Let docker push to us-east4-docker.pkg.dev (edits your docker config)
+   would run: gcloud auth configure-docker us-east4-docker.pkg.dev --quiet
+
+== 5. Owner database URL -> secret fin-dash-qa-owner-database-url
+   would prompt (hidden) for the DIRECT (non-pooled) owner URL from the Neon console and store it with: gcloud secrets create fin-dash-qa-owner-database-url --data-file=- (value on stdin)
+   if the secret exists already, it is read back instead of asked again
+
+== 6. Database role findash_app (no bypass of row-level security) and its pooled URL -> secret fin-dash-qa-app-database-url
+   would send to the owner database (the password is generated with openssl, 24 random bytes, and never shown):
+     DO $$ BEGIN
+       IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'findash_app') THEN
+         CREATE ROLE findash_app LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOBYPASSRLS NOINHERIT PASSWORD '<generated>';
+       ELSE
+         ALTER ROLE findash_app LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOBYPASSRLS NOINHERIT PASSWORD '<generated>';
+       END IF;
+       EXECUTE format('GRANT CONNECT ON DATABASE %I TO findash_app', current_database());
+     END $$;
+   then it reads back rolbypassrls and rolsuper for findash_app and stops unless both are false,
+   builds the pooled URL (host gets '-pooler') in memory and stores it with: gcloud secrets create <the app-database-url secret> --data-file=- (stdin)
+
+== 7. Environment mark 'qa' on the database
+   would send: DO $$ BEGIN EXECUTE format('COMMENT ON DATABASE %I IS %L', current_database(), 'fin-dash-env:qa'); END $$;   and read it back
+
+== 8. Let fin-dash-qa-run read fin-dash-qa-app-database-url and nothing else
+   would run: gcloud secrets add-iam-policy-binding fin-dash-qa-app-database-url --member serviceAccount:fin-dash-qa-run@test-proj-1234.iam.gserviceaccount.com --role roles/secretmanager.secretAccessor --project test-proj-1234
+
+== Dry run finished; nothing was changed.

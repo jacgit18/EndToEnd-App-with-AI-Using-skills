@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+# Fake gcloud for the cloud kit tests: logs argv (never stdin), prints canned output driven by FAKE_* variables and the state dir.
+echo "gcloud $*" >> "${FAKE_LOG:?}"
+S="${FAKE_STATE:?}"; mkdir -p "$S"
+a="$*"
+has() { [[ "$a" == *"$1"* ]]; }
+cur_project() { if [[ -f "$S/active_project" ]]; then cat "$S/active_project"; else printf '%s' "${FAKE_ACTIVE_PROJECT:-}"; fi; }
+case "$a" in
+  "config get-value project"*) cur_project; echo ;;
+  "config set project "*) printf '%s' "${a#config set project }" > "$S/active_project" ;;
+  "config configurations list"*)
+    if has "properties.core.project"; then printf '%s\t%s\n' "${FAKE_ACTIVE_CFG:-}" "$(cur_project)"
+    elif has "is_active:true"; then echo "${FAKE_ACTIVE_CFG:-}"
+    else for c in ${FAKE_CFGS:-}; do echo "$c"; done; fi ;;
+  "auth list"*) echo "${FAKE_ACCOUNT:-}" ;;
+  "projects create "*)
+    id="$(echo "$a" | awk '{print $3}')"; n=0; [[ -f "$S/taken" ]] && n="$(cat "$S/taken")"
+    if ((n < ${FAKE_TAKEN_COUNT:-0})); then echo $((n + 1)) > "$S/taken"; echo "ERROR: Project ID '$id' is already in use by another project." >&2; exit 1; fi
+    echo "$id" >> "$S/projects" ;;
+  "projects list"*) [[ -n "${FAKE_NO_PROJECT_READBACK:-}" ]] || { printf '%s\n' ${FAKE_PROJECTS:-}; [[ -f "$S/projects" ]] && cat "$S/projects"; }; true ;;
+  "projects describe"*) echo 123456 ;;
+  "billing accounts list"*) if has "open=true"; then for x in ${FAKE_BILLING_OPEN-billingAccounts/OPENACCT}; do echo "$x"; done; else echo "billingAccounts/OPENACCT"; echo "billingAccounts/CLOSEDACCT"; fi ;;
+  "billing projects describe"*) if has billingAccountName; then echo "billingAccounts/OPENACCT"; else echo "${FAKE_BILLING_ENABLED:-True}"; fi ;;
+  "billing projects link"*) ;;
+  "billing budgets create"*)
+    n="$(echo "$a" | sed -n 's/.*--display-name=\([^ ]*\).*/\1/p')"; p="$(echo "$a" | sed -n 's/.*--filter-projects=\([^ ]*\).*/\1/p')"
+    printf '%s\t%s\n' "$n" "$p" > "$S/budget" ;;
+  "billing budgets list"*) if [[ -f "$S/budget" ]]; then cat "$S/budget"; else printf '%b\n' "${FAKE_BUDGET_LINE:-}"; fi ;;
+  "services list"*) for x in ${FAKE_APIS-run.googleapis.com artifactregistry.googleapis.com secretmanager.googleapis.com iam.googleapis.com}; do echo "$x"; done ;;
+  "secrets list"*) printf '%s\n' ${FAKE_SECRETS:-}; [[ -f "$S/secrets" ]] && cat "$S/secrets"; true ;;
+  "secrets describe "*) n="$(echo "$a" | awk '{print $3}')"; grep -qxF "$n" "$S/secrets" 2>/dev/null || [[ " ${FAKE_SECRETS:-} " == *" $n "* ]] || exit 1 ;;
+  "secrets create "*) cat > /dev/null; echo "$a" | awk '{print $3}' >> "$S/secrets" ;;
+  "secrets versions access"*) echo "${FAKE_OWNER_URL:-}" ;;
+  "secrets add-iam-policy-binding "*)
+    n="$(echo "$a" | awk '{print $3}')"; m="$(echo "$a" | sed -n 's/.*--member \([^ ]*\).*/\1/p')"; r="$(echo "$a" | sed -n 's/.*--role \([^ ]*\).*/\1/p')"
+    printf '%s %s\n' "$r" "$m" >> "$S/policy.$n" ;;
+  "secrets get-iam-policy "*)
+    n="$(echo "$a" | awk '{print $3}')"; var="FAKE_POLICY_$(echo "$n" | tr 'a-z-' 'A-Z_')"
+    lines="$(cat "$S/policy.$n" 2>/dev/null || true)"; [[ -n "${!var:-}" ]] && lines="${!var}"
+    printf '{"bindings":['; first=1
+    while read -r role mem; do [[ -n "$role" ]] || continue; ((first)) || printf ','; first=0; printf '{"role":"%s","members":["%s"]}' "$role" "$mem"; done <<<"$(printf '%b' "$lines")"
+    printf ']}\n' ;;
+  "artifacts repositories describe"*|"iam service-accounts describe"*) exit 1 ;;
+  *) ;;
+esac
+exit 0

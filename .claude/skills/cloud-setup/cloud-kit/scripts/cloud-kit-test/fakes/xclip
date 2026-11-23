@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Fake xclip: logs argv, keeps the clipboard text in the state dir (a file, not the log).
+echo "xclip $*" >> "${FAKE_LOG:?}"
+mkdir -p "${FAKE_STATE:?}"; cat > "$FAKE_STATE/clipboard"
