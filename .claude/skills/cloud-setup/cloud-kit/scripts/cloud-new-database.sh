@@ -29,7 +29,7 @@ preflight gcloud neon node
 PROJECT="$(env_deploy_get GCP_PROJECT_ID)"; PROJECT="${PROJECT:-<GCP_PROJECT_ID>}"
 guard_active_project
 
-neon_out() { local t; t="$(mktemp -d)"; ( cd "$t" && neon "$@" ); local rc=$?; rm -rf "$t"; return $rc; }
+neon_out() { local t rc=0; t="$(mktemp -d)"; ( cd "$t" && neon "$@" ) || rc=$?; rm -rf "$t"; return $rc; }
 neon_find_id() { # prints the id of the project named $PREFIX, or nothing
   neon_out projects list -o json | PROJ_NAME="$PREFIX" node -e '
     let s="";process.stdin.on("data",c=>s+=c).on("end",()=>{const d=JSON.parse(s);const a=Array.isArray(d)?d:(d.projects||[]);

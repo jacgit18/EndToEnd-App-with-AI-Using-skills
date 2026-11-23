@@ -47,7 +47,17 @@ if [[ -n "$PROJECT" ]]; then
   say "2-4. .env.deploy already names a project; resuming with it"
   gcloud projects list --filter="projectId=$PROJECT" --format='value(projectId)' | qgrep -x "$PROJECT" || die "$PROJECT in .env.deploy is not in 'gcloud projects list' for this account"
 else
-  say "2. Google Cloud project"
+  say "2. Billing account (looked up first, so a stop here leaves no project behind)"
+  mapfile -t accts < <(gcloud billing accounts list --filter=open=true --format='value(name)')
+  ((${#accts[@]} > 0)) || die "no open billing account; create one in the console first (billing is the owner's step)"
+  acct="${accts[0]##*/}"
+  if ((${#accts[@]} > 1)); then
+    printf '   open billing accounts:\n'; printf '     %s\n' "${accts[@]##*/}"
+    read -rp "Which billing account id to link? " acct
+    printf '%s\n' "${accts[@]##*/}" | qgrep -xF "$acct" || die "$acct is not one of the open accounts"
+  fi
+
+  say "3. Google Cloud project"
   [[ ${#APP_SLUG} -ge 6 ]] || die "APP_SLUG must be at least 6 characters to be a project id"
   id="$APP_SLUG"; tries=0
   while :; do
@@ -60,15 +70,7 @@ else
   done
   PROJECT="$id"
 
-  say "3. Billing"
-  mapfile -t accts < <(gcloud billing accounts list --filter=open=true --format='value(name)')
-  ((${#accts[@]} > 0)) || die "no open billing account; create one in the console first (billing is the owner's step)"
-  acct="${accts[0]##*/}"
-  if ((${#accts[@]} > 1)); then
-    printf '   open billing accounts:\n'; printf '     %s\n' "${accts[@]##*/}"
-    read -rp "Which billing account id to link? " acct
-    printf '%s\n' "${accts[@]##*/}" | qgrep -xF "$acct" || die "$acct is not one of the open accounts"
-  fi
+  say "3b. Link billing"
   gcloud billing projects link "$PROJECT" --billing-account="$acct"
 
   say "4. Read back, then write .env.deploy"

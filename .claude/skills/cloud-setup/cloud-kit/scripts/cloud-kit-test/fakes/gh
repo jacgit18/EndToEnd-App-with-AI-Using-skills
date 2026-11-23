@@ -1,3 +1,6 @@
 #!/usr/bin/env bash
 # Fake gh: logs argv only.
 echo "gh $*" >> "${FAKE_LOG:?}"
+[[ "$1 $2" == "auth status" && -n "${FAKE_GH_FAIL:-}" ]] && { echo "not logged in" >&2; exit 1; }
+[[ "$1 $2" == "auth status" ]] && echo "  - Token scopes: 'repo', 'read:org'"
+exit 0

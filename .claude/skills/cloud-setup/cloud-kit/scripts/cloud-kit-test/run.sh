@@ -23,7 +23,7 @@ newenv() { # [project-id | none]
   export FAKE_ACTIVE_PROJECT="${1:-test-proj-1234}"; [[ "$FAKE_ACTIVE_PROJECT" == none ]] && export FAKE_ACTIVE_PROJECT=""
   export FAKE_ACTIVE_CFG=fin-dash FAKE_CFGS="default fin-dash" FAKE_ACCOUNT=me@example.com FAKE_SECRET="$SENTINEL"
   export CLOUD_KIT_CONF="$CONF" PATH="$HERE/fakes:$ORIG_PATH"
-  unset FAKE_TAKEN_COUNT FAKE_NO_PROJECT_READBACK FAKE_BILLING_OPEN FAKE_SECRETS FAKE_NEON_POOLED FAKE_NEON_EXISTING FAKE_BILLING_ENABLED FAKE_APIS FAKE_BUDGET_LINE CLOUD_KIT_CLIPBOARD
+  unset FAKE_GH_FAIL FAKE_TAKEN_COUNT FAKE_NO_PROJECT_READBACK FAKE_BILLING_OPEN FAKE_SECRETS FAKE_NEON_POOLED FAKE_NEON_EXISTING FAKE_BILLING_ENABLED FAKE_APIS FAKE_BUDGET_LINE CLOUD_KIT_CLIPBOARD
   OUT="$T/out"; ERR="$T/err"
 }
 ORIG_PATH="$PATH"
@@ -48,7 +48,7 @@ for c in "cloud-bootstrap.sh qa" "cloud-bootstrap.sh prod" "cloud-new-project.sh
   [[ $RC == 0 ]] && grep -q 'Dry run finished; nothing was changed.' "$OUT" && log_empty; t "dry run: $c" $? "rc=$RC log=$(cat "$FAKE_LOG")"
 done
 : > "$FAKE_LOG"; rm "$REPO/.env.deploy"; runk cloud-bootstrap.sh qa --dry-run
-[[ $RC == 0 ]] && grep -q '<GCP_PROJECT_ID>' "$OUT"; t "dry run without .env.deploy shows the placeholder" $?
+cmp -s "$OUT" "$HERE/fixtures/findash-bootstrap-qa-noenv.dry.txt"; t "bootstrap qa --dry-run without .env.deploy equals the Fin-Dash golden output (placeholder id)" $?
 
 echo "== bootstrap dry run is byte-identical to Fin-Dash's (project id test-proj-1234)"
 newenv
@@ -56,13 +56,18 @@ for e in qa prod; do
   runk cloud-bootstrap.sh $e --dry-run; cmp -s "$OUT" "$HERE/fixtures/findash-bootstrap-$e.dry.txt"; t "bootstrap $e --dry-run equals the Fin-Dash golden output" $?
 done
 
+newenv; printf 'export GCP_PROJECT_ID="test-proj-1234"\r\nGCP_REGION=us-east4\r\n' > "$REPO/.env.deploy"; runk cloud-bootstrap.sh qa --dry-run
+cmp -s "$OUT" "$HERE/fixtures/findash-bootstrap-qa.dry.txt"; t ".env.deploy with export, quotes and CRLF reads the same project id" $?
+
 echo "== config validation"
-for bad_line in "DB_ROLE=bad\"role" "DB_ROLE=a;drop table x" "DB_ROLE=Upper_case" "APP_SLUG=Fin_Dash" "BUDGET_USD=5.5" "KIT_CONFIGURED=no" "REGION=us east4"; do
+for bad_line in "DB_ROLE=bad\"role" "DB_ROLE=a;drop table x" "DB_ROLE=abc;touch pwned" "DB_ROLE=\$(touch pwned)" "DB_ROLE=Upper_case" "APP_SLUG=Fin_Dash" "BUDGET_USD=5.5" "REGION=us east4"; do
   newenv; sed "s|^${bad_line%%=*}=.*|$bad_line|" "$CONF" > "$T/bad.conf"; export CLOUD_KIT_CONF="$T/bad.conf"
-  runk cloud-bootstrap.sh qa --dry-run; [[ $RC != 0 ]] && log_empty; t "rejects config line: $bad_line" $? "rc=$RC"
+  runk cloud-bootstrap.sh qa --dry-run; [[ $RC != 0 ]] && log_empty && grep -q 'invalid value' "$ERR" && [[ ! -e "$REPO/pwned" ]]; t "rejects config line by its pattern, runs nothing: $bad_line" $? "rc=$RC $(cat "$ERR")"
 done
-newenv; export CLOUD_KIT_CONF="$KIT/scripts/cloud-kit.conf"; runk cloud-bootstrap.sh qa --dry-run
-[[ $RC != 0 ]] && grep -q KIT_CONFIGURED "$ERR"; t "the shipped template config is refused until edited" $?
+newenv; printf 'KIT_CONFIGURED=yes\nEVIL=1\n' | cat - <(grep -v KIT_CONFIGURED "$CONF") > "$T/bad.conf"; export CLOUD_KIT_CONF="$T/bad.conf"; runk cloud-bootstrap.sh qa --dry-run
+[[ $RC != 0 ]] && grep -q 'unknown key EVIL' "$ERR"; t "rejects an unknown config key" $?
+newenv; sed 's/^KIT_CONFIGURED=.*/KIT_CONFIGURED=no/' "$CONF" > "$T/tpl.conf"; export CLOUD_KIT_CONF="$T/tpl.conf"; runk cloud-bootstrap.sh qa --dry-run
+[[ $RC != 0 ]] && grep -q 'KIT_CONFIGURED' "$ERR"; t "a config with KIT_CONFIGURED=no (the template state) is refused" $?
 
 echo "== active project guard"
 for c in "cloud-bootstrap.sh qa" "cloud-new-database.sh qa" "cloud-verify.sh qa"; do
@@ -81,7 +86,7 @@ newenv none; export FAKE_NO_PROJECT_READBACK=1; IN='y\n' runk cloud-new-project.
 [[ $RC != 0 && ! -f "$REPO/.env.deploy" ]] && logs 'projects create'; t "read-back finds no project: stops before writing .env.deploy" $? "rc=$RC"
 
 newenv none; export FAKE_BILLING_OPEN=""; IN='y\n' runk cloud-new-project.sh
-[[ $RC != 0 ]] && ! logs 'billing projects link' && [[ ! -f "$REPO/.env.deploy" ]]; t "no open billing account: stops, links nothing, writes nothing" $?
+[[ $RC != 0 ]] && ! logs 'billing projects link' && ! logs 'projects create' && [[ ! -f "$REPO/.env.deploy" ]]; t "no open billing account: stops before creating a project, links nothing, writes nothing" $?
 
 newenv none; export FAKE_BILLING_ENABLED=False; IN='y\n' runk cloud-new-project.sh
 [[ $RC != 0 && ! -f "$REPO/.env.deploy" ]]; t "billing not enabled on read-back: stops before .env.deploy" $?
@@ -126,6 +131,11 @@ IN="postgres://neondb_owner:$SENTINEL@ep-abc-123.us-east-1.aws.neon.tech/neondb\
 ( cd "$REPO" && printf '%b' "$IN" | bash "$T/mut/cloud-bootstrap.sh" qa ) > "$OUT" 2> "$ERR"
 leaks; t "mutation check: a bootstrap that echoes the secret is caught by the leak check" $?
 
+newenv; IN='wrong\n'; runk cloud-bootstrap.sh prod
+[[ $RC != 0 ]] && grep -q 'confirmation did not match' "$ERR" && ! logs 'services enable' && ! logs 'docker'; t "prod: a wrong typed service name stops the bootstrap before any change" $?
+newenv; export FAKE_GH_FAIL=1; IN="postgres://neondb_owner:$SENTINEL@ep-abc-123.us-east-1.aws.neon.tech/neondb\n"; runk cloud-bootstrap.sh qa
+[[ $RC != 0 ]] && grep -q 'gh is not signed in' "$ERR" && ! logs 'services enable'; t "preflight: gh not signed in stops the bootstrap before any change" $?
+unset FAKE_GH_FAIL
 newenv; IN="postgres://neondb_owner:$SENTINEL@ep-abc-123-pooler.us-east-1.aws.neon.tech/neondb\n"; runk cloud-bootstrap.sh qa
 [[ $RC != 0 ]] && grep -q pooled "$ERR" && ! logs 'secrets create' && ! leaks; t "a pooled owner URL is refused before anything is stored" $?
 newenv; IN="postgres://neondb_owner:$SENTINEL@ep-abc-123.us-east-1.aws.neon.tech/neondb\n"; export FAKE_ROLE_FLAGS="true,false"; runk cloud-bootstrap.sh qa
@@ -140,8 +150,10 @@ newenv; good_state; export FAKE_POLICY_FIN_DASH_QA_APP_DATABASE_URL="roles/secre
 [[ $RC != 0 ]] && grep -q 'FAILED  policy on fin-dash-qa-app-database-url' "$OUT"; t "verify: FAILED when the app-URL policy lists another member" $?
 newenv; good_state; export FAKE_POLICY_FIN_DASH_QA_OWNER_DATABASE_URL="roles/secretmanager.secretAccessor serviceAccount:fin-dash-qa-run@test-proj-1234.iam.gserviceaccount.com"; runk cloud-verify.sh qa
 [[ $RC != 0 ]] && grep -q 'FAILED  policy on fin-dash-qa-owner-database-url' "$OUT"; t "verify: FAILED when the runtime account can read the owner-URL secret" $?
-newenv; good_state; export FAKE_APIS="run.googleapis.com"; runk cloud-verify.sh project
-[[ $RC != 0 ]] && grep -q 'FAILED  API iam.googleapis.com' "$OUT"; t "verify: FAILED when an API is not enabled" $?
+newenv; good_state; export FAKE_APIS="run.googleapis.com"; runk cloud-verify.sh qa
+[[ $RC != 0 ]] && grep -q 'FAILED  API iam.googleapis.com' "$OUT"; t "verify qa: FAILED when an API is not enabled" $?
+newenv; good_state; export FAKE_APIS=""; runk cloud-verify.sh project
+[[ $RC == 0 ]] && ! grep -q 'API ' "$OUT"; t "verify project: does not check APIs (a fresh project has none yet)" $?
 newenv; good_state; touch "$REPO/.neon" ; runk cloud-verify.sh project
 [[ $RC != 0 ]] && grep -q 'FAILED  no .neon' "$OUT"; t "verify: FAILED when a .neon file is in the repo" $?
 newenv; good_state; touch "$REPO/stray.txt"; runk cloud-verify.sh project

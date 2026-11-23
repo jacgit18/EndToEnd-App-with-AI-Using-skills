@@ -17,10 +17,21 @@ need_pattern() { # key value regex
   [[ "$2" =~ $3 ]] || die "cloud-kit.conf: $1 has an invalid value (must match $3)"
 }
 
+# The conf is parsed line by line, never sourced: a value is data, so "DB_ROLE=a;touch x" is rejected by its pattern, not executed.
 load_conf() {
   [[ -f "$KIT_CONF" ]] || die "missing $KIT_CONF (copy the kit's scripts/cloud-kit.conf and edit it)"
-  # shellcheck disable=SC1090
-  source "$KIT_CONF"
+  local line key val n=0
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    n=$((n + 1)); line="${line%$'\r'}"
+    line="$(printf '%s' "$line" | sed -E 's/[[:space:]]+#.*$//; s/^[[:space:]]+//; s/[[:space:]]+$//')"
+    [[ -z "$line" || "$line" == \#* ]] && continue
+    [[ "$line" =~ ^([A-Z_]+)=(.*)$ ]] || die "cloud-kit.conf line $n is not KEY=value"
+    key="${BASH_REMATCH[1]}"; val="${BASH_REMATCH[2]}"
+    case "$key" in
+      KIT_CONFIGURED|APP_SLUG|REPO_NAME|DB_ROLE|MARK_KEY|LOG_NAME|REGION|NEON_REGION|PG_VERSION|BUDGET_USD|DISPLAY_NAME) printf -v "$key" '%s' "$val" ;;
+      *) die "cloud-kit.conf line $n: unknown key $key" ;;
+    esac
+  done < "$KIT_CONF"
   local k
   for k in KIT_CONFIGURED APP_SLUG REPO_NAME DB_ROLE MARK_KEY LOG_NAME REGION NEON_REGION PG_VERSION BUDGET_USD DISPLAY_NAME; do
     [[ -n "${!k:-}" ]] || die "cloud-kit.conf: $k is not set"
@@ -52,11 +63,13 @@ set_env() {
 }
 
 # Read GCP_PROJECT_ID / GCP_REGION / NEON_PROJECT_ID_* from the git-ignored .env.deploy (plain KEY=value, never sourced as code: parsed line by line).
-env_deploy_get() { # key -> value or empty
+env_deploy_get() { # key -> value or empty (strips CR, a leading "export ", and one pair of quotes)
   [[ -f .env.deploy ]] || return 0
-  local line
-  line="$(grep -E "^$1=" .env.deploy | tail -1 || true)"
-  printf '%s' "${line#*=}"
+  local line v
+  line="$(tr -d '\r' < .env.deploy | sed -E 's/^export[[:space:]]+//' | grep -E "^$1=" | tail -1 || true)"
+  v="${line#*=}"
+  if [[ "$v" =~ ^\"(.*)\"$ || "$v" =~ ^\'(.*)\'$ ]]; then v="${BASH_REMATCH[1]}"; fi
+  printf '%s' "$v"
 }
 
 # Refuse unless the active gcloud project is the one in .env.deploy (real runs only).
@@ -72,6 +85,13 @@ preflight() { # tool...   (each tool must be on PATH)
   local bad=0 t
   for t in "$@"; do command -v "$t" >/dev/null 2>&1 || { echo "preflight: missing tool: $t" >&2; bad=1; }; done
   ((bad == 0)) || die "preflight failed; install the missing tool(s) and run again"
+}
+
+# gh must be installed and signed in (read-only). If the status shows token scopes and 'repo' is not among them, that is a problem too.
+preflight_gh() {
+  command -v gh >/dev/null 2>&1 || die "preflight: gh is not installed"
+  local st; st="$(gh auth status 2>&1)" || die "preflight: gh is not signed in (run: gh auth login)"
+  if printf '%s' "$st" | grep -q 'Token scopes'; then printf '%s' "$st" | grep 'Token scopes' | grep -q "repo" || die "preflight: the gh token has no 'repo' scope"; fi
 }
 
 # Pick a clipboard tool; prints its name or nothing. CLOUD_KIT_CLIPBOARD=none turns the clipboard hand-off off; xclip or wl-copy forces one.

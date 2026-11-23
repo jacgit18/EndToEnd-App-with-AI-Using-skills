@@ -31,7 +31,12 @@ if ((DRY)); then
   echo "DRY RUN for '$ENV_NAME': nothing below is executed, and no gcloud, docker or network call is made."
 else
   guard_active_project
+  if [[ "$ENV_NAME" == prod ]]; then
+    read -rp "Type the service name ($PREFIX) to confirm: " typed
+    [[ "$typed" == "$PREFIX" ]] || die "confirmation did not match; nothing done"
+  fi
   preflight gcloud docker openssl node
+  preflight_gh
   docker info >/dev/null 2>&1 || die "preflight: the docker server is not running"
   [[ -d node_modules ]] || note "preflight: node_modules is missing; run 'npm ci --ignore-scripts' before the first deploy (not run by this script)"
   note "preflight: the first run pulls $PG_IMAGE from Docker Hub (one-time download)"

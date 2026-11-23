@@ -21,9 +21,9 @@ if ((DRY)); then
   echo "DRY RUN: nothing below is executed, and no cloud call is made."
   say "Checks this script would make (read-only)"
   for l in "project id appears in: gcloud projects list" "billing enabled: gcloud billing projects describe" "budget '${APP_SLUG}-${BUDGET_USD}' scoped to the project: gcloud billing budgets list" \
-    "active gcloud configuration is '${APP_SLUG}' with the project: gcloud config configurations list" "four APIs enabled: gcloud services list --enabled"; do note "$l"; done
+    "active gcloud configuration is '${APP_SLUG}' with the project: gcloud config configurations list"; do note "$l"; done
   if [[ -n "$WHAT" && "$WHAT" != project ]]; then
-    for l in "exactly the two secrets ${APP_SECRET} and ${OWNER_SECRET}: gcloud secrets list" "policy on ${APP_SECRET} lists exactly ${SA}: gcloud secrets get-iam-policy" \
+    for l in "four APIs enabled: gcloud services list --enabled" "exactly the two secrets ${APP_SECRET} and ${OWNER_SECRET}: gcloud secrets list" "policy on ${APP_SECRET} lists exactly ${SA}: gcloud secrets get-iam-policy" \
       "policy on ${OWNER_SECRET} does not list ${SA}: gcloud secrets get-iam-policy" "Neon project id from .env.deploy appears in: neon projects list"; do note "$l"; done
   fi
   note "no .neon file and no untracked file in the repo: git ls-files --others --exclude-standard"
@@ -50,11 +50,11 @@ fi
 chk "budget ${APP_SLUG}-${BUDGET_USD} exists and is scoped to this project" $r
 r=1; [[ "$(gcloud config configurations list --filter=is_active:true --format='value(name,properties.core.project)' | tr '\t' ' ')" == "$APP_SLUG $PROJECT" ]] && r=0
 chk "active gcloud configuration is $APP_SLUG with project $PROJECT" $r
-apis="$(gcloud services list --enabled --project "$PROJECT" --format='value(config.name)')"
-for a in run artifactregistry secretmanager iam; do r=1; printf '%s\n' "$apis" | in_lines "$a.googleapis.com" && r=0; chk "API $a.googleapis.com enabled" $r; done
 
 if [[ "$WHAT" != project ]]; then
   say "Environment $ENV_NAME read-back"
+apis="$(gcloud services list --enabled --project "$PROJECT" --format='value(config.name)')"
+for a in run artifactregistry secretmanager iam; do r=1; printf '%s\n' "$apis" | in_lines "$a.googleapis.com" && r=0; chk "API $a.googleapis.com enabled" $r; done
   names="$(gcloud secrets list --project "$PROJECT" --format='value(name)' | sed 's#.*/##' | grep -E "^${PREFIX}-" | sort || true)"
   want="$(printf '%s\n%s\n' "$APP_SECRET" "$OWNER_SECRET" | sort)"
   r=1; [[ "$names" == "$want" ]] && r=0; chk "secrets for $PREFIX are exactly the expected two" $r
