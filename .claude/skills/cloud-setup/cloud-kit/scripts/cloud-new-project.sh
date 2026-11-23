@@ -7,8 +7,9 @@ set -euo pipefail
 KIT_NAME=cloud-new-project
 # shellcheck disable=SC1091
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/cloud-lib.sh"
+dry_arg 1 "$@"
 load_conf
-[[ "${1:-}" == "--dry-run" ]] && DRY=1
+validate_env_deploy
 BUDGET_NAME="${APP_SLUG}-${BUDGET_USD}"
 
 if ((DRY)); then

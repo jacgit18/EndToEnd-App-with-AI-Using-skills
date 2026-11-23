@@ -8,9 +8,10 @@ set -euo pipefail
 KIT_NAME=cloud-new-database
 # shellcheck disable=SC1091
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/cloud-lib.sh"
+dry_arg 2 "$@"
 load_conf
+validate_env_deploy
 set_env "${1:-}"
-[[ "${2:-}" == "--dry-run" ]] && DRY=1
 ENV_VAR="NEON_PROJECT_ID_$(printf '%s' "$ENV_NAME" | tr 'a-z' 'A-Z')"
 
 if ((DRY)); then

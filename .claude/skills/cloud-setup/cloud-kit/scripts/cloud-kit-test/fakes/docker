@@ -5,6 +5,7 @@ case "$1" in
   info) exit 0 ;;
   run) sql="$(cat)"
     case "$sql" in
+      *rolstate*) echo "${FAKE_ROLE_STATE:-new}" ;;
       *rolbypassrls*) echo "${FAKE_ROLE_FLAGS:-false,false}" ;;
       *shobj_description*) echo "${FAKE_MARK_READBACK:-fin-dash-env:qa}" ;;
     esac ;;

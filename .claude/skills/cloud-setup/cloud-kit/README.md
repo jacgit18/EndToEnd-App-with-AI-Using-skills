@@ -56,6 +56,10 @@ Manual, because they are sign-ins, consent or money: `gcloud auth login`, `neon 
 
 ## Safety rules
 
+- Only `--dry-run` is accepted as a flag, and only after the other arguments; anything else (`--dryrun`, `--dry-run qa`, extras) exits 2 before any call, so a typo never becomes a real run.
+- `DB_ROLE` must end in `_app` and may not be a reserved name (`postgres`, `neondb_owner`, `neon_superuser`, `pg_*` and similar). Step 6 refuses to change an existing role that does not carry the kit's `cloud-kit` comment (the check runs in real runs; the dry-run text is unchanged so it still matches Fin-Dash's output).
+- `GCP_PROJECT_ID`, `GCP_REGION` and `NEON_PROJECT_ID_*` read from `.env.deploy` are checked with strict patterns, like the conf values.
+- The bootstrap empties the clipboard on every exit, success or failure. A clipboard manager may still keep history: clear its history entry yourself, or use `CLOUD_KIT_CLIPBOARD=none` and paste by hand.
 - `--dry-run` on every script; real runs refuse when the active `gcloud` project differs from `.env.deploy` (new-project checks the named configuration instead).
 - No secret in argv, output, a file or shell history: hidden prompt, stdin, pipes and environment variables only. The tests plant a sentinel secret and fail if it appears anywhere, and a mutation check proves the test catches a script that echoes it.
 - Per-secret grants only; never project-wide.

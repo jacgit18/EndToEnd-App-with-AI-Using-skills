@@ -23,7 +23,7 @@ newenv() { # [project-id | none]
   export FAKE_ACTIVE_PROJECT="${1:-test-proj-1234}"; [[ "$FAKE_ACTIVE_PROJECT" == none ]] && export FAKE_ACTIVE_PROJECT=""
   export FAKE_ACTIVE_CFG=fin-dash FAKE_CFGS="default fin-dash" FAKE_ACCOUNT=me@example.com FAKE_SECRET="$SENTINEL"
   export CLOUD_KIT_CONF="$CONF" PATH="$HERE/fakes:$ORIG_PATH"
-  unset FAKE_GH_FAIL FAKE_TAKEN_COUNT FAKE_NO_PROJECT_READBACK FAKE_BILLING_OPEN FAKE_SECRETS FAKE_NEON_POOLED FAKE_NEON_EXISTING FAKE_BILLING_ENABLED FAKE_APIS FAKE_BUDGET_LINE CLOUD_KIT_CLIPBOARD
+  unset FAKE_ROLE_STATE FAKE_ROLE_FLAGS FAKE_GH_FAIL FAKE_TAKEN_COUNT FAKE_NO_PROJECT_READBACK FAKE_BILLING_OPEN FAKE_SECRETS FAKE_NEON_POOLED FAKE_NEON_EXISTING FAKE_BILLING_ENABLED FAKE_APIS FAKE_BUDGET_LINE CLOUD_KIT_CLIPBOARD
   OUT="$T/out"; ERR="$T/err"
 }
 ORIG_PATH="$PATH"
@@ -50,6 +50,11 @@ done
 : > "$FAKE_LOG"; rm "$REPO/.env.deploy"; runk cloud-bootstrap.sh qa --dry-run
 cmp -s "$OUT" "$HERE/fixtures/findash-bootstrap-qa-noenv.dry.txt"; t "bootstrap qa --dry-run without .env.deploy equals the Fin-Dash golden output (placeholder id)" $?
 
+echo "== unknown arguments are rejected (a mistyped flag never runs for real)"
+for c in "cloud-new-project.sh --dryrun" "cloud-new-project.sh --dry-run extra" "cloud-new-project.sh -n" "cloud-bootstrap.sh qa --dryrun" "cloud-bootstrap.sh --dry-run qa" "cloud-bootstrap.sh qa --dry-run extra" "cloud-new-database.sh qa --dryrun" "cloud-new-database.sh --dry-run qa" "cloud-verify.sh qa --dryrun" "cloud-verify.sh --dry-run qa" "cloud-verify.sh project --dry-run extra"; do
+  newenv; runk $c; [[ $RC == 2 ]] && log_empty && grep -qE 'unknown argument|unexpected argument|usage' "$ERR"; t "rejects: $c" $? "rc=$RC log=$(cat "$FAKE_LOG")"
+done
+
 echo "== bootstrap dry run is byte-identical to Fin-Dash's (project id test-proj-1234)"
 newenv
 for e in qa prod; do
@@ -68,6 +73,21 @@ newenv; printf 'KIT_CONFIGURED=yes\nEVIL=1\n' | cat - <(grep -v KIT_CONFIGURED "
 [[ $RC != 0 ]] && grep -q 'unknown key EVIL' "$ERR"; t "rejects an unknown config key" $?
 newenv; sed 's/^KIT_CONFIGURED=.*/KIT_CONFIGURED=no/' "$CONF" > "$T/tpl.conf"; export CLOUD_KIT_CONF="$T/tpl.conf"; runk cloud-bootstrap.sh qa --dry-run
 [[ $RC != 0 ]] && grep -q 'KIT_CONFIGURED' "$ERR"; t "a config with KIT_CONFIGURED=no (the template state) is refused" $?
+
+for r in postgres neondb_owner neon_superuser pg_monitor myrole fin_dash; do
+  newenv; sed "s|^DB_ROLE=.*|DB_ROLE=$r|" "$CONF" > "$T/bad.conf"; export CLOUD_KIT_CONF="$T/bad.conf"
+  runk cloud-bootstrap.sh qa --dry-run; [[ $RC != 0 ]] && log_empty; t "DB_ROLE '$r' is refused (reserved name or no _app suffix)" $? "rc=$RC"
+done
+newenv; sed "s|^DB_ROLE=.*|DB_ROLE=other_app|" "$CONF" > "$T/ok.conf"; export CLOUD_KIT_CONF="$T/ok.conf"; runk cloud-bootstrap.sh qa --dry-run
+[[ $RC == 0 ]]; t "DB_ROLE other_app is accepted (findash_app is covered by the golden diffs)" $?
+
+echo "== .env.deploy values are validated"
+for kv in "GCP_REGION=us-east4; touch pwned" "GCP_REGION=US_EAST4" "GCP_PROJECT_ID=Bad_ID" "GCP_PROJECT_ID=ab" "GCP_PROJECT_ID=good-id-1 x" "NEON_PROJECT_ID_QA=a b" "NEON_PROJECT_ID_PROD=\$(touch pwned)"; do
+  for c in "cloud-bootstrap.sh qa --dry-run" "cloud-new-database.sh qa --dry-run" "cloud-verify.sh project --dry-run" "cloud-new-project.sh --dry-run"; do
+    newenv; printf 'GCP_PROJECT_ID=test-proj-1234\nGCP_REGION=us-east4\n%s\n' "$kv" > "$REPO/.env.deploy"; runk $c
+    [[ $RC != 0 ]] && log_empty && grep -q 'invalid value' "$ERR" && [[ ! -e "$REPO/pwned" ]]; t ".env.deploy '$kv' refused by $c" $? "rc=$RC $(cat "$ERR")"
+  done
+done
 
 echo "== active project guard"
 for c in "cloud-bootstrap.sh qa" "cloud-new-database.sh qa" "cloud-verify.sh qa"; do
@@ -138,8 +158,32 @@ newenv; export FAKE_GH_FAIL=1; IN="postgres://neondb_owner:$SENTINEL@ep-abc-123.
 unset FAKE_GH_FAIL
 newenv; IN="postgres://neondb_owner:$SENTINEL@ep-abc-123-pooler.us-east-1.aws.neon.tech/neondb\n"; runk cloud-bootstrap.sh qa
 [[ $RC != 0 ]] && grep -q pooled "$ERR" && ! logs 'secrets create' && ! leaks; t "a pooled owner URL is refused before anything is stored" $?
+newenv; IN="postgres://neondb_owner:$SENTINEL@ep-abc-123.us-east-1.aws.neon.tech/neondb\n"; export FAKE_ROLE_STATE=foreign; runk cloud-bootstrap.sh qa
+[[ $RC != 0 ]] && grep -q 'did not create' "$ERR" && ! logs 'secrets create fin-dash-qa-app-database-url' && ! leaks; t "step 6 refuses to ALTER an existing role the kit did not create" $?
+newenv; IN="postgres://neondb_owner:$SENTINEL@ep-abc-123.us-east-1.aws.neon.tech/neondb\n"; export FAKE_ROLE_STATE=kit; export FAKE_BUDGET_LINE='fin-dash-5\tprojects/123456' FAKE_PROJECTS=test-proj-1234 FAKE_MARK_READBACK=fin-dash-env:qa; runk cloud-bootstrap.sh qa
+[[ $RC == 0 ]]; t "step 6 re-runs for a role carrying the cloud-kit mark" $? "rc=$RC"
+unset FAKE_ROLE_STATE
+newenv; IN="postgres://neondb_owner:$SENTINEL@ep-abc-123.us-east-1.aws.neon.tech/neondb\n"; export FAKE_BUDGET_LINE='fin-dash-5\tprojects/123456' FAKE_PROJECTS=test-proj-1234 FAKE_MARK_READBACK=fin-dash-env:qa; runk cloud-bootstrap.sh qa
+[[ $RC == 0 ]] && logs 'secrets create fin-dash-qa-app-database-url'; t "a new role goes through step 6 to the app secret" $? "rc=$RC"
+
 newenv; IN="postgres://neondb_owner:$SENTINEL@ep-abc-123.us-east-1.aws.neon.tech/neondb\n"; export FAKE_ROLE_FLAGS="true,false"; runk cloud-bootstrap.sh qa
 [[ $RC != 0 ]] && ! logs 'secrets create fin-dash-qa-app-database-url'; t "a role that can bypass RLS stops the script before the app secret" $?
+
+echo "== the clipboard is cleared on any failure after the string was copied"
+for case_name in "prod-wrong-confirm" "pooled-url" "gh-not-signed-in" "active-project-differs" "role-bypass"; do
+  newenv; mkdir -p "$FAKE_STATE"; echo "$SENTINEL" > "$FAKE_STATE/clipboard"; c=qa; IN="postgres://neondb_owner:$SENTINEL@ep-abc-123.us-east-1.aws.neon.tech/neondb\n"
+  case "$case_name" in
+    prod-wrong-confirm) c=prod; IN='wrong\n' ;;
+    pooled-url) IN="postgres://neondb_owner:$SENTINEL@ep-abc-123-pooler.us-east-1.aws.neon.tech/neondb\n" ;;
+    gh-not-signed-in) export FAKE_GH_FAIL=1 ;;
+    active-project-differs) export FAKE_ACTIVE_PROJECT=other-proj-9 ;;
+    role-bypass) export FAKE_ROLE_FLAGS="true,false" ;;
+  esac
+  runk cloud-bootstrap.sh $c; unset FAKE_GH_FAIL FAKE_ROLE_FLAGS
+  [[ $RC != 0 && ! -s "$FAKE_STATE/clipboard" ]]; t "die path '$case_name' leaves the clipboard empty" $? "rc=$RC"
+done
+newenv; mkdir -p "$FAKE_STATE"; echo "$SENTINEL" > "$FAKE_STATE/clipboard"; runk cloud-bootstrap.sh qa --dry-run
+[[ -s "$FAKE_STATE/clipboard" ]]; t "a dry run does not touch the clipboard" $?
 
 echo "== cloud-verify"
 newenv; good_state; runk cloud-verify.sh qa

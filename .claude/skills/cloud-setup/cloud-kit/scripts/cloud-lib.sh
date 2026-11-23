@@ -12,9 +12,20 @@ die() { echo "${KIT_NAME:-cloud-kit}: $*" >&2; exit 1; }
 # Run a command, or only print it in a dry run.
 run() { if ((DRY)); then printf '   would run: %s\n' "$*"; else "$@"; fi; }
 
+# Reject any argument that is not exactly "--dry-run" in its one allowed position (1-based, counting the script's own arguments), and extras after it.
+# A mistyped flag must never turn a dry run into a real run.
+dry_arg() { # pos args...
+  local pos="$1"; shift
+  if (($# > pos)); then echo "${KIT_NAME:-cloud-kit}: unexpected argument: ${*:$((pos + 1)):1}" >&2; exit 2; fi
+  if (($# == pos)); then
+    [[ "${!pos}" == "--dry-run" ]] || { echo "${KIT_NAME:-cloud-kit}: unknown argument: ${!pos} (only --dry-run is accepted, after the other arguments)" >&2; exit 2; }
+    DRY=1
+  fi
+}
+
 # Pattern check for one config value.
 need_pattern() { # key value regex
-  [[ "$2" =~ $3 ]] || die "cloud-kit.conf: $1 has an invalid value (must match $3)"
+  [[ "$2" =~ $3 ]] || die "$1 has an invalid value (must match $3)"
 }
 
 # The conf is parsed line by line, never sourced: a value is data, so "DB_ROLE=a;touch x" is rejected by its pattern, not executed.
@@ -36,16 +47,17 @@ load_conf() {
   for k in KIT_CONFIGURED APP_SLUG REPO_NAME DB_ROLE MARK_KEY LOG_NAME REGION NEON_REGION PG_VERSION BUDGET_USD DISPLAY_NAME; do
     [[ -n "${!k:-}" ]] || die "cloud-kit.conf: $k is not set"
   done
-  need_pattern APP_SLUG "$APP_SLUG" '^[a-z][a-z0-9-]{2,23}$'
-  need_pattern REPO_NAME "$REPO_NAME" '^[a-z][a-z0-9-]{1,62}$'
-  need_pattern DB_ROLE "$DB_ROLE" '^[a-z][a-z0-9_]{2,40}$'
-  need_pattern MARK_KEY "$MARK_KEY" '^[a-z][a-z0-9-]{1,40}$'
-  need_pattern LOG_NAME "$LOG_NAME" '^[a-z][a-z0-9-]{1,62}$'
-  need_pattern REGION "$REGION" '^[a-z]+-[a-z]+[0-9]+$'
-  need_pattern NEON_REGION "$NEON_REGION" '^[a-z]+-[a-z]+-[a-z]+-[0-9]+$'
-  need_pattern PG_VERSION "$PG_VERSION" '^[0-9]{2}$'
-  need_pattern BUDGET_USD "$BUDGET_USD" '^[1-9][0-9]{0,5}$'
-  need_pattern DISPLAY_NAME "$DISPLAY_NAME" '^[A-Za-z0-9][A-Za-z0-9 -]{0,39}$'
+  need_pattern cloud-kit.conf:APP_SLUG "$APP_SLUG" '^[a-z][a-z0-9-]{2,23}$'
+  need_pattern cloud-kit.conf:REPO_NAME "$REPO_NAME" '^[a-z][a-z0-9-]{1,62}$'
+  need_pattern cloud-kit.conf:DB_ROLE "$DB_ROLE" '^[a-z][a-z0-9_]{1,36}_app$'
+  case "$DB_ROLE" in postgres|neondb_owner|neon_superuser|cloud_admin|authenticator|authenticated|anonymous|pg_*) die "cloud-kit.conf: DB_ROLE '$DB_ROLE' is a reserved or built-in role name; use a dedicated runtime role such as <app>_app" ;; esac
+  need_pattern cloud-kit.conf:MARK_KEY "$MARK_KEY" '^[a-z][a-z0-9-]{1,40}$'
+  need_pattern cloud-kit.conf:LOG_NAME "$LOG_NAME" '^[a-z][a-z0-9-]{1,62}$'
+  need_pattern cloud-kit.conf:REGION "$REGION" '^[a-z]+-[a-z]+[0-9]+$'
+  need_pattern cloud-kit.conf:NEON_REGION "$NEON_REGION" '^[a-z]+-[a-z]+-[a-z]+-[0-9]+$'
+  need_pattern cloud-kit.conf:PG_VERSION "$PG_VERSION" '^[0-9]{2}$'
+  need_pattern cloud-kit.conf:BUDGET_USD "$BUDGET_USD" '^[1-9][0-9]{0,5}$'
+  need_pattern cloud-kit.conf:DISPLAY_NAME "$DISPLAY_NAME" '^[A-Za-z0-9][A-Za-z0-9 -]{0,39}$'
   [[ "$KIT_CONFIGURED" == yes ]] || die "cloud-kit.conf is still the template: edit the values, then set KIT_CONFIGURED=yes"
 }
 
@@ -70,6 +82,22 @@ env_deploy_get() { # key -> value or empty (strips CR, a leading "export ", and 
   v="${line#*=}"
   if [[ "$v" =~ ^\"(.*)\"$ || "$v" =~ ^\'(.*)\'$ ]]; then v="${BASH_REMATCH[1]}"; fi
   printf '%s' "$v"
+}
+
+# Validate every value the kit reads from .env.deploy with strict patterns (the file is owner-edited, and these values reach gcloud and docker config commands).
+validate_env_deploy() {
+  [[ -f .env.deploy ]] || return 0
+  local line k v
+  while IFS= read -r line; do
+    k="${line%%=*}"
+    case "$k" in GCP_PROJECT_ID|GCP_REGION|NEON_PROJECT_ID_*) ;; *) continue ;; esac
+    v="$(env_deploy_get "$k")"
+    case "$k" in
+      GCP_PROJECT_ID) need_pattern ".env.deploy $k" "$v" '^[a-z][a-z0-9-]{4,28}[a-z0-9]$' ;;
+      GCP_REGION) need_pattern ".env.deploy $k" "$v" '^[a-z]+-[a-z]+[0-9]+$' ;;
+      *) need_pattern ".env.deploy $k" "$v" '^[a-z0-9][a-z0-9-]{2,62}$' ;;
+    esac
+  done < <(tr -d '\r' < .env.deploy | sed -E 's/^export[[:space:]]+//' | grep -E '^[A-Z_0-9]+=' || true)
 }
 
 # Refuse unless the active gcloud project is the one in .env.deploy (real runs only).
