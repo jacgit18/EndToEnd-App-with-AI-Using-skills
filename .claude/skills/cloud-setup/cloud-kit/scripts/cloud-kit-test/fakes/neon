@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Fake neon for the cloud kit tests: logs argv, writes a .neon file into its working folder like the real tool, prints canned output.
+echo "neon $*" >> "${FAKE_LOG:?}"
+S="${FAKE_STATE:?}"; mkdir -p "$S"
+case "$*" in
+  "projects create "*) n="$(echo "$*" | sed -n 's/.*--name \([^ ]*\).*/\1/p')"; echo "$n" >> "$S/neon_projects"; echo '{}' > .neon; echo "Project $n created (secrets omitted)" ;;
+  "projects list -o json"*) printf '{"projects":['; first=1; for n in $( { cat "$S/neon_projects" 2>/dev/null; printf '%s\n' ${FAKE_NEON_EXISTING:-}; } ); do ((first)) || printf ','; first=0; printf '{"id":"neon-id-%s","name":"%s"}' "$n" "$n"; done; printf ']}\n' ;;
+  "projects list"*) for n in $( { cat "$S/neon_projects" 2>/dev/null; printf '%s\n' ${FAKE_NEON_EXISTING:-}; } ); do echo "neon-id-$n  $n"; done ;;
+  "connection-string "*) if [[ -n "${FAKE_NEON_POOLED:-}" ]]; then host="ep-abc-123-pooler"; else host="ep-abc-123"; fi
+    printf 'postgres://neondb_owner:%s@%s.us-east-1.aws.neon.tech/neondb?sslmode=require\n' "${FAKE_SECRET:?}" "$host" ;;
+esac
+exit 0
