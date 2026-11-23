@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Fake docker for the cloud kit tests: logs argv only (stdin carries SQL with a generated password and is never logged).
+echo "docker $*" >> "${FAKE_LOG:?}"
+case "$1" in
+  info) exit 0 ;;
+  run) sql="$(cat)"
+    case "$sql" in
+      *rolbypassrls*) echo "${FAKE_ROLE_FLAGS:-false,false}" ;;
+      *shobj_description*) echo "${FAKE_MARK_READBACK:-fin-dash-env:qa}" ;;
+    esac ;;
+esac
+exit 0

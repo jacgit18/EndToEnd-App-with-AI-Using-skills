@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# Fake gh: logs argv only.
+echo "gh $*" >> "${FAKE_LOG:?}"

@@ -15,6 +15,7 @@ Do all of these before the first feature; about a day, and none of it slows gene
 7. **Endpoint guards from the first route** (`endpoint-guards.md`): one default-deny sign-in gate before every route, public routes on a named allowlist, a route module and prefix per feature, and the route-inventory test; retrofitting means auditing every route.
 8. **Feature folders and the feature map** (`parallel-agent-structure.md`): one folder per feature with an `index` entry as its only public surface, the shared-file list and import rules in `ARCHITECTURE.md`, grep-able names and no magic registration; moving to this layout later touches every file.
 9. **A short `CLAUDE.md`** from `new-project-claude-md-template.md`: stack, commands, data rules, under about 40 lines.
+10. **Cloud setup, if the project uses Google Cloud Run and Neon** (`.claude/skills/cloud-setup/cloud-kit/`): run `install.sh`, edit `scripts/cloud-kit.conf`, then the owner runs `cloud-new-project.sh`, `cloud-new-database.sh` and `cloud-bootstrap.sh`, each with `--dry-run` first, and `cloud-verify.sh`; an agent never runs them.
 
 ## Triggers: add the guardrail when the event happens
 
