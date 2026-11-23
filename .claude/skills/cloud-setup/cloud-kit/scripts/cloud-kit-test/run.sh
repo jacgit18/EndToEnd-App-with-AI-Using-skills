@@ -29,7 +29,9 @@ newenv() { # [project-id | none]
 ORIG_PATH="$PATH"
 # Run a kit script in the sandbox repo: sets RC; stdout in $OUT, stderr in $ERR. Stdin from $IN (default empty).
 runk() { local s="$1"; shift; ( cd "$REPO" && printf '%b' "${IN:-}" | bash "$SCRIPTS/$s" "$@" ) > "$OUT" 2> "$ERR"; RC=$?; }
-log_empty() { ! grep -qvE "^xclip( |$)" "$FAKE_LOG" 2>/dev/null; } # the clipboard clear on a real run's early exit is allowed; any other tool call is not
+log_empty() { [[ ! -s "$FAKE_LOG" ]]; }
+# Only for cloud-bootstrap.sh early exits: the clipboard clear (an xclip call) is expected there; any other tool call is not.
+log_empty_clip() { ! grep -qvE "^xclip( |$)" "$FAKE_LOG" 2>/dev/null; }
 logs() { grep -qF -- "$1" "$FAKE_LOG"; }
 leaks() { grep -qF -- "$SENTINEL" "$FAKE_LOG" "$OUT" "$ERR" "$REPO/.env.deploy" 2>/dev/null; }
 good_state() { # fake cloud state that a finished fin-dash-qa setup would have
@@ -52,7 +54,7 @@ cmp -s "$OUT" "$HERE/fixtures/findash-bootstrap-qa-noenv.dry.txt"; t "bootstrap 
 
 echo "== unknown arguments are rejected (a mistyped flag never runs for real)"
 for c in "cloud-new-project.sh --dryrun" "cloud-new-project.sh --dry-run extra" "cloud-new-project.sh -n" "cloud-bootstrap.sh qa --dryrun" "cloud-bootstrap.sh --dry-run qa" "cloud-bootstrap.sh qa --dry-run extra" "cloud-new-database.sh qa --dryrun" "cloud-new-database.sh --dry-run qa" "cloud-verify.sh qa --dryrun" "cloud-verify.sh --dry-run qa" "cloud-verify.sh project --dry-run extra"; do
-  newenv; runk $c; [[ $RC == 2 ]] && log_empty && grep -qE 'unknown argument|unexpected argument|usage' "$ERR"; t "rejects: $c" $? "rc=$RC log=$(cat "$FAKE_LOG")"
+  newenv; runk $c; chk=log_empty; [[ "$c" == cloud-bootstrap.sh* ]] && chk=log_empty_clip; [[ $RC == 2 ]] && $chk && grep -qE 'unknown argument|unexpected argument|usage' "$ERR"; t "rejects: $c" $? "rc=$RC log=$(cat "$FAKE_LOG")"
 done
 
 echo "== bootstrap dry run is byte-identical to Fin-Dash's (project id test-proj-1234)"
