@@ -92,6 +92,7 @@ validate_env_deploy() {
     k="${line%%=*}"
     case "$k" in GCP_PROJECT_ID|GCP_REGION|NEON_PROJECT_ID_*) ;; *) continue ;; esac
     v="$(env_deploy_get "$k")"
+    [[ -n "$v" ]] || continue # an empty value means "unset", as everywhere else in the kit
     case "$k" in
       GCP_PROJECT_ID) need_pattern ".env.deploy $k" "$v" '^[a-z][a-z0-9-]{4,28}[a-z0-9]$' ;;
       GCP_REGION) need_pattern ".env.deploy $k" "$v" '^[a-z]+-[a-z]+[0-9]+$' ;;
